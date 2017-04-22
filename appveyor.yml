@@ -11,13 +11,13 @@ environment:
 
   matrix:
       # Windows x86 Builds
-    - PYTHON: "C:\\Python35-x64"
+    - PYTHON: "C:\\Python35-conda64"
       PYTHON_VERSION: "3.5.x"
       PYTHON_ARCH: "64"
 
-    - PYTHON: "C:\\Python36-x64"
-      PYTHON_VERSION: "3.6.x"
-      PYTHON_ARCH: "64"
+    - PYTHON: "C:\\Python35-conda32"
+      PYTHON_VERSION: "3.5.x"
+      PYTHON_ARCH: "32"
 
 install:
   # Install Python (from the official .msi of http://python.org) and pip when
