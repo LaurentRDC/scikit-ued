@@ -51,4 +51,4 @@ on_success:
 branches:
   only:
     - master
-	- develop
+    - develop
