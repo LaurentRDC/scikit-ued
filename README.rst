@@ -26,7 +26,7 @@ scikit-ued
     :target: https://saythanks.io/to/LaurentRDC
     :alt: Say Thanks to the Maintainers
 
-Collection of algorithms and functions for ultrafast electron diffraction
+Collection of algorithms and functions for ultrafast electron diffraction.
 
 Getting Started with scikit-ued
 ----------------------------
@@ -43,12 +43,12 @@ To install the latest development version from `Github <https://github.com/Laure
 If your current Python installation doesn't have pip available, try `get-pip.py <bootstrap.pypa.io>`_
 
 After installing scikit-ued you can use it like any other Python module.
-Here's a very simple example:
+Soon, there'll be a simple example here:
 
 .. code-block:: python
 
     import skued
-    # Fill this section in with the common use-case.
+    # come back later, this package is empty
 
 API Reference
 -------------
@@ -62,11 +62,6 @@ All support requests and issue reports should be
 `filed on Github as an issue <https://github.com/LaurentRDC/scikit-ued/issues>`_.
 Make sure to follow the template so your request may be as handled as quickly as possible.
 Please respect contributors by not using personal contacts for support requests.
-
-Contributing
-------------
-
-We happily welcome contributions, please see `our guide for Contributors <http://skued.readthedocs.io/en/latest/contributing.html>`_ for the best places to start and help.
 
 License
 -------
