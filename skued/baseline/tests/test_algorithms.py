@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from ..algorithms import (baseline_dt, baseline_dwt)
 
 import numpy as np

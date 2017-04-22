@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from ..wavelets import (dualtree, idualtree, dt_max_level, dualtree_wavelet, 
 						dualtree_first_stage, kingsbury99, kingsbury99_fs, 
 						ALL_QSHIFT, ALL_FIRST_STAGE, ALL_COMPLEX_WAV)

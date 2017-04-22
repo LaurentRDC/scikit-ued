@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Baseline-determination algorithms based on the wavelet tranform.
 

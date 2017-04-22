@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Algorithms based on the dual-tree complex wavelet transform.
 

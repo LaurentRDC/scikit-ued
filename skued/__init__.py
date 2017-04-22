@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 __author__ = 'Laurent P. René de Cotret'
 __email__ = 'laurent.renedecotret@mail.mcgill.ca'
 __license__ = 'MIT'
