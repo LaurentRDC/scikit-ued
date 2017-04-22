@@ -43,4 +43,6 @@ else
     pip install virtualenv
 fi
 
+# Cython required for setup.py
+pip install cython
 pip install tox
