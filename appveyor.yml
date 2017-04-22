@@ -40,9 +40,8 @@ install:
   - "pip install --disable-pip-version-check --user --upgrade pip"
   - "pip install tox"
 
-  # Install cython, numpy before using setup.py
+  # Install cython, required for setup.py
   - "pip install cython"
-  - "pip install numpy"
 
 test_script:
   - "%CMD_IN_ENV% tox"
