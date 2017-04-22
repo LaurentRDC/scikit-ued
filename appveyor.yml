@@ -47,7 +47,7 @@ install:
 
 test_script:
   - "pip install sphinx"
-  - SET PYTHON=%PYTHON%\\python.exe && cd doc && make html
+  - "python setup.py build_sphinx"
   - "cd C:\\"
   - "python setup.py test"
 
