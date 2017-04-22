@@ -1,0 +1,66 @@
+language: python
+sudo: false
+
+matrix:
+  include:
+    # Flake8 Style Checking
+    - python: 3.5
+      env: TOXENV=flake8
+
+    # Flake8 Linter
+    - python: 3.5
+      env: TOXENV=docs
+
+    # Linux Builds
+    - python: 2.7
+      env: TOXENV=py27
+    - python: 3.3
+      env: TOXENV=py33
+    - python: 3.4
+      env: TOXENV=py34
+    - python: 3.5
+      env: TOXENV=py35
+    - python: 3.6-dev
+      env: TOXENV=py36
+    - python: nightly
+      env: TOXENV=py37
+
+    # OSX Builds
+    - language: generic
+      os: osx
+      env: TOXENV=py27
+    - language: generic
+      os: osx
+      env: TOXENV=py33
+    - language: generic
+      os: osx
+      env: TOXENV=py34
+    - language: generic
+      os: osx
+      env: TOXENV=py35
+    - language: generic
+      os: osx
+      env: TOXENV=py36
+
+cache:
+  - pip
+  - directories:
+    - ${HOME}/.cache
+
+install:
+  - chmod a+x ./.travis/install.sh ./.travis/run.sh ./.travis/upload_coverage.sh
+  - ./.travis/install.sh
+
+script:
+  - ./.travis/run.sh
+
+after_success:
+  - ./.travis/upload_coverage.sh
+
+notifications:
+  email: false
+
+branches:
+  only:
+  - master
+  - release

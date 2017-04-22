@@ -1,0 +1,13 @@
+[run]
+include =
+    skued/*
+
+[report]
+exclude_lines =
+    except ImportError:
+    pass
+    import
+    raise
+    .* # Platform-specific.*
+    .*:.* # Python \d.*
+    .* # Skip coverage.*
