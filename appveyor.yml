@@ -46,8 +46,7 @@ install:
   - "pip install --pre --no-index --find-links dist/ scikit-ued"
 
 test_script:
-  - "cd C:\\"
-  - "python setup.py test"
+  - "python C:\\projects\\skimage-ued\\setup.py test"
 
 on_success:
   - "pip install codecov"
