@@ -16,15 +16,9 @@ scikit-ued
 .. image:: https://readthedocs.org/projects/skued/badge/?version=latest
     :target: http://skued.readthedocs.io
     :alt: Documentation Build Status
-.. image:: https://pyup.io/repos/github/LaurentRDC/scikit-ued/shield.svg
-     :target: https://pyup.io/repos/github/LaurentRDC/scikit-ued
-     :alt: Dependency Versions
 .. image:: https://img.shields.io/pypi/v/skued.svg
     :target: https://pypi.python.org/pypi/skued
     :alt: PyPI Version
-.. image:: https://img.shields.io/badge/say-thanks-ff69b4.svg
-    :target: https://saythanks.io/to/LaurentRDC
-    :alt: Say Thanks to the Maintainers
 
 Collection of algorithms and functions for ultrafast electron diffraction.
 
