@@ -4,6 +4,12 @@
 Reference/API
 *************
 
-.. automodapi:: scikit-ued
+Voigt Profile
+=============
+.. automodule:: skued.voigt
 
+Baseline-determination
+======================
+.. autofunction:: skued.baseline.baseline_dt
 
+.. autofunction:: skued.baseline.baseline_dwt
