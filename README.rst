@@ -7,10 +7,7 @@ scikit-ued
 .. image:: https://img.shields.io/codecov/c/github/LaurentRDC/scikit-ued/master.svg
     :target: https://codecov.io/gh/LaurentRDC/scikit-ued
     :alt: Test Suite Coverage
-.. image:: https://img.shields.io/codeclimate/github/LaurentRDC/scikit-ued.svg
-    :target: https://codeclimate.com/github/LaurentRDC/scikit-ued
-    :alt: Code Health
-.. image:: https://readthedocs.org/projects/skued/badge/?version=latest
+.. image:: https://readthedocs.org/projects/scikit-ued/badge/?version=latest
     :target: http://scikit-ued.readthedocs.io
     :alt: Documentation Build Status
 
