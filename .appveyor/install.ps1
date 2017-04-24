@@ -98,7 +98,7 @@ function InstallPip ($python_home) {
 function DownloadMiniconda ($python_version, $platform_suffix) {
     $webclient = New-Object System.Net.WebClient
     # if ($python_version -match "3.5") {
-    $filename = "Miniconda3-4.3.14-Windows-" + $platform_suffix + ".exe"
+    $filename = "Miniconda3-4.3.11-Windows-" + $platform_suffix + ".exe"
     $url = $MINICONDA_URL + $filename
 
     $basedir = $pwd.Path + "\"
