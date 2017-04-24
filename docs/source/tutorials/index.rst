@@ -21,3 +21,4 @@ We currently have the following tutorials:
    :maxdepth: 1
 
    baseline
+   image_analysis
