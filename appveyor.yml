@@ -1,6 +1,7 @@
 # AppVeyor.yml from https://github.com/ogrisel/python-appveyor-demo
 # License: CC0 1.0 Universal: http://creativecommons.org/publicdomain/zero/1.0/
-build: off
+
+build: off  # Building happens in installation phase
 
 environment:
   global:

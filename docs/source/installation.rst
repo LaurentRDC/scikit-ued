@@ -18,9 +18,10 @@ Requirements
 **scikit-ued** works on Linux, Mac OS X and Windows. It requires Python 3.5+ 
 as well as the following packages:
 
-* `Numpy`_
+* `numpy`_
 * `scipy`_
-* `skimage`_
+* `scikit-image`_
+* `pywavelets`_
 
 
 Install scikit-ued

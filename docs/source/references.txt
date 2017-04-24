@@ -1,4 +1,5 @@
 .. _Numpy: http://www.numpy.org
-.. _Skimage: http://scikit-image.org/docs/stable/
+.. _scikit-image: http://scikit-image.org/docs/stable/
 .. _Scipy: https://www.scipy.org
 .. _Cython: http://cython.org
+.. _Pywavelets: https://pywavelets.readthedocs.io/en/latest/
