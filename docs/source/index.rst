@@ -22,7 +22,7 @@ Links
 
 * `Source code <https://github.com/LaurentRDC/scikit-ued>`_
 * `Issues <https://github.com/LaurentRDC/scikit-ued/issues>`_
-* `Docs <http://skued.readthedocs.org/>`_
+* `Docs <http://scikit-ued.readthedocs.org/>`_
 
 .. _scikit-ued_docs:
 
