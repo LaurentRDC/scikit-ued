@@ -36,7 +36,8 @@ year = datetime.now().year
 extensions = ['alabaster',
               'sphinx.ext.todo',
               'sphinx.ext.intersphinx',
-              'sphinx.ext.autodoc']
+              'sphinx.ext.autodoc',
+			  'sphinx.ext.napoleon']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -93,18 +94,8 @@ todo_include_todos = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
-html_theme_path = [alabaster.get_path()]
-html_theme_options = {
-    'description': 'Collection of algorithms and functions for ultrafast electron diffraction',
-    'github_user': 'LaurentRDC',
-    'github_repo': 'skued',
-    'github_button': False,
-    'github_banner': True,
-    'font_family': "'Roboto', Georgia, sans",
-    'head_font_family': "'Roboto', Georgia, serif",
-    'code_font_family': "'Roboto Mono', 'Consolas', monospace"
-}
+html_theme = 'sphinx_rtd_theme'
+html_theme_path = ['_themes', ]
 html_sidebars = {
     '**': [
         'about.html',

@@ -1,39 +1,20 @@
 scikit-ued
 =======
 
-.. image:: https://img.shields.io/travis/LaurentRDC/scikit-ued/master.svg
-    :target: https://travis-ci.org/LaurentRDC/scikit-ued
-    :alt: Linux and MacOS Build Status
 .. image:: https://img.shields.io/appveyor/ci/LaurentRDC/scikit-ued/master.svg
     :target: https://ci.appveyor.com/project/LaurentRDC/scikit-ued
     :alt: Windows Build Status
 .. image:: https://img.shields.io/codecov/c/github/LaurentRDC/scikit-ued/master.svg
     :target: https://codecov.io/gh/LaurentRDC/scikit-ued
     :alt: Test Suite Coverage
-.. image:: https://img.shields.io/codeclimate/github/LaurentRDC/scikit-ued.svg
-    :target: https://codeclimate.com/github/LaurentRDC/scikit-ued
-    :alt: Code Health
-.. image:: https://readthedocs.org/projects/skued/badge/?version=latest
-    :target: http://skued.readthedocs.io
+.. image:: https://readthedocs.org/projects/scikit-ued/badge/?version=latest
+    :target: http://scikit-ued.readthedocs.io
     :alt: Documentation Build Status
-.. image:: https://pyup.io/repos/github/LaurentRDC/scikit-ued/shield.svg
-     :target: https://pyup.io/repos/github/LaurentRDC/scikit-ued
-     :alt: Dependency Versions
-.. image:: https://img.shields.io/pypi/v/skued.svg
-    :target: https://pypi.python.org/pypi/skued
-    :alt: PyPI Version
-.. image:: https://img.shields.io/badge/say-thanks-ff69b4.svg
-    :target: https://saythanks.io/to/LaurentRDC
-    :alt: Say Thanks to the Maintainers
 
 Collection of algorithms and functions for ultrafast electron diffraction.
 
 Getting Started with scikit-ued
 ----------------------------
-
-scikit-ued is available on PyPI can be installed with `pip <https://pip.pypa.io>`_.::
-
-    $ python -m pip install skued
 
 To install the latest development version from `Github <https://github.com/LaurentRDC/scikit-ued>`_::
 
@@ -53,7 +34,7 @@ Soon, there'll be a simple example here:
 API Reference
 -------------
 
-The `API Reference on readthedocs.io <http://skued.readthedocs.io>`_ provides API-level documentation.
+The `API Reference on readthedocs.io <http://scikit-ued.readthedocs.io>`_ provides API-level documentation.
 
 Support / Report Issues
 -----------------------
