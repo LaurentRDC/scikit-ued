@@ -12,8 +12,8 @@ DEFAULT_CMP_WAV = 'qshift4'
 
 DATADIR = join(dirname(__file__), 'data')
 ALL_QSHIFT = ('qshift1', 'qshift2', 'qshift3', 'qshift4', 'qshift5', 'qshift6')
-ALL_COMPLEX_WAV = ('kingsbury99',) + ALL_QSHIFT
-ALL_FIRST_STAGE = ('kingsbury99_fs',) + tuple([wav for wav in wavelist(kind = 'discrete') if wav != 'dmey'])
+ALL_COMPLEX_WAV = ALL_QSHIFT
+ALL_FIRST_STAGE = tuple([wav for wav in wavelist(kind = 'discrete') if wav != 'dmey'])
 
 def dualtree(data, first_stage = DEFAULT_FIRST_STAGE, wavelet = DEFAULT_CMP_WAV, level = 'max', mode = DEFAULT_MODE, axis = -1):
     """
@@ -25,10 +25,10 @@ def dualtree(data, first_stage = DEFAULT_FIRST_STAGE, wavelet = DEFAULT_CMP_WAV,
         Input data. Can be of any shape, but the transform can only be applied in 1D (i.e. along a single axis).
         The length along the axis must be even.
     first_stage : str, optional
-        Wavelet to use for the first stage. See dualtree.ALL_FIRST_STAGE for a list of suitable arguments
+        Wavelet to use for the first stage. See skued.baseline.ALL_FIRST_STAGE for a list of suitable arguments
     wavelet : str, optional
         Wavelet to use in stages > 1. Must be appropriate for the dual-tree complex wavelet transform.
-        See dualtree.ALL_COMPLEX_WAV for possible
+        See skued.baseline.ALL_COMPLEX_WAV for possible
     level : int or 'max', optional
         Decomposition level (must be >= 0). If level is 'max' (default) then it
         will be calculated using the ``dt_max_level`` function.
@@ -358,51 +358,3 @@ def _qshift(name):
     imag_filter_bank = [dec_imag_low, dec_imag_high, rec_imag_low, rec_imag_high]
 
     return Wavelet(name = 'real:' + name, filter_bank = real_filter_bank), Wavelet(name = 'imag:' + name, filter_bank = imag_filter_bank)
-
-#############################################################################################
-#                           EXAMPLE COMPLEX WAVELETS FROM
-#               http://eeweb.poly.edu/iselesni/WaveletSoftware/dt1D.html 
-#############################################################################################
-@lru_cache(maxsize = 1)
-def kingsbury99_fs():
-    """
-    Returns a first-stage complex wavelet as published in [1]. 
-
-    References
-    ----------
-    [1] Kingsbury, N. 'Image Processing with Complex Wavelets'. Philocophical Transactions of the Royal Society A pp. 2543-2560, September 1999
-    """
-    real_dec_lo = np.array([0, -0.08838834764832, 0.08838834764832, 0.69587998903400,0.69587998903400, 0.08838834764832, -0.08838834764832, 0.01122679215254, 0.01122679215254, 0])
-    real_dec_hi = np.array([0, -0.01122679215254, 0.01122679215254, 0.08838834764832, 0.08838834764832, -0.69587998903400, 0.69587998903400, -0.08838834764832, -0.08838834764832, 0])
-    real_rec_lo, real_rec_hi = real_dec_lo[::-1], real_dec_hi[::-1]
-
-    imag_dec_lo = np.array([0.01122679215254, 0.01122679215254, -0.08838834764832, 0.08838834764832, 0.69587998903400, 0.69587998903400, 0.08838834764832, -0.08838834764832, 0, 0])
-    imag_dec_hi = np.array([0, 0, -0.08838834764832, -0.08838834764832, 0.69587998903400, -0.69587998903400, 0.08838834764832, 0.08838834764832, 0.01122679215254, -0.01122679215254])
-    imag_rec_lo, imag_rec_hi = imag_dec_lo[::-1], imag_dec_hi[::-1]
-
-    real_fb = [real_dec_lo, real_dec_hi, real_rec_lo, real_rec_hi]
-    imag_fb = [imag_dec_lo, imag_dec_hi, imag_rec_lo, imag_rec_hi]
-
-    return Wavelet(name = 'real:', filter_bank = real_fb), Wavelet(name = 'imag:', filter_bank = imag_fb)
-
-@lru_cache(maxsize = 1)
-def kingsbury99():
-    """
-    Returns a late-stage complex wavelet as published in [1].
-
-    References
-    ----------
-    [1] Kingsbury, N. 'Image Processing with Complex Wavelets'. Philocophical Transactions of the Royal Society A pp. 2543-2560, September 1999
-    """
-    real_dec_lo = np.array([ 0.03516384000000, 0, -0.08832942000000, 0.23389032000000, 0.76027237000000, 0.58751830000000, 0, -0.11430184000000, 0, 0])
-    real_dec_hi = np.array([0, 0, -0.11430184000000, 0, 0.58751830000000, -0.76027237000000, 0.23389032000000, 0.08832942000000, 0, -0.03516384000000])
-    real_rec_lo, real_rec_hi = real_dec_lo[::-1], real_dec_hi[::-1]
-
-    imag_dec_lo = np.array([ 0, 0, -0.11430184000000, 0, 0.58751830000000, 0.76027237000000, 0.23389032000000, -0.08832942000000, 0, 0.03516384000000])
-    imag_dec_hi = np.array([-0.03516384000000, 0, 0.08832942000000, 0.23389032000000, -0.76027237000000, 0.58751830000000, 0, -0.11430184000000, 0, 0])
-    imag_rec_lo, imag_rec_hi = imag_dec_lo[::-1], imag_dec_hi[::-1]
-
-    real_fb = [real_dec_lo, real_dec_hi, real_rec_lo, real_rec_hi]
-    imag_fb = [imag_dec_lo, imag_dec_hi, imag_rec_lo, imag_rec_hi]
-
-    return Wavelet(name = 'real:', filter_bank = real_fb), Wavelet(name = 'imag:', filter_bank = imag_fb)
