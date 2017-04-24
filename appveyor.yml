@@ -47,7 +47,8 @@ install:
   - "pip install --pre --no-index --find-links dist/ scikit-ued"
 
 test_script:
-  - "python C:\\projects\\scikit-ued\\python -m unittest discover"
+  - cd C:\projects\scikit-ued\
+  - "python -m unittest discover"
 
 on_success:
   - "pip install codecov"
