@@ -20,8 +20,8 @@ def angular_average(image, center, mask = None, extras = None):
 	extras : dict-like or None, optional
 		if not None, this dict-like object will be updated with: 
 
-		``extras['error'] : `~numpy.ndarray` ``
-			Standard error in mean across radii.
+			extras['error'] : `~numpy.ndarray`
+				standard error in mean across radii.
 
 	Returns
 	-------

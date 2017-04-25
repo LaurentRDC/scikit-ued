@@ -5,4 +5,5 @@ __license__ = 'MIT'
 __version__ = '0.1'
 
 
+from .plot_utils import spectrum_colors
 from .voigt import gaussian, lorentzian, pseudo_voigt
