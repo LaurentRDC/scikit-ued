@@ -53,7 +53,7 @@ First, we create a test image::
 	
 	from skued.image_analysis import angular_average
 
-	intensity = angular_average(image, (xc, yc))
+	radius, intensity = angular_average(image, (xc, yc))
 
 	plt.plot(intensity)
 
@@ -69,8 +69,8 @@ First, we create a test image::
 	extent = np.arange(0, image.shape[0])
 	xx, yy = np.meshgrid(extent, extent)
 	image += gaussian([xx, yy], center = [xc, yc], fwhm = 200)
-	intensity = angular_average(image, (xc, yc))
-	plt.plot(intensity)
+	radius, intensity = angular_average(image, (xc, yc))
+	plt.plot(radius, intensity)
 	plt.show()
 
 :ref:`Return to Top <image_analysis_tutorial>`

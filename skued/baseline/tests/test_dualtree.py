@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from ..wavelets import (dualtree, idualtree, dt_max_level, dualtree_wavelet, 
-						dualtree_first_stage, kingsbury99, kingsbury99_fs, 
+						dualtree_first_stage, 
 						ALL_QSHIFT, ALL_FIRST_STAGE, ALL_COMPLEX_WAV)
 
 import numpy as np
@@ -26,20 +26,6 @@ class TestComplexWavelets(unittest.TestCase):
                 # Using waverec and wavedec instead of dwt and idwt because parameters
                 # don't need as much parsing.
                 self.assertTrue(np.allclose( self.array, pywt.waverec(pywt.wavedec(self.array, wav), wav) ))
-    
-    def test_kingsbury99_fs(self):
-        """ Test for perfect reconstruction """
-        for wav in kingsbury99_fs():
-            a, d = pywt.dwt(data = self.array, wavelet = wav)
-            rec = pywt.idwt(cA = a, cD = d, wavelet = wav)
-            self.assertTrue(np.allclose(self.array, rec))
-    
-    def test_kingsbury99(self):
-        """ Test for perfect reconstruction """
-        for wav in kingsbury99():
-            a, d = pywt.dwt(data = self.array, wavelet = wav)
-            rec = pywt.idwt(cA = a, cD = d, wavelet = wav)
-            self.assertTrue(np.allclose(self.array, rec))
 
 ##############################################################################
 ###           DUAL-TREE COMPLEX WAVELET TRANSFORM

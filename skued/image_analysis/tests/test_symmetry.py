@@ -11,11 +11,11 @@ class TestAngularAverage(unittest.TestCase):
 		center = (image.shape[0]/2, image.shape[1]/2)
 
 		extras = dict()
-		intensity = angular_average(image, center, extras = extras)
-
+		radius, intensity = angular_average(image, center, extras = extras)
+		
 		self.assertTrue(intensity.sum() == 0)
 
-		radius, error = extras['radius'], extras['error']
+		error = extras['error']
 		self.assertSequenceEqual(radius.shape, error.shape)
 		self.assertSequenceEqual(intensity.shape, radius.shape)
 		
@@ -31,7 +31,7 @@ class TestAngularAverage(unittest.TestCase):
 		rr = np.sqrt((xx - xc)**2 + (yy - yc)**2)
 		image[np.logical_and(24 < rr,rr < 26)] = 1
 
-		intensity = angular_average(image, center)
+		radius, intensity = angular_average(image, center)
 		self.assertEqual(intensity.max(), image.max())
 
 if __name__ == '__main__':
