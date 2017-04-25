@@ -7,13 +7,13 @@ from colorsys import hsv_to_rgb
 
 def spectrum_colors(num_colors):
 	"""
-	Generates a set of RGB colors corresponding to the visible spectrum. These colors
-	can be used by Matplotlib and other plotting libraries.
+	Generates a set of RGB colors corresponding to the visible spectrum (i.e. the rainbox). 
+	These colors can be used by Matplotlib, PyQtGraph, and other plotting libraries.
     
 	Parameters
 	----------
 	num_colors : int or iterable
-		Number of colors to return. Alternatively, if `num_colors` is an iterable, 
+		Number of colors to generate. Alternatively, if `num_colors` is an iterable, 
 		then the number of colors is deduced with specific spacing.
     
 	Yields
@@ -32,6 +32,7 @@ def spectrum_colors(num_colors):
 		ma = max(num_colors) - mi
 		hue_values = reversed([(n - mi)/ma for n in num_colors])
 
-	# Scale so that the maximum is 'purple':
-	# otherwise plots don't great
+	# Scale so that the maximum is 'purple' (hue = 0.8)
+	# otherwise plots don't look as good
+	# Saturation and value have also been chosen for this reason.
 	yield from map(lambda hue: hsv_to_rgb(0.8*hue, s = 0.7, v = 0.9), hue_values)
