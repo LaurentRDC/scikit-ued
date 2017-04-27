@@ -67,11 +67,8 @@ class Crystal(AtomicStructure, Lattice):
 	volume : float
 		Volume of the unit cell, in angstrom**3
     
-	hall_number
-		Integer, between 1 and 530, uniquely identifying the space group of this crystal.
-    
-	short_symbol
-		International short symbol.
+	spglib_cell : tuple
+		Crystal structure in spglib's `cell` format.
     
 	Constructors
 	------------    
@@ -83,11 +80,7 @@ class Crystal(AtomicStructure, Lattice):
 		be downloaded, cached, and parsed appropriately.
     
 	Methods
-	-------
-	symmetry_dataset
-		Dictionary containing information about symmetry and space group of this crystal.
-		From spglib.get_symmetry_dataset()
-    
+	-------    
 	periodicity
 		Bounding cube of the unit cell in real-space. 
         
@@ -182,33 +175,12 @@ class Crystal(AtomicStructure, Lattice):
 		return list(iter(self))
 	
 	@property
-	def hall_number(self):
-		return self.symmetry_dataset()['hall_number']
-	
-	@property
-	def short_symbol(self):
-		return self.symmetry_dataset()['international']
-	
-	def symmetry_dataset(self, symprec = 1e-4):
-		""" 
-		Returns the symmetry dataset (really, a dictionary) 
-		from spglib's get_symmetry_dataset() function.
-
-		Parameters
-		----------
-		symprec : float, optional
-			Distance tolerance in cartesian coordinates [Angs]. 
-        
-		Returns
-		-------
-		dataset : dict
-			See spglib's documentation on the content of this dictionary.
-		"""
+	def spglib_cell(self):
+		""" Returns the crystal structure in spglib's `cell` format."""
 		lattice = np.array(self.lattice_vectors)
 		positions = np.array([atom.frac_coords(self.lattice_vectors) for atom in iter(self)])
 		numbers = np.array(tuple(atom.atomic_number for atom in iter(self)))
-		
-		return spglib.get_symmetry_dataset(scell, symprec = symprec)
+		return (lattice, positions, numbers)
 	
 	def periodicity(self):
 		"""

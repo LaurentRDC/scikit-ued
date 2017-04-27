@@ -27,37 +27,6 @@ def equal_crystal_transformation(cryst1, cryst2):
 
     return lv_equal and sym_ops_equal and atoms_places_equal and unitcell_places_equal
 
-@unittest.skip('Mysteriously does not work')
-class TestCrystalSpacegroupMethods(unittest.TestCase):
-	""" Test the spacegroup-related methods """
-
-	def setUp(self):
-		self.crystal = deepcopy(graphite)
-	
-	def test_hall_number(self):
-		""" Test that the Hall number remains the same even after transformations """
-		pre_transf_hall_number = self.crystal.hall_number
-		rot = rotation_matrix(np.pi/2, axis = [0,0,1])
-		with self.subTest('Forward rotation'):
-			self.crystal.transform(rot)
-			self.assertEqual(pre_transf_hall_number, self.crystal.hall_number)
-
-		with self.subTest('Inverse rotation'):
-			self.crystal.transform(np.linalg.inv(rot))
-			self.assertEqual(pre_transf_hall_number, self.crystal.hall_number)
-	
-	def test_short_symbol(self):
-		""" Test that the International short symbol remains the same even after transformations """
-		pre_transf_short_symbol = self.crystal.short_symbol
-		rot = rotation_matrix(np.pi/2, axis = [0,0,1])
-		with self.subTest('Forward rotation'):
-			self.crystal.transform(rot)
-			self.assertEqual(pre_transf_short_symbol, self.crystal.short_symbol)
-
-		with self.subTest('Inverse rotation'):
-			self.crystal.transform(np.linalg.inv(rot))
-			self.assertEqual(pre_transf_short_symbol, self.crystal.short_symbol)
-
 class TestBoundedReflections(unittest.TestCase):
 
 	def setUp(self):
