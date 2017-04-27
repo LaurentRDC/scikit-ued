@@ -12,6 +12,14 @@ Voigt Profile
 =============
 .. automodule:: skued.voigt
 
+Affine Transforms
+=================
+.. automodule:: skued.transformations
+
+Structure
+=========
+.. autoclass:: skued.structure.Lattice
+
 Baseline-determination
 ======================
 .. autofunction:: skued.baseline.baseline_dt
