@@ -18,7 +18,7 @@ class ParallelMapTest(unittest.TestCase):
 		pmap_result = pmap(identity, integers, processes = 1)
 		map_result = map(identity, integers)
 
-		self.assertTrue(isinstance(pmap_result, type(map_result)))
+		self.assertIsInstance(pmap_result, type(map_result))
 
 	def test_trivial_map_no_args(self):
 		""" Test that pmap is working with no positional arguments """

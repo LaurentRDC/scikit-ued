@@ -119,7 +119,6 @@ class Crystal(AtomicStructure, Lattice):
 	transform
 		Apply 3x3 or 4x4 transformation (reflection, shearing, translation, rotation)
 		to atomic coordinates and lattice vectors.
-    
 	"""
 
 	def __init__(self, atoms, symmetry_operators = [np.eye(3)], **kwargs):
@@ -209,11 +208,11 @@ class Crystal(AtomicStructure, Lattice):
 		positions = np.array([atom.frac_coords(self.lattice_vectors) for atom in iter(self)])
 		numbers = np.array(tuple(atom.atomic_number for atom in iter(self)))
 		
-		return spglib.get_symmetry_dataset(cell = (lattice, positions, numbers), symprec = symprec)
+		return spglib.get_symmetry_dataset(scell, symprec = symprec)
 	
 	def periodicity(self):
 		"""
-		Crystal periodicixy in x, y and z direction from the lattice constants.
+		Crystal periodicity in x, y and z direction from the lattice constants.
 		This is effectively a bounding cube for the unit cell, which is itself a unit cell.
 
 		Parameters

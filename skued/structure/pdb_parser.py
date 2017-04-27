@@ -1,13 +1,11 @@
 import contextlib
 import gzip
 import os
-import shutil
 from urllib.request import urlretrieve
-import numpy as n
+import numpy as np
 
-from . import Atom
+from . import Atom, lattice_vectors_from_parameters
 from .. import affine_map, translation_matrix
-from .lattice import lattice_vectors_from_parameters
 
 def retrieve_pdb_file(pdb_code, download_dir = None, server = 'ftp://ftp.wwpdb.org', overwrite = False):
 	""" 
@@ -169,7 +167,7 @@ class PDBParser(object):
 					if op_num not in sym_ops:
 						sym_ops[op_num] = [[],[]]
 						
-					r1, r2, r3, t = n.fromstring(line[23:], dtype = n.float, count = 4, sep = ' ')
+					r1, r2, r3, t = np.fromstring(line[23:], dtype = np.float, count = 4, sep = ' ')
 					sym_ops[op_num][0].append([r1, r2, r3])
 					sym_ops[op_num][1].append(t)
 
@@ -179,7 +177,7 @@ class PDBParser(object):
 		# Combine operators
 		matrices = list()
 		for rotation, translation in sym_ops.values():
-			rotation, translation = n.asarray(rotation, dtype = n.float), n.asarray(translation, dtype = n.float)
+			rotation, translation = np.asarray(rotation, dtype = np.float), np.asarray(translation, dtype = np.float)
 			
 			#Translations and rotations combined according to http://www.euclideanspace.com/maths/geometry/affine/matrix4x4/
 			transf = affine_map(rotation)

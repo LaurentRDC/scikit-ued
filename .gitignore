@@ -9,6 +9,9 @@ __pycache__/
 # Visual studio cache
 *.vs/
 
+# Protein DataBank cache folder
+pdb_cache/
+
 # Distribution / packaging
 .Python
 env/
