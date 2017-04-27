@@ -155,20 +155,20 @@ def baseline_dt(array, max_iter, level = 'max', first_stage = DEFAULT_FIRST_STAG
 		the input signal (read: a lower frequency baseline). If 'max' (default), the maximum level
 		possible is used.
 	first_stage : str, optional
-		Wavelet to use for the first stage. See dualtree.ALL_FIRST_STAGE for a list of suitable arguments
+		Wavelet to use for the first stage. See skued.baseline.ALL_FIRST_STAGE for a list of suitable arguments
 	wavelet : str, optional
 		Wavelet to use in stages > 1. Must be appropriate for the dual-tree complex wavelet transform.
-		See dualtree.ALL_COMPLEX_WAV for possible
-	background_regions : list, optional
+		See skued.baseline.ALL_COMPLEX_WAV for possible values.
+	background_regions : iterable, optional
 		Indices of the array values that are known to be purely background. Depending
 		on the dimensions of array, the format is different:
         
 		``array.ndim == 1``
-			background_regions is a list of ints (indices) or slices
+			`background_regions` is a list of ints (indices) or slices
 			E.g. >>> background_regions = [0, 7, 122, slice(534, 1000)]
           
 		``array.ndim == 2``
-			background_regions is a list of tuples of ints (indices) or tuples of slices
+			`background_regions` is a list of tuples of ints (indices) or tuples of slices
 			E.g. >>> background_regions = [(14, 19), (42, 99), (slice(59, 82), slice(81,23))]
          
 		Default is empty list.
@@ -185,8 +185,8 @@ def baseline_dt(array, max_iter, level = 'max', first_stage = DEFAULT_FIRST_STAG
         
 	References
 	----------
-	[1] L. P. René de Cotret and B. J. Siwick, A general method for baseline-removal in ultrafast 
-		electron powder diffraction data using the dual-tree complex wavelet transform, Struct. Dyn. 4 (2016)
+	L. P. René de Cotret and B. J. Siwick, A general method for baseline-removal in ultrafast 
+	electron powder diffraction data using the dual-tree complex wavelet transform, Struct. Dyn. 4 (2016)
 	"""
 	return _iterative_baseline_1d(array = array, max_iter = max_iter, background_regions = background_regions,
 									mask = mask, axis = axis, approx_rec_func = _dt_approx_rec,
@@ -195,7 +195,7 @@ def baseline_dt(array, max_iter, level = 'max', first_stage = DEFAULT_FIRST_STAG
 # TODO: 2D baseline as well
 def baseline_dwt(array, max_iter, level = 'max', wavelet = 'sym6', background_regions = [], mask = None, axis = -1):
 	"""
-	Iterative method of baseline determination, based on the discrete wavelet transform (DWT). 
+	Iterative method of baseline determination, based on the discrete wavelet transform. 
     
 	Parameters
 	----------
@@ -203,9 +203,9 @@ def baseline_dwt(array, max_iter, level = 'max', wavelet = 'sym6', background_re
 		Data with background.
 	max_iter : int
 		Number of iterations to perform.
-	level : int or None, optional
-		Decomposition level. A higher level will result in a coarser approximation of
-		the input signal (read: a lower frequency baseline). If None (default), the maximum level
+	level : int or 'max', optional
+		Decomposition level. A higher `level` will result in a coarser approximation of
+		the input signal (read: a lower frequency baseline). If 'max' (default), the maximum level
 		possible is used.
 	wavelet : PyWavelet.Wavelet object or str, optional
 		Wavelet with which to perform the algorithm. See PyWavelet documentation
@@ -215,11 +215,11 @@ def baseline_dwt(array, max_iter, level = 'max', wavelet = 'sym6', background_re
 		on the dimensions of array, the format is different:
         
 		``array.ndim == 1``
-			background_regions is a list of ints (indices) or slices
+			`background_regions` is a list of ints (indices) or slices
 			E.g. >>> background_regions = [0, 7, 122, slice(534, 1000)]
           
 		``array.ndim == 2``
-			background_regions is a list of tuples of ints (indices) or tuples of slices
+			`background_regions` is a list of tuples of ints (indices) or tuples of slices
 			E.g. >>> background_regions = [(14, 19), (42, 99), (slice(59, 82), slice(81,23))]
          
 		Default is empty list.
@@ -242,8 +242,8 @@ def baseline_dwt(array, max_iter, level = 'max', wavelet = 'sym6', background_re
     
 	References
 	----------
-	[1] Galloway et al. 'An Iterative Algorithm for Background Removal in Spectroscopy by Wavelet 
-		Transforms', Applied Spectroscopy pp. 1370 - 1376, September 2009.
+	Galloway et al. 'An Iterative Algorithm for Background Removal in Spectroscopy by Wavelet 
+	Transforms', Applied Spectroscopy pp. 1370 - 1376, September 2009.
 	"""
 	return _iterative_baseline_1d(array, max_iter = max_iter, background_regions = background_regions, 
 								  mask = mask, axis = axis, approx_rec_func = _dwt_approx_rec, 

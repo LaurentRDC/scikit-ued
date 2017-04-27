@@ -37,7 +37,10 @@ extensions = ['alabaster',
               'sphinx.ext.todo',
               'sphinx.ext.intersphinx',
               'sphinx.ext.autodoc',
-			  'sphinx.ext.napoleon']
+			  'sphinx.ext.napoleon',
+			  'matplotlib.sphinxext.plot_directive']
+
+intersphinx_mapping = {'numpy': ('http://docs.scipy.org/doc/numpy/', None)}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

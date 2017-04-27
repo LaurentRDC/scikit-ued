@@ -18,11 +18,11 @@ environment:
 
       - PYTHON_VERSION: "3.6"
         CONDA_DEPENDENCIES: "numpy scipy cython scikit-image"
-        PIP_DEPENDENCIES: "pywavelets"
+        PIP_DEPENDENCIES: "pywavelets spglib pycifrw"
 
       - PYTHON_VERSION: "3.5"
         CONDA_DEPENDENCIES: "numpy scipy cython scikit-image"
-        PIP_DEPENDENCIES: "pywavelets"
+        PIP_DEPENDENCIES: "pywavelets spglib pycifrw"
 
 matrix:
    fast_finish: true

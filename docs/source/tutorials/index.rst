@@ -20,4 +20,6 @@ We currently have the following tutorials:
 .. toctree::
    :maxdepth: 1
 
+   structure
    baseline
+   image_analysis
