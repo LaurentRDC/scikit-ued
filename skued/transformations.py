@@ -245,3 +245,34 @@ def change_basis_mesh(xx, yy, zz, basis1, basis2):
     return (changed[0,:].reshape(xx.shape), 
 			changed[1,:].reshape(yy.shape), 
 			changed[2,:].reshape(zz.shape))
+
+def minimum_image_distance(xx, yy, zz, lattice):
+	"""
+	Returns a periodic array according to the minimum image convention.
+
+	Parameters
+	----------
+	xx, yy, zz : ndarrays
+		Arrays of equal shape, such as produced by numpy.meshgrid.
+	lattice : list of ndarrays, shape(3,)
+		Basis of the mesh
+    
+	Returns
+	-------
+	r : ndarray
+		Minimum image distance over the lattice
+	"""
+	COB = change_of_basis(np.eye(3), lattice)
+	linearized = np.empty(shape = (3, xx.size), dtype = np.float)      # In the standard basis
+	ulinearized = np.empty_like(linearized)                          # In the unitcell basis
+
+	linearized[0,:] = xx.ravel()
+	linearized[1,:] = yy.ravel()
+	linearized[2,:] = zz.ravel()
+
+	# Go to unitcell basis, where the cell is cubic of side length 1
+	np.dot(COB, linearized, out = ulinearized)
+	ulinearized -= np.rint(ulinearized)
+	np.dot(np.linalg.inv(COB), ulinearized, out = linearized)
+
+	return np.reshape(np.linalg.norm(linearized, axis = 0), xx.shape)

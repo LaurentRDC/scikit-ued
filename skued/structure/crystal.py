@@ -11,7 +11,8 @@ import spglib
 from warnings import warn
 
 from . import AtomicStructure, Lattice, CIFParser, PDBParser, real_coords
-from .. import change_of_basis, transform, affine_map, change_basis_mesh, is_rotation_matrix
+from .. import (change_of_basis, transform, affine_map, change_basis_mesh, 
+			    is_rotation_matrix, minimum_image_distance)
 
 # Constants
 m = 9.109*10**(-31)     #in kg
@@ -86,10 +87,7 @@ class Crystal(AtomicStructure, Lattice):
         
 	potential
 		Atomic potential computed over euclidian space.
-
-	projected_potential
-		Atomic potential computed as the projection onto the x-y plane.
-    
+	
 	scattering_vector
 		Scattering vector G from Miller indices (hkl)
     
@@ -210,7 +208,8 @@ class Crystal(AtomicStructure, Lattice):
 		
 	def potential(self, x, y, z):
 		"""
-		Scattering potential calculated on a real-space mesh.
+		Scattering potential calculated on a real-space mesh, assuming an
+		infinite crystal.
 
 		Parameters
 		----------
@@ -221,18 +220,24 @@ class Crystal(AtomicStructure, Lattice):
 		-------
 		potential : ndarray, dtype float
 			Linear superposition of atomic potential [V*Angs]
+
+		See also
+		--------
+		skued.minimum_image_distance
 		"""
 		# TODO: multicore
 		potential = np.zeros_like(x, dtype = np.float)
 		r = np.zeros_like(x, dtype = np.float)
 		for atom in self:
 			ax, ay, az = atom.coords
-			r[:] = np.sqrt( (x - ax)**2 + (y - ay)**2 + (z - az)**2 )
+			r[:] = minimum_image_distance(x - ax, y - ay, z - az, 
+										  lattice = self.lattice_vectors)
 			potential += atom.potential(r)
 		
 		# Due to sampling, x,y, and z might pass through the center of atoms
 		# Replace np.inf by the next largest value
-		potential[np.isinf(potential)] = np.max(potential[np.isfinite])
+		m = potential[np.isfinite(potential)].max()
+		potential[np.isinf(potential)] = m
 		return potential
 	
 	def scattering_vector(self, h, k, l):
