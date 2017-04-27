@@ -6,29 +6,42 @@ import unittest
 
 np.random.seed(23)
 
-class TestExtendMatrix(unittest.TestCase):
+class TestAffineMap(unittest.TestCase):
 
 	def test_exception_raised(self):
-		""" Tests that extend_matrix() raises an exceptions for incorrect input """
+		""" Tests that affine_map() raises an exceptions for incorrect input """
 		with self.assertRaises(ValueError):
 			
-			m = tr.extend_matrix(np.eye(5)) # Matrix too large
-			m = tr.extend_matrix(np.eye(2)) # Matrix too small
+			m = tr.affine_map(np.eye(5)) # Matrix too large
+			m = tr.affine_map(np.eye(2)) # Matrix too small
 
 	def test_output_shape(self):
-		""" Tests that extend_matrix() always returns a 4x4 array """
+		""" Tests that affine_map() always returns a 4x4 array """
 		in3, in4 = np.eye(3), np.eye(4)
 
-		self.assertSequenceEqual(tr.extend_matrix(in3).shape, (4,4))
-		self.assertSequenceEqual(tr.extend_matrix(in4).shape, (4,4))
+		self.assertSequenceEqual(tr.affine_map(in3).shape, (4,4))
+		self.assertSequenceEqual(tr.affine_map(in4).shape, (4,4))
 
 	def test_fill(self):
-		""" Tests that extend_matrix() fills with zeros (and one on diagonal) for
+		""" Tests that affine_map() fills with zeros (and one on diagonal) for
 		an input of shape (3,3) """
 		arr = np.random.random(size = (3,3))
-		extended = tr.extend_matrix(arr)
+		extended = tr.affine_map(arr)
 		self.assertTrue(np.allclose(extended[:, -1], [0,0,0,1]))
 		self.assertTrue(np.allclose(extended[-1, :], [0,0,0,1]))
+
+class TestTranslationMatrix(unittest.TestCase):
+	
+	def test_random(self):
+		""" Tests that translation_matrix() has the same effect on a point
+		as directly translating."""
+		pt = np.random.random((3,))
+		translation = np.random.random((3,))
+
+		mat = tr.translation_matrix(translation)
+		transformed = tr.transform(mat, pt)
+
+		self.assertTrue(np.allclose(pt + translation, transformed))
 
 class TestTransform(unittest.TestCase):
 
@@ -131,6 +144,51 @@ class TestTranslationRotationMatrix(unittest.TestCase):
 		v2 += translation
 		
 		self.assertTrue(np.allclose(v1, v2))
+
+class TestChangeBasisMesh(unittest.TestCase):
+    """
+    Tests related to the change_basis_mesh function
+    """
+        
+    def test_trivial_basis_change(self):
+        """
+        Test the change of basis from standard basis to standard basis.
+        """
+        extent = np.linspace(0, 10, 10, dtype = np.int)
+        xx, yy, zz = np.meshgrid(extent, extent, extent)
+
+        XX, YY, ZZ = change_basis_mesh(xx = xx, yy = yy, zz = zz, basis1 = standard_basis, basis2 = standard_basis)
+        self.assertTrue(np.allclose(xx, XX))
+        self.assertTrue(np.allclose(yy, YY))
+        self.assertTrue(np.allclose(zz, ZZ))
+    
+    def test_coordinate_swap(self):
+        """
+        Tests the change of basis from (x, y, z) to (x, z, y)
+        """
+        extent = np.linspace(0, 10, 10, dtype = np.int)
+        xx, yy, zz = np.meshgrid(extent, extent, extent)
+
+        e1, e2, e3 = standard_basis
+        swapped_basis = [e1, e3, e2]
+
+        XX, YY, ZZ = change_basis_mesh(xx = xx, yy = yy, zz = zz, basis1 = standard_basis, basis2 = swapped_basis)
+        self.assertTrue(np.allclose(xx, XX))
+        self.assertTrue(np.allclose(yy, ZZ))
+        self.assertTrue(np.allclose(zz, YY))
+    
+    def test_scaling(self):
+        extent = np.linspace(0, 10, 10, dtype = np.int)
+        xx, yy, zz = np.meshgrid(extent, extent, extent)
+
+        e1, e2, e3 = standard_basis
+        
+        scaled_basis = [0.5*e1, 0.5*e2, 0.5*e3]
+
+        XX, YY, ZZ = change_basis_mesh(xx = xx, yy = yy, zz = zz, basis1 = standard_basis, basis2 = scaled_basis)
+        self.assertTrue(np.allclose(2*xx, XX))
+        self.assertTrue(np.allclose(2*yy, YY))
+        self.assertTrue(np.allclose(2*zz, ZZ))
 
 
 

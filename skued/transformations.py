@@ -9,9 +9,9 @@ import numpy as np
 #standard basis
 e1,e2,e3 = np.eye(3)
 
-def extend_matrix(array):
+def affine_map(array):
     """
-    Extends 3x3 transform matrices to 4x4.
+    Extends 3x3 transform matrices to 4x4, i.e. general affine transforms.
     
     Parameters
     ----------
@@ -68,14 +68,26 @@ def transform(matrix, array):
 	if array.ndim == 1:
 
 		if matrix.shape == (3,3):
-			matrix = extend_matrix(matrix)
+			matrix = affine_map(matrix)
 		extended_vector = np.array([0,0,0,1], dtype = array.dtype)
 		extended_vector[:3] = array 
 		return np.dot(matrix, extended_vector)[:3]
 
 	# Transformation matrix is either 3x3 or 4x4. Extend everything to 4x4
-	matrix, array = extend_matrix(matrix), extend_matrix(array)
+	matrix, array = affine_map(matrix), affine_map(array)
 	return np.dot(matrix, array)
+
+def translation_matrix(direction):
+    """
+	Return matrix to translate by direction vector.
+
+	Parameters
+	----------
+	direction : array_like, shape (3,)
+    """
+    matrix = np.eye(4)
+    matrix[:3, 3] = np.asarray(direction)[:3]
+    return matrix
 
 def change_of_basis(basis1, basis2 = [e1,e2,e3]):
 	"""
@@ -199,7 +211,37 @@ def translation_rotation_matrix(angle, axis, translation):
 	matrix : ndarray, shape (4,4)
 		Affine transform matrix.
 	"""
-	rmat = extend_matrix(rotation_matrix(angle = angle, axis = axis))
+	rmat = affine_map(rotation_matrix(angle = angle, axis = axis))
 	rmat[:3, 3] = np.asarray(translation)
 	return rmat
-	
+
+def change_basis_mesh(xx, yy, zz, basis1, basis2):
+    """
+    Changes the basis of meshgrid arrays.
+
+    Parameters
+    ----------
+    xx, yy, zz : ndarrays
+        Arrays of equal shape, such as produced by numpy.meshgrid.
+    basis1 : list of ndarrays, shape(3,)
+        Basis of the mesh
+    basis2 : list of ndarrays, shape(3,)
+        Basis in which to express the mesh
+    
+    Returns
+    -------
+    XX, YY, ZZ : ndarrays
+    """
+    # Build coordinate array row-wise
+    changed = np.empty(shape = (3, xx.size), dtype = np.float)
+    linearized = np.empty(shape = (3, xx.size), dtype = np.float)
+    linearized[0,:] = xx.ravel()
+    linearized[1,:] = yy.ravel()
+    linearized[2,:] = zz.ravel()
+    
+    # Change the basis at each row
+    COB = change_of_basis(basis1, basis2)
+    np.dot(COB, linearized, out = changed)
+    return (changed[0,:].reshape(xx.shape), 
+			changed[1,:].reshape(yy.shape), 
+			changed[2,:].reshape(zz.shape))
