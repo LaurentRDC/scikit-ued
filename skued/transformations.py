@@ -197,12 +197,12 @@ def translation_rotation_matrix(angle, axis, translation):
 	"""
 	Returns a 4x4 matrix that includes a rotation and a translation.
 
-    Parameters
-    ----------
-    angle : float
-        Rotation angle [rad]
-    axis : array-like of length 3
-        Axis about which to rotate
+	Parameters
+	----------
+	angle : float
+		Rotation angle [rad]
+	axis : array-like of length 3
+		Axis about which to rotate
 	translation : array_like, shape (3,)
 		Translation vector
 

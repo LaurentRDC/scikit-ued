@@ -131,10 +131,9 @@ class PDBParser(object):
 		with open(self.file) as pdb_file:
 			for line in pdb_file:
 				if line.startswith('ATOM') or line.startswith('HETATM'):
-					identification = str(line[12:16]).replace(' ','')
 					x, y, z = float(line[30:38]), float(line[38:46]), float(line[46:54])
 					element = str(line[76:78]).replace(' ','')
-					atoms.append(Atom(element = element, coords = [x,y,z], identification = identification))
+					atoms.append(Atom(element = element, coords = [x,y,z]))
 		return atoms
 	
 	def symmetry_operators(self):

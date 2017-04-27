@@ -157,7 +157,7 @@ class TestChangeBasisMesh(unittest.TestCase):
         extent = np.linspace(0, 10, 10, dtype = np.int)
         xx, yy, zz = np.meshgrid(extent, extent, extent)
 
-        XX, YY, ZZ = change_basis_mesh(xx = xx, yy = yy, zz = zz, basis1 = standard_basis, basis2 = standard_basis)
+        XX, YY, ZZ = tr.change_basis_mesh(xx = xx, yy = yy, zz = zz, basis1 = np.eye(3), basis2 = np.eye(3))
         self.assertTrue(np.allclose(xx, XX))
         self.assertTrue(np.allclose(yy, YY))
         self.assertTrue(np.allclose(zz, ZZ))
@@ -169,10 +169,10 @@ class TestChangeBasisMesh(unittest.TestCase):
         extent = np.linspace(0, 10, 10, dtype = np.int)
         xx, yy, zz = np.meshgrid(extent, extent, extent)
 
-        e1, e2, e3 = standard_basis
+        e1, e2, e3 = np.eye(3)
         swapped_basis = [e1, e3, e2]
 
-        XX, YY, ZZ = change_basis_mesh(xx = xx, yy = yy, zz = zz, basis1 = standard_basis, basis2 = swapped_basis)
+        XX, YY, ZZ = tr.change_basis_mesh(xx = xx, yy = yy, zz = zz, basis1 = np.eye(3), basis2 = swapped_basis)
         self.assertTrue(np.allclose(xx, XX))
         self.assertTrue(np.allclose(yy, ZZ))
         self.assertTrue(np.allclose(zz, YY))
@@ -181,11 +181,11 @@ class TestChangeBasisMesh(unittest.TestCase):
         extent = np.linspace(0, 10, 10, dtype = np.int)
         xx, yy, zz = np.meshgrid(extent, extent, extent)
 
-        e1, e2, e3 = standard_basis
+        e1, e2, e3 = np.eye(3)
         
         scaled_basis = [0.5*e1, 0.5*e2, 0.5*e3]
 
-        XX, YY, ZZ = change_basis_mesh(xx = xx, yy = yy, zz = zz, basis1 = standard_basis, basis2 = scaled_basis)
+        XX, YY, ZZ = tr.change_basis_mesh(xx = xx, yy = yy, zz = zz, basis1 = np.eye(3), basis2 = scaled_basis)
         self.assertTrue(np.allclose(2*xx, XX))
         self.assertTrue(np.allclose(2*yy, YY))
         self.assertTrue(np.allclose(2*zz, ZZ))

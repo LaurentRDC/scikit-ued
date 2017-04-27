@@ -75,9 +75,6 @@ class Atom(Transformable):
 	transform
 		Apply 3x3 or 4x4 transformation matrices for reflections, shearing, 
 		translations, rotations, projections, etc.
-        
-	form_factor
-		Atomic form factor calculation.
 
 	debye_waller_factor
 		Diffracted intensity suppression due to mean atomic displacement from
@@ -99,7 +96,8 @@ class Atom(Transformable):
 	__slots__ = ('element', 'coords', 'identification', 'displacement', 
 					'_a', '_b', '_c', '_d')
 
-	def __init__(self, element, coords, identification = None, displacement = None, **kwargs): 
+	# TODO: PDB identification?
+	def __init__(self, element, coords, displacement = None, **kwargs): 
 		"""
 		Parameters
 		----------
@@ -107,8 +105,6 @@ class Atom(Transformable):
 			Chemical element
 		coords : array-like, shape (3,)
 			Coordinates of the atom in Euclidiant basis. See real_coords.
-		identification : str, optional
-			Protein DataBank identification.
 		displacement : array-like or None, optional
 			Atomic maximum displacement [Angs]. If None (default), set to (0,0,0).
 		"""
@@ -121,7 +117,6 @@ class Atom(Transformable):
 		
 		self.element = element
 		self.coords = np.array(coords, dtype = np.float)
-		self.identification = identification    #For distinguishing between atoms in a residue
 		self.displacement = np.array(displacement, dtype = np.float)
 		
 		# Atomic potential parameters loaded on instantiation
