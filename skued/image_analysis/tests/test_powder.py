@@ -23,7 +23,7 @@ def circle_image(shape, center, radii, intensities):
 
 class TestPowderCenter(unittest.TestCase):
 	
-	@unittest.skip('')
+
 	def test_trivial(self):
 		""" Test center-finding without any noise """
 		center = (64, 64)
@@ -31,7 +31,6 @@ class TestPowderCenter(unittest.TestCase):
 						  radii = [16, 32], intensities = [2,1])
 		self.assertSequenceEqual(center, powder_center(im))
 
-	@unittest.skip('')
 	def test_with_noise(self):
 		""" Test center-finding with noise """
 		center = (58, 67)
@@ -43,10 +42,10 @@ class TestPowderCenter(unittest.TestCase):
 	def test_with_low_signal(self):
 		center = (950, 1100)
 		im = circle_image(shape = (2048, 2048), center = center, 
-						  radii = [16, 32, 125, 324, 512, 600],
-						  intensities = [50, 40, 30, 40, 20, 10])
-		im += (im.max() / 100) * np.random.random(size = im.shape)
-		im[:] = gaussian(im, sigma = 50)
+						  radii = [32, 125, 324, 512, 600],
+						  intensities = [40, 30, 40, 20, 10])
+		im += (im.max() / 10) * np.random.random(size = im.shape)
+		im[:] = gaussian(im, sigma = 5)
 		self.assertSequenceEqual(center, powder_center(im))
 
 

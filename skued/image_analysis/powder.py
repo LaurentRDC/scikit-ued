@@ -3,13 +3,10 @@ Image manipulation involving symmetry
 """
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.signal import correlate2d, fftconvolve
+from scipy.signal import fftconvolve, find_peaks_cwt
+from skimage.filters import gaussian, threshold_local
 
-try:
-	from numpy.fft_intel import rfft2, irfft2
-except ImportError:
-	from scipy.fftpack import rfft2, irfft2
-
+_PC_CACHE = dict()
 def powder_center(image):
 	"""
 	Finds the center of a powder diffraction pattern by comparing the
@@ -27,9 +24,26 @@ def powder_center(image):
 		relevant for array manipulations (center = [row, column] instead of 
 		center = [x,y]).
 	"""
-	# 2D correlation between image and inverted image
-	# recall that corr(sig1, sig2) = conv(sig1, sig2[::-1])
-	corr = fftconvolve(image, image, mode = 'full')
+	if image.shape not in _PC_CACHE:
+		mask = np.ones_like(image)
+		_PC_CACHE[image.shape] = fftconvolve(mask, mask)
+
+	corr = fftconvolve(image, image)
+	corr /= _PC_CACHE[image.shape]
+
+	# ignore edges because of artifacts from fftconvolve
+	edge_size = int(min(image.shape) / 10)
+	corr[:edge_size,:] = 0
+	corr[-edge_size:, :] = 0
+	corr[:, -edge_size:] = 0
+	corr[:, :edge_size] = 0
+
+	# Noise in the image will obfuscate the symmetry peak
+	# Therefore, we have to identify where the (sharp) peak is
+	thresh = threshold_local(corr, block_size = 101)
+	corr[corr <= thresh] = 0
+	#plt.imshow(corr); plt.show()
+
 	full_center = np.array(np.unravel_index(np.argmax(corr), dims = corr.shape))
 	return tuple(full_center/2)
 
