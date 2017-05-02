@@ -23,4 +23,4 @@ References
 	Applied Spectroscopy pp. 1370 - 1376, September 2009.
 """
 from .algorithms import baseline_dt, baseline_dwt
-from .wavelets import ALL_FIRST_STAGE, ALL_COMPLEX_WAV
+from .wavelets import ALL_FIRST_STAGE, ALL_COMPLEX_WAV, dt_max_level
