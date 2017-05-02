@@ -44,14 +44,6 @@ class Crystal(AtomicStructure, Lattice):
 	"""
 	This object is the basis for inorganic crystals such as VO2, 
 	and protein crystals such as bR. 
-
-	Special methods
-	---------------
-	__iter__
-		Generator of atoms in the unit cell.
-
-	__len__
-		Number of atoms in the unit cell.
     
 	Attributes
 	----------
@@ -71,17 +63,15 @@ class Crystal(AtomicStructure, Lattice):
 	spglib_cell : tuple
 		Crystal structure in spglib's `cell` format.
     
-	Constructors
-	------------    
+	Methods
+	-------    
 	from_cif
 		Return a Crystal object from a CIF file. CIF versions 1.0, 1.1 and 2.0 are supported.
 
 	from_pdb
 		Returns a Crystal object from a Protein DataBank ID number. The .pdb file will
 		be downloaded, cached, and parsed appropriately.
-    
-	Methods
-	-------    
+      
 	periodicity
 		Bounding cube of the unit cell in real-space. 
         
@@ -113,17 +103,6 @@ class Crystal(AtomicStructure, Lattice):
 	"""
 
 	def __init__(self, atoms, symmetry_operators = [np.eye(3)], **kwargs):
-		"""
-		Parameters
-		----------
-		atoms : iterable of Atoms
-			Atoms in the asymmetric cell.
-        lattice_vectors : list of ndarrays, shape (3,), optional
-            Lattice vectors. Default is a cartesian lattice.
-		symmetry_operators : list of ndarrays, shape (3,3), optional
-			Symmetry operators linking the underlying AtomicStructure to the unit cell construction. Default is
-			the identity transformation.
-		"""
 		kwargs.update({'items': atoms}) # atoms argument is an alias for AtomicStructure.items
 		self.symmetry_operators = tuple(map(affine_map, symmetry_operators))
 		super().__init__(**kwargs)
@@ -160,7 +139,7 @@ class Crystal(AtomicStructure, Lattice):
 		Parameters
 		----------
 		ID : str
-			Protein DataBank identification. The correct *.pdb file will be downloaded,
+			Protein DataBank identification. The correct .pdb file will be downloaded,
 			cached and parsed.
 		"""
 		parser = PDBParser(ID = ID)
@@ -351,7 +330,7 @@ class Crystal(AtomicStructure, Lattice):
 		        
 		Notes
 		-----
-		By convention, scattering vectors G are defined such that |G| = 4 pi s
+		By convention, scattering vectors G are defined such that norm(G) = 4 pi s
 		"""
 		# Distribute input
 		# This works whether G is a list of 3 numbers, a ndarray shape(3,) or 
@@ -383,12 +362,12 @@ class Crystal(AtomicStructure, Lattice):
 	
 	def bounded_reflections(self, nG):
 		"""
-		Returns iterable of reflections (hkl) with |G| < nG
+		Returns iterable of reflections (hkl) with norm(G) < nG
         
 		Parameters
 		----------
 		nG : float
-			Maximal scattering vector norm. By our convention, |G| = 4 pi s.
+			Maximal scattering vector norm. By our convention, norm(G) = 4 pi s.
         
 		Returns
 		-------
@@ -421,7 +400,7 @@ class Crystal(AtomicStructure, Lattice):
 		Parameters
 		----------           
 		scatt_vector_norm : array-like of numericals
-			Scattering vector length |G|.
+			Scattering vector length (norm(G)).
         
 		Returns
 		-------
@@ -430,7 +409,7 @@ class Crystal(AtomicStructure, Lattice):
         
 		Notes
 		-----
-		By convention, scattering vectors G are defined such that |G| = 4 pi s
+		By convention, scattering vectors G are defined such that norm(G) = 4 pi s
 		"""
 		return sum(atom.form_factor(nG)**2 for atom in self)
 	

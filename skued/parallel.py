@@ -21,11 +21,9 @@ def pmap(func, iterable, args = tuple(), kwargs = {}, processes = None):
 	iterable : iterable
 		Iterable of items to be mapped. Generators are consumed.
 	args : tuple
-		Positional arguments of `function`. `function` will be called
-		as function(i, *args, **kwargs) for each i in `iterable`.
+		Positional arguments of `function`.
 	kwargs : dictionary, optional
-		Keyword arguments of `function`. `function` will be called
-		as function(i, *args, **kwargs) for each i in `iterable`.
+		Keyword arguments of `function`.
 	processes : int or None, optional
 		Number of processes to use. If `None`, maximal number of processes
 		is used. 

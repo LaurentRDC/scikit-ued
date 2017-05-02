@@ -22,11 +22,11 @@ Affine Transforms
 
 Structure
 =========
-.. autoclass:: skued.structure.Atom
+.. autoclass:: skued.structure.atom.Atom
 
-.. autoclass:: skued.structure.Lattice
+.. autoclass:: skued.structure.lattice.Lattice
 
-.. autoclass:: skued.structure.Crystal
+.. autoclass:: skued.structure.crystal.Crystal
 
 Baseline-determination
 ======================

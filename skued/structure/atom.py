@@ -85,12 +85,6 @@ class Atom(Transformable):
 
 	projected_potential
 		Projection of the electrostatic potential onto the x-y plane.
-
-	Special methods
-	---------------
-	Atom[index] is the same as Atom.coords[index]
-
-	Atom1 - Atom2 gives the distance between atoms in Angs
 	"""
 
 	__slots__ = ('element', 'coords', 'identification', 'displacement', 
@@ -172,7 +166,7 @@ class Atom(Transformable):
 		Parameters
 		----------           
 		scatt_vector_norm : array-like of numericals
-			Scattering vector length |G|.
+			Scattering vector length norm(G).
         
 		Returns
 		-------
@@ -181,7 +175,7 @@ class Atom(Transformable):
         
 		Notes
 		-----
-		By convention, scattering vectors G are defined such that |G| = 4 pi s
+		By convention, scattering vectors G are defined such that norm(G) = 4 pi s
 		"""
 		# TODO: vectorize better
 		# TODO: compute as fourier transform of potential?
