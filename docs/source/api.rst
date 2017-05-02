@@ -4,6 +4,10 @@
 Reference/API
 *************
 
+Parallel Utilities
+==================
+.. automodule:: skued.parallel
+
 Plot Utilities
 ==============
 .. automodule:: skued.plot_utils
@@ -18,7 +22,11 @@ Affine Transforms
 
 Structure
 =========
+.. autoclass:: skued.structure.Atom
+
 .. autoclass:: skued.structure.Lattice
+
+.. autoclass:: skued.structure.Crystal
 
 Baseline-determination
 ======================
@@ -28,4 +36,6 @@ Baseline-determination
 
 Image Analysis
 ==============
-.. automodule:: skued.image_analysis.symmetry
+.. automodule:: skued.image_analysis.powder
+
+.. automodule:: skued.image_analysis.alignment

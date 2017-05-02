@@ -24,10 +24,15 @@ def powder_center(image):
 		relevant for array manipulations (center = [row, column] instead of 
 		center = [x,y]).
 	"""
+	# The correlation 'background' only depends on the image
+	# shape; therefore, caching provides an important speedup
 	if image.shape not in _PC_CACHE:
 		mask = np.ones_like(image)
 		_PC_CACHE[image.shape] = fftconvolve(mask, mask)
 
+	# Correlation of image and its mirror is a convolution
+	# TODO: explicitly compute convolution, since only one FFT
+	# has to be calculated.
 	corr = fftconvolve(image, image)
 	corr /= _PC_CACHE[image.shape]
 
@@ -42,7 +47,6 @@ def powder_center(image):
 	# Therefore, we have to identify where the (sharp) peak is
 	thresh = threshold_local(corr, block_size = 101)
 	corr[corr <= thresh] = 0
-	#plt.imshow(corr); plt.show()
 
 	full_center = np.array(np.unravel_index(np.argmax(corr), dims = corr.shape))
 	return tuple(full_center/2)
