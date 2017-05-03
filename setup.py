@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 import re
+import glob
+from itertools import chain
 from setuptools import setup, find_packages
 from Cython.Build import cythonize
 
@@ -27,6 +29,9 @@ packages = [base_package + '.' + x for x in find_packages(os.path.join(base_path
 if base_package not in packages:
     packages.append(base_package)
 
+wavelets = chain.from_iterable([glob.glob('skued\\baseline\\data\\*.npy'), 
+                                glob.glob('skued\\baseline\\data\\*.npz')])
+
 
 if __name__ == '__main__':
     setup(
@@ -43,6 +48,7 @@ if __name__ == '__main__':
         install_requires=requirements,
         keywords=['skued'],
         packages=packages,
+		data_files = [('skued\\baseline\\data', wavelets)],
         zip_safe=False,
         classifiers=['Intended Audience :: Developers',
                      'License :: OSI Approved :: MIT License',
