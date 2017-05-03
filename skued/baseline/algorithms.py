@@ -16,13 +16,13 @@ def _iterative_baseline_1d(array, max_iter, mask, background_regions, axis, appr
 	func_kwargs.update({'axis': axis})
 	approx_rec = partial(approx_rec_func, **func_kwargs)
 
-	# Since most wavelet transformss only works on even-length signals, we might have to extend.
+	# Since most wavelet transforms only works on even-length signals, we might have to extend.
 	# See numpy.pad() docs for a formatting of the padding tuple constructed below
 	original_shape = array.shape
 	if original_shape[axis] % 2 == 1:
-		padding = [(0,0) for dim in original_shape]     # e.g. 2D : padding = [ (0,0), (0,0) ]
+		padding = [(0,0) for dim in range(array.ndim)]     # e.g. 2D : padding = [ (0,0), (0,0) ]
 		padding[axis] = (0, 1)
-		array = np.pad(array, tuple(padding), mode = 'constant')
+		array = np.pad(array, tuple(padding), mode = 'edge')
 
 	if mask is None:
 		mask = np.zeros_like(array, dtype = np.bool)
@@ -47,7 +47,10 @@ def _iterative_baseline_1d(array, max_iter, mask, background_regions, axis, appr
 	background[mask] = 0 
 
 	# Readjust size for odd input signals
-	return np.resize(background, new_shape = original_shape)
+	# If axis was padded, trim
+	if background.shape != original_shape:
+		return np.swapaxes(np.swapaxes(background, 0, axis)[:-1], 0, axis)
+	return background
 
 def _dt_approx_rec(array, level, first_stage = DEFAULT_FIRST_STAGE, wavelet = DEFAULT_CMP_WAV, mode = DEFAULT_MODE, axis = -1):
     """
@@ -78,65 +81,70 @@ def _dt_approx_rec(array, level, first_stage = DEFAULT_FIRST_STAGE, wavelet = DE
     
     det_coeffs = [np.zeros_like(det, dtype = np.complex) for det in det_coeffs]
     reconstructed = idualtree(coeffs = [app_coeffs] + det_coeffs, first_stage = first_stage, wavelet = wavelet, mode = mode, axis = axis)
-    return np.resize(reconstructed, new_shape = array.shape)
+    return reconstructed
 
 def _dwt_approx_rec(array, level, wavelet, axis):
-    """
-    Approximate reconstruction of a signal/image. Uses the multi-level discrete wavelet 
-    transform to decompose a signal or an image, and reconstruct it using approximate 
-    coefficients only.
+	"""
+	Approximate reconstruction of a signal/image. Uses the multi-level discrete wavelet 
+	transform to decompose a signal or an image, and reconstruct it using approximate 
+	coefficients only.
     
-    Parameters
-    ----------
-    array : array-like
-        Array to be decomposed. Currently, only 1D and 2D arrays are supported.
-    level : int or 'max' or None (deprecated)
-        Decomposition level. A higher level will result in a coarser approximation of
-        the input array. If the level is higher than the maximum possible decomposition level,
-        the maximum level is used.
-        If None, the maximum possible decomposition level is used.
-    wavelet : str or Wavelet object
-        Can be any argument accepted by PyWavelet.Wavelet, e.g. 'db10'
+	Parameters
+	----------
+	array : array-like
+		Array to be decomposed. Currently, only 1D and 2D arrays are supported.
+		Only even-lengths signals long the axis.
+	level : int or 'max' or None (deprecated)
+		Decomposition level. A higher level will result in a coarser approximation of
+		the input array. If the level is higher than the maximum possible decomposition level,
+		the maximum level is used.
+		If None, the maximum possible decomposition level is used.
+	wavelet : str or Wavelet object
+		Can be any argument accepted by PyWavelet.Wavelet, e.g. 'db10'
             
-    Returns
-    -------
-    reconstructed : ndarray
-        Approximated reconstruction of the input array.
+	Returns
+	-------
+	reconstructed : ndarray
+		Approximated reconstruction of the input array.
     
-    Raises
-    ------    
-    ValueError
-        If input array has dimension > 2 
-    """
-    array = np.asarray(array, dtype = np.float)
+	Raises
+	------    
+	ValueError
+		If input array has dimension > 2 
+	"""
+	array = np.asarray(array, dtype = np.float)
+	if array.shape[axis] % 2 != 0:
+		raise ValueError('Only even-length signals are supported')
 
-    # Build Wavelet object
-    if isinstance(wavelet, str):
-        wavelet = pywt.Wavelet(wavelet)
-        
-    # Check maximum decomposition level
-    # For 2D array, check the condition with shortest dimension min(array.shape). This is how
-    # it is done in PyWavelet.wavedec2.
-    max_level = pywt.dwt_max_level(data_len = array.shape[axis], filter_len = wavelet.dec_len)
-    if level is None or level is 'max':
-        level = max_level
-    elif max_level < level:
-        warn('Decomposition level {} higher than maximum {}. Maximum is used.'.format(level, max_level))
-        level = max_level
-        
-    # By now, we are sure that the decomposition level will be supported.
-    # Decompose the signal using the multilevel discrete wavelet transform
-    coeffs = pywt.wavedec(data = array, wavelet = wavelet, level = level, mode = DEFAULT_MODE, axis = axis)
-    app_coeffs, det_coeffs = coeffs[0], coeffs[1:]
-    
-    # Replace detail coefficients by 0; keep the correct length so that the
-    # reconstructed signal has the same size as the (possibly upsampled) signal
-    # The structure of coefficients depends on the dimensionality
-    zeroed = [None,]*len(det_coeffs)
-        
-    # Reconstruct signal
-    reconstructed = pywt.waverec([app_coeffs] + zeroed, wavelet = wavelet, mode = DEFAULT_MODE, axis = axis)
-    return  np.resize(reconstructed, new_shape = array.shape)
+	# Build Wavelet object
+	if isinstance(wavelet, str):
+		wavelet = pywt.Wavelet(wavelet)
+	
+	# Check maximum decomposition level
+	# For 2D array, check the condition with shortest dimension min(array.shape). This is how
+	# it is done in PyWavelet.wavedec2.
+	max_level = pywt.dwt_max_level(data_len = array.shape[axis], filter_len = wavelet.dec_len)
+	if level is None or level is 'max':
+		level = max_level
+	elif max_level < level:
+		warn('Decomposition level {} higher than maximum {}. Maximum is used.'.format(level, max_level))
+		level = max_level
+	
+	# By now, we are sure that the decomposition level will be supported.
+	# Decompose the signal using the multilevel discrete wavelet transform
+	coeffs = pywt.wavedec(data = array, wavelet = wavelet, level = level, mode = DEFAULT_MODE, axis = axis)
+	app_coeffs, det_coeffs = coeffs[0], coeffs[1:]
+	
+	# Replace detail coefficients by 0; keep the correct length so that the
+	# reconstructed signal has the same size as the (possibly upsampled) signal
+	# The structure of coefficients depends on the dimensionality	
+	# Reconstruct signal
+	reconstructed = pywt.waverec([app_coeffs] + [None,]*len(det_coeffs), wavelet = wavelet, mode = DEFAULT_MODE, axis = axis)
+
+	# Sometimes pywt.waverec returns a signal that is longer than the original signal
+	if reconstructed.shape[axis] > array.shape[axis]:
+		reconstructed = np.swapaxes(np.swapaxes(reconstructed, 0, axis)[:array.shape[axis]], 0, axis)
+	return  reconstructed
 
 def baseline_dt(array, max_iter, level = 'max', first_stage = DEFAULT_FIRST_STAGE, wavelet = DEFAULT_CMP_WAV, 
 				background_regions = [], mask = None, axis = -1):
