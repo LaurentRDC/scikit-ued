@@ -2,12 +2,14 @@ import numpy as np
 from random import randint
 import unittest
 from skimage import data
+from skimage.filters import gaussian
+from skimage.transform import rotate
 
 import matplotlib.pyplot as plt
 
-from ..alignment import shift_image, align
+from .. import shift_image, align
     
-class TestDiffAlign(unittest.TestCase):
+class TestAlign(unittest.TestCase):
 
 	def test_trivial(self):
 		""" Test alignment of identical images """

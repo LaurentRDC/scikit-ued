@@ -28,6 +28,10 @@ Structure
 
 .. autoclass:: skued.structure.crystal.Crystal
 
+Simulation
+==========
+.. automodule:: skued.simulation.powdersim
+
 Baseline-determination
 ======================
 .. autofunction:: skued.baseline.baseline_dt

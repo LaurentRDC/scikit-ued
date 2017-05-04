@@ -5,6 +5,11 @@ Module concerned with alignment of diffraction images
 import numpy as np
 from skimage.feature import register_translation
 
+try:
+	from numpy.fft_intel import fft2, ifft2
+except ImportError:
+	from scipy.fftpack import fft2, ifft2
+
 non = lambda s: s if s < 0 else None
 mom = lambda s: max(0, s)
 def shift_image(arr, shift, fill_value = 0):

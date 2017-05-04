@@ -2,9 +2,9 @@
 __author__ = 'Laurent P. René de Cotret'
 __email__ = 'laurent.renedecotret@mail.mcgill.ca'
 __license__ = 'MIT'
-__version__ = '0.2'
+__version__ = '0.3'
 
-from .parallel import pmap
+from .parallel import pmap, preduce
 from .plot_utils import spectrum_colors
 from .transformations import (affine_map, transform, change_of_basis, is_basis, translation_matrix,
 							  is_rotation_matrix, rotation_matrix, translation_rotation_matrix,
