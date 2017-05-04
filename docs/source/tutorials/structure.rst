@@ -186,4 +186,4 @@ will process the meshes :code:`xx`, :code:`yy`, and :code:`zz` through the :code
 to implement the **minimum-image distance convention** for periodic boundary conditions All this to say that the potential 
 is computed for a seemingly-infinite crystal.
 
-:ref:`Return to Top <image_analysis_tutorial>`
+:ref:`Return to Top <structure_tutorial>`

@@ -21,5 +21,6 @@ We currently have the following tutorials:
    :maxdepth: 1
 
    structure
+   simulation
    baseline
    image_analysis
