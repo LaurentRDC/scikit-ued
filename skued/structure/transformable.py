@@ -1,6 +1,9 @@
-class Transformable(object):
+
+from abc import ABCMeta, abstractmethod
+
+class Transformable(object, metaclass = ABCMeta):
     """
-    This class defines objects that can be transformed.
+    This abstract base class defines objects that can be transformed.
 
     Methods
     -------
@@ -16,11 +19,14 @@ class Transformable(object):
     # This is only possible if Transformable has __slots__
     __slots__ = tuple()
     
+    @abstractmethod
     def transform(self, *args, **kwargs):
         pass
     
+    # rotate() and translate() are only shortcuts to transform()
+    # Therefore they are not required
     def rotate(self, *args, **kwargs):
         pass
-
+    
     def translate(self, *args, **kwargs):
         pass

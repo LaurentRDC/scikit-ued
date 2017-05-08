@@ -208,7 +208,7 @@ class Atom(Transformable):
 
 		Parameters
 		----------
-		r : ndarray
+		r : array_like
 			Radial distance from the atom [Angs].
 
 		Returns
@@ -220,6 +220,8 @@ class Atom(Transformable):
 		----------
 		Kirkland 2010 Eq. C.19
 		"""
+		r = np.array(r, copy = False)
+		
 		s = r.shape
 		r = r.reshape((-1,1))
 		sum1 = np.sum((self._a/r) * np.exp(-2*np.pi*r*np.sqrt(self._b)), axis = 1)
