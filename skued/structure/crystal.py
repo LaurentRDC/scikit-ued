@@ -411,7 +411,7 @@ class Crystal(AtomicStructure, Lattice):
 		-----
 		By convention, scattering vectors G are defined such that norm(G) = 4 pi s
 		"""
-		return sum(atom.form_factor(nG)**2 for atom in self)
+		return sum(atom.electron_form_factor(nG)**2 for atom in self)
 	
 	def transform(self, *matrices):
 		"""
@@ -450,7 +450,7 @@ class Crystal(AtomicStructure, Lattice):
 			norm.
 		"""
 		atomff_dict = dict()
-		for atom in self.atoms: # No need to check beyond the irreducible group of atoms
+		for atom in self.atoms:
 			if atom.element not in atomff_dict:
-				atomff_dict[atom.element] = atom.form_factor(scatt_vector_norm)
+				atomff_dict[atom.element] = atom.electron_form_factor(scatt_vector_norm)
 		return atomff_dict

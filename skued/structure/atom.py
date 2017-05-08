@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from .potential_params import params
-from .form_factors import form_factors
+from .scattering_params import scattering_params
 from . import Transformable
 from .. import  change_of_basis, transform, translation_matrix, is_rotation_matrix
 from scipy.special import k0 as bessel
@@ -116,8 +115,8 @@ class Atom(Transformable):
 		
 		# Atomic potential parameters loaded on instantiation
 		# These are used to compute atomic potential
-		# TODO: add ref Kirkland 2008
-		_, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = params[self.atomic_number]
+		# TODO: add ref Kirkland 2010
+		_, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[self.atomic_number]
 		self._a = np.array((a1, a2, a3)).reshape((1,3))
 		self._b = np.array((b1, b2, b3)).reshape((1,3))
 		self._c = np.array((c1, c2, c3)).reshape((1,3))
@@ -160,30 +159,28 @@ class Atom(Transformable):
 		"""
 		return frac_coords(self.coords, lattice_vectors)
 	
-	def form_factor(self, scatt_vector_norm):
-		""" 
-		Vectorized atomic form factor.
-        
+	def electron_form_factor(self, nG):
+		"""
+		Vectorized electron form factor.
+
 		Parameters
-		----------           
-		scatt_vector_norm : array-like of numericals
-			Scattering vector length norm(G).
-        
+		----------
+		nG : array_like
+			Scattering vector norm
+		
 		Returns
 		-------
-		atomff : array-like of numerical
-			array of the same shape as input
-        
-		Notes
-		-----
-		By convention, scattering vectors G are defined such that norm(G) = 4 pi s
+		atomff : array_like
 		"""
-		# TODO: vectorize better
-		# TODO: compute as fourier transform of potential?
-		s = np.reshape(scatt_vector_norm/(4*np.pi), newshape = (1,scatt_vector_norm.size))
-		ff_params = np.expand_dims(form_factors[self.atomic_number], axis = 1)
-		ff = np.sum(ff_params[:5]*np.exp(-ff_params[5:]*(s**2)), axis = 0)
-		return np.reshape(ff, scatt_vector_norm.shape)
+		# From kirkland 2010 Eq. C.15
+		s = nG.shape
+		nG = nG.reshape((-1,1))
+		nG2 = np.square(nG)
+
+		sum1 = np.sum(self._a/(nG2 + self._b), axis = 1)
+		sum2 = np.sum(self._c * np.exp(-self._d * nG2), axis = 1)
+		
+		return (sum1 + sum2).reshape(s)
 	
 	def debye_waller_factor(self, G, out = None):
 		"""
