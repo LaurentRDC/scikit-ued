@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Plotting utilities, including color manipulation. This is especially useful when
 plotting time-series.

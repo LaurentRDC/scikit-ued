@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 CIF 1.0, 1.1 and 2.0 parser based on PyCifRW.
 

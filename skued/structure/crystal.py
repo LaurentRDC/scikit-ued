@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from copy import copy
 from collections.abc import Iterable
 from functools import lru_cache

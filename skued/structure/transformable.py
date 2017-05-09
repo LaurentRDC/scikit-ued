@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 from abc import ABCMeta, abstractmethod
 
 class Transformable(object, metaclass = ABCMeta):

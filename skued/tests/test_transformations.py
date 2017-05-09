@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 from itertools import product
 import numpy as np
 from .. import transformations as tr

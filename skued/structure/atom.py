@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import numpy as np
 from .scattering_params import scattering_params
 from . import Transformable

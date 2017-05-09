@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from math import sin, cos, tan, sqrt, radians
 import numpy as np
 from numpy.linalg import norm

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Physical quantities relevant to other modules\packages
 """

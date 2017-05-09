@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 import numpy as np
 import unittest
 from ..quantities import lorentz, electron_wavelength, interaction_parameter

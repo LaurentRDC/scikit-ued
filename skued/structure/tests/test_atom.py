@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from copy import deepcopy, copy
 import numpy as np
 from .. import Atom

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Voigt and pseudo-voigt curves, as well as related Gaussian and Lorentzian functions
 """
