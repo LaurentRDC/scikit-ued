@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 import matplotlib.pyplot as plt
 import numpy as np
 from .. import angular_average, powder_center

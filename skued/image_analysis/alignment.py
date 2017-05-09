@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Module concerned with alignment of diffraction images
 """

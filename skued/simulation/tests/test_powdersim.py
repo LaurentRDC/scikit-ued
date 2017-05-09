@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .. import powdersim
 from ...structure import graphite
 from copy import deepcopy

@@ -6,7 +6,7 @@ Functional programming-style `map` and `reduce` procedures are easily
 parallelizable. The speed gain of parallelization can offset the
 cost of spawning multiple processes for large iterables.
 """
-from abc import Sized
+from collections.abc import Sized
 from functools import partial, reduce
 import multiprocessing as mp
 
