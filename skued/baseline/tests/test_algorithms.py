@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ..algorithms import (baseline_dt, baseline_dwt, _dwt_approx_rec, _dt_approx_rec)
+from ..algorithms import (baseline_dt, baseline_dwt, _dwt_approx_rec, _dwt_approx_rec2, _dt_approx_rec)
 
 import numpy as np
 import unittest
@@ -22,17 +22,32 @@ class TestBaselineDWT(unittest.TestCase):
 			rec_arr = _dwt_approx_rec(arr, level = 2, wavelet = 'db6', axis = -1)
 			self.assertSequenceEqual(rec_arr.shape, arr.shape)
 
-		with self.subTest('2D along axis'):
+		with self.subTest('1D along axis'):
 			arr2 = np.random.random(size = (21, 52))
 			rec_arr2 = _dwt_approx_rec(arr2, level = 2, wavelet = 'sym4', axis = 1)
 			self.assertSequenceEqual(rec_arr2.shape, arr2.shape)
+		
+		with self.subTest('2D shape'):
+			arr2 = np.random.random(size = (22,52))
+			rec_arr2 = _dwt_approx_rec2(arr2, level = 2, wavelet = 'sym6', axes = (-2, -1))
+			self.assertSequenceEqual(rec_arr2.shape, arr2.shape)
 
-	def test_trivial_case(self):
-		""" The baseline for an array of zeros should be zeros """
+		with self.subTest('2D along axes'):
+			arr2 = np.random.random(size = (22,52, 5))
+			rec_arr2 = _dwt_approx_rec2(arr2, level = 2, wavelet = 'sym6', axes = (0, 1))
+			self.assertSequenceEqual(rec_arr2.shape, arr2.shape)
+
+	def test_trivial_case_1d(self):
+		""" The baseline for a 1d array of zeros should be zeros """
 		arr = np.zeros_like(self.arr)
 		self.assertTrue(np.allclose(arr, baseline_dwt(arr, max_iter = 10, level = 'max')))
 
-	def test_2d_along_axis(self):
+	def test_trivial_case_2d(self):
+		""" The baseline for a 2d array of zeros should be zeros """
+		arr = np.zeros( (21, 31, 5))
+		self.assertTrue(np.allclose(arr, baseline_dwt(arr, max_iter = 10, level = None, axis = (0, 1))))
+
+	def test_1d_along_axis(self):
 		""" Test that iterating over array rows and baseline_dwt along axis are equivalent """
 		block = np.random.random(size = (21, 51))
 
@@ -45,6 +60,8 @@ class TestBaselineDWT(unittest.TestCase):
 		baseline_axis = baseline_dwt(block, max_iter = 50, axis = 1)
 
 		self.assertTrue(np.allclose(baseline_axis, baseline_iterated))
+	
+
 
 class TestbaselineDT(unittest.TestCase):
 	def setUp(self):
@@ -70,7 +87,7 @@ class TestbaselineDT(unittest.TestCase):
 	def test_trivial_case(self):
 		""" The baseline for an array of zeros should be zeros """
 		arr = np.zeros_like(self.arr)
-		self.assertTrue(np.allclose(arr, baseline_dt(arr, max_iter = 10, level = 'max')))
+		self.assertTrue(np.allclose(arr, baseline_dt(arr, max_iter = 10, level = None)))
 
 	def test_2d_along_axis(self):
 		""" Test that iterating over array rows and baseline_dt along axis are equivalent """
