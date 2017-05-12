@@ -1,5 +1,5 @@
 Steps to Release scikit-ued
-=========================
+===========================
 
 These are the steps to take to create a release of the module ``skued``:
 

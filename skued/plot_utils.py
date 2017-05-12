@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
 """
 Plotting utilities, including color manipulation. This is especially useful when
 plotting time-series.
 """
 from collections import Iterable
 from colorsys import hsv_to_rgb
+from functools import partial
 
 def spectrum_colors(num_colors):
 	"""

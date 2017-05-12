@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Parallelization utilities.
 
@@ -5,8 +6,6 @@ Functional programming-style `map` and `reduce` procedures are easily
 parallelizable. The speed gain of parallelization can offset the
 cost of spawning multiple processes for large iterables.
 """
-# TODO: document this
-
 from collections.abc import Sized
 from functools import partial, reduce
 import multiprocessing as mp
@@ -52,7 +51,7 @@ def preduce(func, iterable, args = tuple(), kwargs = dict(), processes = None):
 	Notes
 	-----
 	If `processes` is 1, `preduce` is equivalent to functools.reduce with the
-	added benefit of using `args` and `kwargs`.
+	added benefit of using `args` and `kwargs`, but `initializer` is not supported.
 	"""
 	func = partial(func, *args, **kwargs)
 

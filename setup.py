@@ -8,7 +8,6 @@ from Cython.Build import cythonize
 
 base_package = 'skued'
 
-# Get the version (borrowed from SQLAlchemy)
 base_path = os.path.dirname(__file__)
 with open(os.path.join(base_path, 'skued', '__init__.py')) as f:
     module_content = f.read()
@@ -35,25 +34,25 @@ wavelets = chain.from_iterable([glob.glob('skued\\baseline\\data\\*.npy'),
 
 if __name__ == '__main__':
     setup(
-        name='scikit-ued',
-        description='Collection of algorithms and functions for ultrafast electron diffraction',
-        long_description='\n\n'.join([readme, changes]),
-        license=LICENSE,
-        url='http://skued.readthedocs.io',
-        version=VERSION,
-        author='Laurent P. René de Cotret',
-        author_email='laurent.renedecotret@mail.mcgill.ca',
-        maintainer='Laurent P. René de Cotret',
-        maintainer_email='laurent.renedecotret@mail.mcgill.ca',
-        install_requires=requirements,
-        keywords=['skued'],
-        packages=packages,
+        name = 'scikit-ued',
+        description = 'Collection of algorithms and functions for ultrafast electron diffraction',
+        long_description = '\n\n'.join([readme, changes]),
+        license = LICENSE,
+        url = 'http://scikit-ued.readthedocs.io',
+        version = VERSION,
+        author = 'Laurent P. René de Cotret',
+        author_email = 'laurent.renedecotret@mail.mcgill.ca',
+        maintainer = 'Laurent P. René de Cotret',
+        maintainer_email = 'laurent.renedecotret@mail.mcgill.ca',
+        install_requires = requirements,
+        keywords = ['skued'],
+        packages = packages,
 		data_files = [('skued\\baseline\\data', wavelets)],
-        zip_safe=False,
-        classifiers=['Intended Audience :: Developers',
-                     'License :: OSI Approved :: MIT License',
-                     'Natural Language :: English',
-                     'Operating System :: OS Independent',
-                     'Programming Language :: Python :: 3.5',
-                     'Programming Language :: Python :: 3.6']
+        zip_safe = False,
+        classifiers = ['Intended Audience :: Developers',
+                       'License :: OSI Approved :: MIT License',
+                       'Natural Language :: English',
+                       'Operating System :: OS Independent',
+                       'Programming Language :: Python :: 3.5',
+                       'Programming Language :: Python :: 3.6']
     )

@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 from ..parallel import pmap, preduce
 from functools import reduce
 import numpy as np
