@@ -452,5 +452,5 @@ class Crystal(AtomicStructure, Lattice):
 		atomff_dict = dict()
 		for atom in self.atoms: # No need to check beyond the irreducible group of atoms
 			if atom.element not in atomff_dict:
-				atomff_dict[atom.element] = atom.form_factor(scatt_vector_norm)
+				atomff_dict[atom.element] = atom.electron_form_factor(scatt_vector_norm)
 		return atomff_dict
