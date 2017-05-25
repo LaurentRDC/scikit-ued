@@ -6,8 +6,23 @@ CIF 1.0, 1.1 and 2.0 parser based on PyCifRW.
 """
 import numpy as np
 from CifFile import CifFile, get_number_with_esd
+import spglib
 
 from . import Atom, Lattice, lattice_vectors_from_parameters, real_coords
+
+# Useful relations
+# Generated from spglib instead of cctbx, but should be equivalent 
+# to the data in cif2cell
+Hall2HM = dict( (dataset['hall_symbol'],dataset['international_short']) 
+				for dataset in map(spglib.get_spacegroup_type, range(1, 531)))
+HM2Hall = {v:k for (k,v) in Hall2HM.items()}
+
+Hall2Number = dict( (dataset['hall_symbol'],dataset['number']) 
+				for dataset in map(spglib.get_spacegroup_type, range(1, 531)))
+Number2Hall = {v:k for (k,v) in Hall2Number.items()}
+
+SymOpsHall = dict( map(lambda i: (spglib.get_spacegroup_type(i)['hall_symbol'], 
+				   				  spglib.get_symmetry_from_database(i)), range(1, 531)) )
 
 
 class CIFParser(object):
