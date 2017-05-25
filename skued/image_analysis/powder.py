@@ -13,7 +13,7 @@ def powder_center(image):
 	Finds the center of a powder diffraction pattern by comparing the
 	correlation between the input and its image.
 
-	Parameters
+	Parameters  
 	----------
 	image : `~numpy.ndarray`, ndim 2
 		Image of a powder pattern
@@ -33,7 +33,7 @@ def powder_center(image):
 
 	# Correlation of image and its mirror is a convolution
 	# TODO: explicitly compute convolution, since only one FFT
-	# has to be calculated.
+	# 		has to be calculated.
 	corr = fftconvolve(image, image)
 	corr /= _PC_CACHE[image.shape]
 

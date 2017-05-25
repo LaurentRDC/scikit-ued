@@ -1,0 +1,259 @@
+#------------------------------------------------------------------------------
+#$Date: 2016-03-23 02:33:46 +0200 (Wed, 23 Mar 2016) $
+#$Revision: 179188 $
+#$URL: file:///home/coder/svn-repositories/cod/cif/4/31/32/4313207.cif $
+#------------------------------------------------------------------------------
+#
+# This file is available in the Crystallography Open Database (COD),
+# http://www.crystallography.net/
+#
+# All data on this site have been placed in the public domain by the
+# contributors.
+#
+data_4313207
+loop_
+_publ_author_name
+'Patrick M. Woodward'
+'Pavel Karen'
+_publ_section_title
+;
+ Mixed Valence in YBaFe2O5
+;
+_journal_name_full               'Inorganic Chemistry'
+_journal_page_first              1121
+_journal_page_last               1129
+_journal_paper_doi               10.1021/ic026022z
+_journal_volume                  42
+_journal_year                    2003
+_chemical_formula_sum            Cu
+_space_group_IT_number           225
+_symmetry_cell_setting           cubic
+_symmetry_space_group_name_Hall  '-F 4 2 3'
+_symmetry_space_group_name_H-M   'F m -3 m'
+_cell_angle_alpha                90.0
+_cell_angle_beta                 90.0
+_cell_angle_gamma                90.0
+_cell_formula_units_Z            4
+_cell_length_a                   3.59127(25)
+_cell_length_b                   3.59127
+_cell_length_c                   3.59127
+_cell_volume                     46.317(3)
+_computing_structure_refinement  GSAS
+_pd_block_id                     |PHASE_4||
+_pd_phase_name                   Copper
+_refine_ls_goodness_of_fit_all   1.18
+_refine_ls_number_parameters     46
+_refine_ls_shift/esd_max         2.35
+_refine_ls_shift/esd_mean        0.40
+_cod_data_source_file            ic026022z_s1_08.cif
+_cod_data_source_block           Y500_280_phase_4
+_cod_database_code               4313207
+_cod_database_fobs_code          4313207
+loop_
+_symmetry_equiv_pos_as_xyz
++x,+y,+z
++z,+x,+y
++y,+z,+x
++x,+y,-z
+-z,+x,+y
++y,-z,+x
+-z,+x,-y
+-y,-z,+x
++y,-z,-x
+-x,+y,-z
+-z,-x,+y
++x,-y,-z
++y,+x,+z
++z,+y,+x
++x,+z,+y
++y,+x,-z
+-z,+y,+x
++x,-z,+y
+-z,+y,-x
+-x,-z,+y
++x,-z,-y
+-y,+x,-z
+-z,-y,+x
++y,-x,-z
+-x,-y,-z
+-z,-x,-y
+-y,-z,-x
+-x,-y,+z
++z,-x,-y
+-y,+z,-x
++z,-x,+y
++y,+z,-x
+-y,+z,+x
++x,-y,+z
++z,+x,-y
+-x,+y,+z
+-y,-x,-z
+-z,-y,-x
+-x,-z,-y
+-y,-x,+z
++z,-y,-x
+-x,+z,-y
++z,-y,+x
++x,+z,-y
+-x,+z,+y
++y,-x,+z
++z,+y,-x
+-y,+x,+z
++x,+y+1/2,+z+1/2
++z,+x+1/2,+y+1/2
++y,+z+1/2,+x+1/2
++x,+y+1/2,-z+1/2
+-z,+x+1/2,+y+1/2
++y,-z+1/2,+x+1/2
+-z,+x+1/2,-y+1/2
+-y,-z+1/2,+x+1/2
++y,-z+1/2,-x+1/2
+-x,+y+1/2,-z+1/2
+-z,-x+1/2,+y+1/2
++x,-y+1/2,-z+1/2
++y,+x+1/2,+z+1/2
++z,+y+1/2,+x+1/2
++x,+z+1/2,+y+1/2
++y,+x+1/2,-z+1/2
+-z,+y+1/2,+x+1/2
++x,-z+1/2,+y+1/2
+-z,+y+1/2,-x+1/2
+-x,-z+1/2,+y+1/2
++x,-z+1/2,-y+1/2
+-y,+x+1/2,-z+1/2
+-z,-y+1/2,+x+1/2
++y,-x+1/2,-z+1/2
+-x,-y+1/2,-z+1/2
+-z,-x+1/2,-y+1/2
+-y,-z+1/2,-x+1/2
+-x,-y+1/2,+z+1/2
++z,-x+1/2,-y+1/2
+-y,+z+1/2,-x+1/2
++z,-x+1/2,+y+1/2
++y,+z+1/2,-x+1/2
+-y,+z+1/2,+x+1/2
++x,-y+1/2,+z+1/2
++z,+x+1/2,-y+1/2
+-x,+y+1/2,+z+1/2
+-y,-x+1/2,-z+1/2
+-z,-y+1/2,-x+1/2
+-x,-z+1/2,-y+1/2
+-y,-x+1/2,+z+1/2
++z,-y+1/2,-x+1/2
+-x,+z+1/2,-y+1/2
++z,-y+1/2,+x+1/2
++x,+z+1/2,-y+1/2
+-x,+z+1/2,+y+1/2
++y,-x+1/2,+z+1/2
++z,+y+1/2,-x+1/2
+-y,+x+1/2,+z+1/2
++x+1/2,+y,+z+1/2
++z+1/2,+x,+y+1/2
++y+1/2,+z,+x+1/2
++x+1/2,+y,-z+1/2
+-z+1/2,+x,+y+1/2
++y+1/2,-z,+x+1/2
+-z+1/2,+x,-y+1/2
+-y+1/2,-z,+x+1/2
++y+1/2,-z,-x+1/2
+-x+1/2,+y,-z+1/2
+-z+1/2,-x,+y+1/2
++x+1/2,-y,-z+1/2
++y+1/2,+x,+z+1/2
++z+1/2,+y,+x+1/2
++x+1/2,+z,+y+1/2
++y+1/2,+x,-z+1/2
+-z+1/2,+y,+x+1/2
++x+1/2,-z,+y+1/2
+-z+1/2,+y,-x+1/2
+-x+1/2,-z,+y+1/2
++x+1/2,-z,-y+1/2
+-y+1/2,+x,-z+1/2
+-z+1/2,-y,+x+1/2
++y+1/2,-x,-z+1/2
+-x+1/2,-y,-z+1/2
+-z+1/2,-x,-y+1/2
+-y+1/2,-z,-x+1/2
+-x+1/2,-y,+z+1/2
++z+1/2,-x,-y+1/2
+-y+1/2,+z,-x+1/2
++z+1/2,-x,+y+1/2
++y+1/2,+z,-x+1/2
+-y+1/2,+z,+x+1/2
++x+1/2,-y,+z+1/2
++z+1/2,+x,-y+1/2
+-x+1/2,+y,+z+1/2
+-y+1/2,-x,-z+1/2
+-z+1/2,-y,-x+1/2
+-x+1/2,-z,-y+1/2
+-y+1/2,-x,+z+1/2
++z+1/2,-y,-x+1/2
+-x+1/2,+z,-y+1/2
++z+1/2,-y,+x+1/2
++x+1/2,+z,-y+1/2
+-x+1/2,+z,+y+1/2
++y+1/2,-x,+z+1/2
++z+1/2,+y,-x+1/2
+-y+1/2,+x,+z+1/2
++x+1/2,+y+1/2,+z
++z+1/2,+x+1/2,+y
++y+1/2,+z+1/2,+x
++x+1/2,+y+1/2,-z
+-z+1/2,+x+1/2,+y
++y+1/2,-z+1/2,+x
+-z+1/2,+x+1/2,-y
+-y+1/2,-z+1/2,+x
++y+1/2,-z+1/2,-x
+-x+1/2,+y+1/2,-z
+-z+1/2,-x+1/2,+y
++x+1/2,-y+1/2,-z
++y+1/2,+x+1/2,+z
++z+1/2,+y+1/2,+x
++x+1/2,+z+1/2,+y
++y+1/2,+x+1/2,-z
+-z+1/2,+y+1/2,+x
++x+1/2,-z+1/2,+y
+-z+1/2,+y+1/2,-x
+-x+1/2,-z+1/2,+y
++x+1/2,-z+1/2,-y
+-y+1/2,+x+1/2,-z
+-z+1/2,-y+1/2,+x
++y+1/2,-x+1/2,-z
+-x+1/2,-y+1/2,-z
+-z+1/2,-x+1/2,-y
+-y+1/2,-z+1/2,-x
+-x+1/2,-y+1/2,+z
++z+1/2,-x+1/2,-y
+-y+1/2,+z+1/2,-x
++z+1/2,-x+1/2,+y
++y+1/2,+z+1/2,-x
+-y+1/2,+z+1/2,+x
++x+1/2,-y+1/2,+z
++z+1/2,+x+1/2,-y
+-x+1/2,+y+1/2,+z
+-y+1/2,-x+1/2,-z
+-z+1/2,-y+1/2,-x
+-x+1/2,-z+1/2,-y
+-y+1/2,-x+1/2,+z
++z+1/2,-y+1/2,-x
+-x+1/2,+z+1/2,-y
++z+1/2,-y+1/2,+x
++x+1/2,+z+1/2,-y
+-x+1/2,+z+1/2,+y
++y+1/2,-x+1/2,+z
++z+1/2,+y+1/2,-x
+-y+1/2,+x+1/2,+z
+loop_
+_atom_site_label
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+_atom_site_thermal_displace_type
+_atom_site_U_iso_or_equiv
+_atom_site_symmetry_multiplicity
+CU1 0.0 0.0 0.0 1.0 Uiso 0.0130(30) 4
+loop_
+_atom_type_symbol
+_atom_type_number_in_cell
+CU 4.0

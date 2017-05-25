@@ -128,9 +128,9 @@ class Crystal(AtomicStructure, Lattice):
 			File path
 		"""
 		with CIFParser(filename = path) as parser:
-			return Crystal(items = parser.atoms(), 
-							lattice_vectors = parser.lattice_vectors(), 
-							symmetry_operators = parser.symmetry_operators())
+			return Crystal(atoms = parser.atoms(), 
+						   lattice_vectors = parser.lattice_vectors(), 
+						   symmetry_operators = parser.symmetry_operators())
 
 	@classmethod
 	def from_pdb(cls, ID):

@@ -4,15 +4,15 @@ CIF 1.0, 1.1 and 2.0 parser based on PyCifRW.
 
 @author : Laurent P. Rene de Cotret 
 """
+import numpy as np
+from CifFile import CifFile, get_number_with_esd
 
-from . import lattice_vectors_from_parameters, Atom, real_coords 
-from .. import translation_matrix, affine_map, change_of_basis
-import numpy as n
-import spglib
+from . import Atom, Lattice, lattice_vectors_from_parameters, real_coords
+
 
 class CIFParser(object):
 	"""
-	Collection of methods that parses CIF 1.1 files. Modified from mmLib.CIF module.
+	Collection of methods that parses CIF files based on PyCifRW.
     
 	Attributes
 	----------
@@ -20,10 +20,7 @@ class CIFParser(object):
 		Absolute path to the CIF file associated with the parser's target structure.
 
 	Methods
-	-------
-	space_group
-		Space-group of the structure.   
-    
+	-------    
 	lattice_vectors
 		Lattice vectors of the crystal structure.
 
@@ -34,48 +31,22 @@ class CIFParser(object):
 		Symmetry operators that relate the asymmetric unit cell and the unit cell.
 	"""
 	def __init__(self, filename):
-		if not WITH_PYCIFRW:
-			raise ImportError('PyCifRW must be installed to take advantage of the CIF Parser')
 		self.file = CifFile(datasource = filename)
 
 	def __enter__(self):
 		return self
 	
-	def __exit__(self):
-		try:
-			self.file.close()
-		except AttributeError:
-			pass
+	def __exit__(self, type, value, traceback):
+		del self.file
 	
-	def space_group(self):
-		"""
-		Returns the Hall number for the structure space group.
-		Not to be confused with Hall Symbol.
-
-		Returns
-		-------
-		spg : int   
-			Hall number
-
-		Raises
-		------
-		IOError
-			If space group could not be parsed.
-		"""
-		block = self.file.first_block()
+	def block_containing(self, key):
+		""" Returns the CifFile block containing a kay """
+		block_name = filter(lambda block: key in self.file[block], self.file.keys())
 		try:
-			hall_symbol = block['_space_group_name_Hall'].replace(' ','')
-		except KeyError:
-			hall_symbol = block['_symmetry_space_group_name_Hall'].replace(' ','')      # Legacy
-		except KeyError:
-			raise IOError('Space group Hall symbol not contained in file.')
-		
-		# Iterate over all hall numbers (1 to 530) to get the corresponding space group
-		for hall_number in range(1, 531):
-			if spglib.get_spacegroup_type(hall_number)['hall_symbol'].replace(' ','') == hall_symbol:
-				return hall_number
-		
-		raise IOError('Space group {} could not be found within the spglib databse.'.format(hm_symbol))
+			block = self.file[next(block_name)]
+		except StopIteration:
+			raise KeyError
+		return block
 
 	def lattice_vectors(self):
 		""" 
@@ -85,7 +56,7 @@ class CIFParser(object):
 		-------
 		lv : list of ndarrays, shape (3,)
 		"""
-		block = self.file.first_block()
+		block = self.block_containing('_cell_length_a')
 		
 		a, _ = get_number_with_esd(block["_cell_length_a"])
 		b, _ = get_number_with_esd(block["_cell_length_b"])
@@ -106,24 +77,9 @@ class CIFParser(object):
 		sym_ops : list of ndarrays, shape (4,4)
 			Transformation matrices. Since translations and rotation are combined,
 			the transformation matrices are 4x4.
-        
-		Returns
-		-------
-		sym_ops : iterable
 		"""
-		dataset = spglib.get_symmetry_from_database(self.space_group())
-
-		# As returned by spglib, rotations and translations act on the fractional coordinates.
-		# A change of basis is required.
-		COB = change_of_basis(basis1 = self.lattice_vectors(), basis2 = standard_basis)
-		sym_ops = list()
-		for r, t in zip(dataset['rotations'], dataset['translations']):
-			# rotations and translations combined as in http://www.euclideanspace.com/maths/geometry/affine/matrix4x4/
-			operator = affine_map(COB @ r)
-			operator[:3,3] = COB @ t
-			sym_ops.append(operator)
-
-		return sym_ops
+		# TODO: parse '_space_group_symop_operation_xyz' key
+		return [np.eye(4)]
 	
 	def atoms(self):
 		"""
@@ -131,12 +87,14 @@ class CIFParser(object):
 
 		Returns
 		-------
-		atoms : iterable of uediff.structure.Atom
+		atoms : iterable of Atom
 		"""
-		block = self.file.first_block()
-		elements = block['_atom_site_type_symbol']
+		block = self.block_containing('_atom_site_label')
+		elements = map(lambda label: label[0:2].lower().title(), block['_atom_site_label'])
 		xs, ys, zs = block['_atom_site_fract_x'], block['_atom_site_fract_y'], block['_atom_site_fract_y']
-		coords = [n.array([float(x), float(y), float(z)]) for x,y,z in zip(xs, ys, zs)]
+		coords = [np.array([get_number_with_esd(x)[0], get_number_with_esd(y)[0], get_number_with_esd(z)[0]]) 
+				  for x,y,z in zip(xs, ys, zs)]
 
-		return [Atom(element = element, coords = real_coords(frac_coords = coord, lattice_vectors = self.lattice_vectors()))
+		lv = self.lattice_vectors()
+		return [Atom(element = element, coords = real_coords(coord, lv))
 				for element, coord in zip(elements, coords)]
