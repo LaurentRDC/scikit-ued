@@ -115,6 +115,7 @@ intersphinx_mapping = {
 
 # Autodoc settings
 autodoc_default_flags = ['members', 'special-members']
+autoclass_content = 'both'
 
 
 def autodoc_skip_member(app, what, name, obj, skip, options):

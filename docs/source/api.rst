@@ -25,17 +25,14 @@ Structure
 .. autoclass:: skued.structure.atom.Atom
    :members:
    :undoc-members:
-   :special-members:
 
 .. autoclass:: skued.structure.lattice.Lattice
    :members:
    :undoc-members:
-   :special-members:
 
 .. autoclass:: skued.structure.crystal.Crystal
    :members:
    :undoc-members:
-   :special-members:
 
 Simulation
 ==========
