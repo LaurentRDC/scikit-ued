@@ -1,0 +1,58 @@
+data_Cm
+loop_
+_publ_author_name
+'B. B. Cunningham'
+'J. C. Wallmann'
+_publ_section_title
+;
+Crystal structure and melting point of curium metal
+;
+_journal_name_full               'Journal of Inorganic and Nuclear Chemistry'
+_journal_page_first              271
+_journal_page_last               275
+_journal_volume                  26
+_journal_year                    1964
+_chemical_formula_sum            Cm
+_chemical_name_mineral           Curium
+_space_group_IT_number           194
+_symmetry_space_group_name_Hall  '-P 6c 2c'
+_symmetry_space_group_name_H-M   'P 63/m m c'
+_cell_angle_alpha                90
+_cell_angle_beta                 90
+_cell_angle_gamma                120
+_cell_length_a                   3.496
+_cell_length_b                   3.496
+_cell_length_c                   11.331
+loop_
+_symmetry_equiv_pos_as_xyz
+x,y,z
+-x,-x+y,1/2+z
+x,x-y,1/2-z
+-x+y,-x,1/2-z
+x-y,x,1/2+z
+-y,-x,z
+y,x,-z
+y,-x+y,-z
+-y,x-y,z
+x-y,-y,1/2+z
+-x+y,y,1/2-z
+x,y,1/2-z
+-x,-y,1/2+z
+x,x-y,z
+-x,-x+y,-z
+x-y,x,-z
+-x+y,-x,z
+y,x,1/2+z
+-y,-x,1/2-z
+-y,x-y,1/2-z
+y,-x+y,1/2+z
+-x+y,y,z
+x-y,-y,-z
+-x,-y,-z
+loop_
+_atom_site_label
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+Cm1 0.00000 0.00000 0.00000
+Cm2 0.33333 0.66667 0.25000
