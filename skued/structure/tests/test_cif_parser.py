@@ -1,29 +1,27 @@
 # -*- coding: utf-8 -*-
-from .. import Crystal
-import unittest
-
 import os
+import unittest
+from warnings import filterwarnings
 
 import numpy as np
 
-BASE_PATH = os.path.join(os.path.abspath('skued'), 'structure', 'tests', 'cifs')
-TEST_FILES = list(filter(lambda path: path.endswith('.cif'), os.listdir(BASE_PATH)))
+from .. import Crystal
+from ..cif_parser import CIFParser, sym_ops
 
-@unittest.skip('')
-class TestCifParser(unittest.TestCase):
+filterwarnings('ignore', category = UserWarning)
 
-    def setUp(self):
-        self.crystal = Crystal.from_cif(TEST_FILE)
-    
-    def test_atoms(self):
-        """ Test that the only atoms are Cu"""
-        self.assertIn('Cu', map(lambda atm : atm.element, self.crystal))
-        self.assertEqual(len(self.crystal.atoms), 1)
-    
-    def test_lattice_vectors(self):
-        """ Test the correctness of CIF lattice vectors """
-        self.assertSequenceEqual(list(map(np.linalg.norm, self.crystal.lattice_vectors)), 
-                                 [3.59127,3.59127,3.59127])
+class TestSymOpsParsing(unittest.TestCase):
+    """ Test the sym_ops parsing function """
+
+    def test_trivial(self):
+        """ Test the identity transform "+x, +y, +z" """
+        with self.subTest('string'):
+            s = sym_ops("+x, +y, +z")
+            self.assertTrue(np.allclose(s, np.eye(4)))
+        
+        with self.subTest('iterable of strings'):
+            s = sym_ops(['+x', '+y', '+z'])
+            self.assertTrue(np.allclose(s, np.eye(4)))
 
 class TestParserCompatibility(unittest.TestCase):
     """ Test the CIFParser on all CIF files stored herein """

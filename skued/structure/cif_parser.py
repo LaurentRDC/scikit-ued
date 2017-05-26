@@ -14,19 +14,29 @@ from contextlib import suppress
 from functools import lru_cache
 
 import numpy as np
-import spglib
 from CifFile import CifFile, get_number_with_esd
 
 from . import Atom, Lattice, lattice_vectors_from_parameters, real_coords
 from .. import affine_map, transform
 from .spg_data import HM2Hall, Number2Hall, SymOpsHall
 
-
 class ParseError(Exception):
 	pass
 
 def sym_ops(equiv_site):
-	""" Parse a symmetry operator from an equivalent-site string, e.g. "+y, +x, -z + 1/2" """
+	""" Parse a symmetry operator from an equivalent-site representation 
+	
+	Parameters
+	----------
+	equiv_site : str or iterable of strings
+		Either comma-separated string e.g. "+y, +x, -z + 1/2" or an
+		iterable of the comma-separated values, e.g. ["+y", "+x", "-z + 1/2"] 
+	
+	Returns
+	-------
+	sym_ops : ndarray, shape (4,4)
+		Symmetry operator as a 4x4 affine transformation matrix.
+	"""
 	rotation = np.zeros( (3,3) )
 	trans_vec = np.zeros( (3,) )
 
@@ -115,15 +125,7 @@ class CIFParser(object):
 		
 		return hall_symbol
 
-	def block_containing(self, key):
-		""" Returns the CifFile block containing a kay """
-		block_name = filter(lambda block: key in self.file[block], self.file.keys())
-		try:
-			block = self.file[next(block_name)]
-		except StopIteration:
-			raise ParseError('No CIF block contains the key {}'.format(key))
-		return block
-
+	@lru_cache(maxsize = 1)
 	def lattice_vectors(self):
 		""" 
 		Returns the lattice vectors associated to a CIF structure.
@@ -132,7 +134,7 @@ class CIFParser(object):
 		-------
 		lv : list of ndarrays, shape (3,)
 		"""
-		block = self.block_containing('_cell_length_a')
+		block = self.file[self.file.keys()[0]]
 		
 		try:
 			a, _ = get_number_with_esd(block["_cell_length_a"])
@@ -157,8 +159,8 @@ class CIFParser(object):
 			Transformation matrices. Since translations and rotation are combined,
 			the transformation matrices are 4x4.
 		"""
-		# TODO: internal fallback values
 		block = self.file[self.file.keys()[0]]
+
 		equivalent_sites_str = None
 		for tag in ['_symmetry_equiv_pos_as_xyz','_space_group_symop_operation_xyz']:
 			with suppress(KeyError):
