@@ -1,0 +1,37 @@
+Crystal structures for all elements of the periodic table,
+collected from the Crystallography Open Database (COD) http://www.crystallography.net
+
+
+This collection is:
+* A set of sane, fairly reliable structures, meant to be  useful, 
+  for example, as a starting point in an electronic structure 
+  investigation.
+* Selected from major standard works, such as Wyckoff's Crystal 
+  Structures (1967) or from later sources when those appeared more
+  reliable.
+* Somewhat geared towards being useful for computational condensed
+  matter physicists of the density functional theory persuation.
+  Hence the preference for low temperature structures.
+* At normal pressure.
+* Standard conforming and generally well working CIF files.
+* Gradually developing. Expect to see changes over time.
+
+This collection isn't:
+* Guaranteed to satisfy any specific needs or solve any 
+  specific problems whatsoever for anyone.
+* An authoritative reference data for electronic structure 
+  benchmarking. There are probably more precise meaurements.
+* Including weird stuff (apart from sulphur and some
+  others of that ilk, which are intrinsically weird). 
+  If you learned in high school that an element is a gas, 
+  then you won't find its crystal structure here.
+* Consistent in temperature range, you will find both low 
+  temperature data and room temprature data here. But no
+  high temperature stuff.
+
+
+Original collection March 2013 by 
+Torbjorn Bjorkman 
+COMP/Department of Physics
+Aalto University School of Science
+torbjorn.bjorkman(a)aalto.fi

@@ -1,0 +1,11 @@
+Metadata-Version: 1.1
+Name: cif2cell
+Version: 1.2.10
+Summary: Construct a unit cell from CIF data
+Home-page: http://cif2cell.sourceforge.net/
+Author: Torbjorn Bjorkman
+Author-email: torbjornb@gmail.com
+License: GNU General Public License version 3
+Description: A command-line tool to generate the geometrical setup for various electronic structure codes from a CIF format file.
+Platform: UNKNOWN
+Requires: CifFile

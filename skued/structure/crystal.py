@@ -128,9 +128,9 @@ class Crystal(AtomicStructure, Lattice):
 			File path
 		"""
 		with CIFParser(filename = path) as parser:
-			return Crystal(atoms = parser.atoms(), 
+			return Crystal(atoms = list(parser.atoms()), 
 						   lattice_vectors = parser.lattice_vectors(), 
-						   symmetry_operators = parser.symmetry_operators())
+						   symmetry_operators = list(parser.symmetry_operators()))
 
 	@classmethod
 	def from_pdb(cls, ID):
@@ -345,7 +345,10 @@ class Crystal(AtomicStructure, Lattice):
 
 		# Pre-allocation
 		normalization = 1.0
-		atomff_dict = self._atomic_ff_dict(nG)  #Precalculation of form factors
+		atomff_dict = dict()
+		for atom in self.atoms:
+			if atom.element not in atomff_dict:
+				atomff_dict[atom.element] = atom.electron_form_factor(nG)
 		dwf = np.empty_like(SFsin)
 
 		for atom in self: #TODO: implement in parallel_sum?
@@ -431,27 +434,3 @@ class Crystal(AtomicStructure, Lattice):
 			self.symmetry_operators = tuple(transform(matrix, sym_op) for sym_op in self.symmetry_operators)
 		
 		super().transform(*matrices)
-
-	def _atomic_ff_dict(self, scatt_vector_norm):
-		""" 
-		Returns a dictionary containing the vectorized atomic form factor
-		of each variety of atom in a crystal unit cell. Using this function 
-		avoids recalculating atomic form factors over and over.
-        
-		Parameters
-		----------            
-		scatt_vector_norm : array-like of numericals
-			Scattering vector length |G|
-        
-		Returns
-		-------
-		atomff_fict : dict
-			Dictionnary with keys as atomic elements (e.g. 'V', 'H', ...) and
-			values as the atomic form factor at a certain scattering vector
-			norm.
-		"""
-		atomff_dict = dict()
-		for atom in self.atoms:
-			if atom.element not in atomff_dict:
-				atomff_dict[atom.element] = atom.electron_form_factor(scatt_vector_norm)
-		return atomff_dict
