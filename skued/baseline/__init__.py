@@ -22,5 +22,5 @@ References
 [3] Galloway et al. 'An Iterative Algorithm for Background Removal in Spectroscopy by Wavelet Transforms', 
 	Applied Spectroscopy pp. 1370 - 1376, September 2009.
 """
+from .dtcwt import dt_max_level, dtcwt, idtcwt, ALL_COMPLEX_WAV, ALL_FIRST_STAGE
 from .algorithms import baseline_dt, baseline_dwt
-from .wavelets import ALL_FIRST_STAGE, ALL_COMPLEX_WAV

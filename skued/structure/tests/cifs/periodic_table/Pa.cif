@@ -1,0 +1,75 @@
+data_Pa
+loop_
+_publ_author_name
+'W. H. Zachariasen'
+_publ_section_title
+;
+Crystal chemical studies of the 5f - series of elements. XVI. 
+Identification and crystal structure of protactinium metal and of protactinium monoxide
+;
+_chemical_formula_structural     'Pa'
+_chemical_formula_sum            'Pa'
+_chemical_name_systematic        'Protactinium'
+_space_group_IT_number           139
+_symmetry_Int_Tables_number      139
+_symmetry_space_group_name_Hall  '-I 4 2'
+_symmetry_space_group_name_H-M   'I 4/m m m'
+_cell_angle_alpha                90.
+_cell_angle_beta                 90.
+_cell_angle_gamma                90.
+_cell_formula_units_Z            2
+_cell_length_a                   3.925
+_cell_length_b                   3.925
+_cell_length_c                   3.238
+loop_
+_journal_name_full
+_journal_volume
+_journal_page_first
+_journal_page_last
+_journal_year
+'Acta Crystallographica' 5 19 21 1952
+loop_
+_symmetry_equiv_pos_as_xyz
+'x, y, z'
+'-y, x, z'
+'-x, -y, z'
+'y, -x, z'
+'x, -y, -z'
+'-x, y, -z'
+'y, x, -z'
+'-y, -x, -z'
+'-x, -y, -z'
+'y, -x, -z'
+'x, y, -z'
+'-y, x, -z'
+'-x, y, z'
+'x, -y, z'
+'-y, -x, z'
+'y, x, z'
+'x+1/2, y+1/2, z+1/2'
+'-y+1/2, x+1/2, z+1/2'
+'-x+1/2, -y+1/2, z+1/2'
+'y+1/2, -x+1/2, z+1/2'
+'x+1/2, -y+1/2, -z+1/2'
+'-x+1/2, y+1/2, -z+1/2'
+'y+1/2, x+1/2, -z+1/2'
+'-y+1/2, -x+1/2, -z+1/2'
+'-x+1/2, -y+1/2, -z+1/2'
+'y+1/2, -x+1/2, -z+1/2'
+'x+1/2, y+1/2, -z+1/2'
+'-y+1/2, x+1/2, -z+1/2'
+'-x+1/2, y+1/2, z+1/2'
+'x+1/2, -y+1/2, z+1/2'
+'-y+1/2, -x+1/2, z+1/2'
+'y+1/2, x+1/2, z+1/2'
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_symmetry_multiplicity
+_atom_site_Wyckoff_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+_atom_site_attached_hydrogens
+Pa Pa 2 a 0 0 0 1 0 

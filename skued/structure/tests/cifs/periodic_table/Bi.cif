@@ -1,0 +1,101 @@
+#------------------------------------------------------------------------------
+#$Date: 2013-03-28 16:17:04 +0000 (Thu, 28 Mar 2013) $
+#$Revision: 77586 $
+#$URL: file:///home/coder/svn-repositories/cod/cif/5/00/02/5000215.cif $
+#------------------------------------------------------------------------------
+#
+# This file is available in the Crystallography Open Database (COD),
+# http://www.crystallography.net/
+#
+# All data on this site have been placed in the public domain by the
+# contributors.
+#
+data_5000215
+loop_
+_publ_author_name
+'Cucka, P'
+'Barrett, C S'
+_publ_section_title
+;
+The Crystal Structure of Bi and of solid solutions of Pb, Sn, Sb and Te
+in Bi
+;
+_journal_name_full               'Acta Crystallographica (1,1948-23,1967)'
+_journal_page_first              865
+_journal_page_last               872
+_journal_volume                  15
+_journal_year                    1962
+_chemical_formula_structural     Bi
+_chemical_formula_sum            Bi
+_chemical_name_common            Bismuth
+_chemical_name_mineral           Bismuth
+_chemical_name_systematic        Bismuth
+_space_group_IT_number           166
+_symmetry_cell_setting           trigonal
+_symmetry_space_group_name_Hall  '-R 3 2"'
+_symmetry_space_group_name_H-M   'R -3 m :H'
+_cell_angle_alpha                90
+_cell_angle_beta                 90
+_cell_angle_gamma                120
+_cell_formula_units_Z            6
+_cell_length_a                   4.535(2)
+_cell_length_b                   4.535(2)
+_cell_length_c                   11.814(6)
+_cell_volume                     210.4
+_refine_ls_R_factor_all          0.0278
+_[local]_cod_cif_authors_sg_H-M  'R -3 m H'
+_cod_database_code               5000215
+loop_
+_symmetry_equiv_pos_as_xyz
+x,y,z
+-y,x-y,z
+y-x,-x,z
+-y,-x,z
+x,x-y,z
+y-x,y,z
+-x,-y,-z
+y,y-x,-z
+x-y,x,-z
+y,x,-z
+-x,y-x,-z
+x-y,-y,-z
+1/3+x,2/3+y,2/3+z
+2/3+x,1/3+y,1/3+z
+1/3-y,2/3+x-y,2/3+z
+2/3-y,1/3+x-y,1/3+z
+1/3-x+y,2/3-x,2/3+z
+2/3-x+y,1/3-x,1/3+z
+1/3-y,2/3-x,2/3+z
+2/3-y,1/3-x,1/3+z
+1/3+x,2/3+x-y,2/3+z
+2/3+x,1/3+x-y,1/3+z
+1/3-x+y,2/3+y,2/3+z
+2/3-x+y,1/3+y,1/3+z
+1/3-x,2/3-y,2/3-z
+2/3-x,1/3-y,1/3-z
+1/3+y,2/3-x+y,2/3-z
+2/3+y,1/3-x+y,1/3-z
+1/3+x-y,2/3+x,2/3-z
+2/3+x-y,1/3+x,1/3-z
+1/3+y,2/3+x,2/3-z
+2/3+y,1/3+x,1/3-z
+1/3-x,2/3-x+y,2/3-z
+2/3-x,1/3-x+y,1/3-z
+1/3+x-y,2/3-y,2/3-z
+2/3+x-y,1/3-y,1/3-z
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_symmetry_multiplicity
+_atom_site_Wyckoff_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+_atom_site_attached_hydrogens
+_atom_site_calc_flag
+Bi1 Bi0 6 c 0. 0. 0.23400(2) 1. 0 d
+loop_
+_atom_type_symbol
+_atom_type_oxidation_number
+Bi0 0.000

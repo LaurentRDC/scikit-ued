@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from copy import copy
 from collections.abc import Iterable
 from functools import lru_cache
@@ -15,9 +16,9 @@ from .. import (change_of_basis, transform, affine_map, change_basis_mesh,
 			    is_rotation_matrix, minimum_image_distance)
 
 # Constants
-m = 9.109*10**(-31)     #in kg
+m = 9.109*10**(-31)     #electron mass in kg
 a0 = 0.5291             #in Angs
-e = 14.4                #Volt*Angstrom
+e = 14.4                #electron charge in Volt*Angstrom
 
 def symmetry_expansion(items, *symmetry_operators):
     """
@@ -44,86 +45,21 @@ class Crystal(AtomicStructure, Lattice):
 	"""
 	This object is the basis for inorganic crystals such as VO2, 
 	and protein crystals such as bR. 
-
-	Special methods
-	---------------
-	__iter__
-		Generator of atoms in the unit cell.
-
-	__len__
-		Number of atoms in the unit cell.
     
 	Attributes
 	----------
 	symmetry_operators : list of ndarrays
 		Symmetry operators that links the underlying AtomicStructure to the unit cell construction.
     
-	unitcell : list of Atom objects
+	unitcell : iterable of Atom objects
 		List of atoms in the crystal unitcell. iter(Crystal) is a generator that yields
 		the same atoms; this approach is preferred.
     
-	atoms : list
+	atoms : iterable
 		List of atoms in the asymmetric unit.
-    
-	volume : float
-		Volume of the unit cell, in angstrom**3
-    
-	spglib_cell : tuple
-		Crystal structure in spglib's `cell` format.
-    
-	Constructors
-	------------    
-	from_cif
-		Return a Crystal object from a CIF file. CIF versions 1.0, 1.1 and 2.0 are supported.
-
-	from_pdb
-		Returns a Crystal object from a Protein DataBank ID number. The .pdb file will
-		be downloaded, cached, and parsed appropriately.
-    
-	Methods
-	-------    
-	periodicity
-		Bounding cube of the unit cell in real-space. 
-        
-	potential
-		Atomic potential computed over euclidian space.
-	
-	scattering_vector
-		Scattering vector G from Miller indices (hkl)
-    
-	miller_indices
-		Miller indices (hkl) from scattering vector G
-
-	structure_factor
-		General static structure factor calculation. Includes Debye-Waller suppression.
-    
-	structure_factor_miller
-		Static structure factor calculation from Miller indices, taking into account
-		the diffraction conditions of the crystal geometry.
-    
-	bounded_reflections
-		Generate a set of (hkl) reflections below a bound.
-    
-	intensity_normalization
-		Sum of form factor squared. Useful when normalizing diffraction intensities.
-     
-	transform
-		Apply 3x3 or 4x4 transformation (reflection, shearing, translation, rotation)
-		to atomic coordinates and lattice vectors.
 	"""
 
 	def __init__(self, atoms, symmetry_operators = [np.eye(3)], **kwargs):
-		"""
-		Parameters
-		----------
-		atoms : iterable of Atoms
-			Atoms in the asymmetric cell.
-        lattice_vectors : list of ndarrays, shape (3,), optional
-            Lattice vectors. Default is a cartesian lattice.
-		symmetry_operators : list of ndarrays, shape (3,3), optional
-			Symmetry operators linking the underlying AtomicStructure to the unit cell construction. Default is
-			the identity transformation.
-		"""
 		kwargs.update({'items': atoms}) # atoms argument is an alias for AtomicStructure.items
 		self.symmetry_operators = tuple(map(affine_map, symmetry_operators))
 		super().__init__(**kwargs)
@@ -146,11 +82,16 @@ class Crystal(AtomicStructure, Lattice):
 		----------
 		path : str
 			File path
+		
+		References
+		----------
+		.. [#] Torbjorn Bjorkman, "CIF2Cell: Generating geometries for electronic structure programs", 
+			   Computer Physics Communications 182, 1183-1186 (2011). doi: 10.1016/j.cpc.2011.01.013
 		"""
 		with CIFParser(filename = path) as parser:
-			return Crystal(items = parser.atoms(), 
-							lattice_vectors = parser.lattice_vectors(), 
-							symmetry_operators = parser.symmetry_operators())
+			return Crystal(atoms = list(parser.atoms()), 
+						   lattice_vectors = parser.lattice_vectors(), 
+						   symmetry_operators = list(parser.symmetry_operators()))
 
 	@classmethod
 	def from_pdb(cls, ID):
@@ -160,7 +101,7 @@ class Crystal(AtomicStructure, Lattice):
 		Parameters
 		----------
 		ID : str
-			Protein DataBank identification. The correct *.pdb file will be downloaded,
+			Protein DataBank identification. The correct .pdb file will be downloaded,
 			cached and parsed.
 		"""
 		parser = PDBParser(ID = ID)
@@ -285,7 +226,7 @@ class Crystal(AtomicStructure, Lattice):
 		matrix_trans = np.linalg.inv(matrix_trans)
 		return transform(matrix_trans, G).astype(np.int)
 	
-	def structure_factor_miller(self, h, k, l, normalized = False):
+	def structure_factor_miller(self, h, k, l):
 		"""
 		Computation of the static structure factor from Miller indices.
         
@@ -300,10 +241,6 @@ class Crystal(AtomicStructure, Lattice):
 			``list of 3 coordinate ndarrays, shapes (L,M,N)``
 				returns structure factor computed over all coordinate space
         
-		normalized : bool
-			If True, returns the normalized structure factor E.
-			See http://www.mx.iucr.org/iucr-top/comm/cteach/pamphlets/17/node4.html
-        
 		Returns
 		-------
 		sf : ndarray, dtype complex
@@ -314,9 +251,9 @@ class Crystal(AtomicStructure, Lattice):
 		structure_factor
 			Vectorized structure factor calculation for general scattering vectors.	
 		"""
-		return self.structure_factor(G = self.scattering_vector(h, k, l), normalized = normalized)
+		return self.structure_factor(G = self.scattering_vector(h, k, l))
 		
-	def structure_factor(self, G, normalized = False):
+	def structure_factor(self, G):
 		"""
 		Computation of the static structure factor. This function is meant for 
 		general scattering vectors, not Miller indices. 
@@ -334,10 +271,6 @@ class Crystal(AtomicStructure, Lattice):
             
 			WARNING: Scattering vector is not equivalent to the Miller indices.
         
-		normalized : bool
-			If True, returns the normalized structure factor E.
-			See http://www.mx.iucr.org/iucr-top/comm/cteach/pamphlets/17/node4.html
-        
 		Returns
 		-------
 		sf : ndarray, dtype complex
@@ -351,7 +284,7 @@ class Crystal(AtomicStructure, Lattice):
 		        
 		Notes
 		-----
-		By convention, scattering vectors G are defined such that |G| = 4 pi s
+		By convention, scattering vectors G are defined such that norm(G) = 4 pi s
 		"""
 		# Distribute input
 		# This works whether G is a list of 3 numbers, a ndarray shape(3,) or 
@@ -363,12 +296,14 @@ class Crystal(AtomicStructure, Lattice):
 		# complex arrays together. About 3x speedup vs. using complex exponentials
 		SFsin, SFcos = np.zeros(shape = nG.shape, dtype = np.float), np.zeros(shape = nG.shape, dtype = np.float)
 
-		# Pre-allocation
-		normalization = 1.0
-		atomff_dict = self._atomic_ff_dict(nG)  #Precalculation of form factors
+		# Pre-allocation of form factors gives huge speedups
+		atomff_dict = dict()
+		for atom in self.atoms:
+			if atom.element not in atomff_dict:
+				atomff_dict[atom.element] = atom.electron_form_factor(nG)
 		dwf = np.empty_like(SFsin)
 
-		for atom in self: #TODO: implement in parallel_sum?
+		for atom in self: #TODO: implement in parallel?
 			x, y, z = atom.coords
 			arg = x*Gx + y*Gy + z*Gz
 			atom.debye_waller_factor((Gx, Gy, Gz), out = dwf)
@@ -376,19 +311,16 @@ class Crystal(AtomicStructure, Lattice):
 			SFsin += atomff * dwf * np.sin(arg)
 			SFcos += atomff * dwf * np.cos(arg)
 		
-		if normalized:
-			normalization = 1/np.sqrt(self.intensity_normalization(nG))
-		
-		return normalization*(SFcos + 1j*SFsin)
+		return SFcos + 1j*SFsin
 	
 	def bounded_reflections(self, nG):
 		"""
-		Returns iterable of reflections (hkl) with |G| < nG
+		Returns iterable of reflections (hkl) with norm(G) < nG
         
 		Parameters
 		----------
 		nG : float
-			Maximal scattering vector norm. By our convention, |G| = 4 pi s.
+			Maximal scattering vector norm. By our convention, norm(G) = 4 pi s.
         
 		Returns
 		-------
@@ -414,26 +346,6 @@ class Crystal(AtomicStructure, Lattice):
 		in_bound = norm_G <= nG
 		return h.compress(in_bound), k.compress(in_bound), l.compress(in_bound)
 	
-	def intensity_normalization(self, nG):
-		""" 
-		Vectorized sum of form factor squared.
-        
-		Parameters
-		----------           
-		scatt_vector_norm : array-like of numericals
-			Scattering vector length |G|.
-        
-		Returns
-		-------
-		total : array-like of numerical
-			array of the same shape as input.
-        
-		Notes
-		-----
-		By convention, scattering vectors G are defined such that |G| = 4 pi s
-		"""
-		return sum(atom.form_factor(nG)**2 for atom in self)
-	
 	def transform(self, *matrices):
 		"""
 		Transforms the real space coordinates according to a matrix.
@@ -451,27 +363,3 @@ class Crystal(AtomicStructure, Lattice):
 			self.symmetry_operators = tuple(transform(matrix, sym_op) for sym_op in self.symmetry_operators)
 		
 		super().transform(*matrices)
-
-	def _atomic_ff_dict(self, scatt_vector_norm):
-		""" 
-		Returns a dictionary containing the vectorized atomic form factor
-		of each variety of atom in a crystal unit cell. Using this function 
-		avoids recalculating atomic form factors over and over.
-        
-		Parameters
-		----------            
-		scatt_vector_norm : array-like of numericals
-			Scattering vector length |G|
-        
-		Returns
-		-------
-		atomff_fict : dict
-			Dictionnary with keys as atomic elements (e.g. 'V', 'H', ...) and
-			values as the atomic form factor at a certain scattering vector
-			norm.
-		"""
-		atomff_dict = dict()
-		for atom in self.atoms: # No need to check beyond the irreducible group of atoms
-			if atom.element not in atomff_dict:
-				atomff_dict[atom.element] = atom.form_factor(scatt_vector_norm)
-		return atomff_dict

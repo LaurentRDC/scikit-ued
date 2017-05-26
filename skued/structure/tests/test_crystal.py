@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 from copy import deepcopy, copy
 from itertools import permutations
 import numpy as np

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-
 import numpy as np
-from .form_factors import params
+from .scattering_params import scattering_params
 from . import Transformable
 from .. import  change_of_basis, transform, translation_matrix, is_rotation_matrix
 from scipy.special import k0 as bessel
@@ -61,40 +60,9 @@ class Atom(Transformable):
 		Standard atomic weight (in international units 'u').
 	coords : ndarray, shape (3,)
 		Real-space coordinates of the atom.
-	identification : str
-		Protein DataBank identification.
-
-	Methods
-	-------
-	rotate
-		Rotate coordinates.
-    
-	translate
-		Translate coordinates.
-    
-	transform
-		Apply 3x3 or 4x4 transformation matrices for reflections, shearing, 
-		translations, rotations, projections, etc.
-
-	debye_waller_factor
-		Diffracted intensity suppression due to mean atomic displacement from
-		perfect crystalline positions.
-    
-	potential
-		Electrostatic potential computed on a three-dimensional meshgrid
-
-	projected_potential
-		Projection of the electrostatic potential onto the x-y plane.
-
-	Special methods
-	---------------
-	Atom[index] is the same as Atom.coords[index]
-
-	Atom1 - Atom2 gives the distance between atoms in Angs
 	"""
 
-	__slots__ = ('element', 'coords', 'identification', 'displacement', 
-					'_a', '_b', '_c', '_d')
+	__slots__ = ('element', 'coords', 'displacement', '_a', '_b', '_c', '_d')
 
 	# TODO: PDB identification?
 	def __init__(self, element, coords, displacement = None, **kwargs): 
@@ -121,8 +89,8 @@ class Atom(Transformable):
 		
 		# Atomic potential parameters loaded on instantiation
 		# These are used to compute atomic potential
-		# TODO: add ref Kirkland 2008
-		_, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = params[self.atomic_number]
+		# TODO: add ref Kirkland 2010
+		_, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[self.atomic_number]
 		self._a = np.array((a1, a2, a3)).reshape((1,3))
 		self._b = np.array((b1, b2, b3)).reshape((1,3))
 		self._c = np.array((c1, c2, c3)).reshape((1,3))
@@ -165,30 +133,28 @@ class Atom(Transformable):
 		"""
 		return frac_coords(self.coords, lattice_vectors)
 	
-	def form_factor(self, scatt_vector_norm):
-		""" 
-		Vectorized atomic form factor.
-        
+	def electron_form_factor(self, nG):
+		"""
+		Vectorized electron form factor.
+
 		Parameters
-		----------           
-		scatt_vector_norm : array-like of numericals
-			Scattering vector length |G|.
-        
+		----------
+		nG : array_like
+			Scattering vector norm
+		
 		Returns
 		-------
-		atomff : array-like of numerical
-			array of the same shape as input
-        
-		Notes
-		-----
-		By convention, scattering vectors G are defined such that |G| = 4 pi s
+		atomff : array_like
 		"""
-		# TODO: vectorize better
-		# TODO: compute as fourier transform of potential?
-		s = np.reshape(scatt_vector_norm/(4*np.pi), newshape = (1,scatt_vector_norm.size))
-		a, b = (np.expand_dims(item, axis = 1) for item in atomic_ff_dict[self.element])
-		ff = np.sum(a*np.exp(-b*(s**2)), axis = 0)
-		return np.reshape(ff, scatt_vector_norm.shape)
+		# From kirkland 2010 Eq. C.15
+		s = nG.shape
+		nG = nG.reshape((-1,1))
+		nG2 = np.square(nG)
+
+		sum1 = np.sum(self._a/(nG2 + self._b), axis = 1)
+		sum2 = np.sum(self._c * np.exp(-self._d * nG2), axis = 1)
+		
+		return (sum1 + sum2).reshape(s)
 	
 	def debye_waller_factor(self, G, out = None):
 		"""
@@ -216,7 +182,7 @@ class Atom(Transformable):
 
 		Parameters
 		----------
-		r : ndarray
+		r : array_like
 			Radial distance from the atom [Angs].
 
 		Returns
@@ -228,6 +194,8 @@ class Atom(Transformable):
 		----------
 		Kirkland 2010 Eq. C.19
 		"""
+		r = np.array(r, copy = False)
+		
 		s = r.shape
 		r = r.reshape((-1,1))
 		sum1 = np.sum((self._a/r) * np.exp(-2*np.pi*r*np.sqrt(self._b)), axis = 1)
@@ -324,34 +292,3 @@ atomic_weights = ( 1.00794,   4.002602,   6.941    ,   9.012182 ,  10.811    ,
            204.3833    , 207.2     , 208.98040  , 209.000    , 210.000    ,
            222.000     , 223.000   , 226.000    , 227.00     , 232.03806  ,
            231.03588   , 238.02891)
-
-# Atomic form factors coefficients
-# TODO: use Zheng et al. 2009's data that uses 8-term series of gaussian
-# TODO: all atoms
-a_H = np.array([0.0349,0.1201,0.1970,0.0573,0.1195]);b_H = np.array([0.5347,3.5867,12.3471,18.9525,38.6269])
-a_V = np.array([0.2969,1.0774,2.1894,3.0825,1.7190]);b_V = np.array([0.1505,1.6392,7.5691,36.8741,107.8517])
-a_O = np.array([0.0365,0.1729,0.5805,0.8814,0.3121]);b_O = np.array([0.0652,0.6184,2.9449,9.6298,28.2194])
-a_C = np.array([0.0489,0.2091,0.7537,1.1420,0.3555]);b_C = np.array([0.1140,1.0825,5.4281,17.8811,51.1341])
-a_N = np.array([0.0267,0.1328,0.5301,1.1020,0.4215]);b_N = np.array([0.0541,0.5165,2.8207,10.6297,34.3764])
-a_O = np.array([0.0365,0.1729,0.5805,0.8814,0.3121]);b_O = np.array([0.0652,0.6184,2.9449,9.6298,28.2194])
-a_S = np.array([0.0915,0.4312,1.0847,2.4671,1.0852]);b_S = np.array([0.0838,0.7788,4.3462,15.5846,44.6365])
-a_P = np.array([0.1005,0.4615,1.0663,2.5854,1.2725]);b_P = np.array([0.0977,0.9084,4.9654,18.5471,54.3648])
-a_Cu= np.array([0.4314,1.3208,1.5236,1.4671,0.8562]);b_Cu= np.array([0.2694,1.9223,7.3474,28.9892,90.6246])
-a_Br= np.array([0.4798,1.1948,1.8695,2.6953,0.8203]);b_Br= np.array([0.2504, 1.5963,6.9653,19.8492,50.3233])
-a_Au= np.array([0.3055,1.3956,2.9617,3.8990,2.0026]);b_Au= np.array([0.0596,0.5827,3.1035,11.9693,47.9106])
-a_Pb= np.array([0.3540,1.5453,3.5975,4.3152,2.7743]);b_Pb= np.array([0.0668,0.6465,3.6968,16.2056,61.4909])
-a_U = np.array([0.6410,2.2643,4.8713,5.9287,5.3935]);b_U = np.array([0.1097,1.0644,5.7907,25.0261,101.3899])
-
-#Atomic Form Factors switch-case implementation
-atomic_ff_dict = {'H':(a_H, b_H), 
-                  'C': (a_C, b_C), 
-                  'N': (a_N, b_N), 
-                  'O': (a_O, b_O),
-                  'P': (a_P, b_P), 
-                  'S': (a_S, b_S), 
-                  'Au':(a_Au, b_Au),
-                  'Pb':(a_Pb, b_Pb),
-                  'U': (a_U, b_U), 
-                  'V': (a_V, b_V),
-                  'Cu':(a_Cu, b_Cu),
-                  'Br':(a_Br,b_Br)}

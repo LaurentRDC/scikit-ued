@@ -38,6 +38,7 @@ extensions = ['alabaster',
               'sphinx.ext.intersphinx',
               'sphinx.ext.autodoc',
 			  'sphinx.ext.napoleon',
+			  'sphinx.ext.mathjax',
 			  'matplotlib.sphinxext.plot_directive']
 
 intersphinx_mapping = {'numpy': ('http://docs.scipy.org/doc/numpy/', None)}
@@ -114,6 +115,7 @@ intersphinx_mapping = {
 
 # Autodoc settings
 autodoc_default_flags = ['members', 'special-members']
+autoclass_content = 'both'
 
 
 def autodoc_skip_member(app, what, name, obj, skip, options):

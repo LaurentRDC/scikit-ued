@@ -1,5 +1,5 @@
 scikit-ued
-=======
+==========
 
 .. image:: https://img.shields.io/appveyor/ci/LaurentRDC/scikit-ued/master.svg
     :target: https://ci.appveyor.com/project/LaurentRDC/scikit-ued
@@ -23,13 +23,7 @@ To install the latest development version from `Github <https://github.com/Laure
 
 If your current Python installation doesn't have pip available, try `get-pip.py <bootstrap.pypa.io>`_
 
-After installing scikit-ued you can use it like any other Python module.
-Soon, there'll be a simple example here:
-
-.. code-block:: python
-
-    import skued
-    # come back later, this package is empty
+After installing scikit-ued you can use it like any other Python module as :code:`skued`.
 
 API Reference
 -------------

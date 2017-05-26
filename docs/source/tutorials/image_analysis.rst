@@ -12,12 +12,74 @@ much more of a problem for electron diffraction than equivalent X-ray experiment
 Contents
 ========
 
-* :ref:`symmetry`
+* :ref:`powder`
 
-.. _symmetry:
+.. _powder:
 
-Angular average of polycrystalline diffraction patterns
-=======================================================
+Image analysis on polycrystalline diffraction patterns
+======================================================
+
+Center-finding
+--------------
+Polycrystalline diffraction patterns display concentric rings, and finding
+the center of those concentric rings is important.
+
+Let's load a test image::
+	
+	from skimage import img_as_uint
+	from skimage.io import imread
+	import matplotlib.pyplot as plt
+
+	path = '\\data\\vo2.tif'
+	im = img_as_uint(imread(path, plugin = 'tifffile'))
+	plt.imshow(im, vmin = im.min(), vmax = 1200)
+	plt.show()
+
+.. plot::
+
+	from skimage import img_as_uint
+	from skimage.io import imread
+	import matplotlib.pyplot as plt
+	path = 'data\\vo2.tif'
+	im = img_as_uint(imread(path, plugin = 'tifffile'))
+	plt.imshow(im, vmin = im.min(), vmax = 1200)
+	plt.show()
+
+This is a noisy diffraction pattern of polycrystalline vanadium dioxide. 
+Finding the center of such a symmetry pattern can be done with the 
+:code:`powder_center` routine::
+	
+	from skued.image_analysis import powder_center
+	ic, jc = powder_center(im)
+	
+	# Plotting the center as a black disk
+	import numpy as np
+	ii, jj = np.meshgrid(np.arange(im.shape[0]), np.arange(im.shape[1]),
+	                     indexing = 'ij')
+	rr = np.sqrt((ii - ic)**2 + (jj - jc)**2)
+	im[rr < 10] = 30000
+
+	plt.imshow(im, vmin = im.min(), vmax = 1200)
+	plt.show()
+
+.. plot::
+
+	from skimage import img_as_uint
+	from skimage.io import imread
+	import numpy as np
+	import matplotlib.pyplot as plt
+	path = 'data\\vo2.tif'
+	im = img_as_uint(imread(path, plugin = 'tifffile'))
+	from skued.image_analysis import powder_center
+	ic, jc = powder_center(im)
+	ii, jj = np.meshgrid(np.arange(im.shape[0]), np.arange(im.shape[1]),indexing = 'ij')
+	rr = np.sqrt((ii - ic)**2 + (jj - jc)**2)
+	im[rr < 10] = 30000
+	plt.imshow(im, vmin = im.min(), vmax = 1200)
+	plt.show()
+
+Angular average
+---------------
 
 First, we create a test image::
 

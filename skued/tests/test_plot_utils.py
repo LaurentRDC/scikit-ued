@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 import unittest
 from .. import spectrum_colors
 

@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 from copy import deepcopy as copy
 import numpy as np
 from numpy.linalg import norm

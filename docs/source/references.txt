@@ -3,3 +3,4 @@
 .. _Scipy: https://www.scipy.org
 .. _Cython: http://cython.org
 .. _Pywavelets: https://pywavelets.readthedocs.io/en/latest/
+.. _PyCifRW: http://www.iucr.org/resources/cif/software/pycifrw
