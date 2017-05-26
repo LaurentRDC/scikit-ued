@@ -271,8 +271,8 @@ def baseline_dt(array, max_iter, level = None, first_stage = 'sym6', wavelet = '
         
 	References
 	----------
-	L. P. René de Cotret and B. J. Siwick, A general method for baseline-removal in ultrafast 
-	electron powder diffraction data using the dual-tree complex wavelet transform, Struct. Dyn. 4 (2016)
+	.. [#] L. P. René de Cotret and B. J. Siwick, A general method for baseline-removal in ultrafast 
+		   electron powder diffraction data using the dual-tree complex wavelet transform, Struct. Dyn. 4 (2016)
 	"""
 	return _iterative_baseline(array = array, max_iter = max_iter, background_regions = background_regions,
 									mask = mask, axes = (axis,), approx_rec_func = _dt_approx_rec,
@@ -323,8 +323,8 @@ def baseline_dwt(array, max_iter, level = None, wavelet = 'sym6', background_reg
     
 	References
 	----------
-	Galloway et al. 'An Iterative Algorithm for Background Removal in Spectroscopy by Wavelet 
-	Transforms', Applied Spectroscopy pp. 1370 - 1376, September 2009.
+	.. [#] Galloway et al. 'An Iterative Algorithm for Background Removal in Spectroscopy by Wavelet 
+		   Transforms', Applied Spectroscopy pp. 1370 - 1376, September 2009.
 	"""
 	if isinstance(axis, int):
 		axis = (axis,)
