@@ -29,26 +29,6 @@ def lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma):
 class Lattice(Transformable):
     """
     Abstract class handling Lattice information and manipulations.
-
-    Attributes
-    ----------
-    volume
-        Unit cell volume of the lattice.
-    lattice_vectors
-        Basis vectors of the lattice.
-    reciprocal
-        A Lattice object corresponding to the reciprocal lattice.
-    reciprocal_vectors
-
-    parameters
-        Three lengths and angles , e.g. as reported by PDB files
-    Methods
-    -------
-    from_parameters
-        Create a Lattice instance from three lengths and angles
-    transform
-    
-    rotate
     """
 
     def __init__(self, lattice_vectors = np.eye(3), **kwargs):
@@ -92,10 +72,12 @@ class Lattice(Transformable):
     
     @property
     def volume(self):
+        """ Lattice cell volume in angstroms cubed """
         return np.dot(self.a1, np.cross(self.a2, self.a3))
     
     @property
     def lattice_vectors(self):
+        """ Iterable of lattice vectors """
         return self.a1, self.a2, self.a3
     
     @lattice_vectors.setter
@@ -104,6 +86,7 @@ class Lattice(Transformable):
     
     @property
     def reciprocal(self):
+        """ Reciprocal lattice """
         return Lattice(lattice_vectors = self.reciprocal_vectors)
 
     @property

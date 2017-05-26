@@ -60,34 +60,9 @@ class Atom(Transformable):
 		Standard atomic weight (in international units 'u').
 	coords : ndarray, shape (3,)
 		Real-space coordinates of the atom.
-	identification : str
-		Protein DataBank identification.
-
-	Methods
-	-------
-	rotate
-		Rotate coordinates.
-    
-	translate
-		Translate coordinates.
-    
-	transform
-		Apply 3x3 or 4x4 transformation matrices for reflections, shearing, 
-		translations, rotations, projections, etc.
-
-	debye_waller_factor
-		Diffracted intensity suppression due to mean atomic displacement from
-		perfect crystalline positions.
-    
-	potential
-		Electrostatic potential computed on a three-dimensional meshgrid
-
-	projected_potential
-		Projection of the electrostatic potential onto the x-y plane.
 	"""
 
-	__slots__ = ('element', 'coords', 'identification', 'displacement', 
-					'_a', '_b', '_c', '_d')
+	__slots__ = ('element', 'coords', 'displacement', '_a', '_b', '_c', '_d')
 
 	# TODO: PDB identification?
 	def __init__(self, element, coords, displacement = None, **kwargs): 

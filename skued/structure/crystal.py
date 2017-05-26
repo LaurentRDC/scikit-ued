@@ -16,9 +16,9 @@ from .. import (change_of_basis, transform, affine_map, change_basis_mesh,
 			    is_rotation_matrix, minimum_image_distance)
 
 # Constants
-m = 9.109*10**(-31)     #in kg
+m = 9.109*10**(-31)     #electron mass in kg
 a0 = 0.5291             #in Angs
-e = 14.4                #Volt*Angstrom
+e = 14.4                #electron charge in Volt*Angstrom
 
 def symmetry_expansion(items, *symmetry_operators):
     """
@@ -51,53 +51,12 @@ class Crystal(AtomicStructure, Lattice):
 	symmetry_operators : list of ndarrays
 		Symmetry operators that links the underlying AtomicStructure to the unit cell construction.
     
-	unitcell : list of Atom objects
+	unitcell : iterable of Atom objects
 		List of atoms in the crystal unitcell. iter(Crystal) is a generator that yields
 		the same atoms; this approach is preferred.
     
-	atoms : list
+	atoms : iterable
 		List of atoms in the asymmetric unit.
-    
-	volume : float
-		Volume of the unit cell, in angstrom**3
-    
-	spglib_cell : tuple
-		Crystal structure in spglib's `cell` format.
-    
-	Methods
-	-------    
-	from_cif
-		Return a Crystal object from a CIF file. CIF versions 1.0, 1.1 and 2.0 are supported.
-
-	from_pdb
-		Returns a Crystal object from a Protein DataBank ID number. The .pdb file will
-		be downloaded, cached, and parsed appropriately.
-      
-	periodicity
-		Bounding cube of the unit cell in real-space. 
-        
-	potential
-		Atomic potential computed over euclidian space.
-	
-	scattering_vector
-		Scattering vector G from Miller indices (hkl)
-    
-	miller_indices
-		Miller indices (hkl) from scattering vector G
-
-	structure_factor
-		General static structure factor calculation. Includes Debye-Waller suppression.
-    
-	structure_factor_miller
-		Static structure factor calculation from Miller indices, taking into account
-		the diffraction conditions of the crystal geometry.
-    
-	bounded_reflections
-		Generate a set of (hkl) reflections below a bound.
-     
-	transform
-		Apply 3x3 or 4x4 transformation (reflection, shearing, translation, rotation)
-		to atomic coordinates and lattice vectors.
 	"""
 
 	def __init__(self, atoms, symmetry_operators = [np.eye(3)], **kwargs):

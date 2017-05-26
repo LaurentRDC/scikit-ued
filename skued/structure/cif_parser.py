@@ -4,9 +4,8 @@ CIF 1.0, 1.1 and 2.0 parser based on cif2cell.
 
 References
 ----------
-..[1] Torbjorn Bjorkman, "CIF2Cell: Generating geometries for electronic structure programs", 
-Computer Physics Communications 182, 1183-1186 (2011)
-doi: 10.1016/j.cpc.2011.01.013
+.. [CIF2CELL] Torbjorn Bjorkman, "CIF2Cell: Generating geometries for electronic structure programs", 
+	   		  Computer Physics Communications 182, 1183-1186 (2011) doi: 10.1016/j.cpc.2011.01.013
 """
 import string
 import warnings
@@ -65,26 +64,17 @@ def sym_ops(equiv_site):
 
 class CIFParser(object):
 	"""
-	Collection of methods that parses CIF files based on PyCifRW.
+	Collection of methods that parses CIF files based on cif2cell.
     
 	Attributes
 	----------
 	file : str
 		Absolute path to the CIF file associated with the parser's target structure.
-
-	Methods
-	-------
-	hall_symbol
-		Hall symbol taken directly from the file or inferred from other information.
-
-	lattice_vectors
-		Lattice vectors of the crystal structure.
-
-	atoms
-		Generator of atoms making up the asymmetric unit cell
-
-	symmetry_operators
-		Generator of symmetry operators that relate the asymmetric unit cell and the unit cell.
+	
+	References
+	----------
+	.. [#] Torbjorn Bjorkman, "CIF2Cell: Generating geometries for electronic structure programs", 
+		   Computer Physics Communications 182, 1183-1186 (2011) doi: 10.1016/j.cpc.2011.01.013
 	"""
 	def __init__(self, filename):
 		self.file = CifFile(datasource = filename)
