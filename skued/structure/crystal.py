@@ -94,9 +94,6 @@ class Crystal(AtomicStructure, Lattice):
     
 	bounded_reflections
 		Generate a set of (hkl) reflections below a bound.
-    
-	intensity_normalization
-		Sum of form factor squared. Useful when normalizing diffraction intensities.
      
 	transform
 		Apply 3x3 or 4x4 transformation (reflection, shearing, translation, rotation)
@@ -265,7 +262,7 @@ class Crystal(AtomicStructure, Lattice):
 		matrix_trans = np.linalg.inv(matrix_trans)
 		return transform(matrix_trans, G).astype(np.int)
 	
-	def structure_factor_miller(self, h, k, l, normalized = False):
+	def structure_factor_miller(self, h, k, l):
 		"""
 		Computation of the static structure factor from Miller indices.
         
@@ -280,10 +277,6 @@ class Crystal(AtomicStructure, Lattice):
 			``list of 3 coordinate ndarrays, shapes (L,M,N)``
 				returns structure factor computed over all coordinate space
         
-		normalized : bool
-			If True, returns the normalized structure factor E.
-			See http://www.mx.iucr.org/iucr-top/comm/cteach/pamphlets/17/node4.html
-        
 		Returns
 		-------
 		sf : ndarray, dtype complex
@@ -294,9 +287,9 @@ class Crystal(AtomicStructure, Lattice):
 		structure_factor
 			Vectorized structure factor calculation for general scattering vectors.	
 		"""
-		return self.structure_factor(G = self.scattering_vector(h, k, l), normalized = normalized)
+		return self.structure_factor(G = self.scattering_vector(h, k, l))
 		
-	def structure_factor(self, G, normalized = False):
+	def structure_factor(self, G):
 		"""
 		Computation of the static structure factor. This function is meant for 
 		general scattering vectors, not Miller indices. 
@@ -313,10 +306,6 @@ class Crystal(AtomicStructure, Lattice):
 				returns structure factor computed over all coordinate space
             
 			WARNING: Scattering vector is not equivalent to the Miller indices.
-        
-		normalized : bool
-			If True, returns the normalized structure factor E.
-			See http://www.mx.iucr.org/iucr-top/comm/cteach/pamphlets/17/node4.html
         
 		Returns
 		-------
@@ -343,15 +332,14 @@ class Crystal(AtomicStructure, Lattice):
 		# complex arrays together. About 3x speedup vs. using complex exponentials
 		SFsin, SFcos = np.zeros(shape = nG.shape, dtype = np.float), np.zeros(shape = nG.shape, dtype = np.float)
 
-		# Pre-allocation
-		normalization = 1.0
+		# Pre-allocation of form factors gives huge speedups
 		atomff_dict = dict()
 		for atom in self.atoms:
 			if atom.element not in atomff_dict:
 				atomff_dict[atom.element] = atom.electron_form_factor(nG)
 		dwf = np.empty_like(SFsin)
 
-		for atom in self: #TODO: implement in parallel_sum?
+		for atom in self: #TODO: implement in parallel?
 			x, y, z = atom.coords
 			arg = x*Gx + y*Gy + z*Gz
 			atom.debye_waller_factor((Gx, Gy, Gz), out = dwf)
@@ -359,10 +347,7 @@ class Crystal(AtomicStructure, Lattice):
 			SFsin += atomff * dwf * np.sin(arg)
 			SFcos += atomff * dwf * np.cos(arg)
 		
-		if normalized:
-			normalization = 1/np.sqrt(self.intensity_normalization(nG))
-		
-		return normalization*(SFcos + 1j*SFsin)
+		return SFcos + 1j*SFsin
 	
 	def bounded_reflections(self, nG):
 		"""
@@ -396,26 +381,6 @@ class Crystal(AtomicStructure, Lattice):
 		norm_G = np.sqrt(Gx**2 + Gy**2 + Gz**2)
 		in_bound = norm_G <= nG
 		return h.compress(in_bound), k.compress(in_bound), l.compress(in_bound)
-	
-	def intensity_normalization(self, nG):
-		""" 
-		Vectorized sum of form factor squared.
-        
-		Parameters
-		----------           
-		scatt_vector_norm : array-like of numericals
-			Scattering vector length (norm(G)).
-        
-		Returns
-		-------
-		total : array-like of numerical
-			array of the same shape as input.
-        
-		Notes
-		-----
-		By convention, scattering vectors G are defined such that norm(G) = 4 pi s
-		"""
-		return sum(atom.electron_form_factor(nG)**2 for atom in self)
 	
 	def transform(self, *matrices):
 		"""
