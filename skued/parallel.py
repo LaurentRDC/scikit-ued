@@ -58,28 +58,27 @@ def preduce(func, iterable, args = tuple(), kwargs = dict(), processes = None):
 	if processes == 1:
 		return reduce(func, iterable)
 
-	if not isinstance(iterable, Sized):
-		iterable = tuple(iterable)
-
 	with mp.Pool(processes) as pool:
-		chunksize = max(1, int(len(iterable)/pool._processes))
+		if isinstance(iterable, Sized):
+			chunksize = max(1, int(len(iterable)/pool._processes))
+		else:
+			chunksize = 1
 		
 		res = pool.imap_unordered(partial(reduce, func), tuple(chunked(iterable, chunksize)))
 		return reduce(func, res)
 
 def pmap(func, iterable, args = tuple(), kwargs = dict(), processes = None):
 	"""
-	Parallel application of a function with keyword arguments. Note
-	that generators are consumed; hence, this implementation is
-	not suitable for 'streaming' large objects through a pipeline...yet.
+	Parallel application of a function with keyword arguments. Based on 
+	multiprocessing.Pool.imap.
 
 	Parameters
 	----------
 	func : callable
 		Function to be applied to every element of `iterable`.
 	iterable : iterable
-		Iterable of items to be mapped. Generators are consumed.
-	args : tuple
+		Iterable of items to be mapped.
+	args : tuple, optional
 		Positional arguments of `function`.
 	kwargs : dictionary, optional
 		Keyword arguments of `function`.
@@ -87,30 +86,24 @@ def pmap(func, iterable, args = tuple(), kwargs = dict(), processes = None):
 		Number of processes to use. If `None`, maximal number of processes
 		is used. 
 
-	Returns
-	-------
-	out : iterable
-		Mapped values.
+	Yields
+	------
+	Mapped values.
 
 	Notes
 	-----
 	If `processes` is 1, `pmap` reduces to `map`, with the added benefit of
-	of using `args` and `kwargs`
+	of using `kwargs`
 	"""
-	if processes == 1:
-		return map(partial(func, *args, **kwargs), iterable)
+	func = partial(func, *args, **kwargs)
 
-	if not isinstance(iterable, Sized):
-		iterable = tuple(iterable)
+	if processes == 1:
+		yield from map(func, iterable)
 	
 	with mp.Pool(processes) as pool:
-		chunksize = max(1, int(len(iterable)/pool._processes))
+		if isinstance(iterable, Sized):
+			chunksize = max(1, int(len(iterable)/pool._processes))
+		else:
+			chunksize = 1
 
-		map_func = pool.map
-		if args:
-			map_func = pool.starmap
-			iterable = ((i,) + args for i in iterable)
-
-		return map_func(func = partial(func, **kwargs), 
-						iterable = iterable, 
-						chunksize = chunksize)
+		yield from  pool.imap(func = func, iterable = iterable, chunksize = chunksize)
