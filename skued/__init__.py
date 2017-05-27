@@ -4,6 +4,7 @@ __email__ = 'laurent.renedecotret@mail.mcgill.ca'
 __license__ = 'MIT'
 __version__ = '0.4'
 
+from .array_utils import repeated_array
 from .parallel import pmap, preduce
 from .plot_utils import spectrum_colors
 from .quantities import lorentz, electron_wavelength, interaction_parameter
