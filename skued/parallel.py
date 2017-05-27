@@ -10,6 +10,22 @@ from collections.abc import Sized
 from functools import partial, reduce
 import multiprocessing as mp
 
+def chunked(iterable, chunksize = 1):
+	"""
+	Generator yielding multiple iterables of length 'chunksize'.
+
+	Parameters
+	----------
+	iterable : iterable
+		Must be a sized iterable, otherwise the iterable is consumed.
+	chunksize : int, optional
+	"""
+	if not isinstance(iterable, Sized):
+		iterable = tuple(iterable)
+	length = len(iterable)
+	for ndx in range(0, length, chunksize):
+		yield iterable[ndx:min(ndx + chunksize, length)]
+
 def preduce(func, iterable, args = tuple(), kwargs = dict(), processes = None):
 	"""
 	Parallel application of the reduce function, with keyword arguments.
