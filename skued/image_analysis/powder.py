@@ -87,7 +87,7 @@ def angular_average(image, center, mask = None, extras = None):
 	if mask is None:
 		mask = np.zeros_like(image, dtype = np.bool)
 	
-	xc, yc = center     #Center coordinates  
+	xc, yc = center  
 	
 	#Create meshgrid and compute radial positions of the data
 	X, Y = np.meshgrid(np.arange(0, image.shape[0]), 
@@ -97,11 +97,12 @@ def angular_average(image, center, mask = None, extras = None):
 	# Replace all values in the image corresponding to irrelevant# data by 0: 
 	# this way, it will never count in any calculation because image
 	# values are used as weights in numpy.bincount
-	image[mask] = 0
+	valid = np.logical_not(mask)
 	
 	# Angular average
-	px_bin = np.bincount(R.ravel(), weights = image.ravel())
-	r_bin = np.bincount(R.ravel())
+	R, image = R[valid].ravel(), image[valid].ravel()
+	px_bin = np.bincount(R, weights = image)
+	r_bin = np.bincount(R)
 	radial_intensity = px_bin/r_bin
 
 	# Update the extras dictionary if provided:
@@ -109,8 +110,8 @@ def angular_average(image, center, mask = None, extras = None):
 	# Standard error = std / sqrt(N)
 	# std = sqrt(var - mean**2)
 	if extras is not None:
-		var_bin = np.bincount(R.ravel(), weights = image.ravel()**2)/r_bin
+		var_bin = np.bincount(R, weights = image**2)/r_bin
 		radial_intensity_error = np.sqrt(var_bin - radial_intensity**2)/np.sqrt(r_bin)
 		extras.update({'error':radial_intensity_error})
-
+	
 	return np.unique(R), radial_intensity
