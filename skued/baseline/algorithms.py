@@ -236,9 +236,9 @@ def baseline_dt(array, max_iter, level = None, first_stage = 'sym6', wavelet = '
 		Data with background. Can be either 1D signal or 2D array.
 	max_iter : int
 		Number of iterations to perform.
-	level : int or 'max', optional
+	level : int or None, optional
 		Decomposition level. A higher level will result in a coarser approximation of
-		the input signal (read: a lower frequency baseline). If 'max' (default), the maximum level
+		the input signal (read: a lower frequency baseline). If None (default), the maximum level
 		possible is used.
 	first_stage : str, optional
 		Wavelet to use for the first stage. See skued.baseline.ALL_FIRST_STAGE for a list of suitable arguments
