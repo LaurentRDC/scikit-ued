@@ -68,7 +68,7 @@ class Crystal(AtomicStructure, Lattice):
 		yield from symmetry_expansion(self.atoms, *self.symmetry_operators)
 	
 	def __len__(self):
-		return len(tuple(iter(self)))
+		return len(self.atoms)*len(self.symmetry_operators)
 	
 	def __repr__(self):
 		return '< Crystal object with unit cell of {} atoms>'.format(len(self))
@@ -91,7 +91,7 @@ class Crystal(AtomicStructure, Lattice):
 		with CIFParser(filename = path) as parser:
 			return Crystal(atoms = list(parser.atoms()), 
 						   lattice_vectors = parser.lattice_vectors(), 
-						   symmetry_operators = list(parser.symmetry_operators()))
+						   symmetry_operators = parser.symmetry_operators())
 
 	@classmethod
 	def from_pdb(cls, ID):
@@ -105,7 +105,7 @@ class Crystal(AtomicStructure, Lattice):
 			cached and parsed.
 		"""
 		parser = PDBParser(ID = ID)
-		return Crystal(atoms = parser.atoms(), 
+		return Crystal(atoms = list(parser.atoms()), 
 					   lattice_vectors = parser.lattice_vectors(),
 					   symmetry_operators = parser.symmetry_operators())
 	
@@ -159,7 +159,7 @@ class Crystal(AtomicStructure, Lattice):
         
 		Returns
 		-------
-		potential : ndarray, dtype float
+		potential : `~numpy.ndarray`, dtype float
 			Linear superposition of atomic potential [V*Angs]
 
 		See also
@@ -297,11 +297,11 @@ class Crystal(AtomicStructure, Lattice):
 		SFsin, SFcos = np.zeros(shape = nG.shape, dtype = np.float), np.zeros(shape = nG.shape, dtype = np.float)
 
 		# Pre-allocation of form factors gives huge speedups
+		dwf = np.empty_like(SFsin) 	# debye-waller factor
 		atomff_dict = dict()
 		for atom in self.atoms:
 			if atom.element not in atomff_dict:
 				atomff_dict[atom.element] = atom.electron_form_factor(nG)
-		dwf = np.empty_like(SFsin)
 
 		for atom in self: #TODO: implement in parallel?
 			x, y, z = atom.coords

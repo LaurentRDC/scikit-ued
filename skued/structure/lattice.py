@@ -49,7 +49,7 @@ class Lattice(Transformable):
         """
         Parameters
         ----------
-        lattice_vectors: list of ndarrays, shape (3,), optional
+        lattice_vectors: iterable of `~numpy.ndarray`, shape (3,), optional
             Lattice vectors. Default is a cartesian lattice.
         """
         super().__init__(**kwargs)
@@ -76,7 +76,7 @@ class Lattice(Transformable):
         return cls(lattice_vectors = lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma))
     
     @property
-    def parameters(self):
+    def lattice_parameters(self):
         """ Lattice parameters as three lengths and three angles. """
         a, b, c = norm(self.a1), norm(self.a2), norm(self.a3)
         alpha = np.arccos(np.vdot(self.a2, self.a3)/(b*c))

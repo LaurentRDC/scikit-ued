@@ -46,7 +46,7 @@ class TestLatticeParameters(unittest.TestCase):
         """ Create lattice from parameters, take reciprocal twice, 
         and see if the parameters have changed. """
         triclinic = (3, 4, 20, 45, 90, 126)
-        triclinic2 = Lattice.from_parameters(*triclinic).reciprocal.reciprocal.parameters
+        triclinic2 = Lattice.from_parameters(*triclinic).reciprocal.reciprocal.lattice_parameters
         self.assertTrue(np.allclose(triclinic, triclinic2))
 
 if __name__ == '__main__':
