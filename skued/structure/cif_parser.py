@@ -7,6 +7,7 @@ References
 .. [CIF2CELL] Torbjorn Bjorkman, "CIF2Cell: Generating geometries for electronic structure programs", 
 	   		  Computer Physics Communications 182, 1183-1186 (2011) doi: 10.1016/j.cpc.2011.01.013
 """
+import re
 import string
 import warnings
 from contextlib import suppress
@@ -84,27 +85,41 @@ class CIFParser(object):
 	
 	def __exit__(self, type, value, traceback):
 		del self.file
+
+	@property
+	def _first_block(self):
+		return self.file[self.file.keys()[0]]
 	
 	@lru_cache(maxsize = 1)
 	def hall_symbol(self):
 		""" Returns the Hall symbol """
-		block = self.file[self.file.keys()[0]]	# TODO: find right block
-		hall_number = None
+		block = self._first_block
+
+		hall_symbol = None
 		for tag in ['_symmetry_space_group_name_Hall','_space_group_name_Hall']:
-			try:
-				hall_symbol = block[tag]
-			except:
-				for tag in ['_symmetry_Int_Tables_number','_space_group_IT_number']:
-					try:
-						hall_symbol = Number2Hall[block[tag]]
-					except:
-						for tag in ['_symmetry_space_group_name_H-M','_space_group_name_H-M_alt']:
-							try:
-								h_m_symbol = block[tag].translate(string.maketrans("", ""),string.whitespace)
-								hall_number = HM2Hall[h_m_symbol]
-							except: 
-								pass
+			hall_symbol = block.get(tag) or hall_symbol
+
+		# In some rare cases, the given hall symbol in the file isn't standard,
+		# otherwise it would be a key in SymOpsHall
+		# Then, it is preferable to infer the conventional hall symbol from other info
+		if (hall_symbol is None) or (hall_symbol not in SymOpsHall):
+			h_m_symbol = None
+			for tag in ['_symmetry_space_group_name_H-M','_space_group_name_H-M_alt']:
+				h_m_symbol = block.get(tag) or h_m_symbol
+			
+			if h_m_symbol is not None:
+				h_m_symbol = re.sub('\s+', '', h_m_symbol)
+				hall_symbol =  HM2Hall[h_m_symbol]
 		
+		# Again, if hall_symbol is still missing OR invalid
+		if (hall_symbol is None) or (hall_symbol not in SymOpsHall):
+			table_number = None
+			for tag in ['_symmetry_Int_Tables_number','_space_group_IT_number']:
+				table_number = block.get(tag) or table_number
+				
+			if table_number is not None:
+				hall_symbol = Number2Hall[table_number]
+				
 		if hall_symbol is None:
 			raise ParseError('Hall number could not be inferred')
 	
@@ -112,7 +127,7 @@ class CIFParser(object):
 			hall_symbol = "-" + hall_symbol[1].upper() + hall_symbol[2:].lower()
 		else:
 			hall_symbol = hall_symbol[0].upper() + hall_symbol[1:].lower()
-		
+
 		return hall_symbol
 
 	@lru_cache(maxsize = 1)
@@ -124,7 +139,7 @@ class CIFParser(object):
 		-------
 		lv : list of ndarrays, shape (3,)
 		"""
-		block = self.file[self.file.keys()[0]]
+		block = self._first_block
 		
 		try:
 			a, _ = get_number_with_esd(block["_cell_length_a"])
@@ -149,17 +164,17 @@ class CIFParser(object):
 			Transformation matrices. Since translations and rotation are combined,
 			the transformation matrices are 4x4.
 		"""
-		block = self.file[self.file.keys()[0]]
+		block = self._first_block
 
 		equivalent_sites_str = None
 		for tag in ['_symmetry_equiv_pos_as_xyz','_space_group_symop_operation_xyz']:
 			with suppress(KeyError):
-				equivalent_sites_str = block.GetLoop(tag).get(tag) 
+				equivalent_sites_str = block.GetLoop(tag).get(tag)
 
 		if not equivalent_sites_str:
-			warnings.warn('Equivalent sites note stored in the file. \
-						   Pulling from database', UserWarning)
 			equivalent_sites_str = SymOpsHall[self.hall_symbol()]
+		elif len(equivalent_sites_str) != len(SymOpsHall[self.hall_symbol()]):
+			warnings.warn('The number of equivalent sites is not in line with the database. The file might be incomplete')
 		
 		# P1 space group only has a single equivalent site
 		if isinstance(equivalent_sites_str, str):
@@ -175,7 +190,8 @@ class CIFParser(object):
 		------
 		atoms : skued.structure.Atom instance
 		"""
-		block = self.file[self.file.keys()[0]]
+		block = self._first_block
+
 		try:
 			tmpdata = block.GetLoop('_atom_site_fract_x')
 			cartesian = False
