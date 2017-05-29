@@ -7,10 +7,24 @@ from .. import transform
 
 e1, e2, e3 = np.eye(3) # Euclidian basis
 
+# TODO: Introduce conventions on ordering a, b, c and angles
+#       based on http://atztogo.github.io/spglib/definition.html
 def lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma):
-    """ Returns the lattice vectors from three lengths and angles """
-    # Set alpha to be 90 deg for now
-    # Also fix the a-b plane to be the same as x-y plane
+    """ 
+    Returns the lattice vectors from three lengths and angles 
+    
+    Parameters
+    ----------
+    a, b, c : float
+        Lengths of lattice vectors [Angstroms]
+    alpha, beta, gamma : float
+        Angles of lattice vectors [degrees]
+    
+    Returns
+    -------
+    a1, a2 a3 : `~numpy.ndarray`, shape (3,)
+        Lattice vectors
+    """
     alpha, beta, gamma = map(radians, (alpha, beta, gamma))
 
     a1 = a*e1
