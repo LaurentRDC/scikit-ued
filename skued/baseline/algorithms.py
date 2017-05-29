@@ -58,7 +58,7 @@ def _iterative_baseline(array, max_iter, mask, background_regions, axes, approx_
 			background = np.swapaxes(np.swapaxes(background, 0, axis)[:-1], 0, axis)
 	return background
 
-def _dt_approx_rec(array, first_stage, wavelet, level, axis = -1):
+def _dt_approx_rec(array, first_stage, wavelet, mode, level, axis = -1):
     """
     Approximate reconstruction of a signal/image using the dual-tree approach.
     
@@ -74,6 +74,8 @@ def _dt_approx_rec(array, first_stage, wavelet, level, axis = -1):
         First-stage wavelet to use.
     wavelet : str, optional
         Complex wavelet to use in late stages.
+    mode : str, optional
+        Signal extension mode, see pywt.Modes.
     axis : int, optional
         Axis over which to compute the transform. Default is -1.
             
@@ -82,14 +84,14 @@ def _dt_approx_rec(array, first_stage, wavelet, level, axis = -1):
     reconstructed : ndarray
         Approximated reconstruction of the input array.
     """
-    coeffs = dtcwt(data = array, first_stage = first_stage, wavelet = wavelet, level = level, mode = 'constant', axis = axis)
+    coeffs = dtcwt(data = array, first_stage = first_stage, wavelet = wavelet, level = level, mode = mode, axis = axis)
     app_coeffs, *det_coeffs = coeffs
     
     det_coeffs = [np.zeros_like(det, dtype = np.complex) for det in det_coeffs]
     reconstructed = idtcwt(coeffs = [app_coeffs] + det_coeffs, first_stage = first_stage, wavelet = wavelet, mode = 'constant', axis = axis)
     return reconstructed
 
-def _dwt_approx_rec(array, level, wavelet, axis):
+def _dwt_approx_rec(array, level, wavelet, mode, axis):
 	"""
 	Approximate reconstruction of a signal/image. Uses the multi-level discrete wavelet 
 	transform to decompose a signal or an image, and reconstruct it using approximate 
@@ -100,13 +102,15 @@ def _dwt_approx_rec(array, level, wavelet, axis):
 	array : array-like
 		Array to be decomposed. Currently, only 1D and 2D arrays are supported.
 		Only even-lengths signals long the axis.
-	level : int or 'max' or None (deprecated)
+	level : int or None (deprecated)
 		Decomposition level. A higher level will result in a coarser approximation of
 		the input array. If the level is higher than the maximum possible decomposition level,
 		the maximum level is used.
 		If None, the maximum possible decomposition level is used.
 	wavelet : str or Wavelet object
 		Can be any argument accepted by PyWavelet.Wavelet, e.g. 'db10'
+    mode : str, optional
+        Signal extension mode, see pywt.Modes.
     axis : int, optional
         Axis over which to compute the transform. Default is -1.
             
@@ -135,7 +139,7 @@ def _dwt_approx_rec(array, level, wavelet, axis):
 	# For 2D array, check the condition with shortest dimension min(array.shape). This is how
 	# it is done in PyWavelet.wavedec2.
 	max_level = pywt.dwt_max_level(data_len = array.shape[axis], filter_len = wavelet.dec_len)
-	if level is None or level is 'max':
+	if level is None:
 		level = max_level
 	elif max_level < level:
 		warn('Decomposition level {} higher than maximum {}. Maximum is used.'.format(level, max_level))
@@ -143,7 +147,7 @@ def _dwt_approx_rec(array, level, wavelet, axis):
 	
 	# By now, we are sure that the decomposition level will be supported.
 	# Decompose the signal using the multilevel discrete wavelet transform
-	coeffs = pywt.wavedec(data = array, wavelet = wavelet, level = level, mode = 'constant', axis = axis)
+	coeffs = pywt.wavedec(data = array, wavelet = wavelet, level = level, mode = mode, axis = axis)
 	app_coeffs, det_coeffs = coeffs[0], coeffs[1:]
 	
 	# Replace detail coefficients by 0; keep the correct length so that the
@@ -157,7 +161,7 @@ def _dwt_approx_rec(array, level, wavelet, axis):
 		reconstructed = np.swapaxes(np.swapaxes(reconstructed, 0, axis)[:array.shape[axis]], 0, axis)
 	return  reconstructed
 
-def _dwt_approx_rec2(array, level, wavelet, axis):
+def _dwt_approx_rec2(array, level, wavelet, mode, axis):
 	"""
 	Approximate reconstruction of a signal/image. Uses the multi-level discrete wavelet 
 	transform to decompose a signal or an image, and reconstruct it using approximate 
@@ -175,6 +179,8 @@ def _dwt_approx_rec2(array, level, wavelet, axis):
 		If None, the maximum possible decomposition level is used.
 	wavelet : str or Wavelet object
 		Can be any argument accepted by PyWavelet.Wavelet, e.g. 'db10'
+    mode : str, optional
+        Signal extension mode, see pywt.Modes.
 	axis : 2-tuple of ints
             
 	Returns
@@ -208,7 +214,7 @@ def _dwt_approx_rec2(array, level, wavelet, axis):
 	
 	# By now, we are sure that the decomposition level will be supported.
 	# Decompose the signal using the multilevel discrete wavelet transform
-	coeffs = pywt.wavedec2(data = array, wavelet = wavelet, level = level, mode = 'constant', axes = axis)
+	coeffs = pywt.wavedec2(data = array, wavelet = wavelet, level = level, mode = mode, axes = axis)
 	app_coeffs, det_coeffs = coeffs[0], coeffs[1:]
 	
 	# Replace detail coefficients by 0; keep the correct length so that the
@@ -216,7 +222,7 @@ def _dwt_approx_rec2(array, level, wavelet, axis):
 	# The structure of coefficients depends on the dimensionality	
 	# Reconstruct signal
 	reconstructed = pywt.waverec2([app_coeffs] + [(None, None, None)]*len(det_coeffs), 
-								  wavelet = wavelet, mode = 'constant', axes = axis)
+								  wavelet = wavelet, mode = mode, axes = axis)
 
 	# Sometimes pywt.waverec returns a signal that is longer than the original signal
 	for ax in axis:
@@ -225,7 +231,7 @@ def _dwt_approx_rec2(array, level, wavelet, axis):
 	return reconstructed
 
 def baseline_dt(array, max_iter, level = None, first_stage = 'sym6', wavelet = 'qshift1', 
-				background_regions = [], mask = None, axis = -1):
+				background_regions = [], mask = None, mode = 'constant', axis = -1):
 	"""
 	Iterative method of baseline determination based on the dual-tree complex wavelet transform.
 	This function only works in 1D, along an axis. For baseline of 2D arrays, see baseline_dwt.
@@ -261,6 +267,8 @@ def baseline_dt(array, max_iter, level = None, first_stage = 'sym6', wavelet = '
     
 	mask : ndarray, dtype bool, optional
 		Mask array that evaluates to True for pixels that are invalid. 
+    mode : str, optional
+        Signal extension mode, see pywt.Modes.
 	axis : int, optional
 		Axis over which to compute the wavelet transform. Default is -1
     
@@ -276,10 +284,11 @@ def baseline_dt(array, max_iter, level = None, first_stage = 'sym6', wavelet = '
 	"""
 	return _iterative_baseline(array = array, max_iter = max_iter, background_regions = background_regions,
 									mask = mask, axes = (axis,), approx_rec_func = _dt_approx_rec,
-									func_kwargs = {'level': level, 'wavelet': wavelet,
+									func_kwargs = {'level': level, 'wavelet': wavelet, 'mode': mode,
 													'first_stage': first_stage, 'axis': axis})
 
-def baseline_dwt(array, max_iter, level = None, wavelet = 'sym6', background_regions = [], mask = None, axis = -1):
+def baseline_dwt(array, max_iter, level = None, wavelet = 'sym6', background_regions = [], 
+				 mask = None, mode = 'constant', axis = -1):
 	"""
 	Iterative method of baseline determination, based on the discrete wavelet transform. 
     
@@ -313,6 +322,8 @@ def baseline_dwt(array, max_iter, level = None, wavelet = 'sym6', background_reg
 	mask : ndarray, dtype bool, optional
 		Mask array that evaluates to True for pixels that are invalid. Useful to determine which pixels are masked
 		by a beam block.
+    mode : str, optional
+        Signal extension mode, see pywt.Modes.
 	axis : int or tuple, optional
 		Axis over which to compute the wavelet transform. Can also be a 2-tuple of ints for 2D baseline
     
@@ -333,4 +344,4 @@ def baseline_dwt(array, max_iter, level = None, wavelet = 'sym6', background_reg
 
 	return _iterative_baseline(array, max_iter = max_iter, background_regions = background_regions, 
 							   mask = mask, axes = axis, approx_rec_func = approx_rec_func[len(axis)], 
-							   func_kwargs = {'level': level, 'wavelet': wavelet, 'axis': axis})
+							   func_kwargs = {'level': level, 'wavelet': wavelet, 'axis': axis, 'mode':mode})
