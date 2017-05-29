@@ -24,11 +24,14 @@ def spectrum_colors(num_colors):
 	"""
 	if isinstance(num_colors, int):
 		num_colors = range(num_colors)
-	
 	num_colors = list(num_colors)
-	mi = min(num_colors)
-	ma = max(num_colors) - mi
-	hue_values = reversed([(n - mi)/ma for n in num_colors])
+
+	if len(num_colors) == 1:
+		hue_values = [0]
+	else:
+		mi = min(num_colors)
+		ma = max(num_colors) - mi
+		hue_values = reversed([(n - mi)/ma for n in num_colors])
 
 	# Scale so that the maximum is 'purple' (hue = 0.8)
 	# otherwise plots don't look as good

@@ -18,6 +18,11 @@ class TestSpectrumColors(unittest.TestCase):
 		""" Test spectrum_colors on unsized_iterable (e.g. generator) """
 		colors = spectrum_colors( range(0, 10) )
 		self.assertEqual(len(list(colors)), 10)
+	
+	def test_on_length_1_iterable(self):
+		""" Test that spectrum_colors is working on single-length iterables """
+		self.assertSequenceEqual(list(spectrum_colors(1)),
+								 list(spectrum_colors([0])))
 
 if __name__ == '__main__':
 	unittest.main()
