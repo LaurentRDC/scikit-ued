@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import contextlib
+from functools import lru_cache
 import gzip
 import os
 from urllib.request import urlretrieve
@@ -8,13 +9,13 @@ import numpy as np
 from . import Atom, lattice_vectors_from_parameters
 from .. import affine_map, translation_matrix
 
+class ParseError(IOError):
+	pass
+
 def retrieve_pdb_file(pdb_code, download_dir = None, server = 'ftp://ftp.wwpdb.org', overwrite = False):
 	""" 
 	Retrieves a PDB structure file from the PDB server and
 	stores it in a local file tree.
-
-	The PDB structure's file name is returned as a single string.
-	If obsolete ``==`` True, the file will be saved in a special file tree.
 
 	Parameters
 	----------
@@ -41,7 +42,7 @@ def retrieve_pdb_file(pdb_code, download_dir = None, server = 'ftp://ftp.wwpdb.o
 	# Where does the final PDB file get saved?
 	if download_dir is None:
 		path = os.path.join(os.getcwd(), code[1:3])
-	else:  # Put in specified directory
+	else:
 		path = download_dir
 	if not os.access(path, os.F_OK):
 		os.makedirs(path)
@@ -83,8 +84,8 @@ class PDBParser(object):
 	lattice_vectors
 		Lattice vectors of the crystal structure.
 
-	residues
-		Returns a list of residues making up the asymmetric unit cell
+	Atoms
+		Yields atoms making up the asymmetric unit cell
 
 	symmetry_operators
 		Symmetry operators that relate the asymmetric unit cell and the unit cell. The symmetry operators
@@ -95,6 +96,7 @@ class PDBParser(object):
 		self.ID = ID
 		self.file = retrieve_pdb_file(pdb_code = ID, download_dir = 'pdb_cache')
 
+	@lru_cache(maxsize = 1)
 	def lattice_vectors(self):
 		""" 
 		Returns the lattice vectors associated to a PDB structure.
@@ -124,34 +126,27 @@ class PDBParser(object):
 		"""
 		Returns a list of atoms associated with a PDB structure. These atoms form the asymmetric unit cell.
 
-		Returns
-		-------
-		atoms : list of skued.structure.Atom objects
+		Yields
+		------
+		atom: skued.structure.Atom
 		"""
 		atoms = list()
 		with open(self.file) as pdb_file:
-			for line in pdb_file:
-				if line.startswith('ATOM') or line.startswith('HETATM'):
-					x, y, z = float(line[30:38]), float(line[38:46]), float(line[46:54])
-					element = str(line[76:78]).replace(' ','')
-					atoms.append(Atom(element = element, coords = [x,y,z]))
-		return atoms
+			for line in filter(lambda l: l.startswith( ('ATOM', 'HEMATM') ), pdb_file):
+				x, y, z = float(line[30:38]), float(line[38:46]), float(line[46:54])
+				element = str(line[76:78]).replace(' ','')
+				yield Atom(element = element, coords = [x,y,z])
 	
 	def symmetry_operators(self):
 		"""
 		Returns the symmetry operators that map the atomic positions in a
 		PDB file to the crystal unit cell.
 
-		Returns
-		-------
-		sym_ops : list of ndarrays, shape (4,4)
+		Yields
+		------
+		sym_ops : `~numpy.ndarray`, shape (4,4)
 			Transformation matrices. Since translations and rotation are combined,
 			the transformation matrices are 4x4.
-
-		Raises
-		------
-		IOError
-			If no symmetry operators could be parsed from the file.
 		"""
 		# Symmetry operations are stored in a dictionary. Each key is the operator number,
 		# while each value is a list of two lists: one is operators row, while the other is
@@ -159,29 +154,17 @@ class PDBParser(object):
 		# This is clunky af
 		sym_ops = dict()
 		with open(self.file) as pdb_file:
-			for line in pdb_file:
-				if line.startswith('REMARK 290') and 'SMTRY' in line:
+			for line in filter(lambda l: l.startswith('REMARK 290') and ('SMTRY' in l), pdb_file):
+				#Determine what operator this is
+				op_num = line[22:23]
+				if op_num not in sym_ops:
+					sym_ops[op_num] = [[],[]]
 					
-					#Determine what operator this is
-					op_num = line[22:23]
-					if op_num not in sym_ops:
-						sym_ops[op_num] = [[],[]]
-						
-					r1, r2, r3, t = np.fromstring(line[23:], dtype = np.float, count = 4, sep = ' ')
-					sym_ops[op_num][0].append([r1, r2, r3])
-					sym_ops[op_num][1].append(t)
+				r1, r2, r3, t = np.fromstring(line[23:], dtype = np.float, count = 4, sep = ' ')
+				rotation = np.array([r1,r2,r3], dtype = np.float)
+				translation = np.array(t)
 
-		if not sym_ops:
-			raise IOError('No symmetry operators could be parsed in file {}'.format(file))
-
-		# Combine operators
-		matrices = list()
-		for rotation, translation in sym_ops.values():
-			rotation, translation = np.asarray(rotation, dtype = np.float), np.asarray(translation, dtype = np.float)
-			
-			#Translations and rotations combined according to http://www.euclideanspace.com/maths/geometry/affine/matrix4x4/
-			transf = affine_map(rotation)
-			transf[:3,3] = translation
-			matrices.append(transf)
-
-		return tuple(matrices)
+				#Translations and rotations combined according to http://www.euclideanspace.com/maths/geometry/affine/matrix4x4/
+				transf = affine_map(rotation)
+				transf[:3,3] = translation
+				yield transf

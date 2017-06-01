@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 import os
 import re
-import glob
-from itertools import chain
 from setuptools import setup, find_packages
 #from Cython.Build import cythonize
 
-base_package = 'skued'
+BASE_PACKAGE = 'skued'
 
 base_path = os.path.dirname(__file__)
 with open(os.path.join(base_path, 'skued', '__init__.py')) as f:
@@ -24,13 +22,9 @@ with open('CHANGELOG.rst') as f:
 with open('requirements.txt') as f:
     requirements = [line for line in f.read().split('\n') if len(line.strip())]
 
-packages = [base_package + '.' + x for x in find_packages(os.path.join(base_path, base_package))]
-if base_package not in packages:
-    packages.append(base_package)
-
-wavelets = chain.from_iterable([glob.glob('skued\\baseline\\data\\*.npy'), 
-                                glob.glob('skued\\baseline\\data\\*.npz')])
-
+packages = [BASE_PACKAGE + '.' + x for x in find_packages(os.path.join(base_path, BASE_PACKAGE))]
+if BASE_PACKAGE not in packages:
+    packages.append(BASE_PACKAGE)
 
 if __name__ == '__main__':
     setup(
@@ -39,6 +33,7 @@ if __name__ == '__main__':
         long_description = '\n\n'.join([readme, changes]),
         license = LICENSE,
         url = 'http://scikit-ued.readthedocs.io',
+        download_url = 'http://github.com/LaurentRDC/scikit-ued',
         version = VERSION,
         author = 'Laurent P. René de Cotret',
         author_email = 'laurent.renedecotret@mail.mcgill.ca',
@@ -47,12 +42,15 @@ if __name__ == '__main__':
         install_requires = requirements,
         keywords = ['skued'],
         packages = packages,
-		data_files = [('skued\\baseline\\data', wavelets)],
+        include_package_data = True,
         zip_safe = False,
-        classifiers = ['Intended Audience :: Developers',
+        classifiers = ['Environment :: Console',
+                       'Intended Audience :: Science/Research',
+                       'Topic :: Scientific'
                        'License :: OSI Approved :: MIT License',
                        'Natural Language :: English',
                        'Operating System :: OS Independent',
+                       'Programming Language :: Python',
                        'Programming Language :: Python :: 3.5',
                        'Programming Language :: Python :: 3.6']
     )

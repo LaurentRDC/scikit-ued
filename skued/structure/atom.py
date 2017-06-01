@@ -98,11 +98,12 @@ class Atom(Transformable):
 		self._d = np.array((d1, d2, d3)).reshape((1,3))
 		
 	def __repr__(self):
-		return "< Atom {0} at coordinates {1} >".format(self.element, repr(self.coords))
+		x, y, z = tuple(self.coords)
+		return "< Atom {} at coordinates ({:.2f}, {:.2f}, {:.2f}) >".format(self.element, x, y, z)
 	
-	def __sub__(self, atom):
+	def __sub__(self, other):
 		""" Returns the distance between the two atoms. """
-		return np.linalg.norm(self.coords - atom.coords)
+		return np.linalg.norm(self.coords - other.coords)
 	
 	def __getitem__(self, index):
 		return self.coords[index]
@@ -111,8 +112,6 @@ class Atom(Transformable):
 		self.coords[index] = value
 	
 	def __eq__(self, other):
-		# Good recommandation to check subclass
-		# https://stackoverflow.com/a/12511715/5787171
 		return (isinstance(other, self.__class__)
 				and (self.element == other.element) 
 				and np.allclose(self.coords, other.coords, atol = 1e-3) 

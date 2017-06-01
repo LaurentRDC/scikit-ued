@@ -214,6 +214,7 @@ class Crystal(AtomicStructure, Lattice):
 		G = np.asarray(G, dtype = np.float)
 	
 		# Transformation matric between reciprocal space and miller indices
+		# TODO: refactor to use skued.change_of_basis
 		matrix_trans = np.empty(shape = (3,3), dtype = np.float)
 		for i in range(len(self.reciprocal_vectors)):
 			matrix_trans[:,i] = self.reciprocal_vectors[i]

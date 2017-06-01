@@ -20,7 +20,7 @@ from . import Atom, Lattice, lattice_vectors_from_parameters, real_coords, frac_
 from .. import affine_map, transform
 from .spg_data import HM2Hall, Number2Hall, SymOpsHall
 
-class ParseError(Exception):
+class ParseError(IOError):
 	pass
 
 def sym_ops(equiv_site):

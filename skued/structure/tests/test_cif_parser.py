@@ -27,7 +27,7 @@ class TestParserCompatibility(unittest.TestCase):
     """ Test the CIFParser on all CIF files stored herein """
 
     def test_all_files(self):
-        for root, _, files in os.walk(os.path.join('skued', 'structure', 'tests')):
+        for root, _, files in os.walk(os.path.join('skued', 'structure')):
             for name in filter(lambda path: path.endswith('.cif'), files):
                 with self.subTest(name.split('\\')[-1]):
                     full_path = os.path.join(root, name)
