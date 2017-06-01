@@ -108,6 +108,14 @@ class Atom(Transformable):
 	
 	def __setitem__(self, index, value):
 		self.coords[index] = value
+	
+	def __eq__(self, other):
+		return (self.element == other.element) 
+			   and (self.coords == other.coords) 
+			   and (self.displacement == other.displacement)
+	
+	def __hash__(self):
+		return hash( (self.element, tuple(self.coords), tuple(self.displacement)) )
 
 	@property
 	def atomic_number(self):
