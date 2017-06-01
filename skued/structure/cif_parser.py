@@ -16,7 +16,7 @@ from functools import lru_cache
 import numpy as np
 from CifFile import CifFile, get_number_with_esd
 
-from . import Atom, Lattice, lattice_vectors_from_parameters, real_coords
+from . import Atom, Lattice, lattice_vectors_from_parameters, real_coords, frac_coords
 from .. import affine_map, transform
 from .spg_data import HM2Hall, Number2Hall, SymOpsHall
 
@@ -35,7 +35,8 @@ def sym_ops(equiv_site):
 	Returns
 	-------
 	sym_ops : ndarray, shape (4,4)
-		Symmetry operator as a 4x4 affine transformation matrix.
+		Symmetry operator as a 4x4 affine transformation on the FRACTIONAL
+		coordinates.
 	"""
 	rotation = np.zeros( (3,3) )
 	trans_vec = np.zeros( (3,) )
@@ -241,10 +242,11 @@ class CIFParser(object):
 			coords = np.array([get_number_with_esd(x)[0], 
 							   get_number_with_esd(y)[0], 
 							   get_number_with_esd(z)[0]])
-
+			
+			# We normalize atom position to be within the unit cell
+			# Therefore we need the fractional coordinates
 			if cartesian:
 				coords = transform(cart_trans_matrix, coords)
-			else:
-				coords = real_coords(coords, lv)
+				coords[:] = frac_coords(coords, lv)
 			
-			yield Atom(element = e, coords = coords)
+			yield Atom(element = e, coords = real_coords(np.mod(coords, 1), lv))

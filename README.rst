@@ -20,9 +20,6 @@ To install the latest development version from `Github <https://github.com/Laure
 
     $ python -m pip install git+git://github.com/LaurentRDC/scikit-ued.git
 
-
-If your current Python installation doesn't have pip available, try `get-pip.py <bootstrap.pypa.io>`_
-
 After installing scikit-ued you can use it like any other Python module as :code:`skued`.
 
 API Reference

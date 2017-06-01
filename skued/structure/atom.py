@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import numpy as np
 from .scattering_params import scattering_params
 from . import Transformable
@@ -114,11 +115,13 @@ class Atom(Transformable):
 		# https://stackoverflow.com/a/12511715/5787171
 		return (isinstance(other, self.__class__)
 				and (self.element == other.element) 
-				and (self.coords == other.coords) 
-				and (self.displacement == other.displacement))
+				and np.allclose(self.coords, other.coords, atol = 1e-3) 
+				and np.allclose(self.displacement, other.displacement, atol = 1e-3))
 	
 	def __hash__(self):
-		return hash( (self.element, tuple(self.coords), tuple(self.displacement)) )
+		return hash( (self.element, 
+					  tuple(np.round(self.coords, 3)), 
+					  tuple(np.round(self.displacement, 3))) )
 
 	@property
 	def atomic_number(self):
