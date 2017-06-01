@@ -110,9 +110,9 @@ class Atom(Transformable):
 		self.coords[index] = value
 	
 	def __eq__(self, other):
-		return (self.element == other.element) 
-			   and (self.coords == other.coords) 
-			   and (self.displacement == other.displacement)
+		return ((self.element == other.element) 
+				and (self.coords == other.coords) 
+				and (self.displacement == other.displacement))
 	
 	def __hash__(self):
 		return hash( (self.element, tuple(self.coords), tuple(self.displacement)) )
