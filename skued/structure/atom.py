@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import numpy as np
 from .scattering_params import scattering_params
 from . import Transformable
@@ -97,17 +98,29 @@ class Atom(Transformable):
 		self._d = np.array((d1, d2, d3)).reshape((1,3))
 		
 	def __repr__(self):
-		return "< Atom {0} at coordinates {1} >".format(self.element, repr(self.coords))
+		x, y, z = tuple(self.coords)
+		return "< Atom {} at coordinates ({:.2f}, {:.2f}, {:.2f}) >".format(self.element, x, y, z)
 	
-	def __sub__(self, atom):
+	def __sub__(self, other):
 		""" Returns the distance between the two atoms. """
-		return np.linalg.norm(self.coords - atom.coords)
+		return np.linalg.norm(self.coords - other.coords)
 	
 	def __getitem__(self, index):
 		return self.coords[index]
 	
 	def __setitem__(self, index, value):
 		self.coords[index] = value
+	
+	def __eq__(self, other):
+		return (isinstance(other, self.__class__)
+				and (self.element == other.element) 
+				and np.allclose(self.coords, other.coords, atol = 1e-3) 
+				and np.allclose(self.displacement, other.displacement, atol = 1e-3))
+	
+	def __hash__(self):
+		return hash( (self.element, 
+					  tuple(np.round(self.coords, 3)), 
+					  tuple(np.round(self.displacement, 3))) )
 
 	@property
 	def atomic_number(self):

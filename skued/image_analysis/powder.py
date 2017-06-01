@@ -7,6 +7,8 @@ import numpy as np
 from scipy.signal import fftconvolve, find_peaks_cwt
 from skimage.filters import gaussian, threshold_local
 
+import matplotlib.pyplot as plt
+
 _PC_CACHE = dict()
 def powder_center(image):
 	"""
@@ -87,30 +89,29 @@ def angular_average(image, center, mask = None, extras = None):
 	if mask is None:
 		mask = np.zeros_like(image, dtype = np.bool)
 	
-	xc, yc = center     #Center coordinates  
+	xc, yc = center  
 	
 	#Create meshgrid and compute radial positions of the data
 	X, Y = np.meshgrid(np.arange(0, image.shape[0]), 
 					   np.arange(0, image.shape[1]))
 	R = np.rint(np.sqrt( (X - xc)**2 + (Y - yc)**2 )).astype(np.int)
 
-	# Replace all values in the image corresponding to irrelevant# data by 0: 
-	# this way, it will never count in any calculation because image
-	# values are used as weights in numpy.bincount
-	image[mask] = 0
-	
-	# Angular average
-	px_bin = np.bincount(R.ravel(), weights = image.ravel())
-	r_bin = np.bincount(R.ravel())
-	radial_intensity = px_bin/r_bin
+	valid = np.logical_not(mask)
+	R_v, image_v = R[valid].ravel(), image[valid].ravel()
+	px_bin = np.bincount(R_v, weights = image_v)
+	r_bin = np.bincount(R_v)
+
+	# np.bincount will start counting at 0. We ignore the leading zeroes
+	nz = r_bin > 0.0
+	radial_intensity = px_bin[nz]/r_bin[nz]
 
 	# Update the extras dictionary if provided:
 	# Error as the standard error in the mean, at each pixel
 	# Standard error = std / sqrt(N)
 	# std = sqrt(var - mean**2)
 	if extras is not None:
-		var_bin = np.bincount(R.ravel(), weights = image.ravel()**2)/r_bin
-		radial_intensity_error = np.sqrt(var_bin - radial_intensity**2)/np.sqrt(r_bin)
+		var_bin = np.bincount(R_v, weights = image_v**2)[nz]/r_bin[nz]
+		radial_intensity_error = np.sqrt(var_bin - radial_intensity**2)/np.sqrt(r_bin[nz])
 		extras.update({'error':radial_intensity_error})
-
-	return np.unique(R), radial_intensity
+	
+	return np.unique(R_v), radial_intensity

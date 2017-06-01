@@ -19,28 +19,28 @@ class TestBaselineDWT(unittest.TestCase):
 
 		with self.subTest('1D shape'):
 			arr = np.random.random(size = (102,))
-			rec_arr = _dwt_approx_rec(arr, level = 2, wavelet = 'db6', axis = -1)
+			rec_arr = _dwt_approx_rec(arr, level = 2, wavelet = 'db6', mode = 'constant', axis = -1)
 			self.assertSequenceEqual(rec_arr.shape, arr.shape)
 
 		with self.subTest('1D along axis'):
 			arr2 = np.random.random(size = (21, 52))
-			rec_arr2 = _dwt_approx_rec(arr2, level = 2, wavelet = 'sym4', axis = 1)
+			rec_arr2 = _dwt_approx_rec(arr2, level = 2, wavelet = 'sym4', mode = 'constant', axis = 1)
 			self.assertSequenceEqual(rec_arr2.shape, arr2.shape)
 		
 		with self.subTest('2D shape'):
 			arr2 = np.random.random(size = (22,52))
-			rec_arr2 = _dwt_approx_rec2(arr2, level = 2, wavelet = 'sym6', axis = (-2, -1))
+			rec_arr2 = _dwt_approx_rec2(arr2, level = 2, wavelet = 'sym6', mode = 'constant', axis = (-2, -1))
 			self.assertSequenceEqual(rec_arr2.shape, arr2.shape)
 
 		with self.subTest('2D along axes'):
 			arr2 = np.random.random(size = (22,52, 5))
-			rec_arr2 = _dwt_approx_rec2(arr2, level = 2, wavelet = 'sym6', axis = (0, 1))
+			rec_arr2 = _dwt_approx_rec2(arr2, level = 2, wavelet = 'sym6', mode = 'constant', axis = (0, 1))
 			self.assertSequenceEqual(rec_arr2.shape, arr2.shape)
 
 	def test_trivial_case_1d(self):
 		""" The baseline for a 1d array of zeros should be zeros """
 		arr = np.zeros_like(self.arr)
-		self.assertTrue(np.allclose(arr, baseline_dwt(arr, max_iter = 10, level = 'max')))
+		self.assertTrue(np.allclose(arr, baseline_dwt(arr, max_iter = 10, level = None)))
 
 	def test_trivial_case_2d(self):
 		""" The baseline for a 2d array of zeros should be zeros """
@@ -76,12 +76,12 @@ class TestbaselineDT(unittest.TestCase):
 
 		with self.subTest('1D shape'):
 			arr = np.random.random(size = (102,))
-			rec_arr = _dt_approx_rec(arr, level = 2, first_stage = 'db1', wavelet = 'qshift3', axis = -1)
+			rec_arr = _dt_approx_rec(arr, level = 2, first_stage = 'db1', wavelet = 'qshift3', mode = 'smooth', axis = -1)
 			self.assertSequenceEqual(rec_arr.shape, arr.shape)
 
 		with self.subTest('2D along axis'):
 			arr2 = np.random.random(size = (21, 52))
-			rec_arr2 = _dt_approx_rec(arr2, level = 2, first_stage = 'db1', wavelet = 'qshift3', axis = 1)
+			rec_arr2 = _dt_approx_rec(arr2, level = 2, first_stage = 'db1', wavelet = 'qshift3', mode = 'smooth', axis = 1)
 			self.assertSequenceEqual(rec_arr2.shape, arr2.shape)
 
 	def test_trivial_case(self):

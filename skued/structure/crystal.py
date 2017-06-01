@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from copy import copy
-from collections.abc import Iterable
+from collections.abc import Iterable, Sized
 from functools import lru_cache
 from itertools import product, takewhile, count
 import numpy as np
@@ -11,7 +11,7 @@ from scipy.special import k0 as bessel
 import spglib
 from warnings import warn
 
-from . import AtomicStructure, Lattice, CIFParser, PDBParser, real_coords
+from . import AtomicStructure, Lattice, CIFParser, PDBParser, real_coords, frac_coords
 from .. import (change_of_basis, transform, affine_map, change_basis_mesh, 
 			    is_rotation_matrix, minimum_image_distance)
 
@@ -19,27 +19,6 @@ from .. import (change_of_basis, transform, affine_map, change_basis_mesh,
 m = 9.109*10**(-31)     #electron mass in kg
 a0 = 0.5291             #in Angs
 e = 14.4                #electron charge in Volt*Angstrom
-
-def symmetry_expansion(items, *symmetry_operators):
-    """
-    Expands a a list of Transformable objects according to symmetry operators.
-    
-    Parameters
-    ----------
-    items : list of uediff.structure.Transformable objects 
-        Typically AtomicStructures or Atoms
-    symmetry_operators : tuple of ndarrays, shape (3,3)
-        Symmetry operators
-    
-    Returns
-    -------
-    expanded : generator of uediff.structure.Transformable objects
-    """
-    for item in items:
-        for sym_op in symmetry_operators:
-            new_item = copy(item)
-            new_item.transform(sym_op)
-            yield new_item
 
 class Crystal(AtomicStructure, Lattice):
 	"""
@@ -50,11 +29,10 @@ class Crystal(AtomicStructure, Lattice):
 	----------
 	symmetry_operators : list of ndarrays
 		Symmetry operators that links the underlying AtomicStructure to the unit cell construction.
-    
+		It is assumed that the symmetry operators operate on the atomic coordinates in fractional form.
 	unitcell : iterable of Atom objects
 		List of atoms in the crystal unitcell. iter(Crystal) is a generator that yields
 		the same atoms; this approach is preferred.
-    
 	atoms : iterable
 		List of atoms in the asymmetric unit.
 	"""
@@ -65,13 +43,30 @@ class Crystal(AtomicStructure, Lattice):
 		super().__init__(**kwargs)
 	
 	def __iter__(self):
-		yield from symmetry_expansion(self.atoms, *self.symmetry_operators)
+		unique_atoms = set([])
+
+		to_real = affine_map(change_of_basis(self.lattice_vectors, np.eye(3)))
+		to_frac = np.linalg.inv(to_real)
+
+		for atm in self.atoms:
+			for sym_op in self.symmetry_operators:
+				new = copy(atm)
+				new.transform(to_frac)
+				new.transform(sym_op)
+				new.coords = np.mod(new.coords, 1)	# normalize to inside unit cell
+				new.transform(to_real)
+				unique_atoms.add(new)
+
+		yield from iter(unique_atoms)
 	
 	def __len__(self):
-		return len(tuple(iter(self)))
+		return len(set(self))
 	
 	def __repr__(self):
 		return '< Crystal object with unit cell of {} atoms>'.format(len(self))
+	
+	def __eq__(self, other):
+		return isinstance(other, self.__class__) and (set(self) == set(other))
 
 	@classmethod
 	def from_cif(cls, path):
@@ -91,7 +86,7 @@ class Crystal(AtomicStructure, Lattice):
 		with CIFParser(filename = path) as parser:
 			return Crystal(atoms = list(parser.atoms()), 
 						   lattice_vectors = parser.lattice_vectors(), 
-						   symmetry_operators = list(parser.symmetry_operators()))
+						   symmetry_operators = parser.symmetry_operators())
 
 	@classmethod
 	def from_pdb(cls, ID):
@@ -105,7 +100,7 @@ class Crystal(AtomicStructure, Lattice):
 			cached and parsed.
 		"""
 		parser = PDBParser(ID = ID)
-		return Crystal(atoms = parser.atoms(), 
+		return Crystal(atoms = list(parser.atoms()), 
 					   lattice_vectors = parser.lattice_vectors(),
 					   symmetry_operators = parser.symmetry_operators())
 	
@@ -159,7 +154,7 @@ class Crystal(AtomicStructure, Lattice):
         
 		Returns
 		-------
-		potential : ndarray, dtype float
+		potential : `~numpy.ndarray`, dtype float
 			Linear superposition of atomic potential [V*Angs]
 
 		See also
@@ -219,6 +214,7 @@ class Crystal(AtomicStructure, Lattice):
 		G = np.asarray(G, dtype = np.float)
 	
 		# Transformation matric between reciprocal space and miller indices
+		# TODO: refactor to use skued.change_of_basis
 		matrix_trans = np.empty(shape = (3,3), dtype = np.float)
 		for i in range(len(self.reciprocal_vectors)):
 			matrix_trans[:,i] = self.reciprocal_vectors[i]
@@ -297,11 +293,11 @@ class Crystal(AtomicStructure, Lattice):
 		SFsin, SFcos = np.zeros(shape = nG.shape, dtype = np.float), np.zeros(shape = nG.shape, dtype = np.float)
 
 		# Pre-allocation of form factors gives huge speedups
+		dwf = np.empty_like(SFsin) 	# debye-waller factor
 		atomff_dict = dict()
 		for atom in self.atoms:
 			if atom.element not in atomff_dict:
 				atomff_dict[atom.element] = atom.electron_form_factor(nG)
-		dwf = np.empty_like(SFsin)
 
 		for atom in self: #TODO: implement in parallel?
 			x, y, z = atom.coords
@@ -356,8 +352,7 @@ class Crystal(AtomicStructure, Lattice):
 			Transformation matrices.
 		"""
 		# Only rotation matrices should affect the symmetry operations
-		for matrix in matrices:
-			matrix = affine_map(matrix)  # Make sure it is 4x4
+		for matrix in map(affine_map, matrices):
 			if is_rotation_matrix(matrix):
 				matrix[:3, 3] = 0  # remove translations
 			self.symmetry_operators = tuple(transform(matrix, sym_op) for sym_op in self.symmetry_operators)
