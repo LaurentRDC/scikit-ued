@@ -110,7 +110,10 @@ class Atom(Transformable):
 		self.coords[index] = value
 	
 	def __eq__(self, other):
-		return ((self.element == other.element) 
+		# Good recommandation to check subclass
+		# https://stackoverflow.com/a/12511715/5787171
+		return (isinstance(other, self.__class__)
+				and (self.element == other.element) 
 				and (self.coords == other.coords) 
 				and (self.displacement == other.displacement))
 	
