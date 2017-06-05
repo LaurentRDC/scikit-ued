@@ -74,6 +74,8 @@ def angular_average(image, center, mask = None, extras = None, angular_bounds = 
 	angular_bounds : 2-tuple or None, optional
 		If not None, the angles between first and second elements of `angular_bounds`
 		(inclusively) will be used for the average. Angle bounds are specified in degrees.
+		0 degrees is defined as the positive x-axis. Angle bounds outside [0, 360) are mapped back
+		to [0, 360).
 
 	Returns
 	-------
@@ -100,6 +102,7 @@ def angular_average(image, center, mask = None, extras = None, angular_bounds = 
 
 	if angular_bounds:
 		mi, ma = angular_bounds
+		mi, ma = mi % 360, ma % 360
 		angles = np.rad2deg(np.arctan2(Y - yc, X - xc))
 		mask[np.logical_not(np.logical_and(mi <= angles, angles <= ma))] = True
 
