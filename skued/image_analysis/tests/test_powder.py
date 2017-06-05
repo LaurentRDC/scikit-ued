@@ -79,6 +79,27 @@ class TestAngularAverage(unittest.TestCase):
 		self.assertEqual(intensity.max(), image.max())
 		self.assertSequenceEqual(radius.shape, intensity.shape)
 	
+	def test_angular_bounds(self):
+		""" Test angular_average with a restrictive angular_bounds argument """
+		image = np.zeros(shape = (256, 256), dtype = np.float)
+		center = (image.shape[0]/2, image.shape[1]/2)
+		xc, yc = center
+
+		# Create an image with a wide ring
+		extent = np.arange(0, image.shape[0])
+		xx, yy = np.meshgrid(extent, extent)
+		rr = np.sqrt((xx - xc)**2 + (yy - yc)**2)
+		angles = np.rad2deg(np.arctan2(yy - yc, xx - xc))
+		image[np.logical_and(0 <= angles, angles <= 60)] = 1
+		
+		with self.subTest('Outside angle bounds'):
+			radius, intensity = angular_average(image, center, angular_bounds = (0, 60))
+			self.assertTrue(np.allclose(intensity, np.ones_like(intensity)))
+		
+		with self.subTest('Inside angle bounds'):
+			radius, intensity = angular_average(image, center, angular_bounds = (60, 360))
+			self.assertTrue(np.allclose(intensity, np.zeros_like(intensity)))
+	
 	def test_ring_with_mask(self):
 		""" Test angular_average on an image with a wide ring """
 		image = np.zeros(shape = (256, 256), dtype = np.float)
