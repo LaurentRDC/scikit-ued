@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
+from glob import glob
+from itertools import chain
 import os
 import re
 from setuptools import setup, find_packages
 #from Cython.Build import cythonize
 
 BASE_PACKAGE = 'skued'
+
+wavelets = chain.from_iterable([glob('skued\\baseline\\data\\*.npy'), 
+                                glob('skued\\baseline\\data\\*.npz')])
 
 base_path = os.path.dirname(__file__)
 with open(os.path.join(base_path, 'skued', '__init__.py')) as f:
@@ -42,6 +47,7 @@ if __name__ == '__main__':
         install_requires = requirements,
         keywords = ['skued'],
         packages = packages,
+        data_files = [('skued\\baseline\\data', wavelets)],
         include_package_data = True,
         zip_safe = False,
         classifiers = ['Environment :: Console',
