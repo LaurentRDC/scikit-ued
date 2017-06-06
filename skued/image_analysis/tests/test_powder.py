@@ -95,9 +95,17 @@ class TestAngularAverage(unittest.TestCase):
 		with self.subTest('Outside angle bounds'):
 			radius, intensity = angular_average(image, center, angular_bounds = (0, 60))
 			self.assertTrue(np.allclose(intensity, np.ones_like(intensity)))
+
+		with self.subTest('Overlapping bounds'):
+			radius, intensity = angular_average(image, center, angular_bounds = (15, 75))
+			self.assertFalse(np.allclose(intensity, np.ones_like(intensity)))
 		
 		with self.subTest('Inside angle bounds'):
 			radius, intensity = angular_average(image, center, angular_bounds = (60, 360))
+			self.assertTrue(np.allclose(intensity, np.zeros_like(intensity)))
+		
+		with self.subTest('Inside angle bounds with 360deg rollover'):
+			radius, intensity = angular_average(image, center, angular_bounds = (60 + 360, 360 + 360))
 			self.assertTrue(np.allclose(intensity, np.zeros_like(intensity)))
 	
 	def test_ring_with_mask(self):

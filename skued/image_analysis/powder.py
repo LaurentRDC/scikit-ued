@@ -84,8 +84,6 @@ def angular_average(image, center, mask = None, extras = None, angular_bounds = 
 	average : `~numpy.ndarray`, shape (N,)
 		Angular-average of the array.
 	"""
-	#TODO: N dimensions. The only problem is the generation of an arbitrary
-	#	   meshgrid on the image.
 	#TODO: axis parameter? so batches of angular averages can be computed
 	#	   at the same time.
 	image = np.asarray(image, dtype = np.float)
