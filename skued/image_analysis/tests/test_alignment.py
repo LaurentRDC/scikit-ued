@@ -6,8 +6,6 @@ from skimage import data
 from skimage.filters import gaussian
 from skimage.transform import rotate
 
-import matplotlib.pyplot as plt
-
 from .. import shift_image, align
     
 class TestAlign(unittest.TestCase):

@@ -53,8 +53,8 @@ def _iterative_baseline(array, max_iter, mask, background_regions, axes, approx_
 
 	# Readjust size for odd input signals
 	# If axis was padded, trim
-	if background.shape != original_shape:
-		for axis in axes:
+	for axis in axes:
+		while background.shape[axis] > original_shape[axis]:
 			background = np.swapaxes(np.swapaxes(background, 0, axis)[:-1], 0, axis)
 	return background
 
@@ -157,7 +157,7 @@ def _dwt_approx_rec(array, level, wavelet, mode, axis):
 	reconstructed = pywt.waverec([app_coeffs] + [None,]*len(det_coeffs), wavelet = wavelet, mode = 'constant', axis = axis)
 
 	# Sometimes pywt.waverec returns a signal that is longer than the original signal
-	if reconstructed.shape[axis] > array.shape[axis]:
+	while reconstructed.shape[axis] > array.shape[axis]:
 		reconstructed = np.swapaxes(np.swapaxes(reconstructed, 0, axis)[:array.shape[axis]], 0, axis)
 	return  reconstructed
 
@@ -225,9 +225,9 @@ def _dwt_approx_rec2(array, level, wavelet, mode, axis):
 								  wavelet = wavelet, mode = mode, axes = axis)
 
 	# Sometimes pywt.waverec returns a signal that is longer than the original signal
-	for ax in axis:
-		if reconstructed.shape[ax] > array.shape[ax]:
-			reconstructed = np.swapaxes(np.swapaxes(reconstructed, 0, ax)[:-1], 0, ax)
+	for ax in range(reconstructed.ndim):
+		while reconstructed.shape[ax] > array.shape[ax]:
+			reconstructed = np.swapaxes(np.swapaxes(reconstructed, 0, ax)[:-1], ax, 0)
 	return reconstructed
 
 def baseline_dt(array, max_iter, level = None, first_stage = 'sym6', wavelet = 'qshift1', 

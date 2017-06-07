@@ -23,12 +23,12 @@ class TestBaselineDWT(unittest.TestCase):
 			self.assertSequenceEqual(rec_arr.shape, arr.shape)
 
 		with self.subTest('1D along axis'):
-			arr2 = np.random.random(size = (21, 52))
+			arr2 = np.random.random(size = (101, 52))
 			rec_arr2 = _dwt_approx_rec(arr2, level = 2, wavelet = 'sym4', mode = 'constant', axis = 1)
 			self.assertSequenceEqual(rec_arr2.shape, arr2.shape)
 		
 		with self.subTest('2D shape'):
-			arr2 = np.random.random(size = (22,52))
+			arr2 = np.random.random(size = (102,52))
 			rec_arr2 = _dwt_approx_rec2(arr2, level = 2, wavelet = 'sym6', mode = 'constant', axis = (-2, -1))
 			self.assertSequenceEqual(rec_arr2.shape, arr2.shape)
 

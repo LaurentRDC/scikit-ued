@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Image manipulation involving symmetry
+Image manipulation of powder diffraction
 """
-import matplotlib.pyplot as plt
 import numpy as np
-from scipy.signal import fftconvolve, find_peaks_cwt
-from skimage.filters import gaussian, threshold_local
-
-import matplotlib.pyplot as plt
+from scipy.signal import fftconvolve
+from skimage.filters import threshold_local
 
 _PC_CACHE = dict()
 def powder_center(image):
