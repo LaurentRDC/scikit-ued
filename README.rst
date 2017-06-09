@@ -29,6 +29,14 @@ using the standard library's `unittest` module.
 
 After installing scikit-ued you can use it like any other Python module as :code:`skued`.
 
+Citations
+---------
+
+If you are using the :code:`skued.baseline` subpackage, consider citing the following publication:
+
+    .. [#] L. P. René de Cotret and B. J. Siwick, A general method for baseline-removal in ultrafast 
+           electron powder diffraction data using the dual-tree complex wavelet transform, Struct. Dyn. 4 (2017) DOI: 10.1063/1.4972518.
+
 API Reference
 -------------
 
