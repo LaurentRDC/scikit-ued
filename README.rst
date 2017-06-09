@@ -4,9 +4,6 @@ scikit-ued
 .. image:: https://img.shields.io/appveyor/ci/LaurentRDC/scikit-ued/master.svg
     :target: https://ci.appveyor.com/project/LaurentRDC/scikit-ued
     :alt: Windows Build Status
-.. image:: https://img.shields.io/codecov/c/github/LaurentRDC/scikit-ued/master.svg
-    :target: https://codecov.io/gh/LaurentRDC/scikit-ued
-    :alt: Test Suite Coverage
 .. image:: https://readthedocs.org/projects/scikit-ued/badge/?version=latest
     :target: http://scikit-ued.readthedocs.io
     :alt: Documentation Build Status
