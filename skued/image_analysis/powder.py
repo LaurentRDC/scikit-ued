@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Image manipulation involving symmetry
+Image manipulation of powder diffraction
 """
-import matplotlib.pyplot as plt
 import numpy as np
-from scipy.signal import fftconvolve, find_peaks_cwt
-from skimage.filters import gaussian, threshold_local
-
-import matplotlib.pyplot as plt
+from scipy.signal import fftconvolve
+from skimage.filters import threshold_local
 
 _PC_CACHE = dict()
 def powder_center(image):
@@ -54,7 +51,7 @@ def powder_center(image):
 	full_center = np.array(np.unravel_index(np.argmax(corr), dims = corr.shape))
 	return tuple(full_center/2)
 
-def angular_average(image, center, mask = None, extras = None):
+def angular_average(image, center, mask = None, extras = None, angular_bounds = None):
 	"""
 	This function returns an angularly-averaged pattern computed from a diffraction pattern, 
 	e.g. polycrystalline diffraction.
@@ -69,9 +66,13 @@ def angular_average(image, center, mask = None, extras = None):
 		Evaluates to True on invalid elements of array.
 	extras : dict-like or None, optional
 		if not None, this dict-like object will be updated with: 
-
 			extras['error'] : `~numpy.ndarray`
 				standard error in mean across radii.
+	angular_bounds : 2-tuple or None, optional
+		If not None, the angles between first and second elements of `angular_bounds`
+		(inclusively) will be used for the average. Angle bounds are specified in degrees.
+		0 degrees is defined as the positive x-axis. Angle bounds outside [0, 360) are mapped back
+		to [0, 360).
 
 	Returns
 	-------
@@ -80,8 +81,6 @@ def angular_average(image, center, mask = None, extras = None):
 	average : `~numpy.ndarray`, shape (N,)
 		Angular-average of the array.
 	"""
-	#TODO: N dimensions. The only problem is the generation of an arbitrary
-	#	   meshgrid on the image.
 	#TODO: axis parameter? so batches of angular averages can be computed
 	#	   at the same time.
 	image = np.asarray(image, dtype = np.float)
@@ -95,6 +94,12 @@ def angular_average(image, center, mask = None, extras = None):
 	X, Y = np.meshgrid(np.arange(0, image.shape[0]), 
 					   np.arange(0, image.shape[1]))
 	R = np.rint(np.sqrt( (X - xc)**2 + (Y - yc)**2 )).astype(np.int)
+
+	if angular_bounds:
+		mi, ma = angular_bounds
+		mi, ma = mi % 360, ma % 360
+		angles = np.rad2deg(np.arctan2(Y - yc, X - xc))
+		mask[np.logical_not(np.logical_and(mi <= angles, angles <= ma))] = True
 
 	valid = np.logical_not(mask)
 	R_v, image_v = R[valid].ravel(), image[valid].ravel()

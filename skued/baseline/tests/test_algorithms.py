@@ -23,17 +23,17 @@ class TestBaselineDWT(unittest.TestCase):
 			self.assertSequenceEqual(rec_arr.shape, arr.shape)
 
 		with self.subTest('1D along axis'):
-			arr2 = np.random.random(size = (21, 52))
+			arr2 = np.random.random(size = (101, 104))
 			rec_arr2 = _dwt_approx_rec(arr2, level = 2, wavelet = 'sym4', mode = 'constant', axis = 1)
 			self.assertSequenceEqual(rec_arr2.shape, arr2.shape)
 		
 		with self.subTest('2D shape'):
-			arr2 = np.random.random(size = (22,52))
+			arr2 = np.random.random(size = (102,104))
 			rec_arr2 = _dwt_approx_rec2(arr2, level = 2, wavelet = 'sym6', mode = 'constant', axis = (-2, -1))
 			self.assertSequenceEqual(rec_arr2.shape, arr2.shape)
 
 		with self.subTest('2D along axes'):
-			arr2 = np.random.random(size = (22,52, 5))
+			arr2 = np.random.random(size = (102,94,25))
 			rec_arr2 = _dwt_approx_rec2(arr2, level = 2, wavelet = 'sym6', mode = 'constant', axis = (0, 1))
 			self.assertSequenceEqual(rec_arr2.shape, arr2.shape)
 
@@ -88,6 +88,29 @@ class TestbaselineDT(unittest.TestCase):
 		""" The baseline for an array of zeros should be zeros """
 		arr = np.zeros_like(self.arr)
 		self.assertTrue(np.allclose(arr, baseline_dt(arr, max_iter = 10, level = None)))
+	
+	def test_final_shape(self):
+		""" Test that baseline_dt returns an array of the same shape as input """
+		
+		with self.subTest('1D baseline of odd length'):
+			arr = np.random.random(size = (101,))
+			b = baseline_dt(arr, max_iter = 10, level = None)
+			self.assertSequenceEqual(arr.shape, b.shape)
+		
+		with self.subTest('1D baseline of even length'):
+			arr = np.random.random(size = (100,))
+			b = baseline_dt(arr, max_iter = 10, level = None)
+			self.assertSequenceEqual(arr.shape, b.shape)
+		
+		with self.subTest('baseline along axis of odd length'):
+			arr = np.random.random(size = (101, 113))
+			b = baseline_dt(arr, max_iter = 10, level = None, axis = 0)
+			self.assertSequenceEqual(arr.shape, b.shape)
+
+		with self.subTest('baseline along axis of even length'):
+			arr = np.random.random(size = (102, 104))
+			b = baseline_dt(arr, max_iter = 10, level = None, axis = 1)
+			self.assertSequenceEqual(arr.shape, b.shape)
 
 	def test_2d_along_axis(self):
 		""" Test that iterating over array rows and baseline_dt along axis are equivalent """
