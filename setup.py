@@ -21,9 +21,6 @@ with open(os.path.join(base_path, 'skued', '__init__.py')) as f:
 with open('README.rst') as f:
     readme = f.read()
 
-with open('CHANGELOG.rst') as f:
-    changes = f.read()
-
 with open('requirements.txt') as f:
     requirements = [line for line in f.read().split('\n') if len(line.strip())]
 
@@ -35,7 +32,7 @@ if __name__ == '__main__':
     setup(
         name = 'scikit-ued',
         description = 'Collection of algorithms and functions for ultrafast electron diffraction',
-        long_description = '\n\n'.join([readme, changes]),
+        long_description = '\n\n'.join(readme),
         license = LICENSE,
         url = 'http://scikit-ued.readthedocs.io',
         download_url = 'http://github.com/LaurentRDC/scikit-ued',
@@ -52,7 +49,8 @@ if __name__ == '__main__':
         zip_safe = False,
         classifiers = ['Environment :: Console',
                        'Intended Audience :: Science/Research',
-                       'Topic :: Scientific'
+                       'Topic :: Scientific/Engineering',
+                       'Topic :: Scientific/Engineering :: Physics',
                        'License :: OSI Approved :: MIT License',
                        'Natural Language :: English',
                        'Operating System :: OS Independent',
