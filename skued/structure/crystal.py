@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
+from collections.abc import Iterable
 from copy import deepcopy as copy
-from collections.abc import Iterable, Sized
-from functools import lru_cache
-from itertools import product, takewhile, count
+from itertools import count, product, takewhile
+from warnings import warn
+
 import numpy as np
 from numpy import pi
 from numpy.linalg import norm
-from operator import mul
-from scipy.special import k0 as bessel
-import spglib
-from warnings import warn
 
-from . import AtomicStructure, Lattice, CIFParser, PDBParser, real_coords, frac_coords
-from .. import (change_of_basis, transform, affine_map, change_basis_mesh, 
-			    is_rotation_matrix, minimum_image_distance)
+from . import AtomicStructure, CIFParser, Lattice, PDBParser, frac_coords
+from .. import (affine_map, change_basis_mesh, change_of_basis,
+                is_rotation_matrix, minimum_image_distance, transform)
 
 # Constants
 m = 9.109*10**(-31)     #electron mass in kg

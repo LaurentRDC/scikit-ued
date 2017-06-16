@@ -6,20 +6,20 @@ References
 ----------
 .. [CIF2CELL] Torbjorn Bjorkman, "CIF2Cell: Generating geometries for electronic structure programs", 
 	   		  Computer Physics Communications 182, 1183-1186 (2011) doi: 10.1016/j.cpc.2011.01.013
-"""
-import re
-import string
+""" 
 import warnings
 from contextlib import suppress
-from functools import lru_cache, partial
+from functools import lru_cache
 
 import numpy as np
-from numpy.linalg import inv, norm
 from CifFile import CifFile, get_number_with_esd
+from numpy.linalg import inv, norm
 
-from . import Atom, Lattice, lattice_vectors_from_parameters, real_coords, frac_coords
-from .. import affine_map, transform, is_rotation_matrix, change_of_basis, transform, orthogonalization_matrix
+from . import (Atom, Lattice, frac_coords, lattice_vectors_from_parameters,
+               real_coords)
+from .. import affine_map, transform
 from .spg_data import HM2Hall, Number2Hall, SymOpsHall
+
 
 class ParseError(IOError):
 	pass

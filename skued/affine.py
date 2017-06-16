@@ -5,7 +5,7 @@ Linear algebra operations and helpers.
 Inspired by Christoph Gohlke's transformation.py <http://www.lfd.uci.edu/~gohlke/>
 """
 
-import math # faster for single floats
+import math
 import numpy as np
 
 #standard basis
@@ -275,25 +275,3 @@ def minimum_image_distance(xx, yy, zz, lattice):
 	np.dot(np.linalg.inv(COB), ulinearized, out = linearized)
 
 	return np.reshape(np.linalg.norm(linearized, axis = 0), xx.shape)
-
-def orthogonalization_matrix(lengths, angles):
-    """
-	Return orthogonalization matrix for crystallographic cell coordinates.
-
-	Parameters
-	----------
-	Lengths : array_like, shape (3,)
-	
-	Angles : array_like, shape (3,)
-    	Expected in degrees.
-    """
-    a, b, c = lengths
-    angles = np.radians(angles)
-    sina, sinb, _ = np.sin(angles)
-    cosa, cosb, cosg = np.cos(angles)
-    co = (cosa * cosb - cosg) / (sina * sinb)
-    return np  .array([
-        [ a*sinb*math.sqrt(1.0-co*co),  0.0,    0.0, 0.0],
-        [-a*sinb*co,                    b*sina, 0.0, 0.0],
-        [ a*cosb,                       b*cosa, c,   0.0],
-        [ 0.0,                          0.0,    0.0, 1.0]])

@@ -10,5 +10,5 @@ from .plot_utils import spectrum_colors
 from .quantities import lorentz, electron_wavelength, interaction_parameter
 from .affine import (affine_map, transform, change_of_basis, is_basis, translation_matrix,
 							  		 is_rotation_matrix, rotation_matrix, translation_rotation_matrix,
-							  		 change_basis_mesh, minimum_image_distance, orthogonalization_matrix)
+							  		 change_basis_mesh, minimum_image_distance)
 from .voigt import gaussian, lorentzian, pseudo_voigt

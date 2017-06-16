@@ -5,8 +5,8 @@ from warnings import filterwarnings
 
 import numpy as np
 
-from ... import transform, change_of_basis, is_rotation_matrix
 from .. import Crystal, graphite
+from ... import transform
 from ..cif_parser import CIFParser, sym_ops
 
 filterwarnings('ignore', category = UserWarning)
