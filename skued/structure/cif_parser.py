@@ -11,13 +11,14 @@ import re
 import string
 import warnings
 from contextlib import suppress
-from functools import lru_cache
+from functools import lru_cache, partial
 
 import numpy as np
+from numpy.linalg import inv, norm
 from CifFile import CifFile, get_number_with_esd
 
 from . import Atom, Lattice, lattice_vectors_from_parameters, real_coords, frac_coords
-from .. import affine_map, transform
+from .. import affine_map, transform, is_rotation_matrix, change_of_basis, transform, orthogonalization_matrix
 from .spg_data import HM2Hall, Number2Hall, SymOpsHall
 
 class ParseError(IOError):
@@ -31,6 +32,8 @@ def sym_ops(equiv_site):
 	equiv_site : str or iterable of strings
 		Either comma-separated string e.g. "+y, +x, -z + 1/2" or an
 		iterable of the comma-separated values, e.g. ["+y", "+x", "-z + 1/2"] 
+	ortho_matrix : `~numpy.ndarray`, shape (3,3)
+		Orthogonalization matrix based on lattice parameters.
 	
 	Returns
 	-------
@@ -38,8 +41,8 @@ def sym_ops(equiv_site):
 		Symmetry operator as a 4x4 affine transformation on the FRACTIONAL
 		coordinates.
 	"""
-	rotation = np.zeros( (3,3) )
-	trans_vec = np.zeros( (3,) )
+	symmetry = np.zeros( (3,3) )
+	translation = np.zeros( (3,) )
 
 	if isinstance(equiv_site, str):
 		equiv_site = equiv_site.split(',')
@@ -49,19 +52,21 @@ def sym_ops(equiv_site):
 		xyz = equiv_site[j].replace('+',' +').replace('-',' -').split()
 		for i in xyz:
 			if i.strip("+-") == 'x':
-				rotation[0,j] = float(i.strip('x')+"1")
+				symmetry[0, j] = float(i.strip('x')+"1")
 			elif i.strip("+-") == 'y':
-				rotation[1, j] = float(i.strip('y')+"1")
+				symmetry[1, j] = float(i.strip('y')+"1")
 			elif i.strip("+-") == 'z':
-				rotation[2, j] = float(i.strip('z')+"1")
+				symmetry[2, j] = float(i.strip('z')+"1")
 			
 			if i.strip("+-xyz") != "":
-				trans_vec[j] = eval(i)
+				translation[j] = eval(i)
 	
-	# Combination of rotation and translation into a single transformation
-	# is done in a 4x4 affine transformation matrix
-	symmetry_operation = affine_map(rotation)
-	symmetry_operation[:3,3] = trans_vec
+	symmetry[:] = np.transpose(symmetry)
+	
+	# Combination of transform and translation into a single matrix
+	# is done in a 4x4 affine transform
+	symmetry_operation = affine_map(symmetry)
+	symmetry_operation[:3,3] = translation
 	return symmetry_operation
 
 class CIFParser(object):
@@ -104,9 +109,7 @@ class CIFParser(object):
 		# otherwise it would be a key in SymOpsHall
 		# Then, it is preferable to infer the conventional hall symbol from other info
 		if (hall_symbol is None) or (hall_symbol not in SymOpsHall):
-			h_m_symbol = None
-			for tag in ['_symmetry_space_group_name_H-M','_space_group_name_H-M_alt']:
-				h_m_symbol = block.get(tag) or h_m_symbol
+			h_m_symbol = block.get('_symmetry_space_group_name_H-M') or block.get('_space_group_name_H-M_alt')
 			
 			if h_m_symbol is not None:
 				h_m_symbol = re.sub('\s+', '', h_m_symbol)
@@ -114,9 +117,7 @@ class CIFParser(object):
 		
 		# Again, if hall_symbol is still missing OR invalid
 		if (hall_symbol is None) or (hall_symbol not in SymOpsHall):
-			table_number = None
-			for tag in ['_symmetry_Int_Tables_number','_space_group_IT_number']:
-				table_number = block.get(tag) or table_number
+			table_number = block.get('_symmetry_Int_Tables_number') or block.get('_space_group_IT_number')
 				
 			if table_number is not None:
 				hall_symbol = Number2Hall[table_number]
@@ -156,7 +157,7 @@ class CIFParser(object):
 	
 	def symmetry_operators(self):
 		"""
-		Returns the symmetry operators that map the atomic positions in a
+		Returns the symmetry operators that map the fractional atomic positions in a
 		CIF file to the crystal unit cell.
 
 		Yields
@@ -215,7 +216,7 @@ class CIFParser(object):
 			cart_trans_matrix_inv = np.array([[float(t11),float(t12),float(t13)],
 										      [float(t21),float(t22),float(t23)],
 										      [float(t31),float(t32),float(t33)]])
-			cart_trans_matrix = np.linalg.inv(cart_trans_matrix_inv)
+			cart_trans_matrix = inv(cart_trans_matrix_inv)
 
 			if not all([t11, t12, t13, t21, t22, t23, t31, t32, t33]):
 				raise ParseError('Cartesian coordinates in CIF but no transformation matrix given')

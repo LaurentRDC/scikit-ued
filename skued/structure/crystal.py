@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from copy import copy
+from copy import deepcopy as copy
 from collections.abc import Iterable, Sized
 from functools import lru_cache
 from itertools import product, takewhile, count
@@ -29,7 +29,7 @@ class Crystal(AtomicStructure, Lattice):
 	----------
 	symmetry_operators : list of ndarrays
 		Symmetry operators that links the underlying AtomicStructure to the unit cell construction.
-		It is assumed that the symmetry operators operate on the atomic coordinates in fractional form.
+		It is assumed that the symmetry operators operate on the fractional atomic coordinates.
 	unitcell : iterable of Atom objects
 		List of atoms in the crystal unitcell. iter(Crystal) is a generator that yields
 		the same atoms; this approach is preferred.
@@ -43,27 +43,32 @@ class Crystal(AtomicStructure, Lattice):
 		super().__init__(**kwargs)
 	
 	def __iter__(self):
-		unique_atoms = set([])
-
-		to_real = affine_map(change_of_basis(self.lattice_vectors, np.eye(3)))
-		to_frac = np.linalg.inv(to_real)
+		unique_atoms = set([])	# set of unique atoms in fractional coordinates
+		to_real = change_of_basis(self.lattice_vectors, np.eye(3))
+		to_frac = change_of_basis(np.eye(3), self.lattice_vectors)
 
 		for atm in self.atoms:
 			for sym_op in self.symmetry_operators:
-				new = copy(atm)
-				new.transform(to_frac)
-				new.transform(sym_op)
-				new.coords = np.mod(new.coords, 1)	# normalize to inside unit cell
-				new.transform(to_real)
-				unique_atoms.add(new)
+				sym_op = transform(sym_op, to_frac)
+				sym_op = transform(to_real, sym_op)
 
+				new = copy(atm)
+				new.transform(sym_op)
+
+				# 'Normalize' atom to be within the unit cell
+				frac = np.dot(to_frac, new.coords)
+				frac[:] = np.remainder(frac, 1.0)
+				new.coords[:] = np.round(np.dot(to_real, frac), 3)
+
+				unique_atoms.add(new)
+		
 		yield from iter(unique_atoms)
 	
 	def __len__(self):
 		return len(set(self))
 	
 	def __repr__(self):
-		return '< Crystal object with unit cell of {} atoms>'.format(len(self))
+		return '< Crystal object with unit cell of {} atoms >'.format(len(self))
 	
 	def __eq__(self, other):
 		return isinstance(other, self.__class__) and (set(self) == set(other))

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from itertools import product
 import numpy as np
-from .. import transformations as tr
+from .. import affine as tr
 import unittest
 
 np.random.seed(23)

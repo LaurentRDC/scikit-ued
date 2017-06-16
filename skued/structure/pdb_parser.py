@@ -93,7 +93,6 @@ class PDBParser(object):
 	"""
 
 	def __init__(self, ID):
-		self.ID = ID
 		self.file = retrieve_pdb_file(pdb_code = ID, download_dir = 'pdb_cache')
 
 	@lru_cache(maxsize = 1)
