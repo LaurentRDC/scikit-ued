@@ -10,6 +10,8 @@ References
 import warnings
 from contextlib import suppress
 from functools import lru_cache
+from re import sub
+from string import digits, punctuation
 
 import numpy as np
 from CifFile import CifFile, get_number_with_esd
@@ -112,7 +114,7 @@ class CIFParser(object):
 			h_m_symbol = block.get('_symmetry_space_group_name_H-M') or block.get('_space_group_name_H-M_alt')
 			
 			if h_m_symbol is not None:
-				h_m_symbol = re.sub('\s+', '', h_m_symbol)
+				h_m_symbol = sub('\s+', '', h_m_symbol)
 				hall_symbol =  HM2Hall[h_m_symbol]
 		
 		# Again, if hall_symbol is still missing OR invalid
@@ -236,7 +238,7 @@ class CIFParser(object):
 			elements = tmpdata.get('_atom_site_label')
 			if not elements:
 				raise ParseError('Atom symbols could not be found or inferred.')
-		elements = map(lambda s: s.strip(string.punctuation + string.digits).title(), elements)
+		elements = map(lambda s: s.strip(punctuation + digits).title(), elements)
 		
 		lv = self.lattice_vectors()
 		for e, x, y, z in zip(elements, xs, ys, zs):
