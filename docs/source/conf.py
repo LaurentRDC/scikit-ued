@@ -24,7 +24,7 @@ import skued
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
-needs_sphinx = '1.6'
+# needs_sphinx = '1.5'
 from datetime import datetime
 import alabaster
 
