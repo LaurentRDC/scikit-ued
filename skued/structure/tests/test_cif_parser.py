@@ -47,9 +47,19 @@ class TestCIRParser(unittest.TestCase):
     def test_silicon(self):
         """ Test CIFParser on Si.cif (diamond structure) """
         Si_path = os.path.join('skued', 'structure', 'cifs', 'periodic_table', 'Si.cif')
-        si = Crystal.from_cif(path)
+        si = Crystal.from_cif(Si_path)
 
         self.assertEqual(len(si), 8)
+    
+    def test_vo2(self):
+        """ Test CIFParser on vo2.cif (monoclinic M1) """
+        VO2_path = os.path.join('skued', 'structure', 'cifs', 'vo2.cif')
+        vo2 = Crystal.from_cif(VO2_path)
+
+        self.assertEqual(len(vo2), 12)
+        self.assertSequenceEqual(vo2.lattice_parameters, 
+                                 (5.7430000000000003, 4.5170000000000003, 5.375, 90.0, 122.60000000000001, 90.0))
+        self.assertAlmostEqual(vo2.volume, 117.4661530) # from cif2cell
 
 if __name__ == '__main__':
     unittest.main()
