@@ -24,7 +24,7 @@ import skued
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
-# needs_sphinx = '1.0'
+needs_sphinx = '1.6'
 from datetime import datetime
 import alabaster
 
@@ -42,6 +42,8 @@ extensions = ['alabaster',
 			  'matplotlib.sphinxext.plot_directive']
 
 intersphinx_mapping = {'numpy': ('http://docs.scipy.org/doc/numpy/', None)}
+
+napoleon_google_docstring = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

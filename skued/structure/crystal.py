@@ -230,7 +230,7 @@ class Crystal(AtomicStructure, Lattice):
         
 		Parameters
 		----------
-		h, k, l : array_likes
+		h, k, l : array_likes or floats
 			Miller indices. Can be given in a few different formats:
             
 			``3 floats``

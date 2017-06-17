@@ -12,7 +12,6 @@ e1, e2, e3 = np.eye(3) # Euclidian basis
 def lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma):
     """ 
     Returns the lattice vectors from three lengths and angles.
-    Definition of lattice parameters is available `here`_.
     
     Parameters
     ----------
@@ -25,9 +24,6 @@ def lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma):
     -------
     a1, a2 a3 : `~numpy.ndarray`, shape (3,)
         Lattice vectors
-    
-    .. _here:
-        https://en.wikipedia.org/wiki/Lattice_constant
     """
     alpha, beta, gamma = map(radians, (alpha, beta, gamma))
 
@@ -69,7 +65,6 @@ class Lattice(Transformable):
     def from_parameters(cls, a, b, c, alpha, beta, gamma):
         """ 
         Create a lattice instance from three lengths and angles.
-        Definition of lattice parameters is available `here`_.
 
         Parameters
         ----------
@@ -77,9 +72,6 @@ class Lattice(Transformable):
             Lattice vectors lengths [Angs]
         alpha, beta, gamma : floats
             Angles between lattice vectors [deg]
-
-        .. _here:
-            https://en.wikipedia.org/wiki/Lattice_constant
         """
         return cls(lattice_vectors = lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma))
     

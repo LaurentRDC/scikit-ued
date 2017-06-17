@@ -154,7 +154,7 @@ class Atom(Transformable):
 		Parameters
 		----------
 		nG : array_like
-			Scattering vector norm |G| = 4 pi s
+			Scattering vector norm (G = 4 pi s)
 		
 		Returns
 		-------
