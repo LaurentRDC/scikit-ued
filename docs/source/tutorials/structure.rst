@@ -159,7 +159,7 @@ The conversion between Miller indices and scattering vectors is available::
 	G = graphite.scattering_vector(1,0,0)
 	h, k, l = graphite.miller_indices(G) #1, 0, 0
 
-Arrays of Miller indices can be generated. For all Miller indices that fall below a bound::
+Arrays of Miller indices can be generated for all Miller indices that fall below a bound::
 
 	h, k, l = graphite.bounded_reflections(12) 	# All reflections below 12 Angs^-1
 
