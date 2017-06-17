@@ -34,8 +34,6 @@ def sym_ops(equiv_site):
 	equiv_site : str or iterable of strings
 		Either comma-separated string e.g. "+y, +x, -z + 1/2" or an
 		iterable of the comma-separated values, e.g. ["+y", "+x", "-z + 1/2"] 
-	ortho_matrix : `~numpy.ndarray`, shape (3,3)
-		Orthogonalization matrix based on lattice parameters.
 	
 	Returns
 	-------
@@ -135,16 +133,19 @@ class CIFParser(object):
 		return hall_symbol
 
 	@lru_cache(maxsize = 1)
-	def lattice_vectors(self):
+	def lattice_parameters(self):
 		""" 
-		Returns the lattice vectors associated to a CIF structure.
-        
+		Returns the lattice parameters associated to a CIF structure.
+
 		Returns
-		-------
-		lv : list of ndarrays, shape (3,)
+		----------
+		a, b, c : float
+			Lengths of lattice vectors [Angstroms]
+		alpha, beta, gamma : float
+			Angles of lattice vectors [degrees]. 
 		"""
 		block = self._first_block
-		
+
 		try:
 			a, _ = get_number_with_esd(block["_cell_length_a"])
 			b, _ = get_number_with_esd(block["_cell_length_b"])
@@ -155,12 +156,23 @@ class CIFParser(object):
 		except:
 			raise ParseError('Lattice vectors could not be determined.')
 
-		return lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma)
+		return a, b, c, alpha, beta, gamma
+
+	@lru_cache(maxsize = 1)
+	def lattice_vectors(self):
+		""" 
+		Returns the lattice vectors associated to a CIF structure.
+        
+		Returns
+		-------
+		lv : list of ndarrays, shape (3,)
+		"""
+		return lattice_vectors_from_parameters(*self.lattice_parameters())
 	
 	def symmetry_operators(self):
 		"""
 		Returns the symmetry operators that map the fractional atomic positions in a
-		CIF file to the crystal unit cell.
+		CIF file to the crystal *conventional* unit cell.
 
 		Yields
 		------
@@ -175,14 +187,14 @@ class CIFParser(object):
 			with suppress(KeyError):
 				equivalent_sites_str = block.GetLoop(tag).get(tag)
 
+		# P1 space group only has a single equivalent site
+		if isinstance(equivalent_sites_str, str):
+			equivalent_sites_str = [equivalent_sites_str]
+
 		if not equivalent_sites_str:
 			equivalent_sites_str = SymOpsHall[self.hall_symbol()]
 		elif len(equivalent_sites_str) != len(SymOpsHall[self.hall_symbol()]):
 			warnings.warn('The number of equivalent sites is not in line with the database. The file might be incomplete')
-		
-		# P1 space group only has a single equivalent site
-		if isinstance(equivalent_sites_str, str):
-			equivalent_sites_str = [equivalent_sites_str]
 
 		yield from map(sym_ops, equivalent_sites_str)
 	

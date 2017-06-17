@@ -7,41 +7,9 @@ import numpy as np
 
 from .. import Crystal, graphite
 from ... import transform
-from ..cif_parser import CIFParser, sym_ops
+from ..cif_parser import CIFParser
 
 filterwarnings('ignore', category = UserWarning)
-
-class TestSymOpsParsing(unittest.TestCase):
-    """ Test the sym_ops parsing function """
-
-    def test_trivial(self):
-        """ Test the identity transform "+x, +y, +z" """
-        with self.subTest('string'):
-            s = sym_ops("+x, +y, +z")
-            self.assertTrue(np.allclose(s, np.eye(4)))
-        
-        with self.subTest('iterable of strings'):
-            s = sym_ops(['+x', '+y', '+z'])
-            self.assertTrue(np.allclose(s, np.eye(4)))
-
-    def test_correctness(self):
-        """ Test the correctness of sym_ops """
-        with self.subTest('No translation 1'):
-            s = sym_ops("+y, +x, +z")
-            m = np.array([0,1,0,0,
-                          1,0,0,0,
-                          0,0,1,0,
-                          0,0,0,1]).reshape((4,4))
-            self.assertTrue(np.allclose(s, m))
-        
-        with self.subTest('No translation 2'):
-            s = sym_ops("+x-y, +x+y, +z")
-            m = np.array([1,-1,0,0,
-                          1,1,0,0,
-                          0,0,1,0,
-                          0,0,0,1]).reshape((4,4))
-            self.assertTrue(np.allclose(s, m))
-
 
 class TestCIRParser(unittest.TestCase):
     """ Test the CIFParser on all CIF files stored herein """
@@ -75,6 +43,13 @@ class TestCIRParser(unittest.TestCase):
         
         self.assertEqual(len(c), len(graphite))
         self.assertAlmostEqual(c.volume, graphite.volume, places = -1)
+    
+    def test_silicon(self):
+        """ Test CIFParser on Si.cif (diamond structure) """
+        Si_path = os.path.join('skued', 'structure', 'cifs', 'periodic_table', 'Si.cif')
+        si = Crystal.from_cif(path)
+
+        self.assertEqual(len(si), 8)
 
 if __name__ == '__main__':
     unittest.main()
