@@ -14,7 +14,7 @@ from re import sub
 from string import digits, punctuation
 
 import numpy as np
-from CifFile import CifFile, get_number_with_esd
+from CifFile import ReadCif, get_number_with_esd
 from numpy.linalg import inv, norm
 
 from . import (Atom, Lattice, frac_coords, lattice_vectors_from_parameters,
@@ -83,8 +83,13 @@ class CIFParser(object):
 	.. [#] Torbjorn Bjorkman, "CIF2Cell: Generating geometries for electronic structure programs", 
 		   Computer Physics Communications 182, 1183-1186 (2011) doi: 10.1016/j.cpc.2011.01.013
 	"""
-	def __init__(self, filename):
-		self.file = CifFile(datasource = filename)
+	def __init__(self, filename, **kwargs):
+		""" 
+		Parameters
+		----------
+		filename : str or path-like
+		"""
+		self.file = ReadCif(open(filename, mode = 'r'))
 
 	def __enter__(self):
 		return self
