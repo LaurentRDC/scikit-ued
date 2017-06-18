@@ -160,14 +160,14 @@ class Atom(Transformable):
 		-------
 		atomff : `~numpy.ndarray`
 		"""
-		nG /= (2*np.pi)	# In the units of Kirkland 2010
+		scatt_vector_norm = nG / (2*np.pi)	# In the units of Kirkland 2010
 		
-		s = nG.shape
-		nG = nG.reshape((-1,1))
-		nG2 = np.square(nG)
+		s = scatt_vector_norm.shape
+		scatt_vector_norm = scatt_vector_norm.reshape((-1,1))
+		scatt_vector_norm2 = np.square(scatt_vector_norm)
 
-		sum1 = np.sum(self._a/(nG2 + self._b), axis = 1)
-		sum2 = np.sum(self._c * np.exp(-self._d * nG2), axis = 1)
+		sum1 = np.sum(self._a/(scatt_vector_norm2 + self._b), axis = 1)
+		sum2 = np.sum(self._c * np.exp(-self._d * scatt_vector_norm2), axis = 1)
 		
 		return (sum1 + sum2).reshape(s)
 	
