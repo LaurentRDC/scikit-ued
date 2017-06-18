@@ -89,13 +89,14 @@ class CIFParser(object):
 		----------
 		filename : str or path-like
 		"""
-		self.file = ReadCif(open(filename, mode = 'r'))
+		self.handle = open(filename, mode = 'r')
+		self.file = ReadCif(self.handle)
 
 	def __enter__(self):
 		return self
 	
 	def __exit__(self, type, value, traceback):
-		del self.file
+		self.handle.close()
 
 	@property
 	def _first_block(self):
