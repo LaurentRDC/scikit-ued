@@ -64,7 +64,7 @@ def _dt_approx_rec(array, first_stage, wavelet, mode, level, axis = -1):
     
     Parameters
     ----------
-    array : array-like
+    array : array_like
         Array to be decomposed.
     level : int or 'max'
         Decomposition level. A higher level will result in a coarser approximation of
@@ -81,7 +81,7 @@ def _dt_approx_rec(array, first_stage, wavelet, mode, level, axis = -1):
             
     Returns
     -------
-    reconstructed : ndarray
+    reconstructed : `~numpy.ndarray`
         Approximated reconstruction of the input array.
     """
     coeffs = dtcwt(data = array, first_stage = first_stage, wavelet = wavelet, level = level, mode = mode, axis = axis)
@@ -99,7 +99,7 @@ def _dwt_approx_rec(array, level, wavelet, mode, axis):
     
 	Parameters
 	----------
-	array : array-like
+	array : array_like
 		Array to be decomposed. Currently, only 1D and 2D arrays are supported.
 		Only even-lengths signals long the axis.
 	level : int or None (deprecated)
@@ -116,7 +116,7 @@ def _dwt_approx_rec(array, level, wavelet, mode, axis):
             
 	Returns
 	-------
-	reconstructed : ndarray
+	reconstructed : `~numpy.ndarray`
 		Approximated reconstruction of the input array.
     
 	Raises
@@ -169,7 +169,7 @@ def _dwt_approx_rec2(array, level, wavelet, mode, axis):
     
 	Parameters
 	----------
-	array : array-like
+	array : array_like
 		Array to be decomposed. Currently, only 1D and 2D arrays are supported.
 		Only even-lengths signals long the axis.
 	level : int or 'max' or None (deprecated)
@@ -185,7 +185,7 @@ def _dwt_approx_rec2(array, level, wavelet, mode, axis):
             
 	Returns
 	-------
-	reconstructed : ndarray
+	reconstructed : `~numpy.ndarray`
 		Approximated reconstruction of the input array.
     
 	Raises
@@ -235,10 +235,10 @@ def baseline_dt(array, max_iter, level = None, first_stage = 'sym6', wavelet = '
 	"""
 	Iterative method of baseline determination based on the dual-tree complex wavelet transform.
 	This function only works in 1D, along an axis. For baseline of 2D arrays, see baseline_dwt.
-    
+
 	Parameters
 	----------
-	array : ndarray, shape (M,N)
+	array : `~numpy.ndarray`, shape (M,N)
 		Data with background. Can be either 1D signal or 2D array.
 	max_iter : int
 		Number of iterations to perform.
@@ -254,33 +254,33 @@ def baseline_dt(array, max_iter, level = None, first_stage = 'sym6', wavelet = '
 	background_regions : iterable, optional
 		Indices of the array values that are known to be purely background. Depending
 		on the dimensions of array, the format is different:
-        
+		
 		``array.ndim == 1``
 			`background_regions` is a list of ints (indices) or slices
 			E.g. >>> background_regions = [0, 7, 122, slice(534, 1000)]
-          
+			
 		``array.ndim == 2``
 			`background_regions` is a list of tuples of ints (indices) or tuples of slices
 			E.g. >>> background_regions = [(14, 19), (42, 99), (slice(59, 82), slice(81,23))]
-         
+			
 		Default is empty list.
-    
-	mask : ndarray, dtype bool, optional
+
+	mask : `~numpy.ndarray`, dtype bool, optional
 		Mask array that evaluates to True for pixels that are invalid. 
-    mode : str, optional
-        Signal extension mode, see pywt.Modes.
+	mode : str, optional
+		Signal extension mode, see pywt.Modes.
 	axis : int, optional
 		Axis over which to compute the wavelet transform. Default is -1
-    
+
 	Returns
 	-------
-	baseline : ndarray, shape (M,N)
+	baseline : `~numpy.ndarray`, shape (M,N)
 		Baseline of the input array.
-        
+		
 	References
 	----------
 	.. [#] L. P. René de Cotret and B. J. Siwick, A general method for baseline-removal in ultrafast 
-		   electron powder diffraction data using the dual-tree complex wavelet transform, Struct. Dyn. 4 (2016)
+			electron powder diffraction data using the dual-tree complex wavelet transform, Struct. Dyn. 4 (2016)
 	"""
 	return _iterative_baseline(array = array, max_iter = max_iter, background_regions = background_regions,
 									mask = mask, axes = (axis,), approx_rec_func = _dt_approx_rec,
@@ -291,10 +291,10 @@ def baseline_dwt(array, max_iter, level = None, wavelet = 'sym6', background_reg
 				 mask = None, mode = 'constant', axis = -1):
 	"""
 	Iterative method of baseline determination, based on the discrete wavelet transform. 
-    
+
 	Parameters
 	----------
-	array : ndarray
+	array : `~numpy.ndarray`
 		Data with background.
 	max_iter : int
 		Number of iterations to perform.
@@ -308,34 +308,34 @@ def baseline_dwt(array, max_iter, level = None, wavelet = 'sym6', background_reg
 	background_regions : list, optional
 		Indices of the array values that are known to be purely background. Depending
 		on the dimensions of array, the format is different:
-        
+		
 		``array.ndim == 1``
 			`background_regions` is a list of ints (indices) or slices
 			E.g. >>> background_regions = [0, 7, 122, slice(534, 1000)]
-          
+			
 		``array.ndim == 2``
 			`background_regions` is a list of tuples of ints (indices) or tuples of slices
 			E.g. >>> background_regions = [(14, 19), (42, 99), (slice(59, 82), slice(81,23))]
-         
+			
 		Default is empty list.
-    
-	mask : ndarray, dtype bool, optional
+
+	mask : `~numpy.ndarray`, dtype bool, optional
 		Mask array that evaluates to True for pixels that are invalid. Useful to determine which pixels are masked
 		by a beam block.
-    mode : str, optional
-        Signal extension mode, see pywt.Modes.
+	mode : str, optional
+		Signal extension mode, see pywt.Modes.
 	axis : int or tuple, optional
 		Axis over which to compute the wavelet transform. Can also be a 2-tuple of ints for 2D baseline
-    
+
 	Returns
 	-------
-	baseline : ndarray, shape (M,N)
+	baseline : `~numpy.ndarray`, shape (M,N)
 		Baseline of the input array.
-    
+
 	References
 	----------
 	.. [#] Galloway et al. 'An Iterative Algorithm for Background Removal in Spectroscopy by Wavelet 
-		   Transforms', Applied Spectroscopy pp. 1370 - 1376, September 2009.
+			Transforms', Applied Spectroscopy pp. 1370 - 1376, September 2009.
 	"""
 	if isinstance(axis, int):
 		axis = (axis,)

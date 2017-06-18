@@ -5,6 +5,7 @@ Linear algebra operations and helpers.
 Inspired by Christoph Gohlke's transformation.py <http://www.lfd.uci.edu/~gohlke/>
 """
 
+import math
 import numpy as np
 
 #standard basis
@@ -64,18 +65,15 @@ def transform(matrix, array):
 	if matrix.shape not in [(3,3), (4,4)]:
 		raise ValueError('Input matrix is neither a 3x3 or 4x4 matrix, but \
 						  rather of shape {}.'.format(matrix.shape))
-
+	
+	matrix = affine_map(matrix)
 	# Case of a vector (e.g. position vector):
 	if array.ndim == 1:
-
-		if matrix.shape == (3,3):
-			matrix = affine_map(matrix)
 		extended_vector = np.array([0,0,0,1], dtype = array.dtype)
 		extended_vector[:3] = array 
 		return np.dot(matrix, extended_vector)[:3]
-
-	# Transformation matrix is either 3x3 or 4x4. Extend everything to 4x4
-	matrix, array = affine_map(matrix), affine_map(array)
+	else:
+		array = affine_map(array)
 	return np.dot(matrix, array)
 
 def translation_matrix(direction):
@@ -134,7 +132,7 @@ def is_basis(basis):
 
 def is_rotation_matrix(matrix):
     """
-    Checks whether a matrix is orthogonal with unit determinant, properties
+    Checks whether a matrix is orthogonal with unit determinant (1 or -1), properties
     of rotation matrices.
     
     Parameters
@@ -154,7 +152,7 @@ def is_rotation_matrix(matrix):
     #    matrix = matrix[:3,:3]
         
     is_orthogonal = np.allclose(np.linalg.inv(matrix), np.transpose(matrix))
-    unit_determinant = np.allclose(np.linalg.det(matrix), 1)
+    unit_determinant = np.allclose(abs(np.linalg.det(matrix)), 1)
     return is_orthogonal and unit_determinant
 
 def rotation_matrix(angle, axis = [0,0,1]):
@@ -178,7 +176,7 @@ def rotation_matrix(angle, axis = [0,0,1]):
 	--------
 	translation_rotation_matrix
 	"""
-	sina, cosa = np.sin(angle), np.cos(angle)
+	sina, cosa = math.sin(angle), math.cos(angle)
 	
 	# Make sure direction is a numpy vector of unit length
 	direction = np.asarray(axis)

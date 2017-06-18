@@ -28,6 +28,9 @@ To create an atom, simply provide its element and coordinates::
 
 	copper = Atom(element = 'Cu', coords = [0,0,0])
 
+:code:`Atom` objects are hashable; this means that they can be stored in a :code:`set`. Therefore,
+a list of atoms can be reduced into unique atoms using a :code:`set`.
+
 One important feature of the :code:`Atom` class is the possibility to compute the electrostatic
 potential across meshes::
 
@@ -64,7 +67,7 @@ After plot formatting:
 The :code:`Crystal` Class
 =========================
 Diffraction experiments relying on the redundancy of crystals to get good experimental signals;
-hence, handling crystal models is the main feature of the :code:`skued.structure` package.
+hence, handling crystal models is the main feature of the :code:`skued.structure` subpackage.
 
 Constructing a :code:`Crystal` object from a file
 -------------------------------------------------
@@ -93,7 +96,7 @@ or the asymmetric unit cell;
 2. three lattice vectors;
 3. Symmetry operators (optional). These symmetry operators will be applied to the atoms to generate
 the full unit cell. Hence, if your iterable of atoms contains the entire unit cell, symmetry operators do
-not need to be provided.
+not need to be provided. The symmetry operators must be expressed in the reduced (or fractional) basis.
 
 As an example, let's create the simplest crystal structure known: 
 `alpha-Polonium (simple cubic)<https://en.wikipedia.org/wiki/Polonium#Solid_state_form>`::
@@ -115,14 +118,10 @@ The :code:`Crystal` object provides some interfaces for easy structure manipulat
 	from skued.structure import graphite
 
 	for atm in graphite:	#Loops over atoms in the unit cell
-	    print(atm)
+	    print(atm.element, atm.coords)
 
-	for atm in graphite.unitcell:	#equivalent
-	    print(atm)
-
-Note that :code:`iter(graphite)` is a generator, whereas :code:`graphite.unitcell` is a list; this
-distinction is important when handling large crystals. Also note that iterating over the :code:`crystal.atoms`
-attribute may or may not be equivalent to :code:`crystal.unitcell`, due to the way crystals are defined.
+Note that iterating over the :code:`crystal.atoms` attribute may or may not be equivalent to 
+:code:`iter(crystal)`, due to the way crystals are defined.
 
 :code:`Crystal` objects also provide interoperability with :code:`spglib`::
 
@@ -142,7 +141,41 @@ super-class. Let's use the built-in example of graphite::
 
 The standard `three lengths and angles` description of a lattice is also accessible::
 
-	a, b, c, alpha, beta, gamma = graphite.parameters
+	a, b, c, alpha, beta, gamma = graphite.lattice_parameters
+
+The unit cell volume (and by extensions, density) is also accessible:
+
+	vol = graphite.volume
+	density = vol/len(graphite)
+
+Scattering utilities
+--------------------
+:code:`Crystal` objects have a few methods that make life easier when dealing with scattering data and modeling.
+
+The conversion between Miller indices and scattering vectors is available:: 
+
+	from skued.structure import graphite
+
+	G = graphite.scattering_vector(1,0,0)
+	h, k, l = graphite.miller_indices(G) #1, 0, 0
+
+Arrays of Miller indices can be generated for all Miller indices that fall below a bound::
+
+	h, k, l = graphite.bounded_reflections(12) 	# All reflections below 12 Angs^-1
+
+In this example, :code:`h`, :code:`k`, and :code:`l` are arrays of integers; each combined row is a reflection.
+
+Static structure factor calculation is also possible, both for a single reflection and arrays of reflections::
+
+	import numpy as np
+
+	# For a single reflection
+	SF = graphite.structure_factor_miller(1, 0, 0)
+
+	# For an array of reflections: vectorized calculation
+	h, k, l = graphite.bounded_reflections(12)
+	SF = graphite.structure_factor_miller(h, k, l)
+	SF.shape == h.shape 	# True
 
 Atomic potential
 ----------------

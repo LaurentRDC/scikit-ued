@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from .scattering_params import scattering_params
+
 from . import Transformable
-from .. import  change_of_basis, transform, translation_matrix, is_rotation_matrix
-from scipy.special import k0 as bessel
+from .. import (change_of_basis, is_rotation_matrix, transform,
+                translation_matrix)
+from .scattering_params import scattering_params
 
 # Constants
 m = 9.109*10**(-31)     #in kg
@@ -148,24 +149,25 @@ class Atom(Transformable):
 	
 	def electron_form_factor(self, nG):
 		"""
-		Vectorized electron form factor.
+		Vectorized electron form factor calculation.
 
 		Parameters
 		----------
 		nG : array_like
-			Scattering vector norm
+			Scattering vector norm (G = 4 pi s)
 		
 		Returns
 		-------
-		atomff : array_like
+		atomff : `~numpy.ndarray`
 		"""
-		# From kirkland 2010 Eq. C.15
-		s = nG.shape
-		nG = nG.reshape((-1,1))
-		nG2 = np.square(nG)
+		scatt_vector_norm = nG / (2*np.pi)	# In the units of Kirkland 2010
+		
+		s = scatt_vector_norm.shape
+		scatt_vector_norm = scatt_vector_norm.reshape((-1,1))
+		scatt_vector_norm2 = np.square(scatt_vector_norm)
 
-		sum1 = np.sum(self._a/(nG2 + self._b), axis = 1)
-		sum2 = np.sum(self._c * np.exp(-self._d * nG2), axis = 1)
+		sum1 = np.sum(self._a/(scatt_vector_norm2 + self._b), axis = 1)
+		sum2 = np.sum(self._c * np.exp(-self._d * scatt_vector_norm2), axis = 1)
 		
 		return (sum1 + sum2).reshape(s)
 	

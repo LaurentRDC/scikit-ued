@@ -11,14 +11,14 @@ e1, e2, e3 = np.eye(3) # Euclidian basis
 #       based on http://atztogo.github.io/spglib/definition.html
 def lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma):
     """ 
-    Returns the lattice vectors from three lengths and angles 
+    Returns the lattice vectors from three lengths and angles.
     
     Parameters
     ----------
     a, b, c : float
         Lengths of lattice vectors [Angstroms]
     alpha, beta, gamma : float
-        Angles of lattice vectors [degrees]
+        Angles of lattice vectors [degrees]. 
     
     Returns
     -------

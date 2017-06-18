@@ -12,13 +12,21 @@ Plot Utilities
 ==============
 .. automodule:: skued.plot_utils
 
+Array Utilities
+===============
+.. automodule:: skued.array_utils
+
+Quantities
+==========
+.. automodule:: skued.quantities
+
 Voigt Profile
 =============
 .. automodule:: skued.voigt
 
 Affine Transforms
 =================
-.. automodule:: skued.transformations
+.. automodule:: skued.affine
 
 Structure
 =========
@@ -36,13 +44,15 @@ Structure
 
 Simulation
 ==========
-.. automodule:: skued.simulation.powdersim
+.. autofunction:: skued.simulation.powdersim
 
 Baseline-determination
 ======================
 .. autofunction:: skued.baseline.baseline_dt
 
 .. autofunction:: skued.baseline.baseline_dwt
+
+.. autofunction:: skued.baseline.dtcwt
 
 Image Analysis
 ==============
