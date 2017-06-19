@@ -4,10 +4,10 @@ Physical quantities relevant to other modules\packages
 """
 import numpy as np
 
-c = 299792458           #m/s
-h = 6.63*10**(-34)      #J*s.
-e = 1.602*10**(-19)     #in C
-m0 = 9.109*10**(-31)    #in kg
+c = 299792458           # speed of light [m/s]
+h = 6.63*10**(-34)      # Planck's constant [J*s]
+e = 1.602*10**(-19)     # electron charge [C]
+m0 = 9.109*10**(-31)    # electron mass [kg]
 
 def lorentz(kV):
     """
@@ -16,7 +16,7 @@ def lorentz(kV):
     Parameters
     ----------
     kV : array_like or float
-        Electron gun voltage [kV].
+        Electron energy [kV].
     
     Returns
     -------
@@ -30,8 +30,8 @@ def electron_wavelength(kV):
         
     Parameters
     ----------
-    kV : float or ndarray
-        Voltage in kilovolts of the instrument
+    kV : array_like or float
+        Electron energy [kV].
     
     Returns
     -------
@@ -46,8 +46,8 @@ def interaction_parameter(kV):
 
     Parameters
     ----------
-    kV : float
-        Electron gun voltage [kV].
+    kV : array_like or float
+        Electron energy [kV].
     
     Returns
     -------
