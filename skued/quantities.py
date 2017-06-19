@@ -58,8 +58,6 @@ def interaction_parameter(kV):
     ----------
     .. Kirkland 2010 Eq. 5.6
     """
-    # Notes : check that interaction_parameter(100) == 0.92 * 1e-3
-    # See Kirkland 2010 p.84 for a discussion
     l = electron_wavelength(kV)
     V = kV * 1e3
 
