@@ -92,7 +92,11 @@ class Atom(Transformable):
 		# Atomic potential parameters loaded on instantiation
 		# These are used to compute atomic potential
 		# TODO: add ref Kirkland 2010
-		_, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[self.atomic_number]
+		try:
+			_, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[self.atomic_number]
+		except KeyError:
+			raise ValueError('Scattering information for element {} is unavailable.'.format(self.element))
+			
 		self._a = np.array((a1, a2, a3)).reshape((1,3))
 		self._b = np.array((b1, b2, b3)).reshape((1,3))
 		self._c = np.array((c1, c2, c3)).reshape((1,3))
