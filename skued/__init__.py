@@ -4,7 +4,7 @@ __email__ = 'laurent.renedecotret@mail.mcgill.ca'
 __license__ = 'MIT'
 __version__ = '0.4.4' # TODO: automatic versioning?
 
-from .array_utils import repeated_array
+from .array_utils import repeated_array, mirror
 from .parallel import pmap, preduce
 from .plot_utils import spectrum_colors
 from .quantities import lorentz, electron_wavelength, interaction_parameter

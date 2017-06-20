@@ -2,10 +2,9 @@
 """
 Voigt and pseudo-voigt curves, as well as related Gaussian and Lorentzian functions
 """
-from collections import Iterable
+from functools import lru_cache
 import numpy as np
 from numpy import pi
-from scipy.signal import fftconvolve
 
 def gaussian(coordinates, center, fwhm = None, std = None):
 	"""
@@ -109,6 +108,7 @@ def lorentzian(coordinates, center, fwhm):
 	factor = 1/(dim*pi)
 	return factor*core
 
+@lru_cache(maxsize = 16)
 def _pseudo_voigt_mixing_factor(width_l, width_g):
     """
     Returns the proportion of Lorentzian for the computation of a pseudo-Voigt profile.
