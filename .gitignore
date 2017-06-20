@@ -12,6 +12,9 @@ __pycache__/
 # Protein DataBank cache folder
 pdb_cache/
 
+# Jupyter notebooks
+notebooks/
+
 # Distribution / packaging
 .Python
 env/
