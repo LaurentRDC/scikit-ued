@@ -54,7 +54,7 @@ def mirror(arr, axes = None):
     ----------
     arr : `~numpy.ndarray`
         Array to be reversed
-    axes : tuple or None, optional
+    axes : int or tuple or None, optional
         Axes to be reversed. Default is to reverse all axes.
     
     Returns
@@ -63,8 +63,11 @@ def mirror(arr, axes = None):
     """
     if axes is None:
         axes = range(arr.ndim)
+
+    elif isinstance(axes, int):
+        axes = (axes,)
     
-    # arr[::-1] reverses in the first axis direction always.
+    # arr[::-1] reverses in the first axis direction
     for axis in axes:
         arr = swapaxes(swapaxes(arr, 0, axis)[::-1], 0, axis)
     

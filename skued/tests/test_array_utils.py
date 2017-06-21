@@ -51,8 +51,8 @@ class TestMirror(unittest.TestCase):
 		""" Test mirror() on a 2D array for one axis """
 		arr = np.zeros( (16,16), dtype = np.float)
 		arr[15, 3] = 1
-		self.assertTrue(np.allclose(arr[:, ::-1], mirror(arr, axes = (1,))))
-		self.assertTrue(np.allclose(arr[::-1, :], mirror(arr, axes = (0,))))
+		self.assertTrue(np.allclose(arr[:, ::-1], mirror(arr, axes = 1)))
+		self.assertTrue(np.allclose(arr[::-1, :], mirror(arr, axes = 0)))
 		
 if __name__ == '__main__':
 	unittest.main()
