@@ -2,7 +2,7 @@
 __author__ = 'Laurent P. René de Cotret'
 __email__ = 'laurent.renedecotret@mail.mcgill.ca'
 __license__ = 'MIT'
-__version__ = '0.4.4' # TODO: automatic versioning?
+__version__ = '0.4.4.1' # TODO: automatic versioning?
 
 from .array_utils import repeated_array
 from .parallel import pmap, preduce

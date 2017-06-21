@@ -18,7 +18,7 @@ with open(os.path.join(base_path, 'skued', '__init__.py')) as f:
     LICENSE = re.compile(r'.*__license__ = \'(.*?)\'', re.S).match(module_content).group(1)
 
 
-with open('README.rst') as f:
+with open('README.md') as f:
     readme = f.read()
 
 with open('requirements.txt') as f:
