@@ -42,7 +42,7 @@ if __name__ == '__main__':
     setup(
         name = 'scikit-ued',
         description = 'Collection of algorithms and functions for ultrafast electron diffraction',
-        long_description = '\n\n'.join(readme),
+        long_description = readme,
         license = LICENSE,
         url = 'http://scikit-ued.readthedocs.io',
         download_url = 'http://github.com/LaurentRDC/scikit-ued',

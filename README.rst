@@ -16,13 +16,13 @@ Collection of algorithms and functions for ultrafast electron diffraction.
 Getting Started with scikit-ued
 -------------------------------
 
-scikit-ued is available on PyPI can be installed with `pip <https://pip.pypa.io>`_.::
+scikit-ued is available on PyPI; it can be installed with `pip <https://pip.pypa.io>`_.::
 
-    $ python -m pip install scikit-ued
+    python -m pip install scikit-ued
 
 To install the latest development version from `Github <https://github.com/LaurentRDC/scikit-ued>`_::
 
-    $ python -m pip install git+git://github.com/LaurentRDC/scikit-ued.git
+    python -m pip install git+git://github.com/LaurentRDC/scikit-ued.git
 
 Each version is tested against Python 3.5 and 3.6. If you are using a different version, tests can be run
 using the standard library's `unittest` module.
