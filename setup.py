@@ -6,6 +6,15 @@ import re
 from setuptools import setup, find_packages
 #from Cython.Build import cythonize
 
+# How to submit a package on PyPi:
+# http://peterdowns.com/posts/first-time-with-pypi.html
+#
+# Test upload:
+#   > python setup.py sdist upload -r pypitest
+#
+# Real upload:
+#   > python setup.py sdist upload -r pypi
+
 BASE_PACKAGE = 'skued'
 
 wavelets = chain.from_iterable([glob('skued\\baseline\\data\\*.npy'), 

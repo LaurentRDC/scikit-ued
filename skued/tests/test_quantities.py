@@ -18,10 +18,8 @@ class TestElectronWavelength(unittest.TestCase):
     
     def test_trivial(self):
         """ Test that the electron wavelength at zero energy is zero """
-        pass
-    
-    def test_vectorized(self):
-        pass
+        self.assertAlmostEqual(electron_wavelength(10), 0.122128679)
+        self.assertAlmostEqual(electron_wavelength(200), 0.02509626)
 
 class TestInteractionParameter(unittest.TestCase):
     

@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-from random import choice
+from random import choice, seed
 import numpy as np
 from .. import Atom, atomic_number
 import unittest
+
+seed(23)
 
 ELEMENTS = list(atomic_number.keys())
 

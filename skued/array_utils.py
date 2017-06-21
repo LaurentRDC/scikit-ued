@@ -3,7 +3,7 @@ Array utility functions
 """
 
 from itertools import repeat
-from numpy import concatenate
+from numpy import concatenate, swapaxes
 
 def repeated_array(arr, num, axes = -1):
     """
@@ -45,3 +45,30 @@ def repeated_array(arr, num, axes = -1):
             composite = concatenate(tuple(repeat(composite, times = n)), axis = ax)
     
     return composite
+
+def mirror(arr, axes = None):
+    """ 
+    Reverse array over many axes. Generalization of arr[::-1] for many dimensions.
+
+    Parameters
+    ----------
+    arr : `~numpy.ndarray`
+        Array to be reversed
+    axes : int or tuple or None, optional
+        Axes to be reversed. Default is to reverse all axes.
+    
+    Returns
+    -------
+    out : 
+    """
+    if axes is None:
+        axes = range(arr.ndim)
+
+    elif isinstance(axes, int):
+        axes = (axes,)
+    
+    # arr[::-1] reverses in the first axis direction
+    for axis in axes:
+        arr = swapaxes(swapaxes(arr, 0, axis)[::-1], 0, axis)
+    
+    return arr
