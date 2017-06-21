@@ -4,11 +4,12 @@ __email__ = 'laurent.renedecotret@mail.mcgill.ca'
 __license__ = 'MIT'
 __version__ = '0.4.4.1' # TODO: automatic versioning?
 
-from .array_utils import repeated_array
+from .affine import (affine_map, change_basis_mesh, change_of_basis, is_basis,
+                     is_rotation_matrix, minimum_image_distance,
+                     rotation_matrix, transform, translation_matrix,
+                     translation_rotation_matrix)
+from .array_utils import mirror, repeated_array
 from .parallel import pmap, preduce
 from .plot_utils import spectrum_colors
-from .quantities import lorentz, electron_wavelength, interaction_parameter
-from .affine import (affine_map, transform, change_of_basis, is_basis, translation_matrix,
-							  		 is_rotation_matrix, rotation_matrix, translation_rotation_matrix,
-							  		 change_basis_mesh, minimum_image_distance)
+from .quantities import electron_wavelength, interaction_parameter, lorentz
 from .voigt import gaussian, lorentzian, pseudo_voigt

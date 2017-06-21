@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 import numpy as np
-from .. import repeated_array
+from .. import repeated_array, mirror
 
 np.random.seed(23)
 
@@ -33,5 +33,26 @@ class TestRepeatedArray(unittest.TestCase):
 			expected_new_shape = (self.arr.shape[0]*3, self.arr.shape[1]*2)
 			self.assertEqual(composite.shape, expected_new_shape)
 
+class TestMirror(unittest.TestCase):
+
+	def test_1D(self):
+		""" Test mirror() on a 1D array """
+		arr = np.zeros( (16,), dtype = np.float)
+		arr[15] = 1
+		self.assertTrue(np.allclose(arr[::-1], mirror(arr)))
+
+	def test_2D_all_axes(self):
+		""" Test mirror() on a 2D array for all axes """
+		arr = np.zeros( (16,16), dtype = np.float)
+		arr[15, 3] = 1
+		self.assertTrue(np.allclose(arr[::-1, ::-1], mirror(arr)))
+	
+	def test_2D_one_axis(self):
+		""" Test mirror() on a 2D array for one axis """
+		arr = np.zeros( (16,16), dtype = np.float)
+		arr[15, 3] = 1
+		self.assertTrue(np.allclose(arr[:, ::-1], mirror(arr, axes = 1)))
+		self.assertTrue(np.allclose(arr[::-1, :], mirror(arr, axes = 0)))
+		
 if __name__ == '__main__':
 	unittest.main()

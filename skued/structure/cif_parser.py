@@ -85,18 +85,19 @@ class CIFParser(object):
 	"""
 	def __init__(self, filename, **kwargs):
 		""" 
+		Keyword arguments are passed to PyCIFRW's ReadCif function.
 		Parameters
 		----------
 		filename : str or path-like
 		"""
-		self.handle = open(filename, mode = 'r')
-		self.file = ReadCif(self.handle)
+		self._handle = open(filename, mode = 'r')
+		self.file = ReadCif(self._handle, **kwargs)
 
 	def __enter__(self):
 		return self
 	
 	def __exit__(self, type, value, traceback):
-		self.handle.close()
+		self._handle.close()
 
 	@property
 	def _first_block(self):
@@ -107,9 +108,7 @@ class CIFParser(object):
 		""" Returns the Hall symbol """
 		block = self._first_block
 
-		hall_symbol = None
-		for tag in ['_symmetry_space_group_name_Hall','_space_group_name_Hall']:
-			hall_symbol = block.get(tag) or hall_symbol
+		hall_symbol = block.get('_symmetry_space_group_name_Hall') or block.get('_space_group_name_Hall')
 
 		# In some rare cases, the given hall symbol in the file isn't standard,
 		# otherwise it would be a key in SymOpsHall
@@ -129,7 +128,7 @@ class CIFParser(object):
 				hall_symbol = Number2Hall[table_number]
 				
 		if hall_symbol is None:
-			raise ParseError('Hall number could not be inferred')
+			raise ParseError('Hall symbol could not be inferred')
 	
 		if hall_symbol[0] == "-":
 			hall_symbol = "-" + hall_symbol[1].upper() + hall_symbol[2:].lower()
