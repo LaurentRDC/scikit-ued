@@ -3,7 +3,6 @@ from random import choice, seed
 import numpy as np
 from .. import Atom, atomic_number
 import unittest
-
 seed(23)
 
 ELEMENTS = list(atomic_number.keys())
@@ -16,7 +15,8 @@ class TestAtom(unittest.TestCase):
         nG = np.random.random(size = (256,))
         copied = np.copy(nG)
 
-        a = Atom(choice(ELEMENTS), [0,0,0])
+        # There are no scattering parameters for elements Z > 103
+        a = Atom(choice([e for e in ELEMENTS if atomic_number[e] < 104]), [0,0,0])
         _ = a.electron_form_factor(nG)
 
         self.assertTrue(np.allclose(nG, copied))
