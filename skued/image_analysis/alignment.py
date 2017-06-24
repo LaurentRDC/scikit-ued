@@ -61,6 +61,7 @@ def align(images, reference = None, fill_value = 0.0):
 	Diffraction images exhibit high symmetry in most cases, therefore images
 	are cropped to a quarter of their size before alignment.
 	"""
+	# TODO: check if `images` is an array; if so, return the alignment (not yield)
 	images = iter(images)
 	
 	if reference is None:
@@ -70,10 +71,11 @@ def align(images, reference = None, fill_value = 0.0):
 	cropped_ref = _crop_to_half(reference)
 
 	def _align_im(image):
-		shifts, *_ = register_translation(target_image = _crop_to_half(image), 
-										  src_image = cropped_ref, 
-										  upsample_factor = 4, 
-										  space = 'real')
+		# TODO: raise warning if error is too large?
+		shifts, error, _ = register_translation(target_image = _crop_to_half(image), 
+										  		src_image = cropped_ref, 
+										  		upsample_factor = 4, 
+										  		space = 'real')
 		return shift_image(image, -shifts, fill_value = fill_value)
 
 	yield from map(_align_im, images)

@@ -37,6 +37,7 @@ class TestBoundedReflections(unittest.TestCase):
 class TestCrystalRotations(unittest.TestCase):
 
     def setUp(self):
+        # TODO: choose a crystal at random from Crystal.builtins
         self.crystal = deepcopy(graphite)
     
     def test_crystal_equality(self):
@@ -80,6 +81,18 @@ class TestCrystalRotations(unittest.TestCase):
         cryst1.transform(rotation_matrix(radians(22.3), [0,0,1]))
         cryst2.transform(rotation_matrix(radians(22.3 - 360), [0,0,1]))
         self.assertEqual(cryst1, cryst2)
+    
+class TestCrystalContructors(unittest.TestCase):
+
+    def test_builtins(self):
+        """ Test that all names in Crystal.builtins build without errors """
+        for name in Crystal.builtins:
+            c = Crystal.from_database(name)
+    
+    def test_wrong_name(self):
+        """ Test that a name not in Crystal.builtins will raise a ValueError """
+        with self.assertRaises(ValueError):
+            c = Crystal.from_database('___')
 
 if __name__ == '__main__':
     unittest.main()

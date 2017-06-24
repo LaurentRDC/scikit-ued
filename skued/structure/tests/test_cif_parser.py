@@ -38,7 +38,7 @@ class TestCIRParser(unittest.TestCase):
     
     def test_graphite(self):
         """ Test CIFParser on C.cif and compare to built-in graphite """
-        C_path = os.path.join('skued', 'structure', 'cifs', 'periodic_table', 'C.cif')
+        C_path = os.path.join('skued', 'structure', 'cifs', 'C.cif')
         c = Crystal.from_cif(C_path)
         
         self.assertEqual(len(c), len(graphite))
@@ -46,7 +46,7 @@ class TestCIRParser(unittest.TestCase):
     
     def test_silicon(self):
         """ Test CIFParser on Si.cif (diamond structure) """
-        Si_path = os.path.join('skued', 'structure', 'cifs', 'periodic_table', 'Si.cif')
+        Si_path = os.path.join('skued', 'structure', 'cifs', 'Si.cif')
         si = Crystal.from_cif(Si_path)
 
         self.assertEqual(len(si), 8)
