@@ -12,17 +12,20 @@ much more of a problem for electron diffraction than equivalent X-ray experiment
 Contents
 ========
 
+* :ref:`register_translation`
 * :ref:`powder`
 
-.. _powder:
+.. _register_translation:
 
-Image analysis on polycrystalline diffraction patterns
-======================================================
+Image translation registration
+==============================
 
-Center-finding
---------------
-Polycrystalline diffraction patterns display concentric rings, and finding
-the center of those concentric rings is important.
+
+
+Translation registration is an important problem in image-processing, and solutions
+to this are commonplace. What distinguishes diffraction experiments from the typical
+translation registration problem is the fact that diffraction images often have invalid
+zones.
 
 Let's load a test image::
 	
@@ -45,8 +48,25 @@ Let's load a test image::
 	plt.imshow(im, vmin = im.min(), vmax = 1200)
 	plt.show()
 
-This is a noisy diffraction pattern of polycrystalline vanadium dioxide. 
-Finding the center of such a symmetry pattern can be done with the 
+During an experiment, the diffraction pattern will shift around; however, the beam-block
+and the center beam (of which we see the edges) will not shift with the pattern. Moreover,
+detectors can have dead pixels or hot pixels, which will throw off translation registration. 
+Therefore, in comparing two diffraction patterns for alignment, we need to declare zones of 
+the diffraction pattern as invalid.
+
+
+.. _powder:
+
+Image analysis on polycrystalline diffraction patterns
+======================================================
+
+Center-finding
+--------------
+Polycrystalline diffraction patterns display concentric rings, and finding
+the center of those concentric rings is important.
+
+Consider the diffraction pattern presented in :ref:`register_translation`.
+Finding the center of such a symmetric pattern can be done with the 
 :code:`powder_center` routine::
 	
 	from skued.image_analysis import powder_center
