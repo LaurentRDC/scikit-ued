@@ -99,4 +99,3 @@ ENV/
 
 # PyCharm
 .idea/
-benchmark.py
