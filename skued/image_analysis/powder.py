@@ -91,8 +91,9 @@ def angular_average(image, center, mask = None, extras = None, angular_bounds = 
 	xc, yc = center  
 	
 	#Create meshgrid and compute radial positions of the data
-	X, Y = np.meshgrid(np.arange(0, image.shape[0]), 
-					   np.arange(0, image.shape[1]))
+	# TODO: is there no way to use rint and get a dtype np.int at the end?
+	#		astype() takes about 20% of computing time of this function.
+	Y, X = np.ogrid[0:image.shape[0],0:image.shape[1]]
 	R = np.rint(np.sqrt( (X - xc)**2 + (Y - yc)**2 )).astype(np.int)
 
 	if angular_bounds:
@@ -119,4 +120,4 @@ def angular_average(image, center, mask = None, extras = None, angular_bounds = 
 		radial_intensity_error = np.sqrt(var_bin - radial_intensity**2)/np.sqrt(r_bin[nz])
 		extras.update({'error':radial_intensity_error})
 	
-	return np.unique(R_v), radial_intensity
+	return np.arange(0, radial_intensity.size), radial_intensity
