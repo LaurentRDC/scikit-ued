@@ -127,8 +127,6 @@ def diff_register(image, reference, mask = None, search_space = 10):
 		shifted[:] = shift_image(cropped, shift, fill_value = np.nan)
 		return np.nansum(np.square(shifted - cropped_ref))
 	
-	# Surprise: if shift_space is a generator, then both zip and map will consume
-	# it. Therefore, shift_space must be a list
 	shift_space = list(product(range(-search_space, search_space + 1), range(-search_space, search_space + 1)))
 	solutions = dict(zip(shift_space, map(cost, shift_space)))
 	minimum = min(solutions.values())

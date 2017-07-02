@@ -6,7 +6,7 @@ from skimage import data
 from skimage.filters import gaussian
 from skimage.transform import rotate
 
-from .. import shift_image, align, diff_register
+from .. import shift_image, ialign, diff_register
 from .test_powder import circle_image
 
 class TestDiffRegister(unittest.TestCase):
@@ -52,11 +52,11 @@ class TestDiffRegister(unittest.TestCase):
 		shift = diff_register(shifted, reference = im, mask = mask, search_space = 6)
 		self.assertSequenceEqual(tuple(shift), (5, -2))
 
-class TestAlign(unittest.TestCase):
+class TestIAlign(unittest.TestCase):
 
 	def test_trivial(self):
 		""" Test alignment of identical images """
-		aligned = tuple(align([data.camera() for _ in range(5)]))
+		aligned = tuple(ialign([data.camera() for _ in range(5)]))
 		
 		self.assertEqual(len(aligned), 5)
 		self.assertSequenceEqual(data.camera().shape, aligned[0].shape)
@@ -65,7 +65,7 @@ class TestAlign(unittest.TestCase):
 		""" shift uniform images by entire pixels """
 		original = np.ones((256, 256))
 		misaligned = [shift_image(original, (1,-3))]
-		aligned = align(misaligned, reference = original)
+		aligned = ialign(misaligned, reference = original)
 
 		for im in aligned:
 			# edge will be filled with zeros
@@ -79,7 +79,7 @@ class TestAlign(unittest.TestCase):
 		misaligned = [shift_image(original, (randint(-4, 4), randint(-4, 4))) 
 					  for _ in range(5)]
 
-		aligned = align(misaligned, reference = original)
+		aligned = ialign(misaligned, reference = original)
 
 		# TODO: find a better figure-of-merit for alignment
 		for im in aligned:
