@@ -5,6 +5,7 @@ Module concerned with alignment of diffraction images
 from itertools import product
 import numpy as np
 from skimage.feature import register_translation
+from warnings import warn
 
 non = lambda s: s if s < 0 else None
 mom = lambda s: max(0, s)
@@ -36,7 +37,11 @@ def _crop_to_half(image):
 	nrows, ncols = np.array(image.shape)/4
 	return image[int(nrows):-int(nrows), int(ncols):-int(ncols)]
 
-def align(images, reference = None, fill_value = 0.0):
+def align(*args, **kwargs):
+	warn('Due to naming confusion, align has been renamed to ialign.', DeprecationWarning)
+	yield from ialign(*args, **kwargs)
+
+def ialign(images, reference = None, fill_value = 0.0):
 	"""
 	Generator of aligned diffraction images.
 
@@ -47,7 +52,7 @@ def align(images, reference = None, fill_value = 0.0):
 	reference : `~numpy.ndarray` or None, optional
 		If not None, this is the reference image to which all images will be aligned. Otherwise,
 		images will be aligned to the first element of the iterable 'images'. 
-	fill_value : numerical, optional
+	fill_value : float, optional
 		Edges will be filled with `fill_value` after shifting.
     
 	Yields
