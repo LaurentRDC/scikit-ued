@@ -2,14 +2,9 @@
 """
 Module concerned with alignment of diffraction images
 """
-
+from itertools import product
 import numpy as np
 from skimage.feature import register_translation
-
-try:
-	from numpy.fft_intel import fft2, ifft2
-except ImportError:
-	from scipy.fftpack import fft2, ifft2
 
 non = lambda s: s if s < 0 else None
 mom = lambda s: max(0, s)
@@ -19,7 +14,7 @@ def shift_image(arr, shift, fill_value = 0):
 
 	Parameters
 	----------
-	arr : ndarray
+	arr : `~numpy.ndarray`
 		Array to be shifted.
 	shift : array_like, shape (2,)
 		Shifts in the 
@@ -37,6 +32,10 @@ def shift_image(arr, shift, fill_value = 0):
 	shifted[mom(y):non(y), mom(x):non(x)] = arr[mom(-y):non(-y), mom(-x):non(-x)]
 	return shifted
 
+def _crop_to_half(image):
+	nrows, ncols = np.array(image.shape)/4
+	return image[int(nrows):-int(nrows), int(ncols):-int(ncols)]
+
 def align(images, reference = None, fill_value = 0.0):
 	"""
 	Generator of aligned diffraction images.
@@ -45,7 +44,7 @@ def align(images, reference = None, fill_value = 0.0):
 	----------
 	images : iterable
 		Iterable of ndarrays of shape (N,M)
-	reference : ndarray or None, optional
+	reference : `~numpy.ndarray` or None, optional
 		If not None, this is the reference image to which all images will be aligned. Otherwise,
 		images will be aligned to the first element of the iterable 'images'. 
 	fill_value : numerical, optional
@@ -61,7 +60,6 @@ def align(images, reference = None, fill_value = 0.0):
 	Diffraction images exhibit high symmetry in most cases, therefore images
 	are cropped to a quarter of their size before alignment.
 	"""
-	# TODO: check if `images` is an array; if so, return the alignment (not yield)
 	images = iter(images)
 	
 	if reference is None:
@@ -80,6 +78,57 @@ def align(images, reference = None, fill_value = 0.0):
 
 	yield from map(_align_im, images)
 
-def _crop_to_half(image):
-	nrows, ncols = np.array(image.shape)/4
-	return image[int(nrows):-int(nrows), int(ncols):-int(ncols)]
+def diff_register(image, reference, mask = None, search_space = 10):
+	"""
+	Register translation of diffraction patterns, using a 
+	global optimization approach.
+	
+	Parameters
+	----------
+	image : iterable
+		Iterable of ndarrays of shape (N,M)
+	reference : `~numpy.ndarray`
+		This is the reference image to which `image` will be aligned. 
+	mask : `~numpy.ndarray` or None, optional
+		Mask that evaluates to True on invalid pixels.
+	search_space : int, optional
+		Size of the domain (in pixels) over which a possible solution
+		is computed. 
+	
+	Returns
+	-------
+	shift : `~numpy.ndarray`, shape (2,)
+		Shift in rows and columns. Compatible with `shift_image`
+	"""
+	image = np.asfarray(image)
+	reference = np.asfarray(reference)
+
+	if mask is None:
+		mask = np.zeros_like(image, dtype = np.bool)
+
+	cropped = _crop_to_half(image)
+	cropped_ref = _crop_to_half(reference)
+	cropped_mask = _crop_to_half(mask)
+
+	# I think that using nansum will be faster that alternatively
+	# masking the shifted array everytime (which involves shifting the mask)
+	cropped[cropped_mask] = np.nan
+	cropped_ref[cropped_mask] = np.nan
+
+	shifted = np.empty_like(cropped)	# preallocation for speed
+	def cost(shift):
+		""" Square of residual difference between im and reference 
+		if im was shifted by i rows and j columns """
+		shifted[:] = shift_image(cropped, shift, fill_value = np.nan)
+		return np.nansum(np.square(shifted - cropped_ref))
+	
+	# Surprise: if shift_space is a generator, then both zip and map will consume
+	# it. Therefore, shift_space must be a list
+	shift_space = list(product(range(-search_space, search_space + 1), range(-search_space, search_space + 1)))
+	solutions = dict(zip(shift_space, map(cost, shift_space)))
+	minimum = min(solutions.values())
+
+	# Handling possible multiple minima is clunky af
+	minimum_solutions = dict(filter(lambda item: item[-1] == minimum, solutions.items()))
+	shift = sum(map(np.array, minimum_solutions.keys()))/len(minimum_solutions)
+	return -1 * shift
