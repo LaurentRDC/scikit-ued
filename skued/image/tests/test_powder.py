@@ -35,7 +35,7 @@ class TestPowderCenter(unittest.TestCase):
 		im = circle_image(shape = (128, 128), center = center, 
 						  radii = [16, 32], intensities = [4,3])
 		im += (im.max() / 5) * np.random.random(size = im.shape)
-		self.assertSequenceEqual(center, powder_center(im))
+		self.assertSequenceEqual(center, powder_center(im, search_space = 30))
 
 class TestAngularAverage(unittest.TestCase):
 	

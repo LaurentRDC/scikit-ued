@@ -57,8 +57,8 @@ def iaverage(images, mask = None, weights = None):
     ----------
     images : iterable of ndarrays
         Images to be averaged. This iterable can also a generator.
-    weights : iterable of ndarray or None, optional
-        Array of weights. see `numpy.average` for further information. If None (default), 
+    weights : iterable of ndarray, iterable of floats, or None, optional
+        Array of weights. See `numpy.average` for further information. If None (default), 
         total picture intensity of valid pixels is used to weight each picture.
     
     Yields
