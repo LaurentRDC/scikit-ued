@@ -4,6 +4,7 @@ Streaming operations on arrays/images
 """
 from collections import deque
 from functools import partial
+from itertools import repeat
 
 import numpy as np
 
