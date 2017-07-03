@@ -128,6 +128,9 @@ class Crystal(AtomicStructure, Lattice):
 			Revision number. If None (default), the latest revision is used.
 		"""
 		# TODO: caching
+		# TODO: move away from urlretrieve
+		# TODO: handle timeout
+		
 		# http://wiki.crystallography.net/howtoquerycod/
 		url = 'http://www.crystallography.net/cod/{}.cif'.format(num)
 
