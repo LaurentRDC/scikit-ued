@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 from collections.abc import Iterable
 from copy import deepcopy as copy
+from glob import glob
+from functools import lru_cache
 from itertools import count, product, takewhile
+import os
+from tempfile import TemporaryDirectory
+from urllib.request import urlretrieve
 from warnings import warn
 
 import numpy as np
@@ -16,6 +21,8 @@ from .. import (affine_map, change_basis_mesh, change_of_basis,
 m = 9.109*10**(-31)     #electron mass in kg
 a0 = 0.5291             #in Angs
 e = 14.4                #electron charge in Volt*Angstrom
+
+CIF_ENTRIES = glob(os.path.join(os.path.dirname(__file__), 'cifs', '*.cif'))
 
 class Crystal(AtomicStructure, Lattice):
 	"""
@@ -33,6 +40,8 @@ class Crystal(AtomicStructure, Lattice):
 	atoms : iterable
 		List of atoms in the asymmetric unit.
 	"""
+
+	builtins = set(map(lambda fn: os.path.basename(fn).split('.')[0], CIF_ENTRIES))
 
 	def __init__(self, atoms, symmetry_operators = [np.eye(3)], **kwargs):
 		kwargs.update({'items': atoms}) # atoms argument is an alias for AtomicStructure.items
@@ -89,6 +98,52 @@ class Crystal(AtomicStructure, Lattice):
 			return Crystal(atoms = list(parser.atoms()), 
 						   lattice_vectors = parser.lattice_vectors(), 
 						   symmetry_operators = parser.symmetry_operators())
+	
+	@classmethod
+	def from_database(cls, name):
+		""" 
+		Returns a Crystal object create from the internal CIF database.
+
+		Parameters
+		----------
+		name : str
+			Name of tne databse entry. Available items can be retrieved from `Crystal.builtins`
+		"""
+		if name not in cls.builtins:
+			raise ValueError('Entry {} is not available in the database. See Crystal.builtins for valid entries.')
+		
+		path = os.path.join(os.path.dirname(__file__), 'cifs', name + '.cif')
+		return cls.from_cif(path)
+	
+	@classmethod
+	def from_cod(cls, num, revision = None):
+		""" 
+		Returns a Crystal object built from the Crystallography Open Database. 
+
+		Parameters
+		----------
+		num : int
+			COD identification number.
+		revision : int or None, optional
+			Revision number. If None (default), the latest revision is used.
+		"""
+		# TODO: caching
+		# TODO: move away from urlretrieve
+		# TODO: handle timeout
+		
+		# http://wiki.crystallography.net/howtoquerycod/
+		url = 'http://www.crystallography.net/cod/{}.cif'.format(num)
+
+		if revision is not None:
+			url = url + '@' + str(revision)
+			base = '{iden}-{rev}.cif'.format(iden = num, rev = revision)
+		else:
+			base = '{}.cif'.format(num)
+
+		with TemporaryDirectory() as directory:
+			filename = os.path.join(directory, base)
+			urlretrieve(url, filename)
+			return cls.from_cif(filename)
 
 	@classmethod
 	def from_pdb(cls, ID):

@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 """
 Image manipulation of powder diffraction
+========================================
 """
 import numpy as np
-from scipy.signal import fftconvolve
-from skimage.filters import threshold_local
+from .alignment import diff_register
 
-_PC_CACHE = dict()
-def powder_center(image):
+def powder_center(image, mask = None, search_space = 10):
 	"""
 	Finds the center of a powder diffraction pattern by comparing the
 	correlation between the input and its image.
@@ -16,6 +15,13 @@ def powder_center(image):
 	----------
 	image : `~numpy.ndarray`, ndim 2
 		Image of a powder pattern
+	mask : `~numpy.ndarray` or None, optional
+		Mask of `image`. The mask should evaluate to `True`
+		(or 1) on invalid pixels. If None (default), no mask
+		is used.
+	search_space : int, optional
+		Size of the domain (in pixels) over which a possible solution
+		is computed. 
 
 	Returns
 	-------
@@ -24,32 +30,15 @@ def powder_center(image):
 		relevant for array manipulations (center = [row, column] instead of 
 		center = [x,y]).
 	"""
-	# The correlation 'background' only depends on the image
-	# shape; therefore, caching provides an important speedup
-	if image.shape not in _PC_CACHE:
-		mask = np.ones_like(image)
-		_PC_CACHE[image.shape] = fftconvolve(mask, mask)
+	if mask is None:
+		mask = np.zeros_like(image, dtype = np.bool)
 
-	# Correlation of image and its mirror is a convolution
-	# TODO: explicitly compute convolution, since only one FFT
-	# 		has to be calculated.
-	corr = fftconvolve(image, image)
-	corr /= _PC_CACHE[image.shape]
-
-	# ignore edges because of artifacts from fftconvolve
-	edge_size = int(min(image.shape) / 10)
-	corr[:edge_size,:] = 0
-	corr[-edge_size:, :] = 0
-	corr[:, -edge_size:] = 0
-	corr[:, :edge_size] = 0
-
-	# Noise in the image will obfuscate the symmetry peak
-	# Therefore, we have to identify where the (sharp) peak is
-	thresh = threshold_local(corr, block_size = 101)
-	corr[corr <= thresh] = 0
-
-	full_center = np.array(np.unravel_index(np.argmax(corr), dims = corr.shape))
-	return tuple(full_center/2)
+	shift = diff_register(image, np.rot90(image, k = 2), mask = mask * np.rot90(mask, k = 2), search_space = search_space)
+	midpoints = np.array([int(axis_size / 2) for axis_size in image.shape])
+	
+	# I have found that there is always a residual (0.5, 0.5)
+	center = shift[::-1]/2 + midpoints - np.array([0.5, 0.5])
+	return tuple(center)
 
 def angular_average(image, center, mask = None, extras = None, angular_bounds = None):
 	"""
@@ -91,8 +80,9 @@ def angular_average(image, center, mask = None, extras = None, angular_bounds = 
 	xc, yc = center  
 	
 	#Create meshgrid and compute radial positions of the data
-	X, Y = np.meshgrid(np.arange(0, image.shape[0]), 
-					   np.arange(0, image.shape[1]))
+	# TODO: is there no way to use rint and get a dtype np.int at the end?
+	#		astype() takes about 20% of computing time of this function.
+	Y, X = np.ogrid[0:image.shape[0],0:image.shape[1]]
 	R = np.rint(np.sqrt( (X - xc)**2 + (Y - yc)**2 )).astype(np.int)
 
 	if angular_bounds:
@@ -119,4 +109,4 @@ def angular_average(image, center, mask = None, extras = None, angular_bounds = 
 		radial_intensity_error = np.sqrt(var_bin - radial_intensity**2)/np.sqrt(r_bin[nz])
 		extras.update({'error':radial_intensity_error})
 	
-	return np.unique(R_v), radial_intensity
+	return np.arange(0, radial_intensity.size), radial_intensity

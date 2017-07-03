@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Algorithms based on the dual-tree complex wavelet transform.
-
-Author : Laurent P. Rene de Cotret
+Algorithms based on the dual-tree complex wavelet transform
+===========================================================
 """
 from collections.abc import Iterable
 import pywt

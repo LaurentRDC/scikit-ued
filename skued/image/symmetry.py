@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Image manipulation involving symmetry
+=====================================
 """
 from functools import partial
 from skimage.transform import rotate

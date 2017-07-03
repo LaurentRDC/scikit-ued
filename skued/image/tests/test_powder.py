@@ -11,14 +11,13 @@ np.random.seed(23)
 def circle_image(shape, center, radii, intensities):
 	""" Creates an image with circle or thickness 2 """
 	im = np.zeros(shape = shape, dtype = np.float)
-	xx, yy = np.meshgrid(np.arange(0, shape[0]),
-						 np.arange(0, shape[1]),
-						 indexing = 'ij')
+	xx, yy = np.ogrid[0:shape[0],0:shape[1]]
 	xx, yy = xx - center[0], yy - center[1]
 	for radius, intensity in zip(radii, intensities):
 		rr = np.sqrt(xx**2 + yy**2)
 		im[np.logical_and(rr < radius + 1, rr > radius - 1)] = intensity
 	
+	im[:] = gaussian(im, 5)
 	return im
 
 class TestPowderCenter(unittest.TestCase):
@@ -36,16 +35,7 @@ class TestPowderCenter(unittest.TestCase):
 		im = circle_image(shape = (128, 128), center = center, 
 						  radii = [16, 32], intensities = [4,3])
 		im += (im.max() / 5) * np.random.random(size = im.shape)
-		self.assertSequenceEqual(center, powder_center(im))
-	
-	def test_with_low_signal(self):
-		center = (250, 300)
-		im = circle_image(shape = (512, 512), center = center, 
-						  radii = [32, 125, 200],
-						  intensities = [40, 30, 40])
-		im += (im.max() / 10) * np.random.random(size = im.shape)
-		im[:] = gaussian(im, sigma = 5)
-		self.assertSequenceEqual(center, powder_center(im))
+		self.assertSequenceEqual(center, powder_center(im, search_space = 30))
 
 class TestAngularAverage(unittest.TestCase):
 	

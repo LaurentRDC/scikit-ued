@@ -23,4 +23,4 @@ We currently have the following tutorials:
    structure
    simulation
    baseline
-   image_analysis
+   image

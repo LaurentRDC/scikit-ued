@@ -106,4 +106,4 @@ def pmap(func, iterable, args = tuple(), kwargs = dict(), processes = None):
 		else:
 			chunksize = 1
 
-		yield from  pool.imap(func = func, iterable = iterable, chunksize = chunksize)
+		yield from pool.imap(func = func, iterable = iterable, chunksize = chunksize)
