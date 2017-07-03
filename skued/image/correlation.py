@@ -2,58 +2,113 @@
 Image correlation and related functions
 =======================================
 """
+from functools import partial
 import numpy as np
-from scipy.fftpack import fft2, ifft2, ifftshift
+from numpy.fft import rfft2, irfft2, fft2, ifft2, ifftshift, fftshift
+from scipy.fftpack import next_fast_len
 
-# TODO: axes parameter
-def masked_xcorr(arr1, arr2, m1, m2 = None):
+EPS = max(np.finfo(np.float).eps, np.finfo(np.complex).eps)
+
+def _crop_to_half(image):
+	nrows, ncols = np.array(image.shape)/4
+	return image[int(nrows):-int(nrows), int(ncols):-int(ncols)]
+
+def mnxc2(arr1, arr2, m1 = None, m2 = None):
 	"""
-	Normalized cross-correlation between two images with invalid pixels. 
+	Masked normalized cross-correlation (MNXC) between two images.
 
 	Parameters
 	----------
-	arr1, arr2 : `~numpy.ndarray`, shape (N,M)
-		Images to be cross-correlated
-	m1 : `~numpy.ndarray`, shape (N,M)
+	arr1 : `~numpy.ndarray`, shape (M,N)
+		Reference, or 'fixed-image' in the language of _[PADF].
+	arr2 : `~numpy.ndarray`, shape (M,N)
+		Moving image
+	m1 : `~numpy.ndarray`, shape (M,N) or None, optional
 		Mask of `arr1`. The mask should evaluate to `True`
-		(or 1) on invalid pixels.
-	m2 : `~numpy.ndarray`, shape (N,M) or None, optional
+		(or 1) on invalid pixels. If None (default), no mask
+		is used.
+	m2 : `~numpy.ndarray`, shape (M,N) or None, optional
 		Mask of `arr2`. The mask should evaluate to `True`
 		(or 1) on invalid pixels. If None (default), `m2` is 
 		taken to be the same as `m1`.
+	axes : 2-tuple of ints or None, optional
+		Axes over which to compute the cross-correlation.
 		
 	Returns
 	-------
-	out : `~numpy.ndarray`, dtype complex
-		Masked, normalized cross-correlation.
+	out : `~numpy.ndarray`
+		Masked, normalized cross-correlation. If images are real-valued, then `out` will be
+		real-valued as well. For complex input, `out` will be complex as well.
 		
 	References
 	----------
-	.. [#] Dirk Padfield. Masked Object Registration in the Fourier Domain. 
+	.. [PADF] Dirk Padfield. Masked Object Registration in the Fourier Domain. 
 		IEEE Transactions on Image Processing, vol.21(5), pp. 2706-2718, 2012. 
 	"""
+	# TODO: implement for complex arrays
+	# TODO: implement over axes
+	# TODO: implement multidims
+
+	arr1, arr2 = np.array(arr1), np.array(arr2)
+
+	# Determine final size along transformation axes
+	# TODO: compare with using next_fast_len and without
+	final_shape = tuple( next_fast_len(ax1 + ax2 - 1) for ax1, ax2 in zip(arr1.shape, arr2.shape))
+	fft = partial(rfft2, s = final_shape)
+	ifft = partial(irfft2, s = final_shape)
+	
+	if m1 is None:
+		m1 = np.zeros_like(arr1, dtype = np.bool)
+	else:
+		m1 = np.array(m1)
+	
 	if m2 is None:
-		m2 = m1
-		
-	m1, m2 = np.asfarray(~m1), np.asfarray(~m2)
-	arr1, arr2 = np.asfarray(arr1), np.asfarray(arr2)
+		m2 = np.array(m1)
+	else:
+		m2 = np.array(m2)
+	
+	arr1[m1] = 0.0
+	arr2[m2] = 0.0
 
-	# Contrary to the reference above, we do not compute the fft up to the 'full' size
-	# In my experience this has not been a problem.	
-	F1 = fft2(arr1 * m1)
-	F2s = fft2(arr2 * m2).conj()
+	# Rotation in real-space instead of conjugation in fourier domain
+	# because we might be using rfft instead of complex fft
+	arr2[:] = np.rot90(arr2, k = 2)
+	m2[:] = np.rot90(m2, k = 2)
+	
+	F1 = fft(arr1)
+	F2s = fft(arr2)
 
-	M1 = fft2(m1)
-	M2s = fft2(m2).conj()
+	M1 = fft(~m1)
+	M2s = fft(~m2)
+
+	iM1M2s = ifft(M1 * M2s)
+	iM1M2s[:] = np.rint(iM1M2s)
+	iM1M2s[:] = np.maximum(iM1M2s, EPS)
 
 	# I have noticed no clear performance boost by storing
-	# repeated calculation (e.g. ifft2(M1 * M2s)); however, the following
+	# repeated calculation (e.g. ifft(M1 * M2s)); however, the following
 	# is already hard enough to read...
-	numerator = ifft2(F1 * F2s)
-	numerator -= ifft2(F1 * M2s) * ifft2(M1 * F2s) / ifft2(M1 * M2s)
+	numerator = ifft(F1 * F2s)
+	numerator -= ifft(F1 * M2s) * ifft(M1 * F2s) / iM1M2s
 
-	denominator = ifft2(fft2(arr1*arr1) * M2s) - (ifft2(F1 * M2s))**2/ifft2(M1 * M2s)
-	denominator *= ifft2(M1*fft2(arr2*arr2).conjugate()) - ifft2(M1 * F2s)**2/(ifft2(M1 * M2s))
-	np.sqrt(denominator, out = denominator)
+	denominator = ifft(fft(arr1*arr1) * M2s) - (ifft(F1 * M2s))**2/iM1M2s
+	denominator *= ifft(M1*fft(arr2*arr2)) - ifft(M1 * F2s)**2/iM1M2s
+	denominator[:] = np.clip(denominator, a_min = 0, a_max = None)
+	denominator[:] = np.sqrt(denominator)
 
-	return ifftshift(numerator / denominator)
+	out = np.zeros_like(denominator)
+	nonzero = np.nonzero(denominator)
+	out[nonzero] = numerator[nonzero] / denominator[nonzero]
+
+	out = _centered(out, arr1.shape)
+	out[np.logical_or(out > 1, out < -1)] = 0
+	return out
+
+def _centered(arr, newshape):
+    # Return the center newshape portion of the array.
+    newshape = np.asarray(newshape)
+    currshape = np.array(arr.shape)
+    startind = (currshape - newshape) // 2
+    endind = startind + newshape
+    myslice = [slice(startind[k], endind[k]) for k in range(len(endind))]
+    return arr[tuple(myslice)]
