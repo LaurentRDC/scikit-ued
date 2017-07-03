@@ -6,14 +6,9 @@ import re
 from setuptools import setup, find_packages
 #from Cython.Build import cythonize
 
-# How to submit a package on PyPi:
-# http://peterdowns.com/posts/first-time-with-pypi.html
-#
-# Test upload:
-#   > python setup.py sdist upload -r pypitest
-#
-# Real upload:
-#   > python setup.py sdist upload -r pypi
+# To upload to pypi.org:
+#   >>> python setup.py sdist
+#   >>> twine upload dist/scikit-ued-x.x.x.tar.gz
 
 BASE_PACKAGE = 'skued'
 
