@@ -6,7 +6,7 @@ from skimage import data
 from skimage.filters import gaussian
 from skimage.transform import rotate
 
-from .. import shift_image, ialign, diff_register
+from .. import shift_image, align, diff_register
 from .test_powder import circle_image
 
 class TestDiffRegister(unittest.TestCase):
@@ -52,43 +52,36 @@ class TestDiffRegister(unittest.TestCase):
 		shift = diff_register(shifted, reference = im, mask = mask, search_space = 6)
 		self.assertSequenceEqual(tuple(shift), (5, -2))
 
-class TestIAlign(unittest.TestCase):
+class TestAlign(unittest.TestCase):
 
 	def test_trivial(self):
 		""" Test alignment of identical images """
-		aligned = tuple(ialign([data.camera() for _ in range(5)]))
-		
-		self.assertEqual(len(aligned), 5)
-		self.assertSequenceEqual(data.camera().shape, aligned[0].shape)
+		aligned = align(data.camera(), reference = data.camera())
+		self.assertTrue(np.allclose(aligned, data.camera()))
 
 	def test_misaligned_uniform_images(self):
 		""" shift uniform images by entire pixels """
 		original = np.ones((256, 256))
-		misaligned = [shift_image(original, (1,-3))]
-		aligned = ialign(misaligned, reference = original)
-
-		for im in aligned:
-			# edge will be filled with zeros
-			self.assertTrue(np.allclose(original[5:-5, 5:-5], 
-										im[5:-5, 5:-5]))
+		misaligned = shift_image(original, (1,-3))
+		aligned = align(misaligned, reference = original)
+		
+		self.assertTrue(np.allclose(original[5:-5, 5:-5], 
+									aligned[5:-5, 5:-5]))
 
 	def test_misaligned_canned_images(self):
 		""" shift images from skimage.data by entire pixels.
 	   We don't expect perfect alignment."""
 		original = data.camera()
-		misaligned = [shift_image(original, (randint(-4, 4), randint(-4, 4))) 
-					  for _ in range(5)]
+		misaligned = shift_image(original, (randint(-4, 4), randint(-4, 4))) 
 
-		aligned = ialign(misaligned, reference = original)
+		aligned = align(misaligned, reference = original)
 
-		# TODO: find a better figure-of-merit for alignment
-		for im in aligned:
-			# edge will be filled with zeros, we ignore
-			diff = np.abs(original[5:-5, 5:-5] - im[5:-5, 5:-5])
+		# edge will be filled with zeros, we ignore
+		diff = np.abs(original[5:-5, 5:-5] - aligned[5:-5, 5:-5])
 
-			# Want less than 1% difference
-			percent_diff = np.sum(diff) / (diff.size * (original.max() - original.min()))
-			self.assertLess(percent_diff, 1)
+		# Want less than 1% difference
+		percent_diff = np.sum(diff) / (diff.size * (original.max() - original.min()))
+		self.assertLess(percent_diff, 1)
 
 if __name__ == '__main__':
 	unittest.main()

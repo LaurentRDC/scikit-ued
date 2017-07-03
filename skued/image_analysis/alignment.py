@@ -33,55 +33,37 @@ def shift_image(arr, shift, fill_value = 0):
 	shifted[mom(y):non(y), mom(x):non(x)] = arr[mom(-y):non(-y), mom(-x):non(-x)]
 	return shifted
 
-def _crop_to_half(image):
-	nrows, ncols = np.array(image.shape)/4
-	return image[int(nrows):-int(nrows), int(ncols):-int(ncols)]
-
-def align(*args, **kwargs):
-	warn('Due to naming confusion, align has been renamed to ialign.', DeprecationWarning)
-	yield from ialign(*args, **kwargs)
-
-def ialign(images, reference = None, fill_value = 0.0):
+def align(image, reference, fill_value = 0.0):
 	"""
-	Generator of aligned diffraction images.
+	Align a diffraction image to a reference.
 
 	Parameters
 	----------
-	images : iterable
-		Iterable of ndarrays of shape (N,M)
-	reference : `~numpy.ndarray` or None, optional
-		If not None, this is the reference image to which all images will be aligned. Otherwise,
-		images will be aligned to the first element of the iterable 'images'. 
+	image : `~numpy.ndarray`, shape (M,N)
+		Image to be aligned.
+	reference : `~numpy.ndarray`, shape (M,N)
+		`image` will be align onto the `reference` image.
 	fill_value : float, optional
-		Edges will be filled with `fill_value` after shifting.
-    
-	Yields
-	------
-	aligned : ndarray, ndim 2
-		Aligned image
-
-	Notes
-	-----
-	Diffraction images exhibit high symmetry in most cases, therefore images
-	are cropped to a quarter of their size before alignment.
-	"""
-	images = iter(images)
+		Edges will be filled with `fill_value` after alignment.
 	
-	if reference is None:
-		reference = next(images)
-		yield reference
+	Returns
+	-------
+	aligned : `~numpy.ndarray`, shape (M,N)
+		Aligned image.
+	
+	See also
+	--------
+	ialign
+		generator of aligned images
+	"""
+	shifts, *_ = register_translation(target_image = _crop_to_half(image), 
+									  src_image = _crop_to_half(reference), 
+									  upsample_factor = 4, space = 'real')
+	return shift_image(image, -shifts, fill_value = fill_value)
 
-	cropped_ref = _crop_to_half(reference)
-
-	def _align_im(image):
-		# TODO: raise warning if error is too large?
-		shifts, error, _ = register_translation(target_image = _crop_to_half(image), 
-										  		src_image = cropped_ref, 
-										  		upsample_factor = 4, 
-										  		space = 'real')
-		return shift_image(image, -shifts, fill_value = fill_value)
-
-	yield from map(_align_im, images)
+def _crop_to_half(image):
+	nrows, ncols = np.array(image.shape)/4
+	return image[int(nrows):-int(nrows), int(ncols):-int(ncols)]
 
 def diff_register(image, reference, mask = None, search_space = 10):
 	"""
