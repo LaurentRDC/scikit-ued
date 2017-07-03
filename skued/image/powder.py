@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 """
 Image manipulation of powder diffraction
+========================================
 """
 import numpy as np
 from .alignment import diff_register
 
-def powder_center(image, mask = None, search_space = 30):
+def powder_center(image, mask = None, search_space = 10):
 	"""
 	Finds the center of a powder diffraction pattern by comparing the
 	correlation between the input and its image.

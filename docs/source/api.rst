@@ -56,6 +56,12 @@ Baseline-determination
 
 Image Analysis
 ==============
-.. automodule:: skued.image_analysis.powder
+.. automodule:: skued.image.powder
 
-.. automodule:: skued.image_analysis.alignment
+.. automodule:: skued.image.alignment
+
+.. automodule:: skued.image.streaming
+
+.. automodule:: skued.image.symmetry
+
+.. automodule:: skued.image.correlation

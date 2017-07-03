@@ -1,5 +1,6 @@
 """
 Streaming operations on arrays/images
+=====================================
 """
 from collections import deque
 from functools import partial
@@ -64,6 +65,10 @@ def iaverage(images, mask = None, weights = None):
     ------
     avg: `~numpy.ndarray`
         Weighted average. 
+    
+    See Also
+    --------
+    numpy.average : average for dense arrays
     """
     images = iter(images)
     
@@ -99,8 +104,7 @@ def isem(images):
     
     See also
     --------
-    scipy.stats.sem
-        Standard error in the mean of dense arrays.
+    scipy.stats.sem : standard error in the mean of dense arrays.
     
     References
     ----------

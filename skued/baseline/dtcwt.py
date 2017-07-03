@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-""" Dual-tree complex wavelet transform module """
+""" 
+Dual-tree complex wavelet transform
+===================================
+"""
 from itertools import cycle
 import numpy as np
 from pywt import dwt, idwt, dwt2, idwt2, dwt_max_level, wavelist, Wavelet

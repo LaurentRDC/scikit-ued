@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Module concerned with alignment of diffraction images
+=====================================================
 """
 from itertools import product
 import numpy as np
@@ -51,10 +52,9 @@ def align(image, reference, fill_value = 0.0):
 	aligned : `~numpy.ndarray`, shape (M,N)
 		Aligned image.
 	
-	See also
+	See Also
 	--------
-	ialign
-		generator of aligned images
+	ialign : generator of aligned images
 	"""
 	shifts, *_ = register_translation(target_image = _crop_to_half(image), 
 									  src_image = _crop_to_half(reference), 

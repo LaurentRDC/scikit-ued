@@ -1,14 +1,15 @@
 """
-Image correlation and related functions.
+Image correlation and related functions
+=======================================
 """
 import numpy as np
 from scipy.fftpack import fft2, ifft2, ifftshift
 
 # TODO: axes parameter
 def masked_xcorr(arr1, arr2, m1, m2 = None):
-	""" 
+	"""
 	Normalized cross-correlation between two images with invalid pixels. 
-	
+
 	Parameters
 	----------
 	arr1, arr2 : `~numpy.ndarray`, shape (N,M)
@@ -16,19 +17,19 @@ def masked_xcorr(arr1, arr2, m1, m2 = None):
 	m1 : `~numpy.ndarray`, shape (N,M)
 		Mask of `arr1`. The mask should evaluate to `True`
 		(or 1) on invalid pixels.
-    m2 : `~numpy.ndarray`, shape (N,M) or None, optional
+	m2 : `~numpy.ndarray`, shape (N,M) or None, optional
 		Mask of `arr2`. The mask should evaluate to `True`
 		(or 1) on invalid pixels. If None (default), `m2` is 
-        taken to be the same as `m1`
-
+		taken to be the same as `m1`.
+		
 	Returns
 	-------
 	out : `~numpy.ndarray`, dtype complex
 		Masked, normalized cross-correlation.
-
+		
 	References
 	----------
-	.. [#] Dirk Padfield. "Masked Object Registration in the Fourier Domain". 
+	.. [#] Dirk Padfield. Masked Object Registration in the Fourier Domain. 
 		IEEE Transactions on Image Processing, vol.21(5), pp. 2706-2718, 2012. 
 	"""
 	if m2 is None:
