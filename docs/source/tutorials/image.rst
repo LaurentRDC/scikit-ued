@@ -75,6 +75,36 @@ memory usage; this allows the use of multiple processes in parallel::
 	    # write to disk of display
 	    pass
 
+Example: averaging with error
+------------------------------
+
+It is possible to combine :code:`iaverage` and :code:`isem` into a single stream using :code:`itertools.tee`. 
+Here is a recipe for it::
+
+	def iaverage_with_error(images, weights):    
+	    """ 
+	    Combined streaming average and standard error of diffraction images. 
+		
+	    Parameters
+	    ----------
+	    images : iterable of ndarrays
+	    	Images to be averaged. This iterable can also a generator.
+	    weights : iterable of ndarray, iterable of floats, or None, optional
+	    	Array of weights. See `numpy.average` for further information. If None (default), 
+	    	total picture intensity of valid pixels is used to weight each picture.
+	    
+	    Yields
+	    ------
+	    avg: `~numpy.ndarray`
+	    	Weighted average. 
+	    sem: `~numpy.ndarray`
+	    	Weighted average. 
+	    """
+	    stream1, stream2 = itertools.tee(images, n = 2)
+	    averages = iaverage(stream1, weights = weights)
+	    errors = isem(stream2)
+	    yield from zip(averages, errors)
+
 .. _powder:
 
 Image analysis on polycrystalline diffraction patterns

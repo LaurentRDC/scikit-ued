@@ -4,12 +4,12 @@ Streaming operations on arrays/images
 """
 from collections import deque
 from functools import partial
-from itertools import repeat
 
 import numpy as np
 
 from . import align
 
+# TODO: move into base package, e.g. iter_utils.py?
 def last(stream):
     """ Returns the last item from a stream. """
     # Wonderful idea from itertools recipes
@@ -48,7 +48,7 @@ def ialign(images, reference = None, fill_value = 0.0):
 
 	yield from map(partial(align, reference = reference), images)
 
-def iaverage(images, mask = None, weights = None):
+def iaverage(images, weights = None):
     """ 
     Streaming average of diffraction images. This generator can be used to 
     observe a live averaging.
