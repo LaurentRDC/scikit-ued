@@ -100,7 +100,7 @@ Here is a recipe for it::
 	    sem: `~numpy.ndarray`
 	    	Weighted average. 
 	    """
-	    stream1, stream2 = itertools.tee(images, n = 2)
+	    stream1, stream2 = itertools.tee(images, 2)
 	    averages = iaverage(stream1, weights = weights)
 	    errors = isem(stream2)
 	    yield from zip(averages, errors)
