@@ -31,8 +31,6 @@ def mnxc2(arr1, arr2, m1 = None, m2 = None):
 		Mask of `arr2`. The mask should evaluate to `True`
 		(or 1) on invalid pixels. If None (default), `m2` is 
 		taken to be the same as `m1`.
-	axes : 2-tuple of ints or None, optional
-		Axes over which to compute the cross-correlation.
 		
 	Returns
 	-------
@@ -85,14 +83,17 @@ def mnxc2(arr1, arr2, m1 = None, m2 = None):
 	iM1M2s[:] = np.rint(iM1M2s)
 	iM1M2s[:] = np.maximum(iM1M2s, EPS)
 
+	iF1M2s = ifft(F1 * M2s)
+	iM1F2s = ifft(M1 * F2s)
+
 	# I have noticed no clear performance boost by storing
 	# repeated calculation (e.g. ifft(M1 * M2s)); however, the following
 	# is already hard enough to read...
 	numerator = ifft(F1 * F2s)
-	numerator -= ifft(F1 * M2s) * ifft(M1 * F2s) / iM1M2s
+	numerator -= iF1M2s * iM1F2s / iM1M2s
 
-	denominator = ifft(fft(arr1*arr1) * M2s) - (ifft(F1 * M2s))**2/iM1M2s
-	denominator *= ifft(M1*fft(arr2*arr2)) - ifft(M1 * F2s)**2/iM1M2s
+	denominator = ifft(fft(arr1*arr1) * M2s) - iF1M2s**2/iM1M2s
+	denominator *= ifft(M1*fft(arr2*arr2)) - iM1F2s**2/iM1M2s
 	denominator[:] = np.clip(denominator, a_min = 0, a_max = None)
 	denominator[:] = np.sqrt(denominator)
 
@@ -103,6 +104,40 @@ def mnxc2(arr1, arr2, m1 = None, m2 = None):
 	out = _centered(out, arr1.shape)
 	out[np.logical_or(out > 1, out < -1)] = 0
 	return out
+
+def register_translation(fixed_image, moving_image, fixed_mask = None, moving_mask = None):
+	"""
+	Determine the translation between two images using the masked normalized cross-correlation.
+
+	Parameters
+	----------
+	fixed_image : `~numpy.ndarray`, shape (M,N)
+		Reference image
+	moving_image : `~numpy.ndarray`, shape (M,N)
+		Moving image
+	fixed_mask : `~numpy.ndarray`, shape (M,N) or None, optional
+		Mask of `fixed_image`. The mask should evaluate to `True`
+		(or 1) on invalid pixels. If None (default), no mask
+		is used.
+	moving_mask : `~numpy.ndarray`, shape (M,N) or None, optional
+		Mask of `moving_image`. The mask should evaluate to `True`
+		(or 1) on invalid pixels. If None (default), `moving_mask` is 
+		taken to be the same as `fixed_mask`.
+	
+	Returns
+	-------
+	shift : `~numpy.ndarray`, shape (2,)
+		Shift in [row, column]
+	"""
+	xcorr = mnxc2(fixed_image, moving_image, fixed_mask, moving_mask)
+
+	# Generalize to the average of multiple maxima
+	maxima = np.transpose(np.nonzero(xcorr == xcorr.max()))
+	center = np.mean(maxima, axis = 0)
+	
+	# Due to centering of mnxc2, -1 is required
+	shift_row_col = center - np.array(xcorr.shape)/2  + 1
+	return shift_row_col[::-1]	# Reversing to be compatible with shift_image
 
 def _centered(arr, newshape):
     # Return the center newshape portion of the array.
