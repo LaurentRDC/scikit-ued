@@ -10,47 +10,72 @@ from .. import shift_image, align, diff_register
 from .test_powder import circle_image
 
 class TestDiffRegister(unittest.TestCase):
-	""" Test the diff_register function """
 
-	def test_on_skimage_data(self):
-		""" Test registering translation from scikit-image's data module """
-		with self.subTest('skimage.data.camera()'):
-			im = data.camera()
-			shifted = shift_image(im, (4, -5))
+	def test_trivial_skimage_data(self):
+		""" Test that the translation between two identical images is (0,0), even
+		with added random noise and random masks """
 
-			shift = diff_register(shifted, reference = im, search_space = 7)
-			self.assertSequenceEqual(tuple(shift), (4, -5))
-		
-		with self.subTest('skimage.data.coins()'):
-			im = data.coins()
-			shifted = shift_image(im, (0, 3))
-
-			shift = diff_register(shifted, reference = im, search_space = 3)
-			self.assertSequenceEqual(tuple(shift), (0, 3))
-	
-	def test_on_simulated_powder(self):
-		""" Test on simulated perfect powder rings """
-		center = (64, 64)
-		im = circle_image(shape = (128, 128), center = center, 
-						  radii = [16, 32], intensities = [2,1])
-		im[:] = gaussian(im, 2)
-
-		shifted = shift_image(im, (-2, 6))
-		shift = diff_register(shifted, reference = im, search_space = 6)
-		self.assertSequenceEqual(tuple(shift), (-2, 6))
-    
-	def test_on_masked_skimage(self):
-		""" Test diff_register on masked image data from scikit-image """
 		im = np.asfarray(data.camera())
-		shifted = shift_image(im, (5, -2))
 
-		mask = np.zeros_like(im, dtype = np.bool)
-		im[256, 256] = 1e10
-		shifted[256, 256] = 1e10
-		mask[256, 256] = True
+		with self.subTest('No noise'):
+			shift = diff_register(im, im)
 
-		shift = diff_register(shifted, reference = im, mask = mask, search_space = 6)
-		self.assertSequenceEqual(tuple(shift), (5, -2))
+			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
+		
+		with self.subTest('With 5% noise'):
+			noise1 = 0.05 * im.max() * np.random.random(size = im.shape)
+			noise2 = 0.05 * im.max() * np.random.random(size = im.shape)
+
+			shift = diff_register(im + noise1, im + noise2)
+			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
+		
+		with self.subTest('With random masks'):
+			m1 = np.random.choice([True, False], size = im.shape)
+
+			shift = diff_register(im, im, m1)
+			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
+	
+	def test_shifted_skimage_data(self):
+		""" Test that translation is registered for data from scikit-image """
+		random_shift = np.random.randint(low = 0, high = 10, size = (2,))
+
+		im = np.asfarray(data.camera())
+		im2 = np.asfarray(data.camera())
+		im2[:] = shift_image(im2, shift = random_shift, fill_value = 0)
+
+		# Masking the edges due to shifting
+		edge_mask = np.ones_like(im, dtype = np.bool)
+		edge_mask[6:-6, 6:-6] = False
+
+		with self.subTest('No noise'):
+			shift = diff_register(im, im2, edge_mask)
+
+			self.assertTrue(np.allclose(shift, -random_shift, atol = 1))
+		
+		with self.subTest('With 5% noise'):
+			noise1 = 0.05 * im.max() * np.random.random(size = im.shape)
+			noise2 = 0.05 * im.max() * np.random.random(size = im.shape)
+
+			shift = diff_register(im + noise1, im2 + noise2, edge_mask)
+			self.assertTrue(np.allclose(shift, -random_shift, atol = 1))
+		
+		with self.subTest('With random mask'):
+			m1 = np.random.choice([True, False], size = im.shape)
+
+			shift = diff_register(im, im2, m1)
+			self.assertTrue(np.allclose(shift, -random_shift, atol = 1))
+	
+	def test_side_effects(self):
+		""" Test that arrays registered by diff_register are not modified """
+		im1 = np.random.random(size = (32,32))
+		im2 = np.random.random(size = (32,32))
+		mask = np.random.choice([True, False], size = im1.shape)
+
+		# If arrays are written to, ValueError is raised
+		for arr in (im1, im2, mask):
+			arr.setflags(write = False)
+		
+		shift = diff_register(im1, im2, mask)
 
 class TestAlign(unittest.TestCase):
 

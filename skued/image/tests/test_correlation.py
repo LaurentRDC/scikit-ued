@@ -3,7 +3,7 @@ import numpy as np
 import unittest
 from skimage import data
 
-from .. import mnxc2, register_translation, shift_image
+from .. import mnxc2
 
 np.random.seed(23)
     
@@ -55,64 +55,6 @@ class TestMNXC2(unittest.TestCase):
 		xcorr = mnxc2(im, im2, m1, m2).real
 		self.assertGreaterEqual(xcorr.min(), -1)
 		self.assertLessEqual(xcorr.max(), 1)
-
-class TestRegisterTranslation(unittest.TestCase):
-
-	def test_trivial_skimage_data(self):
-		""" Test that the translation between two identical images is (0,0), even
-		with added random noise and random masks """
-
-		im = np.asfarray(data.camera())
-
-		with self.subTest('No noise'):
-			shift = register_translation(im, im)
-
-			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
-		
-		with self.subTest('With 5% noise'):
-			noise1 = 0.05 * im.max() * np.random.random(size = im.shape)
-			noise2 = 0.05 * im.max() * np.random.random(size = im.shape)
-
-			shift = register_translation(im + noise1, im + noise2)
-			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
-		
-		with self.subTest('With random masks'):
-			m1 = np.random.choice([True, False], size = im.shape)
-			m2 = np.random.choice([True, False], size = im.shape)
-
-			shift = register_translation(im, im, m1, m2)
-			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
-	
-	def test_shifted_skimage_data(self):
-		""" Test that translation is registered for data from scikit-image """
-		random_shift = np.random.randint(low = 0, high = 10, size = (2,))
-
-		im = np.asfarray(data.camera())
-		im2 = np.asfarray(data.camera())
-		im2[:] = shift_image(im2, shift = random_shift, fill_value = 0)
-
-		# Masking the edges due to shifting
-		edge_mask = np.ones_like(im, dtype = np.bool)
-		edge_mask[6:-6, 6:-6] = False
-
-		with self.subTest('No noise'):
-			shift = register_translation(im, im2, edge_mask)
-
-			self.assertTrue(np.allclose(shift, -random_shift, atol = 1))
-		
-		with self.subTest('With 5% noise'):
-			noise1 = 0.05 * im.max() * np.random.random(size = im.shape)
-			noise2 = 0.05 * im.max() * np.random.random(size = im.shape)
-
-			shift = register_translation(im + noise1, im2 + noise2, edge_mask)
-			self.assertTrue(np.allclose(shift, -random_shift, atol = 1))
-		
-		with self.subTest('With random masks'):
-			m1 = np.random.choice([True, False], size = im.shape)
-			m2 = np.random.choice([True, False], size = im.shape)
-
-			shift = register_translation(im, im2, m1, m2)
-			self.assertTrue(np.allclose(shift, -random_shift, atol = 1))
 
 
 if __name__ == '__main__':

@@ -6,7 +6,9 @@ Module concerned with alignment of diffraction images
 from itertools import product
 import numpy as np
 from skimage.feature import register_translation
+from skimage.filters import gaussian
 from warnings import warn
+from .correlation import mnxc2
 
 non = lambda s: s if s < 0 else None
 mom = lambda s: max(0, s)
@@ -61,14 +63,14 @@ def align(image, reference, fill_value = 0.0):
 									  upsample_factor = 4, space = 'real')
 	return shift_image(image, -shifts, fill_value = fill_value)
 
-def _crop_to_half(image):
+def _crop_to_half(image, copy = False):
 	nrows, ncols = np.array(image.shape)/4
-	return image[int(nrows):-int(nrows), int(ncols):-int(ncols)]
+	return np.array(image[int(nrows):-int(nrows), int(ncols):-int(ncols)], copy = copy)
 
-def diff_register(image, reference, mask = None, search_space = 10):
+def diff_register(image, reference, mask = None):
 	"""
-	Register translation of diffraction patterns, using a 
-	global optimization approach.
+	Register translation of diffraction patterns by masked 
+	normalized cross-correlation.
 	
 	Parameters
 	----------
@@ -77,43 +79,37 @@ def diff_register(image, reference, mask = None, search_space = 10):
 	reference : `~numpy.ndarray`
 		This is the reference image to which `image` will be aligned. 
 	mask : `~numpy.ndarray` or None, optional
-		Mask that evaluates to True on invalid pixels.
-	search_space : int, optional
-		Size of the domain (in pixels) over which a possible solution
-		is computed. 
+		Mask that evaluates to True on invalid pixels of the array `image`.
 	
 	Returns
 	-------
 	shift : `~numpy.ndarray`, shape (2,)
 		Shift in rows and columns. Compatible with `shift_image`
+	
+	References
+	----------
+	.. [PADF] Dirk Padfield. Masked Object Registration in the Fourier Domain. 
+		IEEE Transactions on Image Processing, vol.21(5), pp. 2706-2718, 2012. 
 	"""
-	image = np.asfarray(image)
-	reference = np.asfarray(reference)
-
 	if mask is None:
 		mask = np.zeros_like(image, dtype = np.bool)
 
-	cropped = _crop_to_half(image)
-	cropped_ref = _crop_to_half(reference)
-	cropped_mask = _crop_to_half(mask)
+	cropped = _crop_to_half(image, copy = True)
+	cropped_ref = _crop_to_half(reference, copy = True)
+	cropped_mask = _crop_to_half(mask, copy = True)
 
-	# I think that using nansum will be faster that alternatively
-	# masking the shifted array everytime (which involves shifting the mask)
-	cropped[cropped_mask] = np.nan
-	cropped_ref[cropped_mask] = np.nan
+	# Diffraction images register better with some filtering
+	cropped[:] = gaussian(cropped, 5, preserve_range = True)
+	cropped_ref[:] = gaussian(cropped_ref, 5, preserve_range = True)
 
-	shifted = np.empty_like(cropped)	# preallocation for speed
-	def cost(shift):
-		""" Square of residual difference between im and reference 
-		if im was shifted by i rows and j columns """
-		shifted[:] = shift_image(cropped, shift, fill_value = np.nan)
-		return np.nansum(np.square(shifted - cropped_ref))
+	# Contrary to Padfield, we do not have to crop out the edge
+	# since we are using the 'valid' correlation mode.
+	xcorr = mnxc2(cropped_ref, cropped, cropped_mask, mode = 'same')
+
+	# Generalize to the average of multiple maxima
+	maxima = np.transpose(np.nonzero(xcorr == xcorr.max()))
+	center = np.mean(maxima, axis = 0)
 	
-	shift_space = list(product(range(-search_space, search_space + 1), range(-search_space, search_space + 1)))
-	solutions = dict(zip(shift_space, map(cost, shift_space)))
-	minimum = min(solutions.values())
-
-	# Handling possible multiple minima is clunky af
-	minimum_solutions = dict(filter(lambda item: item[-1] == minimum, solutions.items()))
-	shift = sum(map(np.array, minimum_solutions.keys()))/len(minimum_solutions)
-	return -1 * shift
+	# Due to centering of mnxc2, +1 is required
+	shift_row_col = center - np.array(xcorr.shape)/2  + 1
+	return -shift_row_col[::-1].astype(np.int)	# Reversing to be compatible with shift_image

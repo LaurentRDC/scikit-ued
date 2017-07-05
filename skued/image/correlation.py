@@ -129,39 +129,3 @@ def _centered(arr, newshape):
     endind = startind + newshape
     myslice = [slice(startind[k], endind[k]) for k in range(len(endind))]
     return arr[tuple(myslice)]
-
-def register_translation(fixed_image, moving_image, fixed_mask = None, moving_mask = None):
-	"""
-	Determine the translation between two images using the masked normalized cross-correlation.
-
-	Parameters
-	----------
-	fixed_image : `~numpy.ndarray`, shape (M,N)
-		Reference image
-	moving_image : `~numpy.ndarray`, shape (M,N)
-		Moving image
-	fixed_mask : `~numpy.ndarray`, shape (M,N) or None, optional
-		Mask of `fixed_image`. The mask should evaluate to `True`
-		(or 1) on invalid pixels. If None (default), no mask
-		is used.
-	moving_mask : `~numpy.ndarray`, shape (M,N) or None, optional
-		Mask of `moving_image`. The mask should evaluate to `True`
-		(or 1) on invalid pixels. If None (default), `moving_mask` is 
-		taken to be the same as `fixed_mask`.
-	
-	Returns
-	-------
-	shift : `~numpy.ndarray`, shape (2,)
-		Shift in [row, column]
-	"""
-	# Contrary to Padfield, we do not have to crop out the edge
-	# since we are using the 'valid' correlation mode.
-	xcorr = mnxc2(fixed_image, moving_image, fixed_mask, moving_mask, mode = 'same')
-
-	# Generalize to the average of multiple maxima
-	maxima = np.transpose(np.nonzero(xcorr == xcorr.max()))
-	center = np.mean(maxima, axis = 0)
-	
-	# Due to centering of mnxc2, +1 is required
-	shift_row_col = center - np.array(xcorr.shape)/2  + 1
-	return shift_row_col[::-1].astype(np.int)	# Reversing to be compatible with shift_image
