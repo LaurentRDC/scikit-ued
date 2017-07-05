@@ -35,7 +35,7 @@ class TestMNXC2(unittest.TestCase):
 	
 	def test_autocorr(self):
 		""" Test mnxc2 on two identical images for a peak in the center """
-		im = np.random.random(size = (128, 128))
+		im = np.random.random(size = (64, 64))
 
 		with self.subTest('No masks'):
 			xcorr = mnxc2(im, im, mode = 'same')
