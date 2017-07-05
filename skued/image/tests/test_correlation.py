@@ -33,18 +33,6 @@ class TestMNXC2(unittest.TestCase):
 		
 		xcorr = mnxc2(im1, im2, m1, m2)
 	
-	def test_autocorr(self):
-		""" Test mnxc2 on two identical images for a peak in the center """
-		im = np.random.random(size = (64, 64))
-
-		with self.subTest('No masks'):
-			xcorr = mnxc2(im, im, mode = 'same')
-			center = np.unravel_index(np.argmax(xcorr), xcorr.shape)
-
-			self.assertAlmostEqual(xcorr[center], 1)
-			# Due to the way arrays are centered in mnxc2, center is at [63,63]
-			self.assertTrue(np.allclose(center,np.array(im.shape)/2 - 1, atol = 1))
-	
 	def test_range(self):
 		im = np.random.random(size = (128,32))
 		im2 = np.random.random(size = (128,32))
