@@ -62,13 +62,14 @@ def mirror(arr, axes = None):
     out : 
     """
     if axes is None:
-        axes = range(arr.ndim)
+        reverse = [slice(None, None, -1)] * arr.ndim
+    else:
+        reverse = [slice(None, None, None)] * arr.ndim
 
-    elif isinstance(axes, int):
-        axes = (axes,)
+        if isinstance(axes, int):
+            axes = (axes,)
+            
+        for axis in axes:
+            reverse[axis] = slice(None, None, -1)
     
-    # arr[::-1] reverses in the first axis direction
-    for axis in axes:
-        arr = swapaxes(swapaxes(arr, 0, axis)[::-1], 0, axis)
-    
-    return arr
+    return arr[reverse]

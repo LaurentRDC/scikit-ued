@@ -13,7 +13,7 @@ def _crop_to_half(image):
 	nrows, ncols = np.array(image.shape)/4
 	return image[int(nrows):-int(nrows), int(ncols):-int(ncols)]
 
-def mnxc2(arr1, arr2, m1 = None, m2 = None):
+def mnxc2(arr1, arr2, m1 = None, m2 = None, mode = 'full'):
 	"""
 	Masked normalized cross-correlation (MNXC) between two images.
 
@@ -30,7 +30,17 @@ def mnxc2(arr1, arr2, m1 = None, m2 = None):
 	m2 : `~numpy.ndarray`, shape (M,N) or None, optional
 		Mask of `arr2`. The mask should evaluate to `True`
 		(or 1) on invalid pixels. If None (default), `m2` is 
-		taken to be the same as `m1`.
+		taken to be the same as `m1`.	
+    mode : {'full', 'same'}, optional
+        'full':
+          By default, mode is 'full'.  This returns the convolution
+          at each point of overlap, with an output shape of (N+M-1,M+N-1). At
+          the end-points of the convolution, the signals do not overlap
+          completely, and boundary effects may be seen.
+
+        'same':
+          Mode 'same' returns output of length ``max(M, N)``. Boundary
+          effects are still visible.
 		
 	Returns
 	-------
@@ -46,6 +56,9 @@ def mnxc2(arr1, arr2, m1 = None, m2 = None):
 	# TODO: implement for complex arrays
 	# TODO: implement over axes
 	# TODO: implement multidims
+
+	if mode not in {'full', 'same'}:
+		raise ValueError("Correlation mode {} is not valid.".format(mode))
 
 	arr1, arr2 = np.array(arr1), np.array(arr2)
 
@@ -100,10 +113,22 @@ def mnxc2(arr1, arr2, m1 = None, m2 = None):
 	out = np.zeros_like(denominator)
 	nonzero = np.nonzero(denominator)
 	out[nonzero] = numerator[nonzero] / denominator[nonzero]
-
-	out = _centered(out, arr1.shape)
 	out[np.logical_or(out > 1, out < -1)] = 0
-	return out
+
+	if mode == 'full':
+		return out
+	elif mode == 'same':
+		return _centered(out, arr1.shape)
+
+def _centered(arr, newshape):
+	# Taken from scipy's signaltools.py
+    # Return the center newshape portion of the array.
+    newshape = np.asarray(newshape)
+    currshape = np.array(arr.shape)
+    startind = (currshape - newshape) // 2
+    endind = startind + newshape
+    myslice = [slice(startind[k], endind[k]) for k in range(len(endind))]
+    return arr[tuple(myslice)]
 
 def register_translation(fixed_image, moving_image, fixed_mask = None, moving_mask = None):
 	"""
@@ -129,21 +154,14 @@ def register_translation(fixed_image, moving_image, fixed_mask = None, moving_ma
 	shift : `~numpy.ndarray`, shape (2,)
 		Shift in [row, column]
 	"""
-	xcorr = mnxc2(fixed_image, moving_image, fixed_mask, moving_mask)
+	# Contrary to Padfield, we do not have to crop out the edge
+	# since we are using the 'valid' correlation mode.
+	xcorr = mnxc2(fixed_image, moving_image, fixed_mask, moving_mask, mode = 'same')
 
 	# Generalize to the average of multiple maxima
 	maxima = np.transpose(np.nonzero(xcorr == xcorr.max()))
 	center = np.mean(maxima, axis = 0)
 	
-	# Due to centering of mnxc2, -1 is required
+	# Due to centering of mnxc2, +1 is required
 	shift_row_col = center - np.array(xcorr.shape)/2  + 1
-	return shift_row_col[::-1]	# Reversing to be compatible with shift_image
-
-def _centered(arr, newshape):
-    # Return the center newshape portion of the array.
-    newshape = np.asarray(newshape)
-    currshape = np.array(arr.shape)
-    startind = (currshape - newshape) // 2
-    endind = startind + newshape
-    myslice = [slice(startind[k], endind[k]) for k in range(len(endind))]
-    return arr[tuple(myslice)]
+	return shift_row_col[::-1].astype(np.int)	# Reversing to be compatible with shift_image
