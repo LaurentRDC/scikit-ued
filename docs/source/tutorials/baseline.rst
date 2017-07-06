@@ -45,6 +45,8 @@ Scikit-ued offers two ways of removing the background.
 Iterative Baseline Determination using the Dual-Tree Complex Wavelet Transform
 ==============================================================================
 
+**Come back later**
+
 .. plot:: tutorials/plots/powder_dt_baseline_progression.py
 
 :ref:`Return to Top <baseline_tutorial>`

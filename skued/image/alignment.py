@@ -36,7 +36,7 @@ def shift_image(arr, shift, fill_value = 0):
 	shifted[mom(y):non(y), mom(x):non(x)] = arr[mom(-y):non(-y), mom(-x):non(-x)]
 	return shifted
 
-def align(image, reference, fill_value = 0.0):
+def align(image, reference, mask = None, fill_value = 0.0):
 	"""
 	Align a diffraction image to a reference.
 
@@ -46,6 +46,8 @@ def align(image, reference, fill_value = 0.0):
 		Image to be aligned.
 	reference : `~numpy.ndarray`, shape (M,N)
 		`image` will be align onto the `reference` image.
+	mask : `~numpy.ndarray` or None, optional
+		Mask that evaluates to True on invalid pixels of the array `image`.
 	fill_value : float, optional
 		Edges will be filled with `fill_value` after alignment.
 	
@@ -58,10 +60,8 @@ def align(image, reference, fill_value = 0.0):
 	--------
 	ialign : generator of aligned images
 	"""
-	shifts, *_ = register_translation(target_image = _crop_to_half(image), 
-									  src_image = _crop_to_half(reference), 
-									  upsample_factor = 4, space = 'real')
-	return shift_image(image, -shifts, fill_value = fill_value)
+	shift = diff_register(image, reference = reference, mask = mask)
+	return shift_image(image, shift, fill_value = fill_value)
 
 def _crop_to_half(image, copy = False):
 	nrows, ncols = np.array(image.shape)/4

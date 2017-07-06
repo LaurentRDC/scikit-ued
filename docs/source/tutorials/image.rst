@@ -13,6 +13,7 @@ Contents
 ========
 
 * :ref:`streaming`
+* :ref:`alignment`
 * :ref:`powder`
 
 .. _streaming:
@@ -105,6 +106,105 @@ Here is a recipe for it::
 	    errors = isem(stream2)
 	    yield from zip(averages, errors)
 
+.. _alignment:
+
+Diffraction pattern alignment
+=============================
+
+Diffraction patterns can drift over a period of a few minutes, and for reliable data synthesis
+it is important to align patterns to a reference.
+
+The procedure of detecting, or registering, the translation between two similar images is usually
+done by measuring the cross-correlation between images. When images are very similar, this procedure
+is fine; take a look at scikit-image's :code:`skimage.feature.register_translation` for example. 
+
+However, diffraction patterns all have a fixed feature: the position of the beam-block. Therefore, some pixels 
+in each diffraction pattern must be ignored in the computation of the cross-correlation. 
+
+Setting the 'invalid pixels' to 0 will not work, at those will correlate with the invalid pixels from the reference. One must use
+the **masked normalized cross-correlation** (REF PADFIELD) through scikit-ued's :code:`mnxc2`.
+
+All of this is taken care of in scikit-ued's :code:`diff_register` function. Let's look at some polycrystalline Chromium:
+
+.. plot::
+
+	from skimage.io import imread
+	import matplotlib.pyplot as plt
+
+	ref = imread('data\\Cr_1.tif')
+	im = imread('data\\Cr_2.tif')
+
+	fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize = (9,3))
+	ax1.imshow(ref, vmin = 0, vmax = 200)
+	ax2.imshow(im, vmin = 0, vmax = 200)
+	ax3.imshow(ref - im)
+
+	for ax in (ax1, ax2, ax3):
+		ax.get_xaxis().set_visible(False)
+		ax.get_yaxis().set_visible(False)
+
+	ax1.set_title('Reference')
+	ax2.set_title('Data')
+	ax3.set_title('Difference')
+
+	plt.tight_layout()
+	plt.show()
+
+From the difference pattern, we can see that the 'Data' pattern is shifted from 'Reference' quite a bit.
+To determine the exact shift, we need to use a mask that obscures the beam-block and main beam::
+
+	from skued.image import diff_register, shift_image
+	import numpy as np
+
+	ref = imread('data\\Cr_1.tif')
+	im = imread('data\\Cr_2.tif')
+
+	mask = np.zeros_like(ref, dtype = np.bool)
+	mask[0:1250, 950:1250] = True
+
+	shift = diff_register(im, reference = ref, mask = mask)
+	im = shift_image(im, shift)
+
+Let's look at the difference:
+
+.. plot::
+
+	from skimage.io import imread
+	import matplotlib.pyplot as plt
+	import numpy as np
+	from skued.image import diff_register, shift_image
+
+	ref = imread('data\\Cr_1.tif')
+	im = imread('data\\Cr_2.tif')
+
+	mask = np.zeros_like(ref, dtype = np.bool)
+	mask[0:1250, 950:1250] = True
+
+	shift = diff_register(im, ref, mask)
+	shifted = shift_image(im, -shift)
+
+	fig, ((ax1, ax2, ax3), (ax4, ax5, ax6)) = plt.subplots(nrows = 2, ncols = 3, figsize = (9,6))
+	ax1.imshow(ref, vmin = 0, vmax = 200)
+	ax2.imshow(im, vmin = 0, vmax = 200)
+	ax3.imshow(ref - im, cmap = 'RdBu_r')
+	ax4.imshow(mask, vmin = 0, vmax = 1, cmap = 'binary')
+	ax5.imshow(shifted, vmin = 0, vmax = 200)
+	ax6.imshow(ref - shifted, cmap = 'RdBu_r')
+
+	for ax in (ax1, ax2, ax3, ax4, ax5, ax6):
+		ax.get_xaxis().set_visible(False)
+		ax.get_yaxis().set_visible(False)
+
+	ax1.set_title('Reference')
+	ax2.set_title('Data')
+	ax3.set_title('Difference')
+	ax4.set_title('Mask')
+	ax5.set_title('Aligned data')
+	ax6.set_title('Diff. after shift')
+
+	plt.tight_layout()
+	plt.show()
+
 .. _powder:
 
 Image analysis on polycrystalline diffraction patterns
@@ -113,35 +213,20 @@ Image analysis on polycrystalline diffraction patterns
 Center-finding
 --------------
 Polycrystalline diffraction patterns display concentric rings, and finding
-the center of those concentric rings is important.
-
-Let's load a test image::
-	
-	from skimage import img_as_uint
-	from skimage.io import imread
-	import matplotlib.pyplot as plt
-
-	path = '\\data\\vo2.tif'
-	im = img_as_uint(imread(path, plugin = 'tifffile'))
-
-	mask = np.zeros_like(im, dtype = np.bool)
-	mask[0:1250, 700:1100] = True
-	im[mask] = 0
-
-	plt.imshow(im, vmin = 1000, vmax = 1200)
-	plt.show()
+the center of those concentric rings is important. Let's load a test image:
 
 .. plot::
 
-	from skimage import img_as_uint
 	from skimage.io import imread
 	import matplotlib.pyplot as plt
-	path = 'data\\vo2.tif'
-	im = img_as_uint(imread(path, plugin = 'tifffile'))
+	path = 'data\\Cr_1.tif'
+
+	im = imread(path, plugin = 'tifffile')
 	mask = np.zeros_like(im, dtype = np.bool)
-	mask[0:1250, 700:1100] = True
+	mask[0:1250, 950:1250] = True
+
 	im[mask] = 0
-	plt.imshow(im, vmin = 1000, vmax = 1200)
+	plt.imshow(im, vmin = 0, vmax = 200)
 	plt.show()
 
 This is a noisy diffraction pattern of polycrystalline vanadium dioxide. 
@@ -163,20 +248,19 @@ Finding the center of such a symmetry pattern can be done with the
 
 .. plot::
 
-	from skimage import img_as_uint
 	from skimage.io import imread
 	import numpy as np
 	import matplotlib.pyplot as plt
-	path = 'data\\vo2.tif'
-	im = img_as_uint(imread(path, plugin = 'tifffile'))
+	path = 'data\\Cr_1.tif'
+	im = imread(path, plugin = 'tifffile')
 	from skued.image import powder_center
 	mask = np.zeros_like(im, dtype = np.bool)
-	mask[0:1250, 700:1100] = True
+	mask[0:1250, 950:1250] = True
 	ic, jc = powder_center(im, mask = mask)
 	ii, jj = np.meshgrid(np.arange(im.shape[0]), np.arange(im.shape[1]),indexing = 'ij')
 	rr = np.sqrt((ii - ic)**2 + (jj - jc)**2)
-	im[rr < 100] = 0
-	plt.imshow(im, vmin = 1000, vmax = 1200)
+	im[rr < 100] = 1e6
+	plt.imshow(im, vmin = 0, vmax = 200)
 	plt.show()
 
 Angular average

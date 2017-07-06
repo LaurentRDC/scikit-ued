@@ -9,6 +9,8 @@ from skimage.transform import rotate
 from .. import shift_image, align, diff_register
 from .test_powder import circle_image
 
+np.random.seed(23)
+
 class TestDiffRegister(unittest.TestCase):
 
 	def test_trivial_skimage_data(self):
@@ -81,17 +83,10 @@ class TestAlign(unittest.TestCase):
 
 	def test_trivial(self):
 		""" Test alignment of identical images """
-		aligned = align(data.camera(), reference = data.camera())
-		self.assertTrue(np.allclose(aligned, data.camera()))
+		im = data.coins()[0:64, 0:64]
 
-	def test_misaligned_uniform_images(self):
-		""" shift uniform images by entire pixels """
-		original = np.ones((256, 256))
-		misaligned = shift_image(original, (1,-3))
-		aligned = align(misaligned, reference = original)
-		
-		self.assertTrue(np.allclose(original[5:-5, 5:-5], 
-									aligned[5:-5, 5:-5]))
+		aligned = align(im, reference = im)
+		self.assertTrue(np.allclose(aligned, im))
 
 	def test_misaligned_canned_images(self):
 		""" shift images from skimage.data by entire pixels.
