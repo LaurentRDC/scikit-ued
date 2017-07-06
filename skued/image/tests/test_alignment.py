@@ -84,9 +84,13 @@ class TestAlign(unittest.TestCase):
 	def test_trivial(self):
 		""" Test alignment of identical images """
 		im = data.coins()[0:64, 0:64]
-
 		aligned = align(im, reference = im)
-		self.assertTrue(np.allclose(aligned, im))
+
+		diff = np.abs(im - aligned)
+
+		# Want less than 1% difference
+		percent_diff = np.sum(diff) / (diff.size * (im.max() - im.min()))
+		self.assertLess(percent_diff, 1)
 
 	def test_misaligned_canned_images(self):
 		""" shift images from skimage.data by entire pixels.
