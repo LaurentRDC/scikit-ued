@@ -95,10 +95,10 @@ Here is a recipe for it::
 	    
 	    Yields
 	    ------
-	    avg: `~numpy.ndarray`
+	    avg : `~numpy.ndarray`
 	    	Weighted average. 
-	    sem: `~numpy.ndarray`
-	    	Weighted average. 
+	    sem : `~numpy.ndarray`
+	    	Standard error in the mean
 	    """
 	    stream1, stream2 = itertools.tee(images, 2)
 	    averages = iaverage(stream1, weights = weights)
