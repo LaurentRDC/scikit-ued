@@ -79,6 +79,40 @@ class TestDiffRegister(unittest.TestCase):
 		
 		shift = diff_register(im1, im2, mask)
 
+class TestShiftImage(unittest.TestCase):
+	
+	def test_trivial(self):
+		""" Shift an array by (0,0) """
+		arr = np.random.random( size = (64, 64) )
+		shifted = shift_image(arr, (0,0))
+		self.assertTrue(np.allclose(arr, shifted))
+	
+	def test_back_and_forth(self):
+		""" Test shift_image in two directions """
+		arr = np.random.random( size = (64, 64) )
+		shifted1 = shift_image(arr, (5, -3))
+		shifted2 = shift_image(shifted1, (-5, 3))
+		self.assertTrue(np.allclose(arr[5:-5, 5:-5], shifted2[5:-5, 5:-5]))
+	
+	def test_out_of_bounds(self):
+		""" Test that shifting by more than the size of an array
+		returns an array full of the fill_value parameter """
+		arr = np.random.random( size = (64, 64) ) + 1 # no zeros in this array
+		shifted = shift_image(arr, (128, 128), fill_value = 0.0)
+		self.assertTrue(np.allclose(np.zeros_like(arr), shifted))
+	
+	def test_fill_value(self):
+		""" Test that shifted array edges are filled with the correct value """
+		arr = np.random.random( size = (64, 64) )
+		shifted = shift_image(arr, shift = (0, 10), fill_value = np.nan)
+		self.assertTrue(np.all(np.isnan(shifted[:10, :])))
+	
+	def test_axes(self):
+		""" Test shift_image on 3D array """
+		arr = np.random.random( size = (64, 64, 8) )
+		shifted = shift_image(arr, shift = (0, 10), fill_value = np.nan, axes = (1, 2))
+		self.assertTrue(np.all(np.isnan(shifted[:, :10, :])))
+
 class TestAlign(unittest.TestCase):
 
 	def test_trivial(self):

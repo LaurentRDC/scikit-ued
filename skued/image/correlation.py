@@ -4,8 +4,8 @@ Image correlation and related functions
 """
 from functools import partial
 import numpy as np
-from numpy.fft import rfft2, irfft2, fft2, ifft2, ifftshift, fftshift
 from scipy.fftpack import next_fast_len
+from numpy.fft import rfft2, irfft2
 
 from ..array_utils import mirror
 

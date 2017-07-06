@@ -12,7 +12,7 @@ from .correlation import mnxc2
 
 non = lambda s: s if s < 0 else None
 mom = lambda s: max(0, s)
-def shift_image(arr, shift, fill_value = 0):
+def shift_image(arr, shift, fill_value = 0, axes = (0,1)):
 	""" 
 	Shift an image at a 1-pixel resolution. Shift
 
@@ -21,19 +21,26 @@ def shift_image(arr, shift, fill_value = 0):
 	arr : `~numpy.ndarray`
 		Array to be shifted.
 	shift : array_like, shape (2,)
-		Shifts in the 
+		Shifts in the x and y directions, respectively.
 	fill_value : numerical, optional
 		Edges will be filled with `fill_value` after shifting.
 
 	Returns
 	-------
-	out : ndarray
+	out : `~numpy.ndarray`
 	"""
-	x, y = tuple(shift)
-	x, y = int(round(x)), int(round(y))
+	j, i = tuple(shift)
+	i, j = int(round(i)), int(round(j))
+
+	dst_slices = [slice(None, None)] * arr.ndim
+	src_slices = [slice(None, None)] * arr.ndim
+
+	for s, ax in zip((i, j), axes):
+		dst_slices[ax] = slice(mom(s), non(s))
+		src_slices[ax] = slice(mom(-s), non(-s))
 
 	shifted = np.full_like(arr, fill_value = fill_value)
-	shifted[mom(y):non(y), mom(x):non(x)] = arr[mom(-y):non(-y), mom(-x):non(-x)]
+	shifted[dst_slices] = arr[src_slices]
 	return shifted
 
 def align(image, reference, mask = None, fill_value = 0.0):
