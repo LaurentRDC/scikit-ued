@@ -35,3 +35,4 @@
 *.map filter=lfs diff=lfs merge=lfs -text
 *.conf filter=lfs diff=lfs merge=lfs -text
 *.cif filter=lfs diff=lfs merge=lfs -text
+*.m filter=lfs diff=lfs merge=lfs -text
