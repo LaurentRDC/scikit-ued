@@ -131,8 +131,8 @@ All of this is taken care of in scikit-ued's :code:`diff_register` function. Let
 	from skimage.io import imread
 	import matplotlib.pyplot as plt
 
-	ref = imread('data\\Cr_1.tif')
-	im = imread('data\\Cr_2.tif')
+	ref = imread('Cr_1.tif')
+	im = imread('Cr_2.tif')
 
 	fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize = (9,3))
 	ax1.imshow(ref, vmin = 0, vmax = 200)
@@ -156,8 +156,8 @@ To determine the exact shift, we need to use a mask that obscures the beam-block
 	from skued.image import diff_register, shift_image
 	import numpy as np
 
-	ref = imread('data\\Cr_1.tif')
-	im = imread('data\\Cr_2.tif')
+	ref = imread('Cr_1.tif')
+	im = imread('Cr_2.tif')
 
 	mask = np.zeros_like(ref, dtype = np.bool)
 	mask[0:1250, 950:1250] = True
@@ -174,8 +174,8 @@ Let's look at the difference:
 	import numpy as np
 	from skued.image import diff_register, shift_image
 
-	ref = imread('data\\Cr_1.tif')
-	im = imread('data\\Cr_2.tif')
+	ref = imread('Cr_1.tif')
+	im = imread('Cr_2.tif')
 
 	mask = np.zeros_like(ref, dtype = np.bool)
 	mask[0:1250, 950:1250] = True
@@ -219,7 +219,7 @@ the center of those concentric rings is important. Let's load a test image:
 
 	from skimage.io import imread
 	import matplotlib.pyplot as plt
-	path = 'data\\Cr_1.tif'
+	path = 'Cr_1.tif'
 
 	im = imread(path, plugin = 'tifffile')
 	mask = np.zeros_like(im, dtype = np.bool)
@@ -251,7 +251,7 @@ Finding the center of such a symmetry pattern can be done with the
 	from skimage.io import imread
 	import numpy as np
 	import matplotlib.pyplot as plt
-	path = 'data\\Cr_1.tif'
+	path = 'Cr_1.tif'
 	im = imread(path, plugin = 'tifffile')
 	from skued.image import powder_center
 	mask = np.zeros_like(im, dtype = np.bool)
