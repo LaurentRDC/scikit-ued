@@ -137,7 +137,7 @@ All of this is taken care of in scikit-ued's :code:`diff_register` function. Let
 	fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize = (9,3))
 	ax1.imshow(ref, vmin = 0, vmax = 200)
 	ax2.imshow(im, vmin = 0, vmax = 200)
-	ax3.imshow(ref - im)
+	ax3.imshow(ref - im, cmap = 'RdBu_r')
 
 	for ax in (ax1, ax2, ax3):
 		ax.get_xaxis().set_visible(False)
