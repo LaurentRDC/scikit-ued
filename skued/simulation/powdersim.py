@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Polycrystalline diffraction pattern simulation
+==============================================
 """
 from ..voigt import pseudo_voigt
 import numpy as np

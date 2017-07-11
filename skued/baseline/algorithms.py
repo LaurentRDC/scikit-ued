@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Algorithms based on the dual-tree complex wavelet transform.
-
-Author : Laurent P. Rene de Cotret
+Algorithms based on the dual-tree complex wavelet transform
+===========================================================
 """
 from collections.abc import Iterable
 import pywt
@@ -280,7 +279,7 @@ def baseline_dt(array, max_iter, level = None, first_stage = 'sym6', wavelet = '
 	References
 	----------
 	.. [#] L. P. René de Cotret and B. J. Siwick, A general method for baseline-removal in ultrafast 
-			electron powder diffraction data using the dual-tree complex wavelet transform, Struct. Dyn. 4 (2016)
+			electron powder diffraction data using the dual-tree complex wavelet transform, Struct. Dyn. 4 (2017)
 	"""
 	return _iterative_baseline(array = array, max_iter = max_iter, background_regions = background_regions,
 									mask = mask, axes = (axis,), approx_rec_func = _dt_approx_rec,

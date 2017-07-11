@@ -69,21 +69,32 @@ The :code:`Crystal` Class
 Diffraction experiments relying on the redundancy of crystals to get good experimental signals;
 hence, handling crystal models is the main feature of the :code:`skued.structure` subpackage.
 
-Constructing a :code:`Crystal` object from a file
--------------------------------------------------
-Creating a :code:`Crystal` object can be done most easily from a Crystal Information File (CIF, .cif) or 
-a Protein DataBank file (PDB, .pdb). For a CIF file::
+Constructing a :code:`Crystal` object from a file or database
+-------------------------------------------------------------
+Creating a :code:`Crystal` object can be done most easily from a Crystal Information File (CIF, .cif)::
 	
 	from skued.structure import Crystal
 
 	TiSe2 = Crystal.from_cif('tise2.cif')
 
-Protein DataBank files are even easier to handle; simply provide the 4-letter identification code
-and the structure file will be downloaded, cached, and parsed::
-	
-	from skued.structure import Crystal
+Scikit-ued also has an internal database of CIF files. Valid names are stored in :code:`Crystal.builtins` and can be
+constructed like so::
 
+	assert 'Au' in Crystal.builtins
+	gold = Crystal.from_database('Au')
+
+Protein DataBank files are even easier to handle; simply provide the 4-letter identification code
+and the structure file will be taken care of by scikit-ued::
+	
 	bacteriorhodopsin = Crystal.from_pdb('1fbb')
+
+Another convenient way to construct a :code:`Crystal` is through the `Crystallography Open Database <http://www.crystallography.net/cod/>`_::
+
+	# Default is the latest revision
+	vo2 = Crystal.from_cod(1521124)
+
+	# Revisions are accessible as well
+	old_vo2 = Crystal.from_cod(1521124, revision = 140771)
 
 Constructing a :code:`Crystal` object by hand
 ---------------------------------------------
@@ -99,7 +110,7 @@ the full unit cell. Hence, if your iterable of atoms contains the entire unit ce
 not need to be provided. The symmetry operators must be expressed in the reduced (or fractional) basis.
 
 As an example, let's create the simplest crystal structure known: 
-`alpha-Polonium (simple cubic)<https://en.wikipedia.org/wiki/Polonium#Solid_state_form>`::
+`alpha-Polonium (simple cubic) <https://en.wikipedia.org/wiki/Polonium#Solid_state_form>`_::
 	
 	from skued.structure import Crystal, Atom
 	import numpy as np

@@ -10,7 +10,9 @@ Parallel Utilities
 
 Plot Utilities
 ==============
-.. automodule:: skued.plot_utils
+.. autofunction:: skued.plot_utils.spectrum_colors
+
+.. autofunction:: skued.plot_utils.rgb_sweep
 
 Array Utilities
 ===============
@@ -56,6 +58,12 @@ Baseline-determination
 
 Image Analysis
 ==============
-.. automodule:: skued.image_analysis.powder
+.. automodule:: skued.image.powder
 
-.. automodule:: skued.image_analysis.alignment
+.. automodule:: skued.image.alignment
+
+.. automodule:: skued.image.streaming
+
+.. automodule:: skued.image.symmetry
+
+.. automodule:: skued.image.correlation
