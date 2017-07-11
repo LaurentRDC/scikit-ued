@@ -20,6 +20,14 @@ Array Utilities
 ===============
 .. automodule:: skued.array_utils
 
+Iteration/Generator Utilities
+=============================
+.. autofunction:: last
+
+.. autofunction:: chunked
+
+.. autofunction:: linspace
+
 Quantities
 ==========
 .. automodule:: skued.quantities

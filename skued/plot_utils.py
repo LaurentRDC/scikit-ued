@@ -1,37 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Plotting utilities, including color manipulation. This is especially useful when
-plotting time-series.
+Plotting utilities 
+==================
 """
-from collections import Iterable
 from colorsys import hsv_to_rgb
 
-def _linspace(start, stop, num):
-	""" 
-	Generate linear space 
-
-    Parameters
-    ----------
-    start : float
-        The starting value of the sequence.
-    stop : float
-        The end value of the sequence.
-    num : int, optional
-        Number of samples to generate.
-	
-	Yields
-	------
-	val : float
-	"""
-	# Since we always include the endpoint,
-	# step does not count the last yield
-	step = (stop - start)/(num - 1)
-
-	val = start
-	for _ in range(num - 1):
-		yield val
-		val += step
-	yield stop
+from .iter_utils import linspace
 
 def _hex_to_rgb(value):
 	""" Return an RGB tuple (float 0 to 1) from an hexadecimal 
@@ -108,8 +82,8 @@ def rgb_sweep(num_colors, source, dest):
 	red_src, grn_src, blu_src = source
 	red_dst, grn_dst, blu_dst = dest
 
-	reds = _linspace(red_src, red_dst, num = num_colors)
-	greens = _linspace(grn_src, grn_dst, num = num_colors)
-	blues = _linspace(blu_src, blu_dst, num = num_colors)
+	reds = linspace(red_src, red_dst, num = num_colors)
+	greens = linspace(grn_src, grn_dst, num = num_colors)
+	blues = linspace(blu_src, blu_dst, num = num_colors)
 
 	yield from zip(reds, greens, blues)

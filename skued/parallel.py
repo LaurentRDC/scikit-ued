@@ -1,30 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-Parallelization utilities.
+Parallelization utilities
+=========================
 
 Functional programming-style `map` and `reduce` procedures are easily
 parallelizable. The speed gain of parallelization can offset the
 cost of spawning multiple processes for large iterables.
 """
+import multiprocessing as mp
 from collections.abc import Sized
 from functools import partial, reduce
-import multiprocessing as mp
 
-def chunked(iterable, chunksize = 1):
-	"""
-	Generator yielding multiple iterables of length 'chunksize'.
-
-	Parameters
-	----------
-	iterable : iterable
-		Must be a sized iterable, otherwise the iterable is consumed.
-	chunksize : int, optional
-	"""
-	if not isinstance(iterable, Sized):
-		iterable = tuple(iterable)
-	length = len(iterable)
-	for ndx in range(0, length, chunksize):
-		yield iterable[ndx:min(ndx + chunksize, length)]
+from .iter_utils import chunked
 
 def preduce(func, iterable, args = tuple(), kwargs = dict(), processes = None):
 	"""
