@@ -1,7 +1,7 @@
 Steps to Release scikit-ued
 ===========================
 
-These are the steps to take to create a release of the module ``skued``:
+These are the steps to take to create a release of the package ``skued``:
 
 1. Switch to the release branch
 

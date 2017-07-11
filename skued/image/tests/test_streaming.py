@@ -18,18 +18,7 @@ class TestIAlign(unittest.TestCase):
 		
 		self.assertEqual(len(aligned), 5)
 		self.assertSequenceEqual(data.camera().shape, aligned[0].shape)
-
-	def test_misaligned_uniform_images(self):
-		""" shift uniform images by entire pixels """
-		original = np.ones((256, 256))
-		misaligned = [shift_image(original, (1,-3))]
-		aligned = ialign(misaligned, reference = original)
-
-		for im in aligned:
-			# edge will be filled with zeros
-			self.assertTrue(np.allclose(original[5:-5, 5:-5], 
-										im[5:-5, 5:-5]))
-
+		
 	def test_misaligned_canned_images(self):
 		""" shift images from skimage.data by entire pixels.
 	   We don't expect perfect alignment."""

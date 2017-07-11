@@ -6,7 +6,7 @@ Image manipulation of powder diffraction
 import numpy as np
 from .alignment import diff_register
 
-def powder_center(image, mask = None, search_space = 10):
+def powder_center(image, mask = None):
 	"""
 	Finds the center of a powder diffraction pattern by comparing the
 	correlation between the input and its image.
@@ -19,9 +19,6 @@ def powder_center(image, mask = None, search_space = 10):
 		Mask of `image`. The mask should evaluate to `True`
 		(or 1) on invalid pixels. If None (default), no mask
 		is used.
-	search_space : int, optional
-		Size of the domain (in pixels) over which a possible solution
-		is computed. 
 
 	Returns
 	-------
@@ -33,7 +30,7 @@ def powder_center(image, mask = None, search_space = 10):
 	if mask is None:
 		mask = np.zeros_like(image, dtype = np.bool)
 
-	shift = diff_register(image, np.rot90(image, k = 2), mask = mask * np.rot90(mask, k = 2), search_space = search_space)
+	shift = diff_register(image, np.rot90(image, k = 2), mask = mask * np.rot90(mask, k = 2))
 	midpoints = np.array([int(axis_size / 2) for axis_size in image.shape])
 	
 	# I have found that there is always a residual (0.5, 0.5)

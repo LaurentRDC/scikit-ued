@@ -25,7 +25,7 @@ example polycrystalline vanadium dioxide pattern:
 	import matplotlib.pyplot as plt
 	import numpy as np
 
-	s, intensity = np.load('data\\powder.npy')
+	s, intensity = np.load('powder.npy')
 	fig = plt.figure()
 	ax = fig.add_subplot(111)
 	ax.plot(s, intensity, 'k')
@@ -50,7 +50,7 @@ substrates, as well as inelastic scattering effects::
 	import numpy as np
 	from skued import gaussian
 
-	s, intensity = np.load('data\\powder.npy')
+	s, intensity = np.load('powder.npy')
 
 	# Double exponential inelastic background and substrate effects
 	background = 75 * np.exp(-7 * s) + 55 * np.exp(-2 * s)
@@ -78,7 +78,7 @@ Scikit-ued offers two ways of removing the background.
 Iterative Baseline Determination using the Discrete Wavelet Transform
 =====================================================================
 
-The prodecude and rational for the :code:`baseline_dwt` routine is described in detail in:
+The procedure and rational for the :code:`baseline_dwt` routine is described in detail in:
 
 Galloway et al. 'An Iterative Algorithm for Background Removal in Spectroscopy by Wavelet 
 Transforms', Applied Spectroscopy pp. 1370 - 1376, September 2009.
@@ -89,7 +89,7 @@ Here is a usage example for the data presented above::
 	from skued import gaussian
 	from skued.baseline import baseline_dwt
 
-	s, intensity = np.load('data\\powder.npy')
+	s, intensity = np.load('powder.npy')
 
 	# Double exponential inelastic background and substrate effects
 	diffuse = 75 * np.exp(-7 * s) + 55 * np.exp(-2 * s)
@@ -105,7 +105,7 @@ Here is a usage example for the data presented above::
 	from skued import gaussian, spectrum_colors
 	from skued.baseline import baseline_dwt
 
-	s, intensity = np.load('data\\powder.npy')
+	s, intensity = np.load('powder.npy')
 
 	# Double exponential inelastic background and substrate effects
 	diffuse = 75 * np.exp(-7 * s) + 55 * np.exp(-2 * s)
@@ -155,7 +155,7 @@ Here is a usage example for the data presented above::
 	from skued import gaussian
 	from skued.baseline import baseline_dt
 
-	s, intensity = np.load('data\\powder.npy')
+	s, intensity = np.load('powder.npy')
 
 	# Double exponential inelastic background and substrate effects
 	diffuse = 75 * np.exp(-7 * s) + 55 * np.exp(-2 * s)
@@ -171,7 +171,7 @@ Here is a usage example for the data presented above::
 	from skued import gaussian, spectrum_colors
 	from skued.baseline import baseline_dt
 
-	s, intensity = np.load('data\\powder.npy')
+	s, intensity = np.load('powder.npy')
 
 	# Double exponential inelastic background and substrate effects
 	diffuse = 75 * np.exp(-7 * s) + 55 * np.exp(-2 * s)

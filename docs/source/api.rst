@@ -10,7 +10,9 @@ Parallel Utilities
 
 Plot Utilities
 ==============
-.. automodule:: skued.plot_utils
+.. autofunction:: skued.plot_utils.spectrum_colors
+
+.. autofunction:: skued.plot_utils.rgb_sweep
 
 Array Utilities
 ===============
