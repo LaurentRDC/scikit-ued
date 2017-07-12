@@ -51,9 +51,11 @@ def nfold(im, mod, center = None, mask = None, **kwargs):
 
     if mask is not None:
        im[mask] = np.nan
+    
+    rotate_kwargs = {'mode': 'constant', 'preserve_range': True}
+    rotate_kwargs.update(kwargs)
 
-    stack = np.dstack([rotate(im, angle, center = center, mode = 'edge', 
-                              preserve_range = True, **kwargs) for angle in angles])
+    stack = np.dstack([rotate(im, angle, center = center, **rotate_kwargs) for angle in angles])
     avg = np.nanmean(stack, axis = 2)
     return np.nan_to_num(avg)
 
