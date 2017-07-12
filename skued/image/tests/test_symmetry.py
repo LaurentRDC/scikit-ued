@@ -10,7 +10,7 @@ class TestNFoldSymmetry(unittest.TestCase):
 	def test_trivial(self):
 		""" Test nfold_symmetry averaging on trivial array """
 		im = np.zeros( (256, 256) )
-		rot = nfold(im, center = (128, 128), mod = 3)
+		rot = nfold(im, mod = 3)
 		self.assertTrue(np.allclose(rot, im))
 
 	# TODO: test preserve_range = False has not effect
@@ -19,7 +19,7 @@ class TestNFoldSymmetry(unittest.TestCase):
 		""" Test the the N-fold symmetry argument is valid """
 		im = np.empty( (128, 128) )
 		with self.assertRaises(ValueError):
-			nfold(im, center = (64,64), mod = 1.7)
+			nfold(im, mod = 1.7)
 	
 	def test_mask(self):
 		""" Test that nfold_symmetry() works correctly with a mask """
@@ -29,7 +29,7 @@ class TestNFoldSymmetry(unittest.TestCase):
 		im[0:20] = 1
 		mask[0:20] = True
 		
-		rot = nfold(im, center = (64,64), mod = 2, mask = mask)
+		rot = nfold(im, mod = 2, mask = mask)
 		self.assertTrue(np.allclose(rot, np.zeros_like(rot)))
 	
 	def test_no_side_effects(self):
@@ -41,6 +41,26 @@ class TestNFoldSymmetry(unittest.TestCase):
 		mask.setflags(write = False)
 
 		rot = nfold(im, center = (67, 93),mod = 3, mask = mask)
+	
+	def test_output_range(self):
+		""" Test that nfold() does not modify the value range """
+		im = 1000*np.random.random(size = (256, 256))
+		mask = np.random.choice([True, False], size = im.shape)
+
+		rot = nfold(im, center = (100, 150), mod = 5, mask = mask)
+
+		self.assertLessEqual(rot.max(), im.max())
+		# In the case of a mask that overlaps with itself when rotated,
+		# the average will be zero due to nan_to_num
+		self.assertGreaterEqual(rot.min(), min(im.min(), 0))
+	
+	def test_mod_1(self):
+		""" Test that nfold(mod = 1) returns an unchanged image, except
+		perhaps for a cast to float """
+		im = 1000*np.random.random(size = (256, 256))
+		rot = nfold(im, mod = 1)
+		self.assertTrue(np.allclose(im, rot))
+
 
 if __name__ == '__main__':
 	unittest.main()

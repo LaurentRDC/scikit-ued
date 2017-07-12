@@ -9,7 +9,7 @@ import numpy as np
 from warnings import warn
 
 # TODO: out parameter?
-def nfold(im, center, mod, mask = None, **kwargs):
+def nfold(im, mod, center = None, mask = None, **kwargs):
     """ 
     Returns an images averaged according to n-fold rotational symmetry.
     Keyword arguments are passed to skimage.transform.rotate()
@@ -18,37 +18,42 @@ def nfold(im, center, mod, mask = None, **kwargs):
     ----------
     im : array_like, ndim 2
         Image to be averaged.
-    center : array_like, shape (2,)
-        coordinates of the center (in pixels).
+    center : array_like, shape (2,) or None, optional
+        coordinates of the center (in pixels). If ``center=None``, the image is rotated around
+        its center, i.e. ``center=(rows / 2 - 0.5, cols / 2 - 0.5)``.
     mod : int
         Fold symmetry number. Valid numbers must be a divisor of 360.
     mask : `~numpy.ndarray` or None, optional
         Mask of `image`. The mask should evaluate to `True`
         (or 1) on invalid pixels. If None (default), no mask
         is used.
+    
 
     Returns
     -------
-    out : `~numpy.ndarray`
+    out : `~numpy.ndarray`, dtype float
+        Averaged image.
 
     Raises
     ------
     ValueError
         If `mod` is not a divisor of 360 deg.
+    
+    See also
+    --------
+    skimage.transform.rotate : Rotate images by interpolation.
     """
     if (360 % mod) != 0:
-        raise ValueError('Rotational symmetry of {} is not valid.'.format(mod))
-
-    if mask is None:
-        mask = np.zeros_like(im, dtype = np.bool)
-
-    im = np.array(im, dtype = np.float, copy = True)
-    im[mask] = np.nan
+        raise ValueError('{}-fold rotational symmetry is not valid (not a divisor of 360).'.format(mod))
     angles = range(0, 360, int(360/mod))
 
-    kwargs.update({'preserve_range': True})
-    stack = np.dstack([rotate(im, angle, center = center, **kwargs) for angle in angles])
+    im = np.array(im, dtype = np.float, copy = True)
 
+    if mask is not None:
+       im[mask] = np.nan
+
+    stack = np.dstack([rotate(im, angle, center = center, mode = 'edge', 
+                              preserve_range = True, **kwargs) for angle in angles])
     avg = np.nanmean(stack, axis = 2)
     return np.nan_to_num(avg)
 
