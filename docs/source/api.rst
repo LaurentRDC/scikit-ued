@@ -28,6 +28,8 @@ Iteration/Generator Utilities
 
 .. autofunction:: linspace
 
+.. autofunction:: multilinspace
+
 Quantities
 ==========
 .. automodule:: skued.quantities

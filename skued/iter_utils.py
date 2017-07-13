@@ -3,7 +3,7 @@
 Iterator/Generator utilities 
 ============================
 """
-from collections import deque
+from collections import deque, Sized
 from itertools import islice, count
 
 def chunked(iterable, chunksize = 1):
@@ -71,6 +71,37 @@ def linspace(start, stop, num, endpoint = True):
 
 	if endpoint:
 		yield stop
+
+def multilinspace(start, stop, num, endpoint = True):
+	""" 
+	Generate multilinear space, for joining the values in two iterables.
+
+	Parameters
+	----------
+	start : iterable
+		The starting value. 
+	stop : iterable
+		The end value.
+	num : int, optional
+		Number of samples to generate.
+	endpoint : bool, optional
+		If True (default), the endpoint is included in the linear space.
+
+	Yields
+	------
+	val : tuple
+		Tuple of the same length as start and stop
+
+	See also
+	--------
+	linspace : generate a linear space between two numbers
+	"""	
+	start, stop = tuple(start), tuple(stop)
+	if len(start) != len(stop):
+		raise ValueError('start and stop must have the same length')
+
+	spaces = tuple(linspace(a, b, num = num, endpoint = endpoint) for a, b in zip(start, stop))
+	yield from zip(*spaces)
 
 def last(stream):
 	""" Retrieve the last item from a stream/iterator. Generators are consumed. 

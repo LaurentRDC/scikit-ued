@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 from itertools import repeat
-from .. import last, chunked, linspace
+from .. import last, chunked, linspace, multilinspace
 
 class TestLast(unittest.TestCase):
 
@@ -35,6 +35,29 @@ class TestLinspace(unittest.TestCase):
 
         with self.subTest('endpoint = False'):
             space = list(linspace(0, 1, num = 13, endpoint = False))
+            self.assertEqual(len(space), 13)
+
+class TestMultilinspace(unittest.TestCase):
+
+    def test_endpoint(self):
+        """ Test that the endpoint is included by linspace() when appropriate"""
+        with self.subTest('endpoint = True'):
+            space = multilinspace((0,0), (1,1), num = 10, endpoint = True)
+            self.assertSequenceEqual(last(space), (1,1))
+
+        with self.subTest('endpoint = False'):
+            space = multilinspace((0,0), (1,1), num = 10, endpoint = False)
+            # Unfortunately there is no assertSequenceAlmostEqual
+            self.assertSequenceEqual(last(space), (0.8999999999999999, 0.8999999999999999))
+    
+    def test_length(self):
+        """ Test that linspace() returns an iterable of the correct length """
+        with self.subTest('endpoint = True'):
+            space = list(multilinspace((0,0), (1,1), num = 13, endpoint = True))
+            self.assertEqual(len(space), 13)
+
+        with self.subTest('endpoint = False'):
+            space = list(multilinspace((0,0), (1,1), num = 13, endpoint = False))
             self.assertEqual(len(space), 13)
 
 class TestChunked(unittest.TestCase):
