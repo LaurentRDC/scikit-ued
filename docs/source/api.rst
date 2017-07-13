@@ -22,13 +22,7 @@ Array Utilities
 
 Iteration/Generator Utilities
 =============================
-.. autofunction:: last
-
-.. autofunction:: chunked
-
-.. autofunction:: linspace
-
-.. autofunction:: multilinspace
+.. automodule:: skued.iter_utils
 
 Quantities
 ==========
