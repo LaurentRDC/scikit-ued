@@ -3,7 +3,7 @@
 Iterator/Generator utilities 
 ============================
 """
-from collections import deque, Sized
+from collections import deque
 from itertools import islice, count
 
 def chunked(iterable, chunksize = 1):
@@ -31,7 +31,6 @@ def chunked(iterable, chunksize = 1):
 	while next_chunk:	
 		yield next_chunk
 		next_chunk = tuple(islice(iterable, chunksize))
-		
 
 def linspace(start, stop, num, endpoint = True):
 	""" 
@@ -44,7 +43,7 @@ def linspace(start, stop, num, endpoint = True):
 		The starting value of the sequence.
 	stop : float
 		The end value of the sequence.
-	num : int, optional
+	num : int
 		Number of samples to generate.
 	endpoint : bool, optional
 		If True (default), the endpoint is included in the linear space.
@@ -78,11 +77,11 @@ def multilinspace(start, stop, num, endpoint = True):
 
 	Parameters
 	----------
-	start : iterable
-		The starting value. 
-	stop : iterable
-		The end value.
-	num : int, optional
+	start : iterable of floats
+		The starting value. This iterable will be consumed.
+	stop : iterable of floats
+		The end value. This iterable will be consumed.
+	num : int
 		Number of samples to generate.
 	endpoint : bool, optional
 		If True (default), the endpoint is included in the linear space.
@@ -91,6 +90,12 @@ def multilinspace(start, stop, num, endpoint = True):
 	------
 	val : tuple
 		Tuple of the same length as start and stop
+
+	Examples
+	--------
+	>>> multispace = multilinspaces(start = (0, 0), stop = (1, 1), num = 4, endpoint = False)
+	>>> print(list(multispace))
+	[(0, 0), (0.25, 0.25), (0.5, 0.5), (0.75, 0.75)]
 
 	See also
 	--------
@@ -104,8 +109,10 @@ def multilinspace(start, stop, num, endpoint = True):
 	yield from zip(*spaces)
 
 def last(stream):
-	""" Retrieve the last item from a stream/iterator. Generators are consumed. 
-	If empty stream, returns None """
+	""" 
+	Retrieve the last item from a stream/iterator. Generators are consumed. 
+	If empty stream, returns None. 
+	"""
 	# Wonderful idea from itertools recipes
 	# https://docs.python.org/3.6/library/itertools.html#itertools-recipes
 	try:
