@@ -6,8 +6,8 @@
 Image Analysis Tutorial
 ***********************
 
-Due to the high electron cross-section, background signals (or baseline) are
-much more of a problem for electron diffraction than equivalent X-ray experiments.
+Diffraction patterns analysis is essentially specialized image processing. This tutorial
+will show some of the image processing and analysis techniques that are part of the :mod:`skued.image` module.
 
 Contents
 ========
