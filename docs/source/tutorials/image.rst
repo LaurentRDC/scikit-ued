@@ -78,6 +78,10 @@ memory usage; this allows the use of multiple processes in parallel::
 	    # write to disk of display
 	    pass
 
+Scikit-ued provides a few streaming statistical functions (:func:`ivar`, :func:`istd`, 
+:func:`isem`, :func:`iaverage`) which are tested to have exact same results are the familiar
+:mod:`numpy` and :mod:`scipy` equivalents. You can also find more specialized streaming functions (e.g. :func:`ialign`).
+
 Example: averaging with error
 ------------------------------
 

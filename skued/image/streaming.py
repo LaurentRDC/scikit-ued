@@ -5,10 +5,12 @@ Streaming operations on arrays/images
 from collections import deque
 from functools import partial
 from itertools import repeat
+from math import sqrt
 
 import numpy as np
 
 from . import align
+
 
 def ialign(images, reference = None, fill_value = 0.0):
 	"""
@@ -81,29 +83,31 @@ def iaverage(images, weights = None):
         #print(sum_of_weights)
         yield weighted_sum/sum_of_weights
 
-def isem(images):
+def ivar(images, ddof = 1):
     """ 
-    Streaming standard error in the mean (SEM) of images. This is equivalent to
-    calling `scipy.mstats.sem` with `ddof = 1`.
+    Streaming variance of a set of images, per pixel. This is equivalent to
+    calling `numpy.var` with `ddof = 1`.
 
     Parameters
     ----------
     images : iterable of ndarrays
-        Images to be averaged. This iterable can also a generator.
+        Images to be combined. This iterable can also a generator.
+    ddof : int, optional
+        Means Delta Degrees of Freedom.  The divisor used in calculations
+        is ``N - ddof``, where ``N`` represents the number of elements.
+        By default `ddof` is one.
     
     Yields
     ------
     sem: `~numpy.ndarray`
-        Standard error in the mean. 
-    
-    See also
-    --------
-    scipy.stats.sem : standard error in the mean of dense arrays.
+        Variance on a per-pixel basis. 
     
     References
     ----------
     .. [#] D. Knuth, The Art of Computer Programming 3rd Edition, Vol. 2, p. 232
     """
+    # TODO: weighted online variance 
+    # See https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Online_algorithm
     images = iter(images)
 
     first = next(images)
@@ -116,8 +120,60 @@ def isem(images):
         _sub = image - old_M
         new_M[:] = old_M + _sub/k
         new_S[:] = old_S + _sub*(image - new_M)
-        
-        yield np.sqrt(new_S/(k*(k-1))) # variance = S / k-1, sem = std / sqrt(k)    
+
+        # In case there hasn't been enough measurements yet,
+        # yield zeros.
+        if (k - ddof) <= 0:
+            yield np.zeros_like(first)
+        else:
+            yield new_S/(k - ddof) # variance = S / k-1, sem = std / sqrt(k)    
 
         old_M[:] = new_M
         old_S[:] = new_S
+
+def istd(images, ddof = 1):
+    """ 
+    Streaming standard deviation of images. This is equivalent to
+    calling `numpy.std(axis = 2)` on a stack of images.
+
+    Parameters
+    ----------
+    images : iterable of ndarrays
+        Images to be combined. This iterable can also a generator.
+    ddof : int, optional
+        Means Delta Degrees of Freedom.  The divisor used in calculations
+        is ``N - ddof``, where ``N`` represents the number of elements.
+        By default `ddof` is one.
+    
+    Yields
+    ------
+    sem: `~numpy.ndarray`
+        Standard deviation on a per-pixel basis.
+    """
+    yield from map(np.sqrt, ivar(images, ddof = ddof))
+
+def isem(images, ddof = 1):
+    """ 
+    Streaming standard error in the mean (SEM) of images. This is equivalent to
+    calling `scipy.stats.sem(axis = 2)` on a stack of images.
+
+    Parameters
+    ----------
+    images : iterable of ndarrays
+        Images to be combined. This iterable can also a generator.
+    ddof : int, optional
+        Means Delta Degrees of Freedom.  The divisor used in calculations
+        is ``N - ddof``, where ``N`` represents the number of elements.
+        By default `ddof` is one.
+    
+    Yields
+    ------
+    sem: `~numpy.ndarray`
+        Standard error in the mean. 
+    
+    See also
+    --------
+    scipy.stats.sem : standard error in the mean of dense arrays.
+    """
+    for k, std in enumerate(istd(images, ddof = ddof), start = 1):
+        yield std / sqrt(k) 

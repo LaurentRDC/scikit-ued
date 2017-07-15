@@ -7,7 +7,7 @@ import numpy as np
 from scipy.stats import sem as scipy_sem
 from skimage import data
 
-from .. import ialign, iaverage, isem, shift_image
+from .. import ialign, iaverage, isem, shift_image, istd, ivar
 from ... import last
 
 
@@ -86,10 +86,53 @@ class TestISem(unittest.TestCase):
 		""" Test that the results of isem are in agreement with scipy.stats.sem """
 		stream = [np.random.random(size = (64,64)) for _ in range(5)]
 
-		from_isem = last(isem(stream))
-		from_scipy = scipy_sem(np.dstack(stream), axis = 2, ddof = 1)
+		for ddof in range(0, len(stream)):
+			with self.subTest('ddof = {}'.format(ddof)):
+				from_isem = last(isem(stream, ddof = ddof))
+				from_scipy = scipy_sem(np.dstack(stream), axis = 2, ddof = ddof)
 
-		self.assertTrue(np.allclose(from_isem, from_scipy))
+				self.assertTrue(np.allclose(from_isem, from_scipy))
+
+class TestIstd(unittest.TestCase):
+
+	def test_first(self):
+		""" Test that the first yielded value of istd is an array fo zeros """
+		stream = repeat(np.random.random( size = (64,64)), times = 5)
+		first = next(istd(stream))
+
+		self.assertTrue(np.allclose(first, np.zeros_like(first)))
+
+	def test_against_numpy_std(self):
+		""" Test that the results of istd are in agreement with numpy.std """
+		stream = [np.random.random(size = (64,64)) for _ in range(5)]
+
+		for ddof in range(0, len(stream)):
+			with self.subTest('ddof = {}'.format(ddof)):
+				from_istd = last(istd(stream, ddof = ddof))
+				from_numpy = np.std(np.dstack(stream), axis = 2, ddof = ddof)
+
+				self.assertTrue(np.allclose(from_istd, from_numpy))
+
+class TestIvar(unittest.TestCase):
+
+	def test_first(self):
+		""" Test that the first yielded value of ivar is an array fo zeros """
+		stream = repeat(np.random.random( size = (64,64)), times = 5)
+		first = next(ivar(stream))
+
+		self.assertTrue(np.allclose(first, np.zeros_like(first)))
+
+	def test_against_numpy_var(self):
+		""" Test that the results of istd are in agreement with numpy.var """
+		stream = [np.random.random(size = (64,64)) for _ in range(5)]
+
+		for ddof in range(0, len(stream)):
+			with self.subTest('ddof = {}'.format(ddof)):
+				from_ivar = last(ivar(stream, ddof = ddof))
+				from_numpy = np.var(np.dstack(stream), axis = 2, ddof = ddof)
+
+				self.assertTrue(np.allclose(from_ivar, from_numpy))
+
 
 if __name__ == '__main__':
 	unittest.main()
