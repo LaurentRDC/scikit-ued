@@ -57,6 +57,8 @@ but will not compute anything until it is requested. We can use the function
 :code:`last` to get at the final average, but we could also look at the average
 step-by-step by calling :code:`next`::
 
+	from skued import last
+
 	avg = next(averaged) # only one images is loaded, aligned and added to the average
 	total = last(averaged) # average of the entire stream
 

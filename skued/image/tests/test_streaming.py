@@ -7,7 +7,8 @@ import numpy as np
 from scipy.stats import sem as scipy_sem
 from skimage import data
 
-from .. import ialign, iaverage, isem, shift_image, last
+from .. import ialign, iaverage, isem, shift_image
+from ... import last
 
 
 class TestIAlign(unittest.TestCase):

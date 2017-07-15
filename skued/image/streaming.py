@@ -10,13 +10,6 @@ import numpy as np
 
 from . import align
 
-# TODO: move into base package, e.g. iter_utils.py?
-def last(stream):
-    """ Returns the last item from a stream. """
-    # Wonderful idea from itertools recipes
-    # https://docs.python.org/3.6/library/itertools.html#itertools-recipes
-    return deque(stream, maxlen = 1)[0]
-
 def ialign(images, reference = None, fill_value = 0.0):
 	"""
 	Generator of aligned diffraction images.

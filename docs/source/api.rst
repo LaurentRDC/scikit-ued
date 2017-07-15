@@ -20,6 +20,10 @@ Array Utilities
 ===============
 .. automodule:: skued.array_utils
 
+Iteration/Generator Utilities
+=============================
+.. automodule:: skued.iter_utils
+
 Quantities
 ==========
 .. automodule:: skued.quantities
