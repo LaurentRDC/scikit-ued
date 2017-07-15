@@ -26,7 +26,7 @@ in-memory. In this case, it makes sense to assemble processing pipelines instead
 of working on the data all at once.
 
 Consider the following snippet to combine 50 images 
-from an iterable :code:`source`::
+from an iterable :data:`source`::
 
 	import numpy as np
 
@@ -36,13 +36,13 @@ from an iterable :code:`source`::
 	
 	avg = np.average(images, axis = 2)
 
-If the :code:`source` iterable provided 1000 images, the above routine would
+If the :data:`source` iterable provided 1000 images, the above routine would
 not work on most machines. Moreover, what if we want to transform the images 
 one by one before averaging them? What about looking at the average while it 
 is being computed?
 
 Scikit-ued provides some functions that can make streaming processing possible. These
-function will have an 'i' prefix (for :code:`iterator`). Let's look at an example::
+function will have an 'i' prefix (for :func:`iter`). Let's look at an example::
 
 	import numpy as np
 	from skued.image import ialign, iaverage
@@ -52,10 +52,10 @@ function will have an 'i' prefix (for :code:`iterator`). Let's look at an exampl
 	aligned = ialign(stream)
 	averaged = iaverage(aligned)
 
-At this point, the generators :code:`map`, :code:`ialign`, and :code:`iaverage` are 'wired'
+At this point, the generators :func:`map`, :func:`ialign`, and :func:`iaverage` are 'wired'
 but will not compute anything until it is requested. We can use the function
-:code:`last` to get at the final average, but we could also look at the average
-step-by-step by calling :code:`next`::
+:func:`last` to get at the final average, but we could also look at the average
+step-by-step by calling :func:`next`::
 
 	from skued import last
 
@@ -81,7 +81,7 @@ memory usage; this allows the use of multiple processes in parallel::
 Example: averaging with error
 ------------------------------
 
-It is possible to combine :code:`iaverage` and :code:`isem` into a single stream using :code:`itertools.tee`. 
+It is possible to combine :func:`iaverage` and :func:`isem` into a single stream using :func:`itertools.tee`. 
 Here is a recipe for it::
 
 	def iaverage_with_error(images, weights):    
@@ -118,15 +118,15 @@ it is important to align patterns to a reference.
 
 The procedure of detecting, or registering, the translation between two similar images is usually
 done by measuring the cross-correlation between images. When images are very similar, this procedure
-is fine; take a look at scikit-image's :code:`skimage.feature.register_translation` for example. 
+is fine; take a look at scikit-image's :func:`skimage.feature.register_translation` for example. 
 
 However, diffraction patterns all have a fixed feature: the position of the beam-block. Therefore, some pixels 
 in each diffraction pattern must be ignored in the computation of the cross-correlation. 
 
 Setting the 'invalid pixels' to 0 will not work, at those will correlate with the invalid pixels from the reference. One must use
-the **masked normalized cross-correlation** through scikit-ued's :code:`mnxc2`.
+the **masked normalized cross-correlation** through scikit-ued's :func:`mnxc2`.
 
-All of this is taken care of in scikit-ued's :code:`diff_register` function. Let's look at some polycrystalline Chromium:
+All of this is taken care of in scikit-ued's :func:`diff_register` function. Let's look at some polycrystalline Chromium:
 
 .. plot::
 
@@ -233,7 +233,7 @@ the center of those concentric rings is important. Let's load a test image:
 
 This is a noisy diffraction pattern of polycrystalline vanadium dioxide. 
 Finding the center of such a symmetry pattern can be done with the 
-:code:`powder_center` routine::
+:func:`powder_center` routine::
 	
 	from skued.image import powder_center
 	ic, jc = powder_center(im, mask = mask)
