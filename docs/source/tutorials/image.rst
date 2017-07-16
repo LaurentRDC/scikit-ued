@@ -6,8 +6,8 @@
 Image Analysis Tutorial
 ***********************
 
-Due to the high electron cross-section, background signals (or baseline) are
-much more of a problem for electron diffraction than equivalent X-ray experiments.
+Diffraction patterns analysis is essentially specialized image processing. This tutorial
+will show some of the image processing and analysis techniques that are part of the :mod:`skued.image` module.
 
 Contents
 ========
@@ -77,6 +77,10 @@ memory usage; this allows the use of multiple processes in parallel::
 	for avg in pmap(align_and_avg, batches, processes = 3):
 	    # write to disk of display
 	    pass
+
+Scikit-ued provides a few streaming statistical functions (:func:`ivar`, :func:`istd`, 
+:func:`isem`, :func:`iaverage`) which are tested to have exact same results are the familiar
+:mod:`numpy` and :mod:`scipy` equivalents. You can also find more specialized streaming functions (e.g. :func:`ialign`).
 
 Example: averaging with error
 ------------------------------
