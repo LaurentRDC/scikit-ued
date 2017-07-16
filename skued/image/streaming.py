@@ -2,7 +2,7 @@
 Streaming operations on arrays/images
 =====================================
 """
-from collections import deque
+
 from functools import partial
 from itertools import repeat
 from math import sqrt
@@ -11,8 +11,7 @@ import numpy as np
 
 from . import align
 
-
-def ialign(images, reference = None, fill_value = 0.0):
+def ialign(images, reference = None, mask = None, fill_value = 0.0):
 	"""
 	Generator of aligned diffraction images.
 
@@ -20,21 +19,21 @@ def ialign(images, reference = None, fill_value = 0.0):
 	----------
 	images : iterable
 		Iterable of ndarrays of shape (N,M)
-	reference : `~numpy.ndarray` or None, optional
-		If not None, this is the reference image to which all images will be aligned. Otherwise,
-		images will be aligned to the first element of the iterable 'images'. 
+	reference : `~numpy.ndarray`, shape (M,N)
+		Images in `images` will be align onto the `reference` image.
+	mask : `~numpy.ndarray` or None, optional
+		Mask that evaluates to True on invalid pixels.
 	fill_value : float, optional
-		Edges will be filled with `fill_value` after shifting.
+		Edges will be filled with `fill_value` after alignment.
     
 	Yields
 	------
-	aligned : ndarray, ndim 2
+	aligned : `~numpy.ndarray`
 		Aligned image
 
-	Notes
-	-----
-	Diffraction images exhibit high symmetry in most cases, therefore images
-	are cropped to a quarter of their size before alignment.
+	See Also
+    --------
+    skued.image.align : align a single diffraction pattern onto a reference.
 	"""
 	images = iter(images)
 	
@@ -42,12 +41,12 @@ def ialign(images, reference = None, fill_value = 0.0):
 		reference = next(images)
 		yield reference
 
-	yield from map(partial(align, reference = reference), images)
+	yield from map(partial(align, reference = reference, mask = mask, fill_value =  fill_value), images)
 
 def iaverage(images, weights = None):
     """ 
-    Streaming average of diffraction images. This generator can be used to 
-    observe a live averaging.
+    Streaming average of diffraction images. This is equivalent
+    to `numpy.average(axis = 2)` for a stack of images.
 
     Parameters
     ----------
@@ -67,7 +66,7 @@ def iaverage(images, weights = None):
     
     See Also
     --------
-    numpy.average : average for dense arrays
+    numpy.average : (weighted) average for dense arrays
     """
     images = iter(images)
     
@@ -88,9 +87,8 @@ def iaverage(images, weights = None):
 
 def ivar(images, ddof = 1, weights = None):
     """ 
-    Streaming variance of a set of images, per pixel. This is equivalent to
-    calling `numpy.var` with `ddof = 1`.
-
+    Streaming variance of a set of images, per pixel. Weights are also supported.
+    This is equivalent to calling `numpy.var(axis = 2)` on a stack of images.
     Parameters
     ----------
     images : iterable of ndarrays
@@ -108,15 +106,18 @@ def ivar(images, ddof = 1, weights = None):
     
     Yields
     ------
-    sem: `~numpy.ndarray`
+    var: `~numpy.ndarray`
         Variance on a per-pixel basis. 
+    
+    See Also
+    --------
+    numpy.var : variance calculation for dense arrays. Weights are not supported.
     
     References
     ----------
-    .. [#] D. Knuth, The Art of Computer Programming 3rd Edition, Vol. 2, p. 232
+    .. [#] D. H. D. West, Updating the mean and variance estimates: an improved method.
+        Communications of the ACM Vol. 22, Issue 9, pp. 532 - 535 (1979)
     """
-    # TODO: weighted online variance 
-    # See https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Online_algorithm
     images = iter(images)
 
     if weights is None:
@@ -149,8 +150,8 @@ def ivar(images, ddof = 1, weights = None):
 
 def istd(images, ddof = 1, weights = None):
     """ 
-    Streaming standard deviation of images. This is equivalent to
-    calling `numpy.std(axis = 2)` on a stack of images.
+    Streaming standard deviation of images. Weights are also supported.
+    This is equivalent to calling `numpy.std(axis = 2)` on a stack of images.
 
     Parameters
     ----------
@@ -169,8 +170,12 @@ def istd(images, ddof = 1, weights = None):
     
     Yields
     ------
-    sem: `~numpy.ndarray`
+    std: `~numpy.ndarray`
         Standard deviation on a per-pixel basis.
+
+    See Also
+    --------
+    numpy.std : standard deviation calculation of dense arrays. Weights are not supported.
     """
     yield from map(np.sqrt, ivar(images, ddof = ddof, weights = weights))
 
@@ -193,9 +198,10 @@ def isem(images, ddof = 1):
     sem: `~numpy.ndarray`
         Standard error in the mean. 
     
-    See also
+    See Also
     --------
     scipy.stats.sem : standard error in the mean of dense arrays.
     """
+    # TODO: include weights
     for k, std in enumerate(istd(images, ddof = ddof), start = 1):
         yield std / sqrt(k) 
