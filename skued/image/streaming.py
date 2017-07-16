@@ -13,25 +13,27 @@ from . import align
 
 def ialign(images, reference = None, mask = None, fill_value = 0.0):
 	"""
-	Generator of aligned diffraction images.
+    Generator of aligned diffraction images.
 
-	Parameters
-	----------
-	images : iterable
-		Iterable of ndarrays of shape (N,M)
-	reference : `~numpy.ndarray`, shape (M,N)
-		Images in `images` will be align onto the `reference` image.
-	mask : `~numpy.ndarray` or None, optional
-		Mask that evaluates to True on invalid pixels.
-	fill_value : float, optional
-		Edges will be filled with `fill_value` after alignment.
-    
-	Yields
-	------
-	aligned : `~numpy.ndarray`
-		Aligned image
+    Parameters
+    ----------
+    images : iterable
+        Iterable of ndarrays of shape (N,M)
+    reference : `~numpy.ndarray`, shape (M,N)
+        Images in `images` will be aligned onto the `reference` image. If
+        'reference' is None (default), the first image in the 'images' stream
+        is used as a reference
+    mask : `~numpy.ndarray` or None, optional
+        Mask that evaluates to True on invalid pixels.
+    fill_value : float, optional
+        Edges will be filled with `fill_value` after alignment.
 
-	See Also
+    Yields
+    ------
+    aligned : `~numpy.ndarray`
+        Aligned image. If `reference` is None, the first aligned image is the reference.
+
+    See Also
     --------
     skued.image.align : align a single diffraction pattern onto a reference.
 	"""
@@ -89,6 +91,7 @@ def ivar(images, ddof = 1, weights = None):
     """ 
     Streaming variance of a set of images, per pixel. Weights are also supported.
     This is equivalent to calling `numpy.var(axis = 2)` on a stack of images.
+    
     Parameters
     ----------
     images : iterable of ndarrays
