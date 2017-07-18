@@ -31,6 +31,12 @@ To create an atom, simply provide its element and coordinates::
 :class:`Atom` objects are hashable; this means that they can be stored in a :func:`set`. Therefore,
 a list of atoms can be reduced into unique atoms using a :func:`set`.
 
+An :class:`Atom` instance has an associated :class:`Lattice` instance, which is the trivial Euclidian 
+lattice in the case of a free atom. In this case, ``Atom.coords`` and :code:`Atom.real_coords` are equivalent.
+
+Once an :class:`Atom` is added into a :class:`Crystal`, the ``coords`` attribute refers to the fractional coordinates,
+while the ``real_coords`` attribute refers to real-space position. 
+
 One important feature of the :class:`Atom` class is the possibility to compute the electrostatic
 potential across meshes::
 
