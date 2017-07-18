@@ -269,4 +269,4 @@ class CIFParser(object):
 				coords = transform(cart_trans_matrix, coords)
 				coords[:] = frac_coords(coords, lv)
 			
-			yield Atom(element = e, coords = real_coords(np.mod(coords, 1), lv))
+			yield Atom(element = e, coords = np.mod(coords, 1))

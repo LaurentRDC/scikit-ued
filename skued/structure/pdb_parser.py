@@ -134,7 +134,7 @@ class PDBParser(object):
 			for line in filter(lambda l: l.startswith( ('ATOM', 'HEMATM') ), pdb_file):
 				x, y, z = float(line[30:38]), float(line[38:46]), float(line[46:54])
 				element = str(line[76:78]).replace(' ','')
-				yield Atom(element = element, coords = [x,y,z])
+				yield Atom(element = element, coords = frac_coords([x,y,z], self.lattice_vectors))
 	
 	def symmetry_operators(self):
 		"""

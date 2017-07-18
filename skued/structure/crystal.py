@@ -13,9 +13,9 @@ import numpy as np
 from numpy import pi
 from numpy.linalg import norm
 
-from . import AtomicStructure, CIFParser, Lattice, PDBParser, frac_coords
+from . import CIFParser, Lattice, PDBParser, frac_coords, real_coords
 from .. import (affine_map, change_basis_mesh, change_of_basis,
-                is_rotation_matrix, minimum_image_distance, transform)
+				is_rotation_matrix, minimum_image_distance, transform)
 
 # Constants
 m = 9.109*10**(-31)     #electron mass in kg
@@ -24,11 +24,11 @@ e = 14.4                #electron charge in Volt*Angstrom
 
 CIF_ENTRIES = glob(os.path.join(os.path.dirname(__file__), 'cifs', '*.cif'))
 
-class Crystal(AtomicStructure, Lattice):
+class Crystal(Lattice):
 	"""
 	This object is the basis for inorganic crystals such as VO2, 
 	and protein crystals such as bR. 
-    
+	
 	Attributes
 	----------
 	symmetry_operators : list of ndarrays
@@ -43,28 +43,26 @@ class Crystal(AtomicStructure, Lattice):
 
 	builtins = set(map(lambda fn: os.path.basename(fn).split('.')[0], CIF_ENTRIES))
 
-	def __init__(self, atoms, symmetry_operators = [np.eye(3)], **kwargs):
-		kwargs.update({'items': atoms}) # atoms argument is an alias for AtomicStructure.items
+	def __init__(self, atoms, lattice_vectors, symmetry_operators = [np.eye(3)], **kwargs):
+
+		self.atoms = list(atoms)
 		self.symmetry_operators = tuple(map(affine_map, symmetry_operators))
-		super().__init__(**kwargs)
+		super().__init__(lattice_vectors, **kwargs)
+
+		# Set the right lattice into the atoms
+		for atm in self.atoms:
+			atm.lattice = self
 	
 	def __iter__(self):
 		unique_atoms = set([])	# set of unique atoms in fractional coordinates
-		to_real = change_of_basis(self.lattice_vectors, np.eye(3))
-		to_frac = change_of_basis(np.eye(3), self.lattice_vectors)
 
 		for atm in self.atoms:
 			for sym_op in self.symmetry_operators:
-				sym_op = transform(sym_op, to_frac)
-				sym_op = transform(to_real, sym_op)
 
 				new = copy(atm)
 				new.transform(sym_op)
 
-				# 'Normalize' atom to be within the unit cell
-				frac = np.dot(to_frac, new.coords)
-				frac[:] = np.remainder(frac, 1.0)
-				new.coords[:] = np.round(np.dot(to_real, frac), 3)
+				new.coords[:] = np.mod(new.coords, 1)
 
 				unique_atoms.add(new)
 		
@@ -169,7 +167,7 @@ class Crystal(AtomicStructure, Lattice):
 	def spglib_cell(self):
 		""" Returns the crystal structure in spglib's `cell` format."""
 		lattice = np.array(self.lattice_vectors)
-		positions = np.array([atom.frac_coords(self.lattice_vectors) for atom in iter(self)])
+		positions = np.array([atom.coords for atom in iter(self)])
 		numbers = np.array(tuple(atom.atomic_number for atom in iter(self)))
 		return (lattice, positions, numbers)
 	
@@ -186,7 +184,7 @@ class Crystal(AtomicStructure, Lattice):
 		-------
 		out : tuple
 			Periodicity in x, y and z directions [angstroms]
-        
+		
 		Notes
 		-----
 		Warning: the periodicity of the lattice depends on its orientation in real-space.
@@ -208,7 +206,7 @@ class Crystal(AtomicStructure, Lattice):
 		----------
 		x, y, z : ndarrays
 			Real space coordinates mesh. 
-        
+		
 		Returns
 		-------
 		potential : `~numpy.ndarray`, dtype float
@@ -222,7 +220,7 @@ class Crystal(AtomicStructure, Lattice):
 		potential = np.zeros_like(x, dtype = np.float)
 		r = np.zeros_like(x, dtype = np.float)
 		for atom in self:
-			ax, ay, az = atom.coords
+			ax, ay, az = atom.real_coords
 			r[:] = minimum_image_distance(x - ax, y - ay, z - az, 
 										  lattice = self.lattice_vectors)
 			potential += atom.potential(r)
@@ -236,12 +234,12 @@ class Crystal(AtomicStructure, Lattice):
 	def scattering_vector(self, h, k, l):
 		"""
 		Returns the scattering vector G from Miller indices.
-        
+		
 		Parameters
 		----------
 		h, k, l : int or ndarrays
 			Miller indices.
-        
+		
 		Returns
 		-------
 		G : array-like
@@ -257,12 +255,12 @@ class Crystal(AtomicStructure, Lattice):
 	def miller_indices(self, G):
 		"""
 		Returns the miller indices associated with a scattering vector.
-        
+		
 		Parameters
 		----------
 		G : array-like, shape (3,)
 			Scattering vector.
-        
+		
 		Returns
 		-------
 		hkl : ndarray, shape (3,), dtype int
@@ -282,23 +280,23 @@ class Crystal(AtomicStructure, Lattice):
 	def structure_factor_miller(self, h, k, l):
 		"""
 		Computation of the static structure factor from Miller indices.
-        
+		
 		Parameters
 		----------
 		h, k, l : array_likes or floats
 			Miller indices. Can be given in a few different formats:
-            
+			
 			``3 floats``
 				returns structure factor computed for a single scattering vector
-                
+				
 			``list of 3 coordinate ndarrays, shapes (L,M,N)``
 				returns structure factor computed over all coordinate space
-        
+		
 		Returns
 		-------
 		sf : ndarray, dtype complex
 			Output is the same shape as h, k, or l.
-        
+		
 		See also
 		--------
 		structure_factor
@@ -310,31 +308,31 @@ class Crystal(AtomicStructure, Lattice):
 		"""
 		Computation of the static structure factor. This function is meant for 
 		general scattering vectors, not Miller indices. 
-        
+		
 		Parameters
 		----------
 		G : array-like
 			Scattering vector. Can be given in a few different formats:
-            
+			
 			``array-like of numericals, shape (3,)``
 				returns structure factor computed for a single scattering vector
-                
+				
 			``list of 3 coordinate ndarrays, shapes (L,M,N)``
 				returns structure factor computed over all coordinate space
-            
+			
 			WARNING: Scattering vector is not equivalent to the Miller indices.
-        
+		
 		Returns
 		-------
 		sf : ndarray, dtype complex
 			Output is the same shape as input G[0]. Takes into account
 			the Debye-Waller effect.
-        
+		
 		See also
 		--------
 		structure_factor_miller 
 			For structure factors calculated from Miller indices.
-		        
+				
 		Notes
 		-----
 		By convention, scattering vectors G are defined such that norm(G) = 4 pi s
@@ -357,7 +355,7 @@ class Crystal(AtomicStructure, Lattice):
 				atomff_dict[atom.element] = atom.electron_form_factor(nG)
 
 		for atom in self: #TODO: implement in parallel?
-			x, y, z = atom.coords
+			x, y, z = atom.real_coords
 			arg = x*Gx + y*Gy + z*Gz
 			atom.debye_waller_factor((Gx, Gy, Gz), out = dwf)
 			atomff = atomff_dict[atom.element]
@@ -369,12 +367,12 @@ class Crystal(AtomicStructure, Lattice):
 	def bounded_reflections(self, nG):
 		"""
 		Returns iterable of reflections (hkl) with norm(G) < nG
-        
+		
 		Parameters
 		----------
 		nG : float
 			Maximal scattering vector norm. By our convention, norm(G) = 4 pi s.
-        
+		
 		Returns
 		-------
 		h, k, l : ndarrays, shapes (N,), dtype int
@@ -398,20 +396,3 @@ class Crystal(AtomicStructure, Lattice):
 		norm_G = np.sqrt(Gx**2 + Gy**2 + Gz**2)
 		in_bound = norm_G <= nG
 		return h.compress(in_bound), k.compress(in_bound), l.compress(in_bound)
-	
-	def transform(self, *matrices):
-		"""
-		Transforms the real space coordinates according to a matrix.
-        
-		Parameters
-		----------
-		matrices : ndarrays, shape {(3,3), (4,4)}
-			Transformation matrices.
-		"""
-		# Only rotation matrices should affect the symmetry operations
-		for matrix in map(affine_map, matrices):
-			if is_rotation_matrix(matrix):
-				matrix[:3, 3] = 0  # remove translations
-			self.symmetry_operators = tuple(transform(matrix, sym_op) for sym_op in self.symmetry_operators)
-		
-		super().transform(*matrices)
