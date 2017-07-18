@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 from math import radians
 from copy import deepcopy, copy
+from random import choice, seed
 from itertools import permutations
 import numpy as np
 from .. import Crystal, Atom, Lattice, graphite
 from ... import rotation_matrix, transform
 import unittest
 
-# large test crystal
-#br = Crystal.from_pdb('1fbb')
+seed(23)
 
 class TestBoundedReflections(unittest.TestCase):
 
 	def setUp(self):
-		self.crystal = deepcopy(graphite)
+		self.crystal = Crystal.from_database(next(iter(Crystal.builtins)))
 
 	def test_bounded_reflections_negative(self):
 		""" Test that negative reflection bounds raise an Exception.
@@ -36,72 +36,71 @@ class TestBoundedReflections(unittest.TestCase):
 
 class TestCrystalRotations(unittest.TestCase):
 
-    def setUp(self):
-        # TODO: choose a crystal at random from Crystal.builtins
-        self.crystal = deepcopy(graphite)
-    
-    def test_crystal_equality(self):
-        """ Tests that Crystal.__eq__ is working properly """
-        self.assertEqual(self.crystal, self.crystal)
+	def setUp(self):
+		self.crystal = Crystal.from_database(next(iter(Crystal.builtins)))
+	
+	def test_crystal_equality(self):
+		""" Tests that Crystal.__eq__ is working properly """
+		self.assertEqual(self.crystal, self.crystal)
 
-        cryst2 = deepcopy(self.crystal)
-        cryst2.transform(2*np.eye(3)) # This stretches lattice vectors, symmetry operators
-        self.assertFalse(self.crystal is cryst2)
-        self.assertNotEqual(self.crystal, cryst2)
+		cryst2 = deepcopy(self.crystal)
+		cryst2.transform(2*np.eye(3)) # This stretches lattice vectors, symmetry operators
+		self.assertFalse(self.crystal is cryst2)
+		self.assertNotEqual(self.crystal, cryst2)
 
-        cryst2.transform(0.5*np.eye(3))
-        self.assertEqual(self.crystal, cryst2)
-    
-    def test_trivial_rotation(self):
-        """ Test rotation by 360 deg around all axes. """
-        unrotated = deepcopy(self.crystal)
-        r = rotation_matrix(radians(360), [0,0,1])
-        self.crystal.transform(r)
-        self.assertEqual(self.crystal, unrotated)
-    
-    def test_identity_transform(self):
-        """ Tests the trivial identity transform """
-        transf = deepcopy(self.crystal)
-        transf.transform(np.eye(3))
-        self.assertEqual(self.crystal, transf)
-    
-    def test_one_axis_rotation(self):
-        """ Tests the crystal orientation after rotations. """
-        unrotated = deepcopy(self.crystal)
+		cryst2.transform(0.5*np.eye(3))
+		self.assertEqual(self.crystal, cryst2)
+	
+	def test_trivial_rotation(self):
+		""" Test rotation by 360 deg around all axes. """
+		unrotated = deepcopy(self.crystal)
+		r = rotation_matrix(radians(360), [0,0,1])
+		self.crystal.transform(r)
+		self.assertEqual(self.crystal, unrotated)
+	
+	def test_identity_transform(self):
+		""" Tests the trivial identity transform """
+		transf = deepcopy(self.crystal)
+		transf.transform(np.eye(3))
+		self.assertEqual(self.crystal, transf)
+	
+	def test_one_axis_rotation(self):
+		""" Tests the crystal orientation after rotations. """
+		unrotated = deepcopy(self.crystal)
 
-        self.crystal.transform(rotation_matrix(radians(45), [0,1,0]))
-        self.assertNotEqual(unrotated, self.crystal)
-        self.crystal.transform(rotation_matrix(radians(-45), [0,1,0]))
-        self.assertEqual(unrotated, self.crystal)
+		self.crystal.transform(rotation_matrix(radians(45), [0,1,0]))
+		self.assertNotEqual(unrotated, self.crystal)
+		self.crystal.transform(rotation_matrix(radians(-45), [0,1,0]))
+		self.assertEqual(unrotated, self.crystal)
 
-    def test_wraparound_rotation(self):
-        cryst1 = deepcopy(self.crystal)
-        cryst2 = deepcopy(self.crystal)
+	def test_wraparound_rotation(self):
+		cryst1 = deepcopy(self.crystal)
+		cryst2 = deepcopy(self.crystal)
 
-        cryst1.transform(rotation_matrix(radians(22.3), [0,0,1]))
-        cryst2.transform(rotation_matrix(radians(22.3 - 360), [0,0,1]))
-        self.assertEqual(cryst1, cryst2)
-    
+		cryst1.transform(rotation_matrix(radians(22.3), [0,0,1]))
+		cryst2.transform(rotation_matrix(radians(22.3 - 360), [0,0,1]))
+		self.assertEqual(cryst1, cryst2)
+	
 class TestCrystalConstructors(unittest.TestCase):
 
-    def test_builtins(self):
-        """ Test that all names in Crystal.builtins build without errors """
-        for name in Crystal.builtins:
-            c = Crystal.from_database(name)
-    
-    def test_builtins_wrong_name(self):
-        """ Test that a name not in Crystal.builtins will raise a ValueError """
-        with self.assertRaises(ValueError):
-            c = Crystal.from_database('___')
-    
-    @unittest.skip('too slow')
-    def test_from_cod(self):
-        """ Test building a Crystal object from the COD """
-        # revision = None and latest revision should give the same Crystal
-        c = Crystal.from_cod(1521124)
-        c2 = Crystal.from_cod(1521124, revision = 176429)
+	def test_builtins(self):
+		""" Test that all names in Crystal.builtins build without errors """
+		for name in Crystal.builtins:
+			c = Crystal.from_database(name)
+	
+	def test_builtins_wrong_name(self):
+		""" Test that a name not in Crystal.builtins will raise a ValueError """
+		with self.assertRaises(ValueError):
+			c = Crystal.from_database('___')
+	
+	@unittest.skip('too slow')
+	def test_from_cod(self):
+		""" Test building a Crystal object from the COD """
+		# revision = None and latest revision should give the same Crystal
+		c = Crystal.from_cod(1521124)
+		c2 = Crystal.from_cod(1521124, revision = 176429)
 
-        self.assertSetEqual(set(c), set(c2))
+		self.assertSetEqual(set(c), set(c2))
 
 if __name__ == '__main__':
-    unittest.main()
+	unittest.main()
