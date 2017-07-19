@@ -138,7 +138,7 @@ class Crystal(Lattice):
             return cls.from_cif(filename)
 
     @classmethod
-    def from_pdb(cls, ID):
+    def from_pdb(cls, ID, download_dir = 'pdb_cache'):
         """
         Returns a Crystal object created from a Protein DataBank entry.
 
@@ -148,7 +148,7 @@ class Crystal(Lattice):
             Protein DataBank identification. The correct .pdb file will be downloaded,
             cached and parsed.
         """
-        parser = PDBParser(ID = ID)
+        parser = PDBParser(ID = ID, download_dir = download_dir)
         return Crystal(atoms = list(parser.atoms()), 
                        lattice_vectors = parser.lattice_vectors(),
                        symmetry_operators = parser.symmetry_operators())

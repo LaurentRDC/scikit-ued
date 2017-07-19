@@ -93,6 +93,11 @@ class TestCrystalConstructors(unittest.TestCase):
         with self.assertRaises(ValueError):
             c = Crystal.from_database('___')
     
+    def test_from_pdb(self):
+        """ Test Crystal.from_pdb constructor """
+        # the tests on PDBParser are also using the test_cache folder
+        c = Crystal.from_pdb('1fbb', download_dir = 'test_cache')
+    
     def test_from_cod(self):
         """ Test building a Crystal object from the COD """
         # revision = None and latest revision should give the same Crystal

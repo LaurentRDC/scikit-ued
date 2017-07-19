@@ -26,7 +26,7 @@ def real_coords(frac_coords, lattice_vectors):
 	-------
 	coords : ndarray, shape (3,)
 	"""
-	COB = change_of_basis(lattice_vectors, np.eye(3))
+	COB = change_of_basis(np.array(lattice_vectors), np.eye(3))
 	return transform(COB, frac_coords)
 
 def frac_coords(real_coords, lattice_vectors):
@@ -45,8 +45,8 @@ def frac_coords(real_coords, lattice_vectors):
 	-------
 	coords : ndarray, shape (3,)
 	"""
-	COB = change_of_basis(np.eye(3), lattice_vectors)
-	return transform(COB, real_coords)
+	COB = change_of_basis(np.eye(3), np.array(lattice_vectors))
+	return np.mod(transform(COB, real_coords), 1)
 
 class Atom(object):
 	"""
