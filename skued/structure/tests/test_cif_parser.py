@@ -25,6 +25,15 @@ class TestCIRParser(unittest.TestCase):
         for name in self._cif_files():
             with self.subTest(name.split('\\')[-1]):
                 c = Crystal.from_cif(name)
+
+    def test_fractional_atoms(self):
+        """ Test the CIFParser returns fractional atomic coordinates. """
+        for name in self._cif_files():
+            with self.subTest(name.split('\\')[-1]):
+                with CIFParser(name) as p:
+                    for atm in p.atoms():
+                        self.assertLessEqual(atm.coords.max(), 1)
+                        self.assertGreaterEqual(atm.coords.min(), 0)
     
     def test_symmetry_operators(self):
         """ Test that the non-translation part of the symmetry_operators is an invertible
