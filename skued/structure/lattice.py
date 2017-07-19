@@ -59,6 +59,9 @@ class Lattice(object):
     def __repr__(self):
         return '< Lattice object. a1 : {} \n, a2 : {} \n, a3 : {}>'.format(self.a1, self.a2, self.a3)
 
+    def __eq__(self, other):
+        return np.allclose(self.lattice_vectors, other.lattice_vectors)
+
     @classmethod
     def from_parameters(cls, a, b, c, alpha, beta, gamma):
         """ 
@@ -75,7 +78,7 @@ class Lattice(object):
     
     @property
     def lattice_parameters(self):
-        """ Lattice parameters as three lengths and three angles. """
+        """ Lattice parameters as three lengths [Angstroms] and three angles [degrees]. """
         a, b, c = norm(self.a1), norm(self.a2), norm(self.a3)
         alpha = np.arccos(np.vdot(self.a2, self.a3)/(b*c))
         beta = np.arccos(np.vdot(self.a1, self.a3)/(a*c))
@@ -84,7 +87,7 @@ class Lattice(object):
     
     @property
     def volume(self):
-        """ Lattice cell volume in angstroms cubed """
+        """ Lattice cell volume [Angstroms**3] """
         return np.dot(self.a1, np.cross(self.a2, self.a3))
     
     @property

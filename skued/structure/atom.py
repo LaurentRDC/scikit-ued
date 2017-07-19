@@ -53,10 +53,10 @@ class Atom(object):
 	Container object for atomic data. 
 	"""
 
-	__slots__ = ('element', 'coords', 'displacement', 'lattice', '_a', '_b', '_c', '_d')
+	__slots__ = ('element', 'coords', 'displacement', '_a', '_b', '_c', '_d')
 
 	# TODO: PDB identification?
-	def __init__(self, element, coords, lattice = Lattice(), displacement = None, **kwargs): 
+	def __init__(self, element, coords, displacement = None, **kwargs): 
 		"""
 		Parameters
 		----------
@@ -64,8 +64,6 @@ class Atom(object):
 			Chemical element
 		coords : array-like, shape (3,)
 			Coordinates of the atom in Euclidiant basis. See real_coords.
-		lattice : Lattice instance, optional
-			Lattice in which the atom is located. Default is the trivial lattice (i.e. Euclidian basis)
 		displacement : array-like or None, optional
 			Atomic maximum displacement [Angs]. If None (default), set to (0,0,0).
 		"""
@@ -78,8 +76,6 @@ class Atom(object):
 		self.element = element
 		self.coords = np.array(coords, dtype = np.float)
 		self.displacement = np.array(displacement, dtype = np.float)
-		self.lattice = lattice
-		
 		# Atomic potential parameters loaded on instantiation
 		# These are used to compute atomic potential
 		try:
@@ -93,8 +89,7 @@ class Atom(object):
 		self._d = np.array((d1, d2, d3)).reshape((1,3))
 		
 	def __repr__(self):
-		x, y, z = tuple(self.coords)
-		return "< Atom {} at coordinates ({:.2f}, {:.2f}, {:.2f}) >".format(self.element, x, y, z)
+		return "< Atom {} at coordinates ({:.2f}, {:.2f}, {:.2f}) >".format(self.element, *tuple(self.coords))
 	
 	def __sub__(self, other):
 		""" Returns the distance between the two atoms. """
@@ -104,13 +99,11 @@ class Atom(object):
 		return (isinstance(other, self.__class__)
 				and (self.element == other.element) 
 				and np.allclose(self.coords, other.coords, atol = 1e-3) 
-                and np.allclose(self.real_coords, other.real_coords, atol = 1e-3)
 				and np.allclose(self.displacement, other.displacement, atol = 1e-3))
 	
 	def __hash__(self):
 		return hash( (self.element, 
 					  tuple(np.round(self.coords, 3)), 
-                      tuple(np.round(self.real_coords, 3)),
 					  tuple(np.round(self.displacement, 3))) )
 
 	@property
@@ -121,9 +114,21 @@ class Atom(object):
 	def weight(self):
 		return atomic_weights[self.atomic_number - 1]
 
-	@property
-	def real_coords(self):
-		return real_coords(self.coords, self.lattice.lattice_vectors)
+	def xyz(self, lattice):
+		""" 
+		Real-space position of the atom
+
+		Parameters
+		----------
+		lattice : Lattice
+			Lattice instance in which the atom is located.
+		
+		Returns
+		-------
+		pos : `~numpy.ndarray`, shape (3,)
+			Atomic position
+		"""
+		return real_coords(self.coords, lattice.lattice_vectors)
 	
 	def electron_form_factor(self, nG):
 		"""
