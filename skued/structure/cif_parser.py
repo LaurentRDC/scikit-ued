@@ -86,11 +86,10 @@ class CIFParser(object):
         ----------
         filename : str or path-like
         """
+        # ReadCIF would get confused between local files and URLs
+        # Therefore, more clear to pass an open file
         self._handle = open(filename, mode = 'r')
         self.file = ReadCif(self._handle, **kwargs)
-    
-    def __del__(self):
-        self._handle.close()
 
     def __enter__(self):
         return self
