@@ -17,14 +17,9 @@ import numpy as np
 from CifFile import ReadCif, get_number_with_esd
 from numpy.linalg import inv, norm
 
-from . import (Atom, Lattice, frac_coords, lattice_vectors_from_parameters,
-               real_coords)
+from . import Atom, Lattice, frac_coords, lattice_vectors_from_parameters, ParseError
 from .. import affine_map, transform
 from .spg_data import HM2Hall, Number2Hall, SymOpsHall
-
-
-class ParseError(IOError):
-    pass
 
 def sym_ops(equiv_site):
     """ Parse a symmetry operator from an equivalent-site representation 
@@ -82,9 +77,11 @@ class CIFParser(object):
     def __init__(self, filename, **kwargs):
         """ 
         Keyword arguments are passed to PyCIFRW's ReadCif function.
+
         Parameters
         ----------
         filename : str or path-like
+            Location of the CIF file.
         """
         # ReadCIF would get confused between local files and URLs
         # Therefore, more clear to pass an open file

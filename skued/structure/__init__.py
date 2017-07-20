@@ -5,6 +5,9 @@ Structure package
 This package allows for manipulation and modelling of atomic structures, especially
 in crystalline form.
 """
+class ParseError(IOError):
+    pass
+    
 from .atom import Atom, real_coords, frac_coords, atomic_number
 from .lattice import Lattice, lattice_vectors_from_parameters
 from .pdb_parser import PDBParser

@@ -6,7 +6,7 @@ from urllib.request import urlretrieve
 
 import numpy as np
 
-from . import Atom, frac_coords, lattice_vectors_from_parameters
+from . import Atom, frac_coords, lattice_vectors_from_parameters, ParseError
 
 def retrieve_pdb_file(pdb_code, download_dir = None, server = 'ftp://ftp.wwpdb.org', overwrite = False):
     """ 
@@ -47,12 +47,9 @@ def retrieve_pdb_file(pdb_code, download_dir = None, server = 'ftp://ftp.wwpdb.o
     final_file = os.path.join(path, "pdb{}.ent".format(code))  # (decompressed)
 
     # Skip download if the file already exists
-    if not overwrite:
-        if os.path.exists(final_file):
+    if (not overwrite) and (os.path.exists(final_file)):
             return final_file
 
-    # Retrieve the file
-    print("Downloading PDB structure '{}'...".format(pdb_code))
     urlretrieve(url, filename)
 
     # Uncompress the archive, delete when done
@@ -102,7 +99,7 @@ class PDBParser(object):
         
         Raises
         ------
-        IOError
+        ParseError
             If the file does not contain a CRYST1 tag.
         """
         with open(self.file) as pdb_file:
@@ -113,7 +110,7 @@ class PDBParser(object):
                     alpha, beta, gamma = float(line[33:40]), float(line[40:47]), float(line[47:54])
                     break
             else:
-                raise IOError('No CRYST1 line found')
+                raise ParseError('No CRYST1 line found')
 
         return lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma)
     
@@ -157,9 +154,8 @@ class PDBParser(object):
                 sym_ops[op_num]['translation'].append(t)
 
         if not sym_ops:
-            raise IOError('No symmetry could be parsed from file {}'.format(self.file))
+            raise ParseError('No symmetry could be parsed from file {}'.format(self.file))
         
-        matrices = list()
         for op in sym_ops.values():
             mat = np.eye(4, dtype = np.float)
             mat[:3,:3] = np.array(op['rotation'])
