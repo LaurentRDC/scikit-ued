@@ -30,7 +30,7 @@ To create an atom, simply provide its element and coordinates::
 
 Since we are most concerned with atoms in crystals, the coordinates here are assumed to be fractional.
 The real-space position with respect to a :class:`Crystal` or :class:`Lattice` can be accessed using the 
-:met:`xyz` method::
+:meth:`xyz` method::
 
     from skued.structure import graphite
     
