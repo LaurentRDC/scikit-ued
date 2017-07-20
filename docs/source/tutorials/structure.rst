@@ -28,8 +28,15 @@ To create an atom, simply provide its element and coordinates::
 
 	copper = Atom(element = 'Cu', coords = [0,0,0])
 
-:class:`Atom` objects are hashable; this means that they can be stored in a :func:`set`. Therefore,
-a list of atoms can be reduced into unique atoms using a :func:`set`.
+Since we are most concerned with atoms in crystals, the coordinates here are assumed to be fractional.
+The real-space position with respect to a :class:`Crystal` or :class:`Lattice` can be accessed using the 
+:meth:`xyz` method::
+
+    from skued.structure import graphite
+    
+    carbon = list(graphite)[-1]
+    fractional = carbon.coords
+    real = carbon.xyz(lattice = graphite)
 
 One important feature of the :class:`Atom` class is the possibility to compute the electrostatic
 potential across meshes::
@@ -66,11 +73,11 @@ After plot formatting:
 
 The :class:`Crystal` Class
 ==========================
-Diffraction experiments relying on the redundancy of crystals to get good experimental signals;
+Diffraction experiments rely on the redundancy of crystals to get good experimental signals;
 hence, handling crystal models is the main feature of the :mod:`skued.structure` subpackage.
 
-Constructing a :class:`Crystal` object from a file or database
---------------------------------------------------------------
+Constructing a :class:`Crystal` object
+--------------------------------------
 Creating a :class:`Crystal` object can be done most easily from a Crystal Information File (CIF, .cif)::
 	
 	from skued.structure import Crystal
@@ -132,7 +139,7 @@ The :class:`Crystal` object provides some interfaces for easy structure manipula
 	    print(atm.element, atm.coords)
 
 Note that iterating over the :attr:`crystal.atoms` attribute may or may not be equivalent to 
-:data:`iter(crystal)`, due to the way crystals are defined.
+:data:`iter(crystal)`, due to the way symmetry operators are defined.
 
 :class:`Crystal` objects also provide interoperability with :mod:`spglib`::
 

@@ -9,7 +9,8 @@ __pycache__/
 # Visual studio cache
 *.vs/
 
-# Protein DataBank cache folder
+# Protein DataBank files and cache folder
+*.ent
 pdb_cache/
 
 # Jupyter notebooks

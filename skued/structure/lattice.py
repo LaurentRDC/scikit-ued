@@ -2,7 +2,6 @@
 from math import sin, cos, tan, sqrt, radians
 import numpy as np
 from numpy.linalg import norm
-from . import Transformable
 from .. import transform
 
 e1, e2, e3 = np.eye(3) # Euclidian basis
@@ -40,7 +39,7 @@ def lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma):
 
     return a1, a2, c*(c1*e1 + c2*e2 + c3*e3)
 
-class Lattice(Transformable):
+class Lattice(object):
     """
     Abstract class handling Lattice information and manipulations.
     """
@@ -52,7 +51,6 @@ class Lattice(Transformable):
         lattice_vectors: iterable of `~numpy.ndarray`, shape (3,), optional
             Lattice vectors. Default is a cartesian lattice.
         """
-        super().__init__(**kwargs)
         a1, a2, a3 = lattice_vectors
         self.a1 = np.asarray(a1, dtype = np.float) 
         self.a2 = np.asarray(a2, dtype = np.float) 
@@ -60,7 +58,10 @@ class Lattice(Transformable):
     
     def __repr__(self):
         return '< Lattice object. a1 : {} \n, a2 : {} \n, a3 : {}>'.format(self.a1, self.a2, self.a3)
-    
+
+    def __eq__(self, other):
+        return np.allclose(self.lattice_vectors, other.lattice_vectors)
+
     @classmethod
     def from_parameters(cls, a, b, c, alpha, beta, gamma):
         """ 
@@ -77,7 +78,7 @@ class Lattice(Transformable):
     
     @property
     def lattice_parameters(self):
-        """ Lattice parameters as three lengths and three angles. """
+        """ Lattice parameters as three lengths [Angstroms] and three angles [degrees]. """
         a, b, c = norm(self.a1), norm(self.a2), norm(self.a3)
         alpha = np.arccos(np.vdot(self.a2, self.a3)/(b*c))
         beta = np.arccos(np.vdot(self.a1, self.a3)/(a*c))
@@ -86,7 +87,7 @@ class Lattice(Transformable):
     
     @property
     def volume(self):
-        """ Lattice cell volume in angstroms cubed """
+        """ Lattice cell volume [Angstroms**3] """
         return np.dot(self.a1, np.cross(self.a2, self.a3))
     
     @property
@@ -125,6 +126,3 @@ class Lattice(Transformable):
             self.a1 = transform(matrix, self.a1)
             self.a2 = transform(matrix, self.a2)
             self.a3 = transform(matrix, self.a3)
-        
-        # Transform items
-        super().transform(*matrices)

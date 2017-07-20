@@ -8,10 +8,29 @@ import numpy as np
 from .. import Crystal, graphite
 from ... import transform
 from ..cif_parser import CIFParser
+from ..pdb_parser import PDBParser
 
 filterwarnings('ignore', category = UserWarning)
 
-class TestCIRParser(unittest.TestCase):
+class TestPDBParser(unittest.TestCase):
+
+    def setUp(self):
+        self.parser = PDBParser('1fbb', download_dir = 'test_cache')
+    
+    def test_fractional_atoms(self):
+        """ Test the CIFParser returns fractional atomic coordinates. """
+        for atm in self.parser.atoms():
+            self.assertLessEqual(atm.coords.max(), 1)
+            self.assertGreaterEqual(atm.coords.min(), 0)
+        
+    def test_symmetry_operators(self):
+        """ Test that the non-translation part of the symmetry_operators is an invertible
+        matrix of determinant 1 | -1 """
+        for sym_op in self.parser.symmetry_operators():
+            t = sym_op[:3,:3]
+            self.assertAlmostEqual(abs(np.linalg.det(t)), 1, places = 5)
+
+class TestCIFParser(unittest.TestCase):
     """ Test the CIFParser on all CIF files stored herein """
 
     def _cif_files(self):
@@ -25,6 +44,15 @@ class TestCIRParser(unittest.TestCase):
         for name in self._cif_files():
             with self.subTest(name.split('\\')[-1]):
                 c = Crystal.from_cif(name)
+
+    def test_fractional_atoms(self):
+        """ Test the CIFParser returns fractional atomic coordinates. """
+        for name in self._cif_files():
+            with self.subTest(name.split('\\')[-1]):
+                with CIFParser(name) as p:
+                    for atm in p.atoms():
+                        self.assertLessEqual(atm.coords.max(), 1)
+                        self.assertGreaterEqual(atm.coords.min(), 0)
     
     def test_symmetry_operators(self):
         """ Test that the non-translation part of the symmetry_operators is an invertible
