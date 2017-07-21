@@ -14,6 +14,7 @@ Contents
 
 * :ref:`streaming`
 * :ref:`alignment`
+* :ref:`symmetry`
 * :ref:`powder`
 
 .. _streaming:
@@ -211,6 +212,58 @@ Let's look at the difference:
 	plt.tight_layout()
 	plt.show()
 
+.. _symmetry:
+
+Image processing involving symmetry
+===================================
+
+Rotational symmetry
+-------------------
+Diffraction patterns exhibit rotational symmetry based on the crystal structure. We can
+take advantage of such symmetry to correct images in case of artifacts or defects. A useful
+routine is :func:`nfold`, which averages portions of a diffraction pattern with itself based on
+rotational symmetry.
+
+.. plot::
+
+    import matplotlib.pyplot as plt
+    from skimage.io import imread
+    from skued.image import nfold
+    import numpy as np
+
+    center = (1010, 1111)
+
+    mask = np.zeros((2048, 2048), dtype = np.bool)
+    mask[1100::, 442:480] = True # Artifact line
+    mask[0:1260, 900:1140] = True # beamblock
+
+    image = imread('graphite.tif')
+    av = nfold(image, mod = 6, center = center, mask = mask)
+
+    fig , (ax1, ax2, ax3) = plt.subplots(1,3, figsize = (9,3))
+    ax1.imshow(image, vmin = 0, vmax = 150)
+    ax2.imshow(mask, vmin = 0, vmax = 1)
+    ax3.imshow(av, vmin = 0, vmax = 150)
+
+    for ax in (ax1, ax2, ax3):
+        ax.xaxis.set_visible(False)
+        ax.yaxis.set_visible(False)
+
+    ax1.set_title('Graphite')
+    ax2.set_title('Mask')
+    ax3.set_title('Averaged')
+
+    plt.tight_layout()
+    plt.show()
+
+To use :func:`nfold`, all you need to know is the center of the diffraction pattern::
+
+    from skued.image import nfold
+    from skimage.io import imread
+
+    im = imread('graphite.tif')
+    av = nfold(im, mod = 6, center = center)    # mask is optional
+
 .. _powder:
 
 Image analysis on polycrystalline diffraction patterns
@@ -223,17 +276,22 @@ the center of those concentric rings is important. Let's load a test image:
 
 .. plot::
 
-	from skimage.io import imread
-	import matplotlib.pyplot as plt
-	path = 'Cr_1.tif'
+    from skimage.io import imread
+    import matplotlib.pyplot as plt
+    path = 'Cr_1.tif'
 
-	im = imread(path, plugin = 'tifffile')
-	mask = np.zeros_like(im, dtype = np.bool)
-	mask[0:1250, 950:1250] = True
+    im = imread(path, plugin = 'tifffile')
+    mask = np.zeros_like(im, dtype = np.bool)
+    mask[0:1250, 950:1250] = True
 
-	im[mask] = 0
-	plt.imshow(im, vmin = 0, vmax = 200)
-	plt.show()
+    im[mask] = 0
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.imshow(im, vmin = 0, vmax = 200)
+
+    ax.xaxis.set_visible(False)
+    ax.yaxis.set_visible(False)
+    plt.show()
 
 This is a noisy diffraction pattern of polycrystalline vanadium dioxide. 
 Finding the center of such a symmetry pattern can be done with the 
@@ -249,25 +307,32 @@ Finding the center of such a symmetry pattern can be done with the
 	rr = np.sqrt((ii - ic)**2 + (jj - jc)**2)
 	im[rr < 100] = 0
 
-	plt.imshow(im, vmax = 1200)
+	plt.imshow(im, vmax = 200)
 	plt.show()
 
 .. plot::
 
-	from skimage.io import imread
-	import numpy as np
-	import matplotlib.pyplot as plt
-	path = 'Cr_1.tif'
-	im = imread(path, plugin = 'tifffile')
-	from skued.image import powder_center
-	mask = np.zeros_like(im, dtype = np.bool)
-	mask[0:1250, 950:1250] = True
-	ic, jc = powder_center(im, mask = mask)
-	ii, jj = np.meshgrid(np.arange(im.shape[0]), np.arange(im.shape[1]),indexing = 'ij')
-	rr = np.sqrt((ii - ic)**2 + (jj - jc)**2)
-	im[rr < 100] = 1e6
-	plt.imshow(im, vmin = 0, vmax = 200)
-	plt.show()
+    from skimage.io import imread
+    import numpy as np
+    import matplotlib.pyplot as plt
+    path = 'Cr_1.tif'
+    im = imread(path, plugin = 'tifffile')
+    from skued.image import powder_center
+    mask = np.zeros_like(im, dtype = np.bool)
+    mask[0:1250, 950:1250] = True
+    ic, jc = powder_center(im, mask = mask)
+    ii, jj = np.meshgrid(np.arange(im.shape[0]), np.arange(im.shape[1]),indexing = 'ij')
+    rr = np.sqrt((ii - ic)**2 + (jj - jc)**2)
+    im[rr < 100] = 1e6
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.imshow(im, vmin = 0, vmax = 200)
+
+    ax.xaxis.set_visible(False)
+    ax.yaxis.set_visible(False)
+
+    plt.show()
 
 Angular average
 ---------------
@@ -295,21 +360,27 @@ First, we create a test image::
 
 .. plot::
 
-	import numpy as np
-	import matplotlib.pyplot as plt
-	from skued import gaussian
-	image = np.zeros( (256, 256) )
-	xc, yc = image.shape[0]/2, image.shape[1]/2	# center
-	extent = np.arange(0, image.shape[0])
-	xx, yy = np.meshgrid(extent, extent)
-	rr = np.sqrt((xx - xc)**2 + (yy-yc)**2)
-	image += gaussian([xx, yy], center = [xc, yc], fwhm = 200)
-	image[np.logical_and(rr < 40, rr > 38)] = 1
-	image[np.logical_and(rr < 100, rr > 98)] = 0.5
-	image /= image.max()	# Normalize max to 1
-	image += np.random.random(size = image.shape)
-	plt.imshow(image)
-	plt.show()
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from skued import gaussian
+    image = np.zeros( (256, 256) )
+    xc, yc = image.shape[0]/2, image.shape[1]/2	# center
+    extent = np.arange(0, image.shape[0])
+    xx, yy = np.meshgrid(extent, extent)
+    rr = np.sqrt((xx - xc)**2 + (yy-yc)**2)
+    image += gaussian([xx, yy], center = [xc, yc], fwhm = 200)
+    image[np.logical_and(rr < 40, rr > 38)] = 1
+    image[np.logical_and(rr < 100, rr > 98)] = 0.5
+    image /= image.max()	# Normalize max to 1
+    image += np.random.random(size = image.shape)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.imshow(image)
+
+    ax.xaxis.set_visible(False)
+    ax.yaxis.set_visible(False)
+    plt.show()
 
 
 ... and we can easily compute an angular average::
