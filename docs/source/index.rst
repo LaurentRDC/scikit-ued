@@ -12,7 +12,7 @@ tested, efficients algorithms and routines to students and researchers
 in electron diffraction and related fields.
 
 The code presented herein has been in use at some point by the 
-`Siwick research group <http://www.mcgill.physics.ca/siwicklab>`_.
+`Siwick research group <http://www.physics.mcgill.ca/siwicklab>`_.
 
 .. warning::
         This code is in development and may break without warning.
