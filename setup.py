@@ -29,7 +29,7 @@ with open('README.rst') as f:
 with open('requirements.txt') as f:
     requirements = [line for line in f.read().split('\n') if len(line.strip())]
 
-exclude = {'exclude': ['external*', 'pdb_cache', 'docs']}
+exclude = {'exclude': ['external*', 'docs', '*cache']}
 packages = [BASE_PACKAGE + '.' + x for x in find_packages(os.path.join(base_path, BASE_PACKAGE), **exclude)]
 if BASE_PACKAGE not in packages:
     packages.append(BASE_PACKAGE)
