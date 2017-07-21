@@ -45,6 +45,7 @@ def ialign(images, reference = None, mask = None, fill_value = 0.0):
 
 	yield from map(partial(align, reference = reference, mask = mask, fill_value =  fill_value), images)
 
+# TODO: handle NaNs by having array sum_of_weights and not counting NaNs
 def iaverage(images, weights = None):
     """ 
     Streaming average of diffraction images. This is equivalent

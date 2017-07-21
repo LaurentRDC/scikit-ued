@@ -9,10 +9,9 @@ import numpy as np
 from warnings import warn
 
 # TODO: out parameter?
-def nfold(im, mod, center = None, mask = None, **kwargs):
+def nfold(im, mod, center = None, mask = None, fill_value = 0.0, **kwargs):
     """ 
     Returns an images averaged according to n-fold rotational symmetry.
-    Keyword arguments are passed to skimage.transform.rotate()
 
     Parameters
     ----------
@@ -27,7 +26,11 @@ def nfold(im, mod, center = None, mask = None, **kwargs):
         Mask of `image`. The mask should evaluate to `True`
         (or 1) on invalid pixels. If None (default), no mask
         is used.
-    
+    fill_value : float, optional
+        In the case of a mask that overlaps with itself when rotationally averaged,
+        the overlapping regions will be filled with this value.
+    kwargs
+        Keyword arguments are passed to skimage.transform.rotate().
 
     Returns
     -------
@@ -57,7 +60,9 @@ def nfold(im, mod, center = None, mask = None, **kwargs):
 
     stack = np.dstack([rotate(im, angle, center = center, **rotate_kwargs) for angle in angles])
     avg = np.nanmean(stack, axis = 2)
-    return np.nan_to_num(avg)
+    
+    avg[np.isnan(avg)] = fill_value
+    return avg
 
 def nfold_symmetry(*args, **kwargs):
     warn('nfold_symmetry() is deprecated. Please use nfold in \

@@ -41,6 +41,25 @@ class TestNFoldSymmetry(unittest.TestCase):
 
         rot = nfold(im, center = (67, 93),mod = 3, mask = mask)
     
+    def test_fill_value(self):
+        """ Test that the fill_value parameter of nfold() is working correctly """
+        im = 1000*np.random.random(size = (256, 256))
+        mask = np.random.choice([True, False], size = im.shape)
+
+        with self.subTest('fill_value = np.nan'):
+            with catch_warnings():
+                simplefilter('ignore')
+                rot = nfold(im, center = (100, 150), mod = 5, mask = mask, fill_value = np.nan)
+
+            self.assertTrue(np.any(np.isnan(rot)))
+
+        with self.subTest('fill_value = 0.0'):
+            with catch_warnings():
+                simplefilter('ignore')
+                rot = nfold(im, center = (100, 150), mod = 5, mask = mask, fill_value = 0.0)
+
+            self.assertFalse(np.any(np.isnan(rot)))
+    
     def test_output_range(self):
         """ Test that nfold() does not modify the value range """
         im = 1000*np.random.random(size = (256, 256))
