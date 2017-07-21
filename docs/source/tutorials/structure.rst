@@ -16,9 +16,9 @@ Contents
 
 .. _atom:
 
-The :code:`Atom` Class
-======================
-The basis of structure manipulations is to manipulate atoms. :code:`Atom` objects are in the
+The :class:`Atom` Class
+=======================
+The basis of structure manipulations is to manipulate atoms. :class:`Atom` objects are in the
 category of `Transformable` objects, meaning that their coordinates can be transformed
 according to any affine transform.
 
@@ -28,10 +28,17 @@ To create an atom, simply provide its element and coordinates::
 
 	copper = Atom(element = 'Cu', coords = [0,0,0])
 
-:code:`Atom` objects are hashable; this means that they can be stored in a :code:`set`. Therefore,
-a list of atoms can be reduced into unique atoms using a :code:`set`.
+Since we are most concerned with atoms in crystals, the coordinates here are assumed to be fractional.
+The real-space position with respect to a :class:`Crystal` or :class:`Lattice` can be accessed using the 
+:meth:`xyz` method::
 
-One important feature of the :code:`Atom` class is the possibility to compute the electrostatic
+    from skued.structure import graphite
+    
+    carbon = list(graphite)[-1]
+    fractional = carbon.coords
+    real = carbon.xyz(lattice = graphite)
+
+One important feature of the :class:`Atom` class is the possibility to compute the electrostatic
 potential across meshes::
 
 	import numpy as np
@@ -64,20 +71,20 @@ After plot formatting:
 
 .. _crystal:
 
-The :code:`Crystal` Class
-=========================
-Diffraction experiments relying on the redundancy of crystals to get good experimental signals;
-hence, handling crystal models is the main feature of the :code:`skued.structure` subpackage.
+The :class:`Crystal` Class
+==========================
+Diffraction experiments rely on the redundancy of crystals to get good experimental signals;
+hence, handling crystal models is the main feature of the :mod:`skued.structure` subpackage.
 
-Constructing a :code:`Crystal` object from a file or database
--------------------------------------------------------------
-Creating a :code:`Crystal` object can be done most easily from a Crystal Information File (CIF, .cif)::
+Constructing a :class:`Crystal` object
+--------------------------------------
+Creating a :class:`Crystal` object can be done most easily from a Crystal Information File (CIF, .cif)::
 	
 	from skued.structure import Crystal
 
 	TiSe2 = Crystal.from_cif('tise2.cif')
 
-Scikit-ued also has an internal database of CIF files. Valid names are stored in :code:`Crystal.builtins` and can be
+Scikit-ued also has an internal database of CIF files. Valid names are stored in :attr:`Crystal.builtins` and can be
 constructed like so::
 
 	assert 'Au' in Crystal.builtins
@@ -88,7 +95,7 @@ and the structure file will be taken care of by scikit-ued::
 	
 	bacteriorhodopsin = Crystal.from_pdb('1fbb')
 
-Another convenient way to construct a :code:`Crystal` is through the `Crystallography Open Database <http://www.crystallography.net/cod/>`_::
+Another convenient way to construct a :class:`Crystal` is through the `Crystallography Open Database <http://www.crystallography.net/cod/>`_::
 
 	# Default is the latest revision
 	vo2 = Crystal.from_cod(1521124)
@@ -96,13 +103,13 @@ Another convenient way to construct a :code:`Crystal` is through the `Crystallog
 	# Revisions are accessible as well
 	old_vo2 = Crystal.from_cod(1521124, revision = 140771)
 
-Constructing a :code:`Crystal` object by hand
----------------------------------------------
-If you don't have a file on hand, or want to create an idealized crystal, consider building a :code:`Crystal`
+Constructing a :class:`Crystal` object by hand
+----------------------------------------------
+If you don't have a file on hand, or want to create an idealized crystal, consider building a :class:`Crystal`
 object by hand.
 
 To do this, you need:
-1. iterable of :code:`Atom` objects, with coordinates. These atoms can either be the full unit cell
+1. iterable of :class:`Atom` objects, with coordinates. These atoms can either be the full unit cell
 or the asymmetric unit cell;
 2. three lattice vectors;
 3. Symmetry operators (optional). These symmetry operators will be applied to the atoms to generate
@@ -124,17 +131,17 @@ That's it!
 
 Crystal attributes
 ------------------
-The :code:`Crystal` object provides some interfaces for easy structure manipulation. First, a :code:`Crystal` is an iterable::
+The :class:`Crystal` object provides some interfaces for easy structure manipulation. First, a :class:`Crystal` is an iterable::
 
 	from skued.structure import graphite
 
 	for atm in graphite:	#Loops over atoms in the unit cell
 	    print(atm.element, atm.coords)
 
-Note that iterating over the :code:`crystal.atoms` attribute may or may not be equivalent to 
-:code:`iter(crystal)`, due to the way crystals are defined.
+Note that iterating over the :attr:`crystal.atoms` attribute may or may not be equivalent to 
+:data:`iter(crystal)`, due to the way symmetry operators are defined.
 
-:code:`Crystal` objects also provide interoperability with :code:`spglib`::
+:class:`Crystal` objects also provide interoperability with :mod:`spglib`::
 
 	import spglib
 
@@ -142,7 +149,7 @@ Note that iterating over the :code:`crystal.atoms` attribute may or may not be e
 
 Lattice vectors and reciprocal space
 -------------------------------------
-Once a :code:`Crystal` object is ready, you can manipulate the lattice parameters via the underlying :code:`Lattice`
+Once a :class:`Crystal` object is ready, you can manipulate the lattice parameters via the underlying :class:`Lattice`
 super-class. Let's use the built-in example of graphite::
 
 	from skued.structure import graphite
@@ -161,7 +168,7 @@ The unit cell volume (and by extensions, density) is also accessible:
 
 Scattering utilities
 --------------------
-:code:`Crystal` objects have a few methods that make life easier when dealing with scattering data and modeling.
+:class:`Crystal` objects have a few methods that make life easier when dealing with scattering data and modeling.
 
 The conversion between Miller indices and scattering vectors is available:: 
 
@@ -174,7 +181,7 @@ Arrays of Miller indices can be generated for all Miller indices that fall below
 
 	h, k, l = graphite.bounded_reflections(12) 	# All reflections below 12 Angs^-1
 
-In this example, :code:`h`, :code:`k`, and :code:`l` are arrays of integers; each combined row is a reflection.
+In this example, :data:`h`, :data:`k`, and :data:`l` are arrays of integers; each combined row is a reflection.
 
 Static structure factor calculation is also possible, both for a single reflection and arrays of reflections::
 
@@ -191,7 +198,7 @@ Static structure factor calculation is also possible, both for a single reflecti
 Atomic potential
 ----------------
 The crystal electrostatic potential (the scattering potential leading to electron diffraction) can be
-computed from a :code:`Crystal`::
+computed from a :class:`Crystal`::
 
 	import numpy as np
 	import matplotlib.pyplot as plt
@@ -221,8 +228,8 @@ After plot formatting:
 	plt.xlabel('y-direction ($\AA$)')
 	plt.show()
 
-Note that while the :code:`graphite` crystal only has four atoms in its unitcell, the :code:`graphite.potential` method
-will process the meshes :code:`xx`, :code:`yy`, and :code:`zz` through the :code:`skued.minimum_image_distance` function
+Note that while the :data:`graphite` crystal only has four atoms in its unitcell, the :meth:`graphite.potential` method
+will process the meshes :data:`xx`, :data:`yy`, and :data:`zz` through the :func:`skued.minimum_image_distance` function
 to implement the **minimum-image distance convention** for periodic boundary conditions All this to say that the potential 
 is computed for a seemingly-infinite crystal.
 

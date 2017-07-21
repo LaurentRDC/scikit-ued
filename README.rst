@@ -4,7 +4,7 @@ scikit-ued
 .. image:: https://img.shields.io/appveyor/ci/LaurentRDC/scikit-ued/master.svg
     :target: https://ci.appveyor.com/project/LaurentRDC/scikit-ued
     :alt: Windows Build Status
-.. image:: https://readthedocs.org/projects/scikit-ued/badge/?version=latest
+.. image:: https://readthedocs.org/projects/scikit-ued/badge/?version=master
     :target: http://scikit-ued.readthedocs.io
     :alt: Documentation Build Status
 .. image:: https://img.shields.io/pypi/v/scikit-ued.svg

@@ -6,17 +6,23 @@ Reference/API
 
 Parallel Utilities
 ==================
-.. automodule:: skued.parallel
+.. autofunction:: skued.pmap
+
+.. autofunction:: skued.preduce
 
 Plot Utilities
 ==============
-.. autofunction:: skued.plot_utils.spectrum_colors
+.. autofunction:: skued.spectrum_colors
 
-.. autofunction:: skued.plot_utils.rgb_sweep
+.. autofunction:: skued.rgb_sweep
 
 Array Utilities
 ===============
 .. automodule:: skued.array_utils
+
+Iteration/Generator Utilities
+=============================
+.. automodule:: skued.iter_utils
 
 Quantities
 ==========
@@ -32,17 +38,14 @@ Affine Transforms
 
 Structure
 =========
-.. autoclass:: skued.structure.atom.Atom
+.. autoclass:: skued.structure.Atom
    :members:
-   :undoc-members:
 
-.. autoclass:: skued.structure.lattice.Lattice
+.. autoclass:: skued.structure.Lattice
    :members:
-   :undoc-members:
 
-.. autoclass:: skued.structure.crystal.Crystal
+.. autoclass:: skued.structure.Crystal
    :members:
-   :undoc-members:
 
 Simulation
 ==========

@@ -4,6 +4,7 @@ from itertools import chain
 import os
 import re
 from setuptools import setup, find_packages
+from unittest import TestLoader
 #from Cython.Build import cythonize
 
 # To upload to pypi.org:
@@ -28,10 +29,13 @@ with open('README.rst') as f:
 with open('requirements.txt') as f:
     requirements = [line for line in f.read().split('\n') if len(line.strip())]
 
-exclude = {'exclude': ['cif2cell*', 'pdb_cache', 'docs']}
+exclude = {'exclude': ['external*', 'pdb_cache', 'docs']}
 packages = [BASE_PACKAGE + '.' + x for x in find_packages(os.path.join(base_path, BASE_PACKAGE), **exclude)]
 if BASE_PACKAGE not in packages:
     packages.append(BASE_PACKAGE)
+
+def skued_test_suite():
+    return TestLoader().discover('.')
 
 if __name__ == '__main__':
     setup(
@@ -52,6 +56,7 @@ if __name__ == '__main__':
         data_files = [('skued\\baseline\\data', wavelets)],
         include_package_data = True,
         zip_safe = False,
+        test_suite = 'setup.skued_test_suite', 
         classifiers = ['Environment :: Console',
                        'Intended Audience :: Science/Research',
                        'Topic :: Scientific/Engineering',

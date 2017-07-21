@@ -6,14 +6,15 @@
 Image Analysis Tutorial
 ***********************
 
-Due to the high electron cross-section, background signals (or baseline) are
-much more of a problem for electron diffraction than equivalent X-ray experiments.
+Diffraction patterns analysis is essentially specialized image processing. This tutorial
+will show some of the image processing and analysis techniques that are part of the :mod:`skued.image` module.
 
 Contents
 ========
 
 * :ref:`streaming`
 * :ref:`alignment`
+* :ref:`symmetry`
 * :ref:`powder`
 
 .. _streaming:
@@ -26,7 +27,7 @@ in-memory. In this case, it makes sense to assemble processing pipelines instead
 of working on the data all at once.
 
 Consider the following snippet to combine 50 images 
-from an iterable :code:`source`::
+from an iterable :data:`source`::
 
 	import numpy as np
 
@@ -36,13 +37,13 @@ from an iterable :code:`source`::
 	
 	avg = np.average(images, axis = 2)
 
-If the :code:`source` iterable provided 1000 images, the above routine would
+If the :data:`source` iterable provided 1000 images, the above routine would
 not work on most machines. Moreover, what if we want to transform the images 
 one by one before averaging them? What about looking at the average while it 
 is being computed?
 
 Scikit-ued provides some functions that can make streaming processing possible. These
-function will have an 'i' prefix (for :code:`iterator`). Let's look at an example::
+function will have an 'i' prefix (for :func:`iter`). Let's look at an example::
 
 	import numpy as np
 	from skued.image import ialign, iaverage
@@ -52,10 +53,12 @@ function will have an 'i' prefix (for :code:`iterator`). Let's look at an exampl
 	aligned = ialign(stream)
 	averaged = iaverage(aligned)
 
-At this point, the generators :code:`map`, :code:`ialign`, and :code:`iaverage` are 'wired'
+At this point, the generators :func:`map`, :func:`ialign`, and :func:`iaverage` are 'wired'
 but will not compute anything until it is requested. We can use the function
-:code:`last` to get at the final average, but we could also look at the average
-step-by-step by calling :code:`next`::
+:func:`last` to get at the final average, but we could also look at the average
+step-by-step by calling :func:`next`::
+
+	from skued import last
 
 	avg = next(averaged) # only one images is loaded, aligned and added to the average
 	total = last(averaged) # average of the entire stream
@@ -76,10 +79,14 @@ memory usage; this allows the use of multiple processes in parallel::
 	    # write to disk of display
 	    pass
 
+Scikit-ued provides a few streaming statistical functions (:func:`ivar`, :func:`istd`, 
+:func:`isem`, :func:`iaverage`) which are tested to have exact same results are the familiar
+:mod:`numpy` and :mod:`scipy` equivalents. You can also find more specialized streaming functions (e.g. :func:`ialign`).
+
 Example: averaging with error
 ------------------------------
 
-It is possible to combine :code:`iaverage` and :code:`isem` into a single stream using :code:`itertools.tee`. 
+It is possible to combine :func:`iaverage` and :func:`isem` into a single stream using :func:`itertools.tee`. 
 Here is a recipe for it::
 
 	def iaverage_with_error(images, weights):    
@@ -116,15 +123,15 @@ it is important to align patterns to a reference.
 
 The procedure of detecting, or registering, the translation between two similar images is usually
 done by measuring the cross-correlation between images. When images are very similar, this procedure
-is fine; take a look at scikit-image's :code:`skimage.feature.register_translation` for example. 
+is fine; take a look at scikit-image's :func:`skimage.feature.register_translation` for example. 
 
 However, diffraction patterns all have a fixed feature: the position of the beam-block. Therefore, some pixels 
 in each diffraction pattern must be ignored in the computation of the cross-correlation. 
 
 Setting the 'invalid pixels' to 0 will not work, at those will correlate with the invalid pixels from the reference. One must use
-the **masked normalized cross-correlation** through scikit-ued's :code:`mnxc2`.
+the **masked normalized cross-correlation** through scikit-ued's :func:`mnxc2`.
 
-All of this is taken care of in scikit-ued's :code:`diff_register` function. Let's look at some polycrystalline Chromium:
+All of this is taken care of in scikit-ued's :func:`diff_register` function. Let's look at some polycrystalline Chromium:
 
 .. plot::
 
@@ -205,6 +212,58 @@ Let's look at the difference:
 	plt.tight_layout()
 	plt.show()
 
+.. _symmetry:
+
+Image processing involving symmetry
+===================================
+
+Rotational symmetry
+-------------------
+Diffraction patterns exhibit rotational symmetry based on the crystal structure. We can
+take advantage of such symmetry to correct images in case of artifacts or defects. A useful
+routine is :func:`nfold`, which averages portions of a diffraction pattern with itself based on
+rotational symmetry.
+
+.. plot::
+
+    import matplotlib.pyplot as plt
+    from skimage.io import imread
+    from skued.image import nfold
+    import numpy as np
+
+    center = (1010, 1111)
+
+    mask = np.zeros((2048, 2048), dtype = np.bool)
+    mask[1100::, 442:480] = True # Artifact line
+    mask[0:1260, 900:1140] = True # beamblock
+
+    image = imread('graphite.tif')
+    av = nfold(image, mod = 6, center = center, mask = mask)
+
+    fig , (ax1, ax2, ax3) = plt.subplots(1,3, figsize = (9,3))
+    ax1.imshow(image, vmin = 0, vmax = 150)
+    ax2.imshow(mask, vmin = 0, vmax = 1)
+    ax3.imshow(av, vmin = 0, vmax = 150)
+
+    for ax in (ax1, ax2, ax3):
+        ax.xaxis.set_visible(False)
+        ax.yaxis.set_visible(False)
+
+    ax1.set_title('Graphite')
+    ax2.set_title('Mask')
+    ax3.set_title('Averaged')
+
+    plt.tight_layout()
+    plt.show()
+
+To use :func:`nfold`, all you need to know is the center of the diffraction pattern::
+
+    from skued.image import nfold
+    from skimage.io import imread
+
+    im = imread('graphite.tif')
+    av = nfold(im, mod = 6, center = center)    # mask is optional
+
 .. _powder:
 
 Image analysis on polycrystalline diffraction patterns
@@ -217,21 +276,26 @@ the center of those concentric rings is important. Let's load a test image:
 
 .. plot::
 
-	from skimage.io import imread
-	import matplotlib.pyplot as plt
-	path = 'Cr_1.tif'
+    from skimage.io import imread
+    import matplotlib.pyplot as plt
+    path = 'Cr_1.tif'
 
-	im = imread(path, plugin = 'tifffile')
-	mask = np.zeros_like(im, dtype = np.bool)
-	mask[0:1250, 950:1250] = True
+    im = imread(path, plugin = 'tifffile')
+    mask = np.zeros_like(im, dtype = np.bool)
+    mask[0:1250, 950:1250] = True
 
-	im[mask] = 0
-	plt.imshow(im, vmin = 0, vmax = 200)
-	plt.show()
+    im[mask] = 0
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.imshow(im, vmin = 0, vmax = 200)
+
+    ax.xaxis.set_visible(False)
+    ax.yaxis.set_visible(False)
+    plt.show()
 
 This is a noisy diffraction pattern of polycrystalline vanadium dioxide. 
 Finding the center of such a symmetry pattern can be done with the 
-:code:`powder_center` routine::
+:func:`powder_center` routine::
 	
 	from skued.image import powder_center
 	ic, jc = powder_center(im, mask = mask)
@@ -243,25 +307,32 @@ Finding the center of such a symmetry pattern can be done with the
 	rr = np.sqrt((ii - ic)**2 + (jj - jc)**2)
 	im[rr < 100] = 0
 
-	plt.imshow(im, vmax = 1200)
+	plt.imshow(im, vmax = 200)
 	plt.show()
 
 .. plot::
 
-	from skimage.io import imread
-	import numpy as np
-	import matplotlib.pyplot as plt
-	path = 'Cr_1.tif'
-	im = imread(path, plugin = 'tifffile')
-	from skued.image import powder_center
-	mask = np.zeros_like(im, dtype = np.bool)
-	mask[0:1250, 950:1250] = True
-	ic, jc = powder_center(im, mask = mask)
-	ii, jj = np.meshgrid(np.arange(im.shape[0]), np.arange(im.shape[1]),indexing = 'ij')
-	rr = np.sqrt((ii - ic)**2 + (jj - jc)**2)
-	im[rr < 100] = 1e6
-	plt.imshow(im, vmin = 0, vmax = 200)
-	plt.show()
+    from skimage.io import imread
+    import numpy as np
+    import matplotlib.pyplot as plt
+    path = 'Cr_1.tif'
+    im = imread(path, plugin = 'tifffile')
+    from skued.image import powder_center
+    mask = np.zeros_like(im, dtype = np.bool)
+    mask[0:1250, 950:1250] = True
+    ic, jc = powder_center(im, mask = mask)
+    ii, jj = np.meshgrid(np.arange(im.shape[0]), np.arange(im.shape[1]),indexing = 'ij')
+    rr = np.sqrt((ii - ic)**2 + (jj - jc)**2)
+    im[rr < 100] = 1e6
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.imshow(im, vmin = 0, vmax = 200)
+
+    ax.xaxis.set_visible(False)
+    ax.yaxis.set_visible(False)
+
+    plt.show()
 
 Angular average
 ---------------
@@ -289,21 +360,27 @@ First, we create a test image::
 
 .. plot::
 
-	import numpy as np
-	import matplotlib.pyplot as plt
-	from skued import gaussian
-	image = np.zeros( (256, 256) )
-	xc, yc = image.shape[0]/2, image.shape[1]/2	# center
-	extent = np.arange(0, image.shape[0])
-	xx, yy = np.meshgrid(extent, extent)
-	rr = np.sqrt((xx - xc)**2 + (yy-yc)**2)
-	image += gaussian([xx, yy], center = [xc, yc], fwhm = 200)
-	image[np.logical_and(rr < 40, rr > 38)] = 1
-	image[np.logical_and(rr < 100, rr > 98)] = 0.5
-	image /= image.max()	# Normalize max to 1
-	image += np.random.random(size = image.shape)
-	plt.imshow(image)
-	plt.show()
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from skued import gaussian
+    image = np.zeros( (256, 256) )
+    xc, yc = image.shape[0]/2, image.shape[1]/2	# center
+    extent = np.arange(0, image.shape[0])
+    xx, yy = np.meshgrid(extent, extent)
+    rr = np.sqrt((xx - xc)**2 + (yy-yc)**2)
+    image += gaussian([xx, yy], center = [xc, yc], fwhm = 200)
+    image[np.logical_and(rr < 40, rr > 38)] = 1
+    image[np.logical_and(rr < 100, rr > 98)] = 0.5
+    image /= image.max()	# Normalize max to 1
+    image += np.random.random(size = image.shape)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.imshow(image)
+
+    ax.xaxis.set_visible(False)
+    ax.yaxis.set_visible(False)
+    plt.show()
 
 
 ... and we can easily compute an angular average::
