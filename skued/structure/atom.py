@@ -120,14 +120,17 @@ class Atom(object):
 
 		Parameters
 		----------
-		lattice : Lattice
-			Lattice instance in which the atom is located.
-		
+		lattice : Lattice or iterable
+			Lattice instance in which the atom is located, or iterable
+			from which a Lattice object can be instantiated.
+					
 		Returns
 		-------
 		pos : `~numpy.ndarray`, shape (3,)
 			Atomic position
 		"""
+		if not isinstance(lattice, Lattice):
+			lattice = Lattice(lattice)
 		return real_coords(self.coords, lattice.lattice_vectors)
 	
 	def electron_form_factor(self, nG):
