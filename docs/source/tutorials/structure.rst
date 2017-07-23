@@ -24,7 +24,7 @@ according to any affine transform.
 
 To create an atom, simply provide its element and coordinates::
 	
-	from skued.structure import Atom
+	from skued import Atom
 
 	copper = Atom(element = 'Cu', coords = [0,0,0])
 
@@ -80,7 +80,7 @@ Constructing a :class:`Crystal` object
 --------------------------------------
 Creating a :class:`Crystal` object can be done most easily from a Crystal Information File (CIF, .cif)::
 	
-	from skued.structure import Crystal
+	from skued import Crystal
 
 	TiSe2 = Crystal.from_cif('tise2.cif')
 
@@ -93,7 +93,7 @@ constructed like so::
 Protein DataBank files are even easier to handle; simply provide the 4-letter identification code
 and the structure file will be taken care of by scikit-ued::
 	
-	bacteriorhodopsin = Crystal.from_pdb('1fbb')
+	hemoglobin = Crystal.from_pdb('1gxz')
 
 Another convenient way to construct a :class:`Crystal` is through the `Crystallography Open Database <http://www.crystallography.net/cod/>`_::
 
@@ -119,7 +119,7 @@ not need to be provided. The symmetry operators must be expressed in the reduced
 As an example, let's create the simplest crystal structure known: 
 `alpha-Polonium (simple cubic) <https://en.wikipedia.org/wiki/Polonium#Solid_state_form>`_::
 	
-	from skued.structure import Crystal, Atom
+	from skued import Crystal, Atom
 	import numpy as np
 
 	lattice_vectors = 3.35 * np.eye(3)
