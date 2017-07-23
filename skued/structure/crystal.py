@@ -53,22 +53,32 @@ class Crystal(Lattice):
     """
     This object is the basis for inorganic crystals such as VO2, 
     and protein crystals such as bR. 
+
+    In addition to constructing the ``Crystal`` object yourself, four constructors
+    are also available (and preferred):
     
-    Attributes
+    * ``Crystal.from_cif``: create an instance from a CIF file;
+    
+    * ``Crystal.from_pdb``: create an instance from a Protein Data Bank entry;
+    
+    * ``Crystal.from_database``: create an instance from the internal database of CIF files;
+    
+    * ``Crystal.from_cod``: create an instance from a Crystallography Open Database entry.
+
+    Parameters
     ----------
-    symmetry_operators : list of ndarrays
-        Symmetry operators that links the underlying AtomicStructure to the unit cell construction.
-        It is assumed that the symmetry operators operate on the fractional atomic coordinates.
-    unitcell : iterable of Atom objects
-        List of atoms in the crystal unitcell. iter(Crystal) is a generator that yields
-        the same atoms; this approach is preferred.
-    atoms : iterable
-        List of atoms in the asymmetric unit.
+    atoms : iterable of ``Atom``
+        Atoms which generate, in conjunction with `symmetry_operators`, the full unit cell.
+        It is assumed that the atoms are in fractional coordinates.
+    symmetry_operators : iterable of array_like
+        Symmetry operators that the the asymmetric unit cell (i.e. `atoms`) into the unit cell.
+    lattice_vectors : iterable of array_like
+        Lattice vectors.
     """
 
     builtins = set(map(lambda fn: os.path.basename(fn).split('.')[0], CIF_ENTRIES))
 
-    def __init__(self, atoms, lattice_vectors, symmetry_operators = [np.eye(3)], **kwargs):
+    def __init__(self, atoms, symmetry_operators, lattice_vectors, **kwargs):
 
         self.atoms = list(atoms)
         self.symmetry_operators = tuple(map(affine_map, symmetry_operators))
@@ -212,7 +222,7 @@ class Crystal(Lattice):
 
         Parameters
         ----------
-        x, y, z : ndarrays
+        x, y, z : `~numpy.ndarray`
             Real space coordinates mesh. 
         
         Returns
@@ -294,11 +304,9 @@ class Crystal(Lattice):
         h, k, l : array_likes or floats
             Miller indices. Can be given in a few different formats:
             
-            ``3 floats``
-                returns structure factor computed for a single scattering vector
+            * floats : returns structure factor computed for a single scattering vector
                 
-            ``list of 3 coordinate ndarrays, shapes (L,M,N)``
-                returns structure factor computed over all coordinate space
+            * list of 3 coordinate ndarrays, shapes (L,M,N) : returns structure factor computed over all coordinate space
         
         Returns
         -------
@@ -322,11 +330,9 @@ class Crystal(Lattice):
         G : array-like
             Scattering vector. Can be given in a few different formats:
             
-            ``array-like of numericals, shape (3,)``
-                returns structure factor computed for a single scattering vector
+            * array-like of numericals, shape (3,): returns structure factor computed for a single scattering vector
                 
-            ``list of 3 coordinate ndarrays, shapes (L,M,N)``
-                returns structure factor computed over all coordinate space
+            * list of 3 coordinate ndarrays, shapes (L,M,N): returns structure factor computed over all coordinate space
             
             WARNING: Scattering vector is not equivalent to the Miller indices.
         

@@ -51,26 +51,22 @@ def frac_coords(real_coords, lattice_vectors):
 class Atom(object):
 	"""
 	Container object for atomic data. 
-	"""
 
+	Parameters
+	----------
+	element : str or int
+		Chemical element symbol or atomic number.
+	coords : array-like, shape (3,)
+		Coordinates of the atom in fractional form.
+	displacement : array-like or None, optional
+		Atomic maximum displacement [Angs]. If None (default), set to (0,0,0).
+	"""
 	__slots__ = ('element', 'coords', 'displacement', '_a', '_b', '_c', '_d')
 
-	# TODO: PDB identification?
 	def __init__(self, element, coords, displacement = None, **kwargs): 
-		"""
-		Parameters
-		----------
-		element : str or int
-			Chemical element symbol or atomic number.
-		coords : array-like, shape (3,)
-			Coordinates of the atom in Euclidiant basis. See real_coords.
-		displacement : array-like or None, optional
-			Atomic maximum displacement [Angs]. If None (default), set to (0,0,0).
-		"""
 		if isinstance(element, int):
 			element = NUM_TO_ELEM[element]
-
-		if element not in ELEM_TO_NUM:
+		elif element not in ELEM_TO_NUM:
 			raise ValueError('Invalid chemical element {}'.format(element))
 
 		displacement = (0,0,0) or displacement  # If None, -> (0,0,0)
@@ -94,7 +90,6 @@ class Atom(object):
 		return "< Atom {} at coordinates ({:.2f}, {:.2f}, {:.2f}) >".format(self.element, *tuple(self.coords))
 	
 	def __sub__(self, other):
-		""" Returns the distance between the two atoms. """
 		return np.linalg.norm(self.coords - other.coords)
 	
 	def __eq__(self, other):

@@ -41,16 +41,17 @@ def lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma):
 
 class Lattice(object):
     """
-    Abstract class handling Lattice information and manipulations.
-    """
+    Container class for lattice information and manipulations.
 
-    def __init__(self, lattice_vectors = np.eye(3), **kwargs):
-        """
-        Parameters
-        ----------
-        lattice_vectors: iterable of `~numpy.ndarray`, shape (3,), optional
-            Lattice vectors. Default is a cartesian lattice.
-        """
+    Instances can also be create from the standard 'three lengths and angles'
+    parameters via ``Lattice.from_parameters``:
+
+    Parameters
+    ----------
+    lattice_vectors: iterable of `~numpy.ndarray`, shape (3,), optional
+        Lattice vectors. Default is a cartesian lattice.
+    """
+    def __init__(self, lattice_vectors, **kwargs):
         a1, a2, a3 = lattice_vectors
         self.a1 = np.asarray(a1, dtype = np.float) 
         self.a2 = np.asarray(a2, dtype = np.float) 

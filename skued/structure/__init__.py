@@ -34,4 +34,4 @@ unitcell = list()
 for coordinates in (r1,r2,r3,r4):
     unitcell.append(Atom(element = 'C', coords = frac_coords(coordinates, lattice_vectors)))
 
-graphite = Crystal(atoms = unitcell, lattice_vectors = lattice_vectors)
+graphite = Crystal(atoms = unitcell, lattice_vectors = lattice_vectors, symmetry_operators = [np.eye(3)])

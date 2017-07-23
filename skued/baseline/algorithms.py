@@ -253,17 +253,12 @@ def baseline_dt(array, max_iter, level = None, first_stage = 'sym6', wavelet = '
 	background_regions : iterable, optional
 		Indices of the array values that are known to be purely background. Depending
 		on the dimensions of array, the format is different:
-		
-		``array.ndim == 1``
-			`background_regions` is a list of ints (indices) or slices
-			E.g. >>> background_regions = [0, 7, 122, slice(534, 1000)]
-			
-		``array.ndim == 2``
-			`background_regions` is a list of tuples of ints (indices) or tuples of slices
-			E.g. >>> background_regions = [(14, 19), (42, 99), (slice(59, 82), slice(81,23))]
-			
-		Default is empty list.
 
+		* 1D signal: `background_regions` is a list of ints (indices) or slices, e.g. ``[0, 7, slice(534, 1000)]``.
+
+		* 2D signal: `background_regions` is a list of tuples of ints (indices) or tuples of slices, e.g. ``[(14, 19), (slice(59, 82), slice(81,23))]``.
+
+		Default is empty list.
 	mask : `~numpy.ndarray`, dtype bool, optional
 		Mask array that evaluates to True for pixels that are invalid. 
 	mode : str, optional
@@ -304,20 +299,15 @@ def baseline_dwt(array, max_iter, level = None, wavelet = 'sym6', background_reg
 	wavelet : PyWavelet.Wavelet object or str, optional
 		Wavelet with which to perform the algorithm. See PyWavelet documentation
 		for available values. Default is 'sym6'.
-	background_regions : list, optional
+	background_regions : iterable, optional
 		Indices of the array values that are known to be purely background. Depending
 		on the dimensions of array, the format is different:
-		
-		``array.ndim == 1``
-			`background_regions` is a list of ints (indices) or slices
-			E.g. >>> background_regions = [0, 7, 122, slice(534, 1000)]
-			
-		``array.ndim == 2``
-			`background_regions` is a list of tuples of ints (indices) or tuples of slices
-			E.g. >>> background_regions = [(14, 19), (42, 99), (slice(59, 82), slice(81,23))]
-			
-		Default is empty list.
 
+		* 1D signal: `background_regions` is a list of ints (indices) or slices, e.g. ``[0, 7, slice(534, 1000)]``.
+
+		* 2D signal: `background_regions` is a list of tuples of ints (indices) or tuples of slices, e.g. ``[(14, 19), (slice(59, 82), slice(81,23))]``.
+
+		Default is empty list.
 	mask : `~numpy.ndarray`, dtype bool, optional
 		Mask array that evaluates to True for pixels that are invalid. Useful to determine which pixels are masked
 		by a beam block.
