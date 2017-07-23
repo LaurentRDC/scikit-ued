@@ -195,42 +195,4 @@ Static structure factor calculation is also possible, both for a single reflecti
 	SF = graphite.structure_factor_miller(h, k, l)
 	SF.shape == h.shape 	# True
 
-Atomic potential
-----------------
-The crystal electrostatic potential (the scattering potential leading to electron diffraction) can be
-computed from a :class:`Crystal`::
-
-	import numpy as np
-	import matplotlib.pyplot as plt
-	from skued.structure import graphite
-
-	xx, yy = np.meshgrid(np.linspace(-1, 1, num = 100), 
-	                     np.linspace(-1, 1, num = 100))
-	zz = np.zeros_like(xx)
-
-	potential = graphite.potential(xx, yy, zz)
-	plt.imshow(es_potential)
-
-After plot formatting:
-
-.. plot::
-	
-	import numpy as np
-	import matplotlib.pyplot as plt
-	from skued.structure import graphite
-	xx, yy = np.meshgrid(np.linspace(-5, 5, num = 512), 
-						 np.linspace(-5, 5, num = 512))
-	zz = np.zeros_like(xx)
-	potential = graphite.potential(xx, yy, zz)
-	plt.title('Electrostatic potential of graphite (log-scale)')
-	plt.imshow(np.log(1 + 0.01*potential), extent = [xx.min(), xx.max(), yy.min(), yy.max()])
-	plt.ylabel('x-direction ($\AA$)')
-	plt.xlabel('y-direction ($\AA$)')
-	plt.show()
-
-Note that while the :data:`graphite` crystal only has four atoms in its unitcell, the :meth:`graphite.potential` method
-will process the meshes :data:`xx`, :data:`yy`, and :data:`zz` through the :func:`skued.minimum_image_distance` function
-to implement the **minimum-image distance convention** for periodic boundary conditions All this to say that the potential 
-is computed for a seemingly-infinite crystal.
-
 :ref:`Return to Top <structure_tutorial>`
