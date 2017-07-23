@@ -24,6 +24,31 @@ e = 14.4                #electron charge in Volt*Angstrom
 
 CIF_ENTRIES = glob(os.path.join(os.path.dirname(__file__), 'cifs', '*.cif'))
 
+def symmetry_expansion(atoms, symops):
+    """
+    Returns an iterable of symmetry-expanded atoms.
+    
+    Parameters
+    ----------
+    atoms : iterable of Atom instances
+
+    symops : iterable of `~numpy.ndarray`
+
+    Returns
+    -------
+    expanded : set
+        Iterable of unique, symmetry-expanded Atom instances.
+    """
+    expanded = set([])
+
+    for atm in atoms:
+        for sym_op in symops:
+            new = copy(atm)
+            new.transform(sym_op)
+            new.coords[:] = np.mod(new.coords, 1)
+            expanded.add(new)
+    return expanded
+
 class Crystal(Lattice):
     """
     This object is the basis for inorganic crystals such as VO2, 
@@ -47,21 +72,14 @@ class Crystal(Lattice):
 
         self.atoms = list(atoms)
         self.symmetry_operators = tuple(map(affine_map, symmetry_operators))
+        self.unitcell = symmetry_expansion(self.atoms, self.symmetry_operators)
         super().__init__(lattice_vectors, **kwargs)
     
     def __iter__(self):
-        unique_atoms = set([])	# set of unique atoms in fractional coordinates
-
-        for atm in self.atoms:
-            for sym_op in self.symmetry_operators:
-                new = copy(atm)
-                new.transform(sym_op)
-                new.coords[:] = np.mod(new.coords, 1)
-                unique_atoms.add(new)
-        yield from iter(unique_atoms)
+        return iter(self.unitcell)
     
     def __len__(self):
-        return len(set(self))
+        return len(self.unitcell)
     
     def __repr__(self):
         return '< Crystal object with unit cell of {} atoms >'.format(len(self))
@@ -152,10 +170,6 @@ class Crystal(Lattice):
         return Crystal(atoms = list(parser.atoms()), 
                        lattice_vectors = parser.lattice_vectors(),
                        symmetry_operators = parser.symmetry_operators())
-    
-    @property
-    def unitcell(self):
-        return list(iter(self))
     
     @property
     def spglib_cell(self):
