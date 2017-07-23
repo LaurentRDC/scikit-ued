@@ -13,4 +13,5 @@ from .iter_utils import chunked, last, linspace, multilinspace
 from .parallel import pmap, preduce
 from .plot_utils import spectrum_colors, rgb_sweep
 from .quantities import electron_wavelength, interaction_parameter, lorentz
+from .structure import Crystal, Atom, Lattice
 from .voigt import gaussian, lorentzian, pseudo_voigt
