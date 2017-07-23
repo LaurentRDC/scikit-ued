@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
-from random import choice, seed, random
+from random import choice, seed, random, randint
 import numpy as np
-from .. import Atom, atomic_number, Lattice
+from .. import Atom, Lattice
 from ... import rotation_matrix
 import unittest
 from copy import deepcopy
 
 seed(23)
 np.random.seed(23)
-
-ELEMENTS = list(atomic_number.keys())
 
 def random_transform():
     return rotation_matrix(random(), axis = np.random.random((3,)))
@@ -18,8 +16,13 @@ class TestAtom(unittest.TestCase):
 
     def setUp(self):
         # Atoms with Z larger than 104 have no scattering parameters available
-        self.atom =  Atom(choice([e for e in ELEMENTS if atomic_number[e] < 104]), 
-                          coords = np.random.random((3,)))
+        self.atom =  Atom(randint(1, 104), coords = np.random.random((3,)))
+    
+    def test_init(self):
+        """ Test that Atom can be instantiated with an element str or atomic number """
+        by_element = Atom('C', coords = (0,0,0))
+        by_number = Atom(6, coords = (0,0,0))
+        self.assertEqual(by_element, by_number)
     
     def test_electron_form_factor_side_effects(self):
         """ Test that arrays passed to Atom.electron_form_factors are unchanged, which

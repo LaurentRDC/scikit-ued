@@ -8,7 +8,7 @@ in crystalline form.
 class ParseError(IOError):
     pass
     
-from .atom import Atom, real_coords, frac_coords, atomic_number
+from .atom import Atom, real_coords, frac_coords
 from .lattice import Lattice, lattice_vectors_from_parameters
 from .pdb_parser import PDBParser
 from .cif_parser import CIFParser
