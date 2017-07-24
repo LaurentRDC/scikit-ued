@@ -86,7 +86,8 @@ class TestCrystalConstructors(unittest.TestCase):
     def test_builtins(self):
         """ Test that all names in Crystal.builtins build without errors """
         for name in Crystal.builtins:
-            c = Crystal.from_database(name)
+            with self.subTest(name):
+                c = Crystal.from_database(name)
     
     def test_builtins_wrong_name(self):
         """ Test that a name not in Crystal.builtins will raise a ValueError """
