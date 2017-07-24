@@ -24,7 +24,7 @@ according to any affine transform.
 
 To create an atom, simply provide its element and coordinates::
 	
-	from skued.structure import Atom
+	from skued import Atom
 
 	copper = Atom(element = 'Cu', coords = [0,0,0])
 
@@ -80,7 +80,7 @@ Constructing a :class:`Crystal` object
 --------------------------------------
 Creating a :class:`Crystal` object can be done most easily from a Crystal Information File (CIF, .cif)::
 	
-	from skued.structure import Crystal
+	from skued import Crystal
 
 	TiSe2 = Crystal.from_cif('tise2.cif')
 
@@ -93,7 +93,7 @@ constructed like so::
 Protein DataBank files are even easier to handle; simply provide the 4-letter identification code
 and the structure file will be taken care of by scikit-ued::
 	
-	bacteriorhodopsin = Crystal.from_pdb('1fbb')
+	hemoglobin = Crystal.from_pdb('1gxz')
 
 Another convenient way to construct a :class:`Crystal` is through the `Crystallography Open Database <http://www.crystallography.net/cod/>`_::
 
@@ -119,7 +119,7 @@ not need to be provided. The symmetry operators must be expressed in the reduced
 As an example, let's create the simplest crystal structure known: 
 `alpha-Polonium (simple cubic) <https://en.wikipedia.org/wiki/Polonium#Solid_state_form>`_::
 	
-	from skued.structure import Crystal, Atom
+	from skued import Crystal, Atom
 	import numpy as np
 
 	lattice_vectors = 3.35 * np.eye(3)
@@ -141,12 +141,6 @@ The :class:`Crystal` object provides some interfaces for easy structure manipula
 Note that iterating over the :attr:`crystal.atoms` attribute may or may not be equivalent to 
 :data:`iter(crystal)`, due to the way symmetry operators are defined.
 
-:class:`Crystal` objects also provide interoperability with :mod:`spglib`::
-
-	import spglib
-
-	spglib.get_symmetry_dataset(cell = graphite.spglib_cell, symprec = 1e-4)
-
 Lattice vectors and reciprocal space
 -------------------------------------
 Once a :class:`Crystal` object is ready, you can manipulate the lattice parameters via the underlying :class:`Lattice`
@@ -165,6 +159,39 @@ The unit cell volume (and by extensions, density) is also accessible:
 
 	vol = graphite.volume
 	density = vol/len(graphite)
+
+Space-group Information
+-----------------------
+Thanks to `spglib <http://atztogo.github.io/spglib/>`_, we can get symmetry and space-group information 
+from a :class:`Crystal` instance::
+
+	from skued import Crystal
+	
+	gold = Crystal.from_database('Au')
+	spg_info = gold.spacegroup_info()
+
+In the above example, :data:`spg_info` is a dictionary with the following four keys:
+
+* ``'international_symbol'``: International Tables of Crystallography space-group symbol (short);
+
+* ``'international_full'``: International Tables of Crystallography space-group full symbol;
+
+* ``'hall_symbol'`` : Hall symbol;
+
+* ``'pointgroup'`` : International Tables of Crystallography point-group;
+
+* ``'international_number'`` : International Tables of Crystallography space-group number (between 1 and 230);
+
+* ``'hall_number'`` : Hall number (between 1 and 531).
+
+You can get even more information by using :mod:`spglib` functions directly::
+
+	from spglib import get_symmetry_dataset
+
+	all_the_info = get_symmetry_dataset(gold.spglib_cell)
+
+The content of the :data:`all_the_info` dictionary is documented `here <http://atztogo.github.io/spglib/python-spglib.html#get-symmetry-dataset>`_.
+Many of :mod:`spglib`'s routines can be used with :attr:`Crystal.spglib_cell`.
 
 Scattering utilities
 --------------------
@@ -194,43 +221,5 @@ Static structure factor calculation is also possible, both for a single reflecti
 	h, k, l = graphite.bounded_reflections(12)
 	SF = graphite.structure_factor_miller(h, k, l)
 	SF.shape == h.shape 	# True
-
-Atomic potential
-----------------
-The crystal electrostatic potential (the scattering potential leading to electron diffraction) can be
-computed from a :class:`Crystal`::
-
-	import numpy as np
-	import matplotlib.pyplot as plt
-	from skued.structure import graphite
-
-	xx, yy = np.meshgrid(np.linspace(-1, 1, num = 100), 
-	                     np.linspace(-1, 1, num = 100))
-	zz = np.zeros_like(xx)
-
-	potential = graphite.potential(xx, yy, zz)
-	plt.imshow(es_potential)
-
-After plot formatting:
-
-.. plot::
-	
-	import numpy as np
-	import matplotlib.pyplot as plt
-	from skued.structure import graphite
-	xx, yy = np.meshgrid(np.linspace(-5, 5, num = 512), 
-						 np.linspace(-5, 5, num = 512))
-	zz = np.zeros_like(xx)
-	potential = graphite.potential(xx, yy, zz)
-	plt.title('Electrostatic potential of graphite (log-scale)')
-	plt.imshow(np.log(1 + 0.01*potential), extent = [xx.min(), xx.max(), yy.min(), yy.max()])
-	plt.ylabel('x-direction ($\AA$)')
-	plt.xlabel('y-direction ($\AA$)')
-	plt.show()
-
-Note that while the :data:`graphite` crystal only has four atoms in its unitcell, the :meth:`graphite.potential` method
-will process the meshes :data:`xx`, :data:`yy`, and :data:`zz` through the :func:`skued.minimum_image_distance` function
-to implement the **minimum-image distance convention** for periodic boundary conditions All this to say that the potential 
-is computed for a seemingly-infinite crystal.
 
 :ref:`Return to Top <structure_tutorial>`

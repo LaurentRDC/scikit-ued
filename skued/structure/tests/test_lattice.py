@@ -20,7 +20,7 @@ def angle_between(v1, v2):
 class TestEuclidianLattice(unittest.TestCase):
     
     def setUp(self):
-        self.lattice = Lattice()
+        self.lattice = Lattice(np.eye(3))
     
     def test_euclidian_lattice(self):
         self.assertTrue(np.array_equal(self.lattice.a1, [1,0,0]))

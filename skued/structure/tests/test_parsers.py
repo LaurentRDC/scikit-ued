@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import unittest
+from spglib import get_symmetry_dataset
 from warnings import filterwarnings
 
 import numpy as np
@@ -9,6 +10,7 @@ from .. import Crystal, graphite
 from ... import transform
 from ..cif_parser import CIFParser
 from ..pdb_parser import PDBParser
+from ..spg_data import Hall2Number
 
 filterwarnings('ignore', category = UserWarning)
 
@@ -63,6 +65,21 @@ class TestCIFParser(unittest.TestCase):
                     for sym_op in p.symmetry_operators():
                         t = sym_op[:3,:3]
                         self.assertAlmostEqual(abs(np.linalg.det(t)), 1)
+    
+    def test_international_number(self):
+        """ Test that the international space group number  found by 
+        CIFParser is the same as spglib's """
+        for name in self._cif_files():
+            with self.subTest(name.split('\\')[-1]):
+                with CIFParser(name) as p:
+                    from_parser = Hall2Number[p.hall_symbol()]
+                    
+                    crystal = Crystal.from_cif(name)
+                    spglib_dataset = get_symmetry_dataset(crystal.spglib_cell, symprec = 1e-2)
+                    if not spglib_dataset:
+                        continue
+                    from_spglib = spglib_dataset['number']
+                    self.assertEqual(from_parser, from_spglib)
     
     def test_graphite(self):
         """ Test CIFParser on C.cif and compare to built-in graphite """

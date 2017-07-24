@@ -2,18 +2,18 @@
 from collections.abc import Iterable
 from copy import deepcopy as copy
 from glob import glob
-from functools import lru_cache
 from itertools import count, product, takewhile
 import os
 from tempfile import TemporaryDirectory
 from urllib.request import urlretrieve
+from spglib import get_symmetry_dataset, get_error_message, get_spacegroup_type
 from warnings import warn
 
 import numpy as np
 from numpy import pi
 from numpy.linalg import norm
 
-from . import CIFParser, Lattice, PDBParser 
+from . import CIFParser, Lattice, PDBParser
 from .. import (affine_map, change_basis_mesh, change_of_basis,
                 is_rotation_matrix, minimum_image_distance, transform)
 
@@ -24,44 +24,80 @@ e = 14.4                #electron charge in Volt*Angstrom
 
 CIF_ENTRIES = glob(os.path.join(os.path.dirname(__file__), 'cifs', '*.cif'))
 
+def symmetry_expansion(atoms, symops):
+    """
+    Returns an iterable of symmetry-expanded atoms.
+    
+    Parameters
+    ----------
+    atoms : iterable of Atom instances
+
+    symops : iterable of `~numpy.ndarray`
+
+    Returns
+    -------
+    expanded : set
+        Iterable of unique, symmetry-expanded Atom instances.
+    """
+    expanded = set([])
+
+    for atm in atoms:
+        for sym_op in symops:
+            new = copy(atm)
+            new.transform(sym_op)
+            new.coords[:] = np.mod(new.coords, 1)
+            expanded.add(new)
+    return expanded
+
 class Crystal(Lattice):
     """
     This object is the basis for inorganic crystals such as VO2, 
     and protein crystals such as bR. 
+
+    In addition to constructing the ``Crystal`` object yourself, four constructors
+    are also available (and preferred):
     
-    Attributes
+    * ``Crystal.from_cif``: create an instance from a CIF file;
+    
+    * ``Crystal.from_pdb``: create an instance from a Protein Data Bank entry;
+    
+    * ``Crystal.from_database``: create an instance from the internal database of CIF files;
+    
+    * ``Crystal.from_cod``: create an instance from a Crystallography Open Database entry.
+
+    Parameters
     ----------
-    symmetry_operators : list of ndarrays
-        Symmetry operators that links the underlying AtomicStructure to the unit cell construction.
-        It is assumed that the symmetry operators operate on the fractional atomic coordinates.
-    unitcell : iterable of Atom objects
-        List of atoms in the crystal unitcell. iter(Crystal) is a generator that yields
-        the same atoms; this approach is preferred.
-    atoms : iterable
-        List of atoms in the asymmetric unit.
+    atoms : iterable of ``Atom``
+        Atoms which generate, in conjunction with `symmetry_operators`, the full unit cell.
+        It is assumed that the atoms are in fractional coordinates.
+    symmetry_operators : iterable of array_like
+        Symmetry operators that the the asymmetric unit cell (i.e. `atoms`) into the unit cell.
+    lattice_vectors : iterable of array_like
+        Lattice vectors.
     """
 
     builtins = set(map(lambda fn: os.path.basename(fn).split('.')[0], CIF_ENTRIES))
 
-    def __init__(self, atoms, lattice_vectors, symmetry_operators = [np.eye(3)], **kwargs):
+    def __init__(self, atoms, symmetry_operators, lattice_vectors, **kwargs):
 
         self.atoms = list(atoms)
         self.symmetry_operators = tuple(map(affine_map, symmetry_operators))
+        
         super().__init__(lattice_vectors, **kwargs)
     
     def __iter__(self):
-        unique_atoms = set([])	# set of unique atoms in fractional coordinates
+        uniques = set([])
 
         for atm in self.atoms:
             for sym_op in self.symmetry_operators:
                 new = copy(atm)
                 new.transform(sym_op)
                 new.coords[:] = np.mod(new.coords, 1)
-                unique_atoms.add(new)
-        yield from iter(unique_atoms)
+                uniques.add(new)
+        yield from uniques
     
     def __len__(self):
-        return len(set(self))
+        return len(self.unitcell)
     
     def __repr__(self):
         return '< Crystal object with unit cell of {} atoms >'.format(len(self))
@@ -155,15 +191,71 @@ class Crystal(Lattice):
     
     @property
     def unitcell(self):
+        """ Crystal unit cell. """
         return list(iter(self))
     
     @property
     def spglib_cell(self):
-        """ Returns the crystal structure in spglib's `cell` format."""
+        """ 3-tuple of ndarrays properly generated for spglib's routines """
         lattice = np.array(self.lattice_vectors)
         positions = np.array([atom.coords for atom in iter(self)])
         numbers = np.array(tuple(atom.atomic_number for atom in iter(self)))
         return (lattice, positions, numbers)
+    
+    def spacegroup_info(self, symprec = 1e-2, angle_tolerance = -1.0):
+        """ 
+        Returns a dictionary containing space-group information.
+        
+        Parameters
+        ----------
+        symprec : float, optional
+            Symmetry-search distance tolerance in Cartesian coordinates [Angstroms].
+        angle_tolerance: float, optional
+            Symmetry-search tolerance in degrees. If the value is negative (default), 
+            an internally optimized routine is used to judge symmetry.
+        
+        Returns
+        -------
+        info : dict or None
+            Dictionary of space-group information. The following keys are available:
+
+            * ``'international_symbol'``: International Tables of Crystallography space-group symbol (short);
+
+            * ``'international_full'``: International Tables of Crystallography space-group full symbol;
+
+            * ``'hall_symbol'`` : Hall symbol;
+
+            * ``'pointgroup'`` : International Tables of Crystallography point-group;
+
+            * ``'international_number'`` : International Tables of Crystallography space-group number (between 1 and 230);
+
+            * ``'hall_number'`` : Hall number (between 1 and 531).
+
+            If symmetry-determination has failed, None is returned.
+        
+        Raises
+        ------
+        RuntimeError
+            If symmetry-determination has yielded an error.
+        """
+        dataset = get_symmetry_dataset(cell = self.spglib_cell, symprec = 1e-2, 
+                                       angle_tolerance = angle_tolerance)
+
+        if dataset: 
+            info = dict()
+            info.update( {'international_symbol': dataset['international'],
+                          'hall_symbol': dataset['hall'],
+                          'international_number': dataset['number'],
+                          'hall_number': dataset['hall_number']} )
+            
+            spg_type = get_spacegroup_type(info['hall_number'])
+            info.update( {'international_full': spg_type['international_full'],
+                          'pointgroup': spg_type['pointgroup_international']} )
+
+            return info
+        err_msg = get_error_message()
+        if err_msg:
+            raise RuntimeError('Symmetry-determination has returned the following error: {}'.format(err_msg))
     
     def periodicity(self):
         """
@@ -198,7 +290,7 @@ class Crystal(Lattice):
 
         Parameters
         ----------
-        x, y, z : ndarrays
+        x, y, z : `~numpy.ndarray`
             Real space coordinates mesh. 
         
         Returns
@@ -280,11 +372,9 @@ class Crystal(Lattice):
         h, k, l : array_likes or floats
             Miller indices. Can be given in a few different formats:
             
-            ``3 floats``
-                returns structure factor computed for a single scattering vector
+            * floats : returns structure factor computed for a single scattering vector
                 
-            ``list of 3 coordinate ndarrays, shapes (L,M,N)``
-                returns structure factor computed over all coordinate space
+            * list of 3 coordinate ndarrays, shapes (L,M,N) : returns structure factor computed over all coordinate space
         
         Returns
         -------
@@ -308,11 +398,9 @@ class Crystal(Lattice):
         G : array-like
             Scattering vector. Can be given in a few different formats:
             
-            ``array-like of numericals, shape (3,)``
-                returns structure factor computed for a single scattering vector
+            * array-like of numericals, shape (3,): returns structure factor computed for a single scattering vector
                 
-            ``list of 3 coordinate ndarrays, shapes (L,M,N)``
-                returns structure factor computed over all coordinate space
+            * list of 3 coordinate ndarrays, shapes (L,M,N): returns structure factor computed over all coordinate space
             
             WARNING: Scattering vector is not equivalent to the Miller indices.
         

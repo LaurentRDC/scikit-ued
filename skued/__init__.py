@@ -2,7 +2,7 @@
 __author__ = 'Laurent P. René de Cotret'
 __email__ = 'laurent.renedecotret@mail.mcgill.ca'
 __license__ = 'MIT'
-__version__ = '0.4.7' # TODO: automatic versioning?
+__version__ = '0.4.8' # TODO: automatic versioning?
 
 from .affine import (affine_map, change_basis_mesh, change_of_basis, is_basis,
                      is_rotation_matrix, minimum_image_distance,
@@ -13,4 +13,5 @@ from .iter_utils import chunked, last, linspace, multilinspace
 from .parallel import pmap, preduce
 from .plot_utils import spectrum_colors, rgb_sweep
 from .quantities import electron_wavelength, interaction_parameter, lorentz
+from .structure import Crystal, Atom, Lattice
 from .voigt import gaussian, lorentzian, pseudo_voigt

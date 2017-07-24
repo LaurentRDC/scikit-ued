@@ -51,24 +51,22 @@ def frac_coords(real_coords, lattice_vectors):
 class Atom(object):
 	"""
 	Container object for atomic data. 
-	"""
 
+	Parameters
+	----------
+	element : str or int
+		Chemical element symbol or atomic number.
+	coords : array-like, shape (3,)
+		Coordinates of the atom in fractional form.
+	displacement : array-like or None, optional
+		Atomic maximum displacement [Angs]. If None (default), set to (0,0,0).
+	"""
 	__slots__ = ('element', 'coords', 'displacement', '_a', '_b', '_c', '_d')
 
-	# TODO: PDB identification?
 	def __init__(self, element, coords, displacement = None, **kwargs): 
-		"""
-		Parameters
-		----------
-		element : str
-			Chemical element
-		coords : array-like, shape (3,)
-			Coordinates of the atom in Euclidiant basis. See real_coords.
-		displacement : array-like or None, optional
-			Atomic maximum displacement [Angs]. If None (default), set to (0,0,0).
-		"""
-
-		if element not in atomic_number:
+		if isinstance(element, int):
+			element = NUM_TO_ELEM[element]
+		elif element not in ELEM_TO_NUM:
 			raise ValueError('Invalid chemical element {}'.format(element))
 
 		displacement = (0,0,0) or displacement  # If None, -> (0,0,0)
@@ -92,7 +90,6 @@ class Atom(object):
 		return "< Atom {} at coordinates ({:.2f}, {:.2f}, {:.2f}) >".format(self.element, *tuple(self.coords))
 	
 	def __sub__(self, other):
-		""" Returns the distance between the two atoms. """
 		return np.linalg.norm(self.coords - other.coords)
 	
 	def __eq__(self, other):
@@ -108,11 +105,11 @@ class Atom(object):
 
 	@property
 	def atomic_number(self):
-		return atomic_number[self.element]
+		return ELEM_TO_NUM[self.element]
 	
 	@property
 	def weight(self):
-		return atomic_weights[self.atomic_number - 1]
+		return ATM_WEIGHTS[self.ELEM_TO_NUM - 1]
 
 	def xyz(self, lattice):
 		""" 
@@ -120,14 +117,17 @@ class Atom(object):
 
 		Parameters
 		----------
-		lattice : Lattice
-			Lattice instance in which the atom is located.
-		
+		lattice : Lattice or iterable
+			Lattice or Crystal instance in which the atom is located, or iterable
+			from which a Lattice object can be instantiated.  
+					
 		Returns
 		-------
 		pos : `~numpy.ndarray`, shape (3,)
 			Atomic position
 		"""
+		if not isinstance(lattice, Lattice):
+			lattice = Lattice(lattice)
 		return real_coords(self.coords, lattice.lattice_vectors)
 	
 	def electron_form_factor(self, nG):
@@ -215,7 +215,7 @@ class Atom(object):
 		for matrix in matrices:
 			self.coords = transform(matrix, self.coords)
 
-atomic_number = {"H": 1, "He":2,  "Li":3,  "Be":4,  "B": 5,  "C": 6, "N": 7, "O":8,
+ELEM_TO_NUM = {"H": 1, "He":2,  "Li":3,  "Be":4,  "B": 5,  "C": 6, "N": 7, "O":8,
 				 "F": 9, "Ne":10, "Na":11, "Mg":12, "Al":13, "Si":14,"P": 15,
 				 "S": 16,"Cl":17, "Ar":18, "K": 19, "Ca":20, "Sc":21,"Ti":22,
 				 "V": 23,"Cr":24, "Mn":25, "Fe":26, "Co":27, "Ni":28,"Cu":29,
@@ -233,8 +233,10 @@ atomic_number = {"H": 1, "He":2,  "Li":3,  "Be":4,  "B": 5,  "C": 6, "N": 7, "O"
 				 "Sg":106,"Bh":107,"Hs":108,"Mt":109,"D":110,"Rg":111,"Cn":112,
 				 "Uut":113,"Uuq":114,"Uup":115,"Uuh":116,"Uus":117,"Uuo":118}
 
+NUM_TO_ELEM = {v:k for k, v in ELEM_TO_NUM.items()}
+
 #From atomdb.atomic
-atomic_weights = ( 1.00794,   4.002602,   6.941    ,   9.012182 ,  10.811    ,
+ATM_WEIGHTS = ( 1.00794,   4.002602,   6.941    ,   9.012182 ,  10.811    ,
 			12.0107, 14.0067, 15.9994, 18.9984032,  20.1797   ,
 			22.98976928,  24.3050  ,  26.9815386,  28.0855   ,  30.973762 ,
 			32.065     ,  35.453   ,  39.948    ,  39.0983   ,  40.078    ,

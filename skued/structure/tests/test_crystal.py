@@ -34,6 +34,23 @@ class TestBoundedReflections(unittest.TestCase):
         norm_G = np.sqrt(Gx**2 + Gy**2 + Gz**2)
         self.assertTrue(np.all(norm_G <= bound))
 
+class TestSpacegroupInfo(unittest.TestCase):
+    
+    def test_graphite(self):
+        """ Test that Crystal.spacegroup_info() works correctly for graphite """
+        c = Crystal.from_database('C')
+        info = c.spacegroup_info()
+        
+        supposed = {'international_number': 194, 
+                    'hall_number': 488,
+                    'international_symbol': 'P6_3/mmc',
+                    'international_full': 'P 6_3/m 2/m 2/c' ,
+                    'hall_symbol': '-P 6c 2c',
+                    'pointgroup': 'D6h'}
+        
+        self.assertDictEqual(info, supposed)
+        
+
 class TestCrystalRotations(unittest.TestCase):
 
     def setUp(self):
@@ -86,7 +103,8 @@ class TestCrystalConstructors(unittest.TestCase):
     def test_builtins(self):
         """ Test that all names in Crystal.builtins build without errors """
         for name in Crystal.builtins:
-            c = Crystal.from_database(name)
+            with self.subTest(name):
+                c = Crystal.from_database(name)
     
     def test_builtins_wrong_name(self):
         """ Test that a name not in Crystal.builtins will raise a ValueError """

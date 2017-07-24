@@ -8,9 +8,10 @@ in crystalline form.
 class ParseError(IOError):
     pass
     
-from .atom import Atom, real_coords, frac_coords, atomic_number
+from .atom import Atom, real_coords, frac_coords
 from .lattice import Lattice, lattice_vectors_from_parameters
 from .pdb_parser import PDBParser
+from .spg_data import Hall2Number
 from .cif_parser import CIFParser
 from .crystal import Crystal
 
@@ -34,4 +35,4 @@ unitcell = list()
 for coordinates in (r1,r2,r3,r4):
     unitcell.append(Atom(element = 'C', coords = frac_coords(coordinates, lattice_vectors)))
 
-graphite = Crystal(atoms = unitcell, lattice_vectors = lattice_vectors)
+graphite = Crystal(atoms = unitcell, lattice_vectors = lattice_vectors, symmetry_operators = [np.eye(3)])
