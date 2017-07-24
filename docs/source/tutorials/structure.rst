@@ -172,13 +172,17 @@ from a :class:`Crystal` instance::
 
 In the above example, :data:`spg_info` is a dictionary with the following four keys:
 
-* ``'international_symbol'``: International Tables of Crystallography space-group symbol (short)
+* ``'international_symbol'``: International Tables of Crystallography space-group symbol (short);
 
-* ``'hall_symbol'`` : Hall symbol
+* ``'international_full'``: International Tables of Crystallography space-group full symbol;
 
-* ``'international_number'`` : International Tables of Crystallography space-group number (between 1 and 230)
+* ``'hall_symbol'`` : Hall symbol;
 
-* ``'hall_number'`` : Hall number (between 1 and 531)
+* ``'pointgroup'`` : International Tables of Crystallography point-group;
+
+* ``'international_number'`` : International Tables of Crystallography space-group number (between 1 and 230);
+
+* ``'hall_number'`` : Hall number (between 1 and 531).
 
 You can get even more information by using :mod:`spglib` functions directly::
 

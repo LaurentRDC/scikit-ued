@@ -41,9 +41,12 @@ class TestSpacegroupInfo(unittest.TestCase):
         c = Crystal.from_database('C')
         info = c.spacegroup_info()
         
-        supposed = {'international_number': 194, 'hall_number': 488,
-                    'international_symbol': 'P6_3/mmc', 
-                    'hall_symbol': '-P 6c 2c'}
+        supposed = {'international_number': 194, 
+                    'hall_number': 488,
+                    'international_symbol': 'P6_3/mmc',
+                    'international_full': 'P 6_3/m 2/m 2/c' ,
+                    'hall_symbol': '-P 6c 2c',
+                    'pointgroup': 'D6h'}
         
         self.assertDictEqual(info, supposed)
         
