@@ -82,11 +82,18 @@ class Crystal(Lattice):
 
         self.atoms = list(atoms)
         self.symmetry_operators = tuple(map(affine_map, symmetry_operators))
-        self.unitcell = symmetry_expansion(self.atoms, self.symmetry_operators)
         super().__init__(lattice_vectors, **kwargs)
     
     def __iter__(self):
-        return iter(self.unitcell)
+        uniques = set([])
+
+        for atm in self.atoms:
+            for sym_op in self.symmetry_operators:
+                new = copy(atm)
+                new.transform(sym_op)
+                new.coords[:] = np.mod(new.coords, 1)
+                uniques.add(new)
+        yield from uniques
     
     def __len__(self):
         return len(self.unitcell)
@@ -180,6 +187,11 @@ class Crystal(Lattice):
         return Crystal(atoms = list(parser.atoms()), 
                        lattice_vectors = parser.lattice_vectors(),
                        symmetry_operators = parser.symmetry_operators())
+    
+    @property
+    def unitcell(self):
+        """ Crystal unit cell. """
+        return list(iter(self))
     
     @property
     def spglib_cell(self):
