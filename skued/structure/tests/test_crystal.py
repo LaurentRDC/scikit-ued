@@ -119,8 +119,8 @@ class TestCrystalConstructors(unittest.TestCase):
     def test_from_cod(self):
         """ Test building a Crystal object from the COD """
         # revision = None and latest revision should give the same Crystal
-        c = Crystal.from_cod(1521124)
-        c2 = Crystal.from_cod(1521124, revision = 176429)
+        c = Crystal.from_cod(1521124, download_dir = 'test_cache')
+        c2 = Crystal.from_cod(1521124, revision = 176429, download_dir = 'test_cache')
 
         self.assertSetEqual(set(c), set(c2))
 
