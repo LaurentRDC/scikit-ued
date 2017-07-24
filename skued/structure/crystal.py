@@ -2,18 +2,18 @@
 from collections.abc import Iterable
 from copy import deepcopy as copy
 from glob import glob
-from functools import lru_cache
 from itertools import count, product, takewhile
 import os
 from tempfile import TemporaryDirectory
 from urllib.request import urlretrieve
+from spglib import get_symmetry_dataset, get_error_message
 from warnings import warn
 
 import numpy as np
 from numpy import pi
 from numpy.linalg import norm
 
-from . import CIFParser, Lattice, PDBParser 
+from . import CIFParser, Lattice, PDBParser
 from .. import (affine_map, change_basis_mesh, change_of_basis,
                 is_rotation_matrix, minimum_image_distance, transform)
 
@@ -183,11 +183,53 @@ class Crystal(Lattice):
     
     @property
     def spglib_cell(self):
-        """ Returns the crystal structure in spglib's `cell` format."""
+        """ 3-tuple of ndarrays properly generated for spglib's routines """
         lattice = np.array(self.lattice_vectors)
         positions = np.array([atom.coords for atom in iter(self)])
         numbers = np.array(tuple(atom.atomic_number for atom in iter(self)))
         return (lattice, positions, numbers)
+    
+    def spacegroup_info(self, symprec = 1e-2):
+        """ 
+        Returns a dictionary containing spacegroup information.
+        
+        Parameters
+        ----------
+        symprec : float, optional
+            Distance tolerance in Cartesian coordinates to find crystal symmetry.
+        
+        Returns
+        -------
+        info : dict or None
+            Dictionary of space-group information. The following keys are available:
+
+            * ``'international_symbol'``: International Tables of Crystallography space-group symbol (short)
+
+            * ``'hall_symbol'`` : Hall symbol
+
+            * ``'international_number'`` : International Tables of Crystallography space-group number (between 1 and 230)
+
+            * ``'hall_number'`` : Hall number (between 1 and 531)
+
+            If symmetry-determination has failed, None is returned.
+        
+        Raises
+        ------
+        RuntimeError
+            If symmetry-determination has yielded an error
+        """
+        dataset = get_symmetry_dataset(cell = self.spglib_cell, symprec = 1e-2)
+
+        # TODO: do we want more information, possible from get_spacegroup_type?
+        if dataset: 
+            return {'international_symbol': dataset['international'],
+                    'hall_symbol': dataset['hall'],
+                    'international_number': dataset['number'],
+                    'hall_number': dataset['hall_number']}
+        
+        err_msg = get_error_message()
+        if err_msg:
+            raise RuntimeError('Symmetry-determination has returned the following error: {}'.format(err_msg))
     
     def periodicity(self):
         """
