@@ -11,6 +11,7 @@ class ParseError(IOError):
 from .atom import Atom, real_coords, frac_coords
 from .lattice import Lattice, lattice_vectors_from_parameters
 from .pdb_parser import PDBParser
+from .spg_data import Hall2Number
 from .cif_parser import CIFParser
 from .crystal import Crystal
 

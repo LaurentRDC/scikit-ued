@@ -34,6 +34,20 @@ class TestBoundedReflections(unittest.TestCase):
         norm_G = np.sqrt(Gx**2 + Gy**2 + Gz**2)
         self.assertTrue(np.all(norm_G <= bound))
 
+class TestSpacegroupInfo(unittest.TestCase):
+    
+    def test_graphite(self):
+        """ Test that Crystal.spacegroup_info() works correctly for graphite """
+        c = Crystal.from_database('C')
+        info = c.spacegroup_info()
+        
+        supposed = {'international_number': 194, 'hall_number': 488,
+                    'international_symbol': 'P6_3/mmc', 
+                    'hall_symbol': '-P 6c 2c'}
+        
+        self.assertDictEqual(info, supposed)
+        
+
 class TestCrystalRotations(unittest.TestCase):
 
     def setUp(self):

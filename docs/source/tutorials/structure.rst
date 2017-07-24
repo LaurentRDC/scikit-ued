@@ -141,12 +141,6 @@ The :class:`Crystal` object provides some interfaces for easy structure manipula
 Note that iterating over the :attr:`crystal.atoms` attribute may or may not be equivalent to 
 :data:`iter(crystal)`, due to the way symmetry operators are defined.
 
-:class:`Crystal` objects also provide interoperability with :mod:`spglib`::
-
-	import spglib
-
-	spglib.get_symmetry_dataset(cell = graphite.spglib_cell, symprec = 1e-4)
-
 Lattice vectors and reciprocal space
 -------------------------------------
 Once a :class:`Crystal` object is ready, you can manipulate the lattice parameters via the underlying :class:`Lattice`
@@ -165,6 +159,35 @@ The unit cell volume (and by extensions, density) is also accessible:
 
 	vol = graphite.volume
 	density = vol/len(graphite)
+
+Space-group Information
+-----------------------
+Thanks to `spglib <http://atztogo.github.io/spglib/>`_, we can get symmetry and space-group information 
+from a :class:`Crystal` instance::
+
+	from skued import Crystal
+	
+	gold = Crystal.from_database('Au')
+	spg_info = gold.spacegroup_info()
+
+In the above example, :data:`spg_info` is a dictionary with the following four keys:
+
+* ``'international_symbol'``: International Tables of Crystallography space-group symbol (short)
+
+* ``'hall_symbol'`` : Hall symbol
+
+* ``'international_number'`` : International Tables of Crystallography space-group number (between 1 and 230)
+
+* ``'hall_number'`` : Hall number (between 1 and 531)
+
+You can get even more information by using :mod:`spglib` functions directly::
+
+	from spglib import get_symmetry_dataset
+
+	all_the_info = get_symmetry_dataset(gold.spglib_cell)
+
+The content of the :data:`all_the_info` dictionary is documented `here <http://atztogo.github.io/spglib/python-spglib.html#get-symmetry-dataset>`_.
+Many of :mod:`spglib`'s routines can be used with :attr:`Crystal.spglib_cell`.
 
 Scattering utilities
 --------------------
