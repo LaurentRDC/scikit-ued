@@ -15,9 +15,9 @@ from string import digits, punctuation
 
 import numpy as np
 from CifFile import ReadCif, get_number_with_esd
-from numpy.linalg import inv, norm
+from numpy.linalg import inv
 
-from . import Atom, Lattice, frac_coords, lattice_vectors_from_parameters, ParseError
+from . import Atom, frac_coords, lattice_vectors_from_parameters, ParseError
 from .. import affine_map, transform
 from .spg_data import HM2Hall, Number2Hall, SymOpsHall
 
@@ -68,6 +68,11 @@ class CIFParser(object):
     """
     Collection of methods that parses CIF files based on cif2cell. The preferred method
     of using this object is as a context manager.
+
+    Parameters
+    ----------
+    filename : str or path-like
+        Location of the CIF file.
     
     References
     ----------
@@ -75,14 +80,6 @@ class CIFParser(object):
            Computer Physics Communications 182, 1183-1186 (2011) doi: 10.1016/j.cpc.2011.01.013
     """
     def __init__(self, filename, **kwargs):
-        """ 
-        Keyword arguments are passed to PyCIFRW's ReadCif function.
-
-        Parameters
-        ----------
-        filename : str or path-like
-            Location of the CIF file.
-        """
         # ReadCIF would get confused between local files and URLs
         # Therefore, more clear to pass an open file
         self._handle = open(filename, mode = 'r')
@@ -204,7 +201,7 @@ class CIFParser(object):
 
         Yields
         ------
-        atoms : skued.structure.Atom instance
+        atoms : skued.Atom instance
         """
         block = self._first_block
 

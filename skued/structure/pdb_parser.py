@@ -65,28 +65,21 @@ class PDBParser(object):
     """
     Collection of methods that parses PDB files. Insipred from BioPython.PDB module.
     
-    Attributes
+    Parameters
     ----------
-    ID : str, len 4
-        Unique PDB ID of the parser's target structure.
-    file : str
-        Absolute path to the PDB file associated with the parser's target structure.
-
-    Methods
-    -------
-    lattice_vectors
-        Lattice vectors of the crystal structure.
-
-    Atoms
-        Yields atoms making up the asymmetric unit cell
-
-    symmetry_operators
-        Symmetry operators that relate the asymmetric unit cell and the unit cell. The symmetry operators
-        act on all ATM and HETATM in the file to produce the unit cel.
+    ID : str
+        Protein DataBank identification. The correct .pdb file will be downloaded,
+        cached and parsed.
+    download_dir : path-like object
+        Directory where to save the PDB file. Default is a local folder in the current directory
+    overwrite : bool, optional
+        Whether or not to overwrite files in cache if they exist. If no revision 
+        number is provided, files will always be overwritten. 
     """
 
-    def __init__(self, ID, download_dir = 'pdb_cache'):
-        self.file = retrieve_pdb_file(pdb_code = ID, download_dir = download_dir)
+    def __init__(self, ID, download_dir = 'pdb_cache', overwrite = False):
+        self.file = retrieve_pdb_file(pdb_code = ID, download_dir = download_dir, 
+                                      overwrite = overwrite)
 
     @lru_cache(maxsize = 1)
     def lattice_vectors(self):

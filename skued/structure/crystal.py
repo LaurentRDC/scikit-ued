@@ -144,7 +144,7 @@ class Crystal(Lattice):
         return cls.from_cif(path)
     
     @classmethod
-    def from_cod(cls, num, revision = None):
+    def from_cod(cls, num, revision = None, download_dir = 'cod_cache', overwrite = False):
         """ 
         Returns a Crystal object built from the Crystallography Open Database. 
 
@@ -154,12 +154,18 @@ class Crystal(Lattice):
             COD identification number.
         revision : int or None, optional
             Revision number. If None (default), the latest revision is used.
+        download_dir : path-like object
+            Directory where to save the CIF file. Default is a local folder in the current directory
+        overwrite : bool, optional
+            Whether or not to overwrite files in cache if they exist. If no revision 
+            number is provided, files will always be overwritten. 
         """
-        # TODO: caching
-        # TODO: move away from urlretrieve
-        # TODO: handle timeout
+        if revision is None:
+            overwrite = True
         
-        # http://wiki.crystallography.net/howtoquerycod/
+        if not os.path.isdir(download_dir):
+            os.mkdir(download_dir)
+        
         url = 'http://www.crystallography.net/cod/{}.cif'.format(num)
 
         if revision is not None:
@@ -167,14 +173,15 @@ class Crystal(Lattice):
             base = '{iden}-{rev}.cif'.format(iden = num, rev = revision)
         else:
             base = '{}.cif'.format(num)
+        path = os.path.join(download_dir, base)
 
-        with TemporaryDirectory() as directory:
-            filename = os.path.join(directory, base)
-            urlretrieve(url, filename)
-            return cls.from_cif(filename)
+        if (not os.path.isfile(path)) or overwrite:
+            urlretrieve(url, path)
+        
+        return cls.from_cif(path)
 
     @classmethod
-    def from_pdb(cls, ID, download_dir = 'pdb_cache'):
+    def from_pdb(cls, ID, download_dir = 'pdb_cache', overwrite = False):
         """
         Returns a Crystal object created from a Protein DataBank entry.
 
@@ -183,6 +190,11 @@ class Crystal(Lattice):
         ID : str
             Protein DataBank identification. The correct .pdb file will be downloaded,
             cached and parsed.
+        download_dir : path-like object
+            Directory where to save the PDB file. Default is a local folder in the current directory
+        overwrite : bool, optional
+            Whether or not to overwrite files in cache if they exist. If no revision 
+            number is provided, files will always be overwritten. 
         """
         parser = PDBParser(ID = ID, download_dir = download_dir)
         return Crystal(atoms = list(parser.atoms()), 
@@ -259,7 +271,7 @@ class Crystal(Lattice):
                           'pointgroup': spg_type['pointgroup_international']} )
 
             return info
-        
+
         err_msg = get_error_message()
         if err_msg:
             raise RuntimeError('Symmetry-determination has returned the following error: {}'.format(err_msg))
@@ -485,3 +497,6 @@ class Crystal(Lattice):
         norm_G = np.sqrt(Gx**2 + Gy**2 + Gz**2)
         in_bound = norm_G <= nG
         return h.compress(in_bound), k.compress(in_bound), l.compress(in_bound)
+
+
+
