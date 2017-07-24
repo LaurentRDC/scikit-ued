@@ -204,7 +204,8 @@ class Crystal(Lattice):
     
     def spacegroup_info(self, symprec = 1e-2, angle_tolerance = -1.0):
         """ 
-        Returns a dictionary containing space-group information.
+        Returns a dictionary containing space-group information. This information
+        is computed from the crystal unit cell, and is not taken from records if available.
         
         Parameters
         ----------
@@ -237,6 +238,11 @@ class Crystal(Lattice):
         ------
         RuntimeError
             If symmetry-determination has yielded an error.
+        
+        Notes
+        -----
+        Note that crystals generated from the Protein Data Bank are often incomplete; 
+        in such cases the space-group information will be incorrect.
         """
         dataset = get_symmetry_dataset(cell = self.spglib_cell, symprec = 1e-2, 
                                        angle_tolerance = angle_tolerance)
@@ -253,6 +259,7 @@ class Crystal(Lattice):
                           'pointgroup': spg_type['pointgroup_international']} )
 
             return info
+        
         err_msg = get_error_message()
         if err_msg:
             raise RuntimeError('Symmetry-determination has returned the following error: {}'.format(err_msg))
