@@ -6,7 +6,7 @@ from itertools import count, product, takewhile
 import os
 from tempfile import TemporaryDirectory
 from urllib.request import urlretrieve
-from spglib import get_symmetry_dataset, get_error_message
+from spglib import get_symmetry_dataset, get_error_message, get_spacegroup_type
 from warnings import warn
 
 import numpy as np
@@ -82,6 +82,7 @@ class Crystal(Lattice):
 
         self.atoms = list(atoms)
         self.symmetry_operators = tuple(map(affine_map, symmetry_operators))
+        
         super().__init__(lattice_vectors, **kwargs)
     
     def __iter__(self):
@@ -201,44 +202,57 @@ class Crystal(Lattice):
         numbers = np.array(tuple(atom.atomic_number for atom in iter(self)))
         return (lattice, positions, numbers)
     
-    def spacegroup_info(self, symprec = 1e-2):
+    def spacegroup_info(self, symprec = 1e-2, angle_tolerance = -1.0):
         """ 
-        Returns a dictionary containing spacegroup information.
+        Returns a dictionary containing space-group information.
         
         Parameters
         ----------
         symprec : float, optional
-            Distance tolerance in Cartesian coordinates to find crystal symmetry.
+            Symmetry-search distance tolerance in Cartesian coordinates [Angstroms].
+        angle_tolerance: float, optional
+            Symmetry-search tolerance in degrees. If the value is negative (default), 
+            an internally optimized routine is used to judge symmetry.
         
         Returns
         -------
         info : dict or None
             Dictionary of space-group information. The following keys are available:
 
-            * ``'international_symbol'``: International Tables of Crystallography space-group symbol (short)
+            * ``'international_symbol'``: International Tables of Crystallography space-group symbol (short);
 
-            * ``'hall_symbol'`` : Hall symbol
+            * ``'international_full'``: International Tables of Crystallography space-group full symbol;
 
-            * ``'international_number'`` : International Tables of Crystallography space-group number (between 1 and 230)
+            * ``'hall_symbol'`` : Hall symbol;
 
-            * ``'hall_number'`` : Hall number (between 1 and 531)
+            * ``'pointgroup'`` : International Tables of Crystallography point-group;
+
+            * ``'international_number'`` : International Tables of Crystallography space-group number (between 1 and 230);
+
+            * ``'hall_number'`` : Hall number (between 1 and 531).
 
             If symmetry-determination has failed, None is returned.
         
         Raises
         ------
         RuntimeError
-            If symmetry-determination has yielded an error
+            If symmetry-determination has yielded an error.
         """
-        dataset = get_symmetry_dataset(cell = self.spglib_cell, symprec = 1e-2)
+        dataset = get_symmetry_dataset(cell = self.spglib_cell, symprec = 1e-2, 
+                                       angle_tolerance = angle_tolerance)
 
-        # TODO: do we want more information, possible from get_spacegroup_type?
         if dataset: 
-            return {'international_symbol': dataset['international'],
-                    'hall_symbol': dataset['hall'],
-                    'international_number': dataset['number'],
-                    'hall_number': dataset['hall_number']}
-        
+            info = dict()
+            info.update( {'international_symbol': dataset['international'],
+                          'hall_symbol': dataset['hall'],
+                          'international_number': dataset['number'],
+                          'hall_number': dataset['hall_number']} )
+            
+            spg_type = get_spacegroup_type(info['hall_number'])
+            info.update( {'international_full': spg_type['international_full'],
+                          'pointgroup': spg_type['pointgroup_international']} )
+
+            return info
         err_msg = get_error_message()
         if err_msg:
             raise RuntimeError('Symmetry-determination has returned the following error: {}'.format(err_msg))
