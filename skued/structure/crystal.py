@@ -12,7 +12,8 @@ from warnings import warn
 import numpy as np
 from numpy import pi
 from numpy.linalg import norm
-from spglib import get_error_message, get_spacegroup_type, get_symmetry_dataset
+from spglib import (get_error_message, get_spacegroup_type, 
+                    get_symmetry_dataset, find_primitive)
 
 from . import Atom, CIFParser, Lattice, PDBParser
 from .. import (affine_map, change_basis_mesh, change_of_basis, cached_property,
@@ -200,7 +201,49 @@ class Crystal(Lattice):
     def unitcell(self):
         """ Crystal unit cell. """
         return list(iter(self))
-    
+
+    def primitive(self, symprec = 1e-2):
+        """ 
+        Returns a Crystal object in the primitive unit cell.
+
+        Parameters
+        ----------
+        symprec : float, optional
+            Symmetry-search distance tolerance in Cartesian coordinates [Angstroms].
+
+        Returns
+        -------
+        primitive : Crystal
+            Crystal with primitive cell. If primitive cell is the same size as
+            the source Crystal, a reference to the source Crystal is returned.
+
+        Raises
+        ------
+        RuntimeError
+            If primitive cell could not be found.
+        
+        Notes
+        -----
+        Optional atomic properties (e.g magnetic moment) might be lost in the reduction.
+        Symmetry operators (and hence the distinction between unit cell and 
+        asymmetric unit cell) are also lost.
+        """
+        search = find_primitive(self.spglib_cell, symprec = symprec)
+        if search is None:
+            raise RuntimeError('Primitive cell could not be found.')
+
+        lattice_vectors, scaled_positions, numbers = search
+        if numbers.size == len(self):   # Then there's no point in creating a new crystal
+            return self
+
+        atoms = list()
+        for coords, Z in zip(scaled_positions, numbers):
+            atoms.append(Atom(int(Z), coords = coords))
+
+        return Crystal(atoms = atoms, 
+                       lattice_vectors = lattice_vectors, 
+                       symmetry_operators = [np.eye(3)])
+
     @property
     def spglib_cell(self):
         """ 3-tuple of ndarrays properly formatted for spglib's routines """

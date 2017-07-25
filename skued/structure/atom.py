@@ -76,10 +76,13 @@ class Atom(object):
         elif element not in ELEM_TO_NUM:
             raise ValueError('Invalid chemical element {}'.format(element))
         
+        if magmom is None:
+            magmom = ELEM_TO_MAGMOM[element]
+        
         self.element = element
         self.coords = np.array(coords, dtype = np.float)
         self.displacement = np.array(displacement, dtype = np.float)
-        self.magmom = ELEM_TO_MAGMOM[element] or magmom
+        self.magmom = magmom
 
         # Atomic potential parameters loaded on instantiation
         # These are used to compute atomic potential
@@ -95,7 +98,7 @@ class Atom(object):
         
     def __repr__(self):
         name = ELEM_TO_NAME[self.element]
-        return "< {} atom at coordinates ({:.2f}, {:.2f}, {:.2f}) >".format(ELEM_TO_NAME[self.element], *tuple(self.coords))
+        return "< {} atom at coordinates ({:.3f}, {:.3f}, {:.3f}) >".format(ELEM_TO_NAME[self.element], *tuple(self.coords))
     
     def __sub__(self, other):
         return np.linalg.norm(self.coords - other.coords)
