@@ -16,7 +16,7 @@ from spglib import (get_error_message, get_spacegroup_type,
                     get_symmetry_dataset, find_primitive)
 
 from . import Atom, CIFParser, Lattice, PDBParser
-from .. import (affine_map, change_basis_mesh, change_of_basis, cached_property,
+from .. import (affine_map, change_basis_mesh, change_of_basis,
                 is_rotation_matrix, minimum_image_distance, transform)
 
 # Constants
