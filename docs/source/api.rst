@@ -45,11 +45,17 @@ classes.
 .. autoclass:: skued.Crystal
    :members:
 
+   .. autoattribute:: skued.Crystal.lattice_vectors
+
+   .. autoattribute:: skued.Crystal.lattice_parameters
+
 .. autoclass:: skued.Atom
    :members:
 
 .. autoclass:: skued.Lattice
    :members:
+
+.. autofunction:: skued.structure.symmetry_expansion
 
 Simulation
 ==========
