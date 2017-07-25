@@ -3,8 +3,7 @@
 from functools import lru_cache
 import numpy as np
 
-from .. import (change_of_basis, is_rotation_matrix, transform,
-                translation_matrix, cached_property)
+from .. import (change_of_basis, is_rotation_matrix, transform, translation_matrix)
 from .atom_data import (ELEM_TO_MAGMOM, ELEM_TO_MASS, ELEM_TO_NAME,
                         ELEM_TO_NUM, NUM_TO_ELEM)
 from .lattice import Lattice
@@ -133,11 +132,11 @@ class Atom(object):
                    coords = frac_coords(atom.position, lattice), 
                    magmom = atom.magmom)
 
-    @cached_property
+    @property
     def atomic_number(self):
         return ELEM_TO_NUM[self.element]
     
-    @cached_property
+    @property
     def mass(self):
         return ELEM_TO_MASS[self.element]
 
