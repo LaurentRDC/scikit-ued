@@ -230,16 +230,8 @@ class Crystal(Lattice):
         """
         from ase import Atoms
         
-        symbols = list()
-        scaled_positions = list()
-        for atm in iter(self):
-            symbols.append(atm.element)
-            scaled_positions.append(atm.coords)
-        
-        cell = np.array(self.lattice_vectors)
-
-        return Atoms(symbols = symbols, cell = cell,
-                    scaled_positions = scaled_positions, **kwargs)
+        return Atoms(symbols = [atm.ase_atom(lattice = self) for atm in self.unitcell],
+                     cell = np.array(self.lattice_vectors), **kwargs)
     
     def spacegroup_info(self, symprec = 1e-2, angle_tolerance = -1.0):
         """ 
