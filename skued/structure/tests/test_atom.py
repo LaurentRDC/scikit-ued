@@ -61,4 +61,5 @@ class TestAtom(unittest.TestCase):
         for x1, x2 in zip(tuple(before), tuple(after)):
             self.assertAlmostEqual(x1, x2)
 
-
+if __name__ == '__main__':
+    unittest.main()

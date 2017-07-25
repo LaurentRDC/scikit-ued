@@ -13,7 +13,7 @@ import numpy as np
 from numpy import pi
 from numpy.linalg import norm
 
-from . import CIFParser, Lattice, PDBParser
+from . import CIFParser, Lattice, PDBParser, Atom
 from .. import (affine_map, change_basis_mesh, change_of_basis,
                 is_rotation_matrix, minimum_image_distance, transform)
 
@@ -24,37 +24,12 @@ e = 14.4                #electron charge in Volt*Angstrom
 
 CIF_ENTRIES = glob(os.path.join(os.path.dirname(__file__), 'cifs', '*.cif'))
 
-def symmetry_expansion(atoms, symops):
-    """
-    Returns an iterable of symmetry-expanded atoms.
-    
-    Parameters
-    ----------
-    atoms : iterable of Atom instances
-
-    symops : iterable of `~numpy.ndarray`
-
-    Returns
-    -------
-    expanded : set
-        Iterable of unique, symmetry-expanded Atom instances.
-    """
-    expanded = set([])
-
-    for atm in atoms:
-        for sym_op in symops:
-            new = copy(atm)
-            new.transform(sym_op)
-            new.coords[:] = np.mod(new.coords, 1)
-            expanded.add(new)
-    return expanded
-
 class Crystal(Lattice):
     """
     This object is the basis for inorganic crystals such as VO2, 
     and protein crystals such as bR. 
 
-    In addition to constructing the ``Crystal`` object yourself, four constructors
+    In addition to constructing the ``Crystal`` object yourself, other constructors
     are also available (and preferred):
     
     * ``Crystal.from_cif``: create an instance from a CIF file;
@@ -64,6 +39,8 @@ class Crystal(Lattice):
     * ``Crystal.from_database``: create an instance from the internal database of CIF files;
     
     * ``Crystal.from_cod``: create an instance from a Crystallography Open Database entry.
+
+    * ``Crystal.from_ase``: create an instance from an ``ase.Atoms`` instance.
 
     Parameters
     ----------
@@ -154,7 +131,7 @@ class Crystal(Lattice):
             COD identification number.
         revision : int or None, optional
             Revision number. If None (default), the latest revision is used.
-        download_dir : path-like object
+        download_dir : path-like object, optional
             Directory where to save the CIF file. Default is a local folder in the current directory
         overwrite : bool, optional
             Whether or not to overwrite files in cache if they exist. If no revision 
@@ -190,7 +167,7 @@ class Crystal(Lattice):
         ID : str
             Protein DataBank identification. The correct .pdb file will be downloaded,
             cached and parsed.
-        download_dir : path-like object
+        download_dir : path-like object, optional
             Directory where to save the PDB file. Default is a local folder in the current directory
         overwrite : bool, optional
             Whether or not to overwrite files in cache if they exist. If no revision 
@@ -201,6 +178,24 @@ class Crystal(Lattice):
                        lattice_vectors = parser.lattice_vectors(),
                        symmetry_operators = parser.symmetry_operators())
     
+    @classmethod
+    def from_ase(cls, atoms):
+        """
+        Returns a Crystal object created from an ASE Atoms object.
+        
+        Parameters
+        ----------
+        atoms : ase.Atoms
+            Atoms group.
+        """
+        lattice_vectors = atoms.get_cell()
+
+        atms = list()
+        for num, pos in zip(atoms.get_atomic_numbers(), atoms.get_scaled_positions(wrap = True)):
+            atms.append(Atom(int(num), coords = pos))
+        
+        return cls(atoms = atms, lattice_vectors = lattice_vectors, symmetry_operators = [np.eye(3)])
+    
     @property
     def unitcell(self):
         """ Crystal unit cell. """
@@ -208,11 +203,43 @@ class Crystal(Lattice):
     
     @property
     def spglib_cell(self):
-        """ 3-tuple of ndarrays properly generated for spglib's routines """
+        """ 3-tuple of ndarrays properly formatted for spglib's routines """
         lattice = np.array(self.lattice_vectors)
         positions = np.array([atom.coords for atom in iter(self)])
         numbers = np.array(tuple(atom.atomic_number for atom in iter(self)))
         return (lattice, positions, numbers)
+
+    def ase_atoms(self, **kwargs):
+        """ 
+        Create an ASE Atoms object from a Crystal. 
+        
+        Parameters
+        ----------
+        kwargs
+            Keyword arguments are passed to ase.Atoms constructor.
+        
+        Returns
+        -------
+        atoms : ase.Atoms
+            Group of atoms ready for ASE's routines.
+        
+        Raises
+        ------
+        ImportError
+            If ASE is not installed
+        """
+        from ase import Atoms
+        
+        symbols = list()
+        scaled_positions = list()
+        for atm in iter(self):
+            symbols.append(atm.element)
+            scaled_positions.append(atm.coords)
+        
+        cell = np.array(self.lattice_vectors)
+
+        return Atoms(symbols = symbols, cell = cell,
+                    scaled_positions = scaled_positions, **kwargs)
     
     def spacegroup_info(self, symprec = 1e-2, angle_tolerance = -1.0):
         """ 
