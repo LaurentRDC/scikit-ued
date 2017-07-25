@@ -10,6 +10,31 @@ import unittest
 
 #seed(23)
 
+try:
+    import ase
+    ASE = True
+except ImportError:
+    ASE = False
+
+@unittest.skipIf(not ASE, 'ASE not importable')
+class TestAseAtoms(unittest.TestCase):
+
+    def setUp(self):
+        name = choice(list(Crystal.builtins))
+        self.crystal = Crystal.from_database(name)
+    
+    def test_construction(self):
+        """ Test that ase_atoms returns without error """
+        to_ase = self.crystal.ase_atoms()
+        self.assertEqual(len(self.crystal), len(to_ase))
+    
+    def test_back_and_forth(self):
+        """ Test conversion to and from ase Atoms """
+        to_ase = self.crystal.ase_atoms()
+        crystal2 = Crystal.from_ase(to_ase)
+
+        self.assertSetEqual(set(self.crystal), set(crystal2))
+
 class TestBoundedReflections(unittest.TestCase):
 
     def setUp(self):

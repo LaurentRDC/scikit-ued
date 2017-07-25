@@ -222,4 +222,21 @@ Static structure factor calculation is also possible, both for a single reflecti
 	SF = graphite.structure_factor_miller(h, k, l)
 	SF.shape == h.shape 	# True
 
+Compatibility with ASE
+----------------------
+The `Atomic Simulation Environment <https://wiki.fysik.dtu.dk/ase/index.html>`_ is a powerful tool. You can harness its power and convert
+between :class:`ase.Atoms` and :class:`skued.Crystal` at will.
+
+To create an :class:`ase.Atoms` object from a :class:`Crystal`, use the :meth:`Crystal.ase_atoms` method::
+
+	from ase.calculators.abinit import Abinit
+	from skued import Crystal
+	
+	gold = Crystal.from_database('Au')
+	ase_gold = gold.ase_atoms(calculator = Abinit(...))
+
+All keywords of the :class:`ase.Atoms` constructor are supported. To get back to a :class:`Crystal` instance::
+
+	gold2 = Crystal.from_ase(ase_gold)
+
 :ref:`Return to Top <structure_tutorial>`

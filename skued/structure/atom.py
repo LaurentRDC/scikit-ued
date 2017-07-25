@@ -109,7 +109,7 @@ class Atom(object):
 	
 	@property
 	def weight(self):
-		return ATM_WEIGHTS[self.ELEM_TO_NUM - 1]
+		return ATM_WEIGHTS[ELEM_TO_NUM[self.element] - 1]
 
 	def xyz(self, lattice):
 		""" 
