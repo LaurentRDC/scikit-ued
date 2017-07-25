@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
+from functools import lru_cache
 import numpy as np
 
-from .lattice import Lattice
 from .. import (change_of_basis, is_rotation_matrix, transform,
-                translation_matrix)
+                translation_matrix, cached_property)
+from .atom_data import (ELEM_TO_MAGMOM, ELEM_TO_MASS, ELEM_TO_NAME,
+                        ELEM_TO_NUM, NUM_TO_ELEM)
+from .lattice import Lattice
 from .scattering_params import scattering_params
-from .atom_data import ELEM_TO_NUM, NUM_TO_ELEM, ELEM_TO_MAGMOM, ELEM_TO_MASS, ELEM_TO_NAME
 
 # Constants
 m = 9.109*10**(-31)     #in kg
@@ -128,11 +130,11 @@ class Atom(object):
                    coords = frac_coords(atom.position, lattice), 
                    magmom = atom.magmom)
 
-    @property
+    @cached_property
     def atomic_number(self):
         return ELEM_TO_NUM[self.element]
     
-    @property
+    @cached_property
     def mass(self):
         return ELEM_TO_MASS[self.element]
 
@@ -167,6 +169,7 @@ class Atom(object):
                     mass = self.mass, **kwargs)
 
     # TODO: make lattices hashable to this can be cached.
+    #       but how can a Crystal be efficiently hashed? e.g. 20000 atoms...
     def xyz(self, lattice):
         """ 
         Real-space position of the atom
@@ -182,9 +185,9 @@ class Atom(object):
         pos : `~numpy.ndarray`, shape (3,)
             Atomic position
         """
-        if not isinstance(lattice, Lattice):
-            lattice = Lattice(lattice)
-        return real_coords(self.coords, lattice.lattice_vectors)
+        if isinstance(lattice, Lattice):
+            return self.xyz(lattice.lattice_vectors)
+        return real_coords(self.coords, lattice)
     
     def electron_form_factor(self, nG):
         """

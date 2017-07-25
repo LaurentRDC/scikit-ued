@@ -11,63 +11,9 @@ Modeling atomic structures
 Contents
 ========
 
-* :ref:`Atom`
 * :ref:`Crystal`
+* :ref:`Atom`
 
-.. _atom:
-
-The :class:`Atom` Class
-=======================
-The basis of structure manipulations is to manipulate atoms. :class:`Atom` objects are in the
-category of `Transformable` objects, meaning that their coordinates can be transformed
-according to any affine transform.
-
-To create an atom, simply provide its element and coordinates::
-	
-	from skued import Atom
-
-	copper = Atom(element = 'Cu', coords = [0,0,0])
-
-Since we are most concerned with atoms in crystals, the coordinates here are assumed to be fractional.
-The real-space position with respect to a :class:`Crystal` or :class:`Lattice` can be accessed using the 
-:meth:`xyz` method::
-
-    from skued.structure import graphite
-    
-    carbon = list(graphite)[-1]
-    fractional = carbon.coords
-    real = carbon.xyz(lattice = graphite)
-
-One important feature of the :class:`Atom` class is the possibility to compute the electrostatic
-potential across meshes::
-
-	import numpy as np
-	import matplotlib.pyplot as plt
-
-	xx, yy = np.meshgrid(np.linspace(-0.3, 0.3, num = 100), 
-	                     np.linspace(-0.3, 0.3, num = 100))
-	dist = np.sqrt(xx**2 + yy**2)	# distance from the atom in Angstroms
-
-	es_potential = copper.potential(dist)
-	plt.imshow(es_potential)
-
-After plot formatting:
-
-.. plot::
-	
-	import numpy as np
-	import matplotlib.pyplot as plt
-	from skued.structure import Atom
-	copper = Atom(element = 'Cu', coords = [0,0,0])
-	xx, yy = np.meshgrid(np.linspace(-0.3, 0.3, num = 100), 
-						 np.linspace(-0.3, 0.3, num = 100))
-	dist = np.sqrt(xx**2 + yy**2)	# distance from the atom in Angstroms
-	es_potential = copper.potential(dist)
-	plt.title('Atomic potential of Cu (log-scale)')
-	plt.imshow(np.log(1 + es_potential), extent = [xx.min(), xx.max(), yy.min(), yy.max()])
-	plt.ylabel('x-direction ($\AA$)')
-	plt.xlabel('y-direction ($\AA$)')
-	plt.show()
 
 .. _crystal:
 
@@ -238,5 +184,64 @@ To create an :class:`ase.Atoms` object from a :class:`Crystal`, use the :meth:`C
 All keywords of the :class:`ase.Atoms` constructor are supported. To get back to a :class:`Crystal` instance::
 
 	gold2 = Crystal.from_ase(ase_gold)
+
+.. _atom:
+
+The :class:`Atom` Class
+=======================
+The basis of structure manipulations is to manipulate atoms. :class:`Atom` objects are in the
+category of `Transformable` objects, meaning that their coordinates can be transformed
+according to any affine transform.
+
+To create an atom, simply provide its element and coordinates::
+	
+	from skued import Atom
+
+	copper = Atom(element = 'Cu', coords = [0,0,0])
+
+Optional information can be give, such as magnetic moment and mean-squared displacement. For users of :mod:`ase`, 
+another possibility is to instantiate an :class:`Atom` from an :class:`ase.Atom` using the :meth:`Atom.from_ase` 
+constructor.
+
+Since we are most concerned with atoms in crystals, the coordinates here are assumed to be fractional.
+The real-space position with respect to a :class:`Crystal` or :class:`Lattice` can be accessed using the 
+:meth:`xyz` method::
+
+    from skued.structure import graphite
+    
+    carbon = list(graphite)[-1]
+    fractional = carbon.coords
+    real = carbon.xyz(lattice = graphite)
+
+One important feature of the :class:`Atom` class is the possibility to compute the electrostatic
+potential across meshes::
+
+	import numpy as np
+	import matplotlib.pyplot as plt
+
+	xx, yy = np.meshgrid(np.linspace(-0.3, 0.3, num = 100), 
+	                     np.linspace(-0.3, 0.3, num = 100))
+	dist = np.sqrt(xx**2 + yy**2)	# distance from the atom in Angstroms
+
+	es_potential = copper.potential(dist)
+	plt.imshow(es_potential)
+
+After plot formatting:
+
+.. plot::
+	
+	import numpy as np
+	import matplotlib.pyplot as plt
+	from skued.structure import Atom
+	copper = Atom(element = 'Cu', coords = [0,0,0])
+	xx, yy = np.meshgrid(np.linspace(-0.3, 0.3, num = 100), 
+						 np.linspace(-0.3, 0.3, num = 100))
+	dist = np.sqrt(xx**2 + yy**2)	# distance from the atom in Angstroms
+	es_potential = copper.potential(dist)
+	plt.title('Atomic potential of Cu (log-scale)')
+	plt.imshow(np.log(1 + es_potential), extent = [xx.min(), xx.max(), yy.min(), yy.max()])
+	plt.ylabel('x-direction ($\AA$)')
+	plt.xlabel('y-direction ($\AA$)')
+	plt.show()
 
 :ref:`Return to Top <structure_tutorial>`

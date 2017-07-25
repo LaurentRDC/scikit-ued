@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
+import os
 from collections.abc import Iterable
 from copy import deepcopy as copy
+from functools import lru_cache
 from glob import glob
 from itertools import count, product, takewhile
-import os
 from tempfile import TemporaryDirectory
 from urllib.request import urlretrieve
-from spglib import get_symmetry_dataset, get_error_message, get_spacegroup_type
 from warnings import warn
 
 import numpy as np
 from numpy import pi
 from numpy.linalg import norm
+from spglib import get_error_message, get_spacegroup_type, get_symmetry_dataset
 
-from . import CIFParser, Lattice, PDBParser, Atom
-from .. import (affine_map, change_basis_mesh, change_of_basis,
+from . import Atom, CIFParser, Lattice, PDBParser
+from .. import (affine_map, change_basis_mesh, change_of_basis, cached_property,
                 is_rotation_matrix, minimum_image_distance, transform)
 
 # Constants
@@ -74,6 +75,7 @@ class Crystal(Lattice):
         yield from uniques
     
     def __len__(self):
+        # TODO: very expensive call for large crystals
         return len(self.unitcell)
     
     def __repr__(self):
@@ -514,6 +516,3 @@ class Crystal(Lattice):
         norm_G = np.sqrt(Gx**2 + Gy**2 + Gz**2)
         in_bound = norm_G <= nG
         return h.compress(in_bound), k.compress(in_bound), l.compress(in_bound)
-
-
-
