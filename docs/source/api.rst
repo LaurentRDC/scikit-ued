@@ -36,19 +36,19 @@ Affine Transforms
 =================
 .. automodule:: skued.affine
 
-Structure
-=========
+Crystal structure
+=================
 Handling crystal structure information is crucial for many data analysis and modelling tasks.
 See the :ref:`Structure tutorial <structure_tutorial>` for some examples on how to use the following
 classes.
-  
+
+.. autoclass:: skued.Crystal
+   :members:
+
 .. autoclass:: skued.Atom
    :members:
 
 .. autoclass:: skued.Lattice
-   :members:
-
-.. autoclass:: skued.Crystal
    :members:
 
 Simulation
