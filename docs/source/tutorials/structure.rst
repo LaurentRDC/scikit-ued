@@ -58,9 +58,7 @@ To do this, you need:
 1. iterable of :class:`Atom` objects, with coordinates. These atoms can either be the full unit cell
 or the asymmetric unit cell;
 2. three lattice vectors;
-3. Symmetry operators (optional). These symmetry operators will be applied to the atoms to generate
-the full unit cell. Hence, if your iterable of atoms contains the entire unit cell, symmetry operators do
-not need to be provided. The symmetry operators must be expressed in the reduced (or fractional) basis.
+3. (optional) symmetry operators that generate the full unit cell from the asymmetric unit cell.
 
 As an example, let's create the simplest crystal structure known: 
 `alpha-Polonium (simple cubic) <https://en.wikipedia.org/wiki/Polonium#Solid_state_form>`_::
@@ -73,7 +71,8 @@ As an example, let's create the simplest crystal structure known:
 
 	polonium = Crystal(atoms = atoms, lattice_vectors = lattice_vectors)
 
-That's it!
+In the case where atoms are given as an asymmetric unit cell and a set of symmetry operators, you can use the
+:func:`symmetry_expansion` function to generate a set of *unique* atoms (even if some symmetry operators might be redundant).
 
 Crystal attributes
 ------------------
