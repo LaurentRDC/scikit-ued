@@ -189,12 +189,10 @@ class Crystal(Lattice):
             Atoms group.
         """
         lattice_vectors = atoms.get_cell()
-
-        atms = list()
-        for num, pos in zip(atoms.get_atomic_numbers(), atoms.get_scaled_positions(wrap = True)):
-            atms.append(Atom(int(num), coords = pos))
         
-        return cls(atoms = atms, lattice_vectors = lattice_vectors, symmetry_operators = [np.eye(3)])
+        return cls(atoms = [Atom.from_ase(atm) for atm in atoms], 
+                   lattice_vectors = lattice_vectors, 
+                   symmetry_operators = [np.eye(3)])
     
     @property
     def unitcell(self):
