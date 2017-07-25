@@ -26,6 +26,34 @@ e = 14.4                #electron charge in Volt*Angstrom
 
 CIF_ENTRIES = glob(os.path.join(os.path.dirname(__file__), 'cifs', '*.cif'))
 
+def symmetry_expansion(atoms, symmetry_operators):
+    """
+    Generate a set of unique atoms from an asymmetric cell and symmetry operators.
+
+    Parameters
+    ----------
+    atoms : iterable of Atom
+        Assymetric unit cell atoms. It is assumed that the atomic 
+        coordinates are in fractional form.
+    symmetry_operators : iterable of array_like
+        Symmetry operators that generate the full unit cell.
+    
+    Yields
+    ------
+    Atom
+    """
+    uniques = set([])
+    symmetry_operators = tuple(map(affine_map, symmetry_operators))
+
+    for atm in atoms:
+        for sym_op in symmetry_operators:
+            new = copy(atm)
+            new.transform(sym_op)
+            new.coords[:] = np.mod(new.coords, 1)
+            uniques.add(new)
+    yield from uniques
+
+
 class Crystal(Lattice):
     """
     This object is the basis for inorganic crystals such as VO2, 
@@ -47,37 +75,23 @@ class Crystal(Lattice):
     Parameters
     ----------
     atoms : iterable of ``Atom``
-        Atoms which generate, in conjunction with `symmetry_operators`, the full unit cell.
-        It is assumed that the atoms are in fractional coordinates.
-    symmetry_operators : iterable of array_like
-        Symmetry operators that the the asymmetric unit cell (i.e. `atoms`) into the unit cell.
+        Unit cell atoms. It is assumed that the atoms are in fractional coordinates.
     lattice_vectors : iterable of array_like
         Lattice vectors.
     """
 
     builtins = set(map(lambda fn: os.path.basename(fn).split('.')[0], CIF_ENTRIES))
 
-    def __init__(self, atoms, symmetry_operators, lattice_vectors, **kwargs):
-
-        self.atoms = list(atoms)
-        self.symmetry_operators = tuple(map(affine_map, symmetry_operators))
-        
+    def __init__(self, atoms, lattice_vectors, **kwargs):
+        self.atoms = frozenset(atoms)
         super().__init__(lattice_vectors, **kwargs)
     
     def __iter__(self):
-        uniques = set([])
-
-        for atm in self.atoms:
-            for sym_op in self.symmetry_operators:
-                new = copy(atm)
-                new.transform(sym_op)
-                new.coords[:] = np.mod(new.coords, 1)
-                uniques.add(new)
-        yield from uniques
+        yield from iter(self.atoms)
     
     def __len__(self):
         # TODO: very expensive call for large crystals
-        return len(self.unitcell)
+        return len(self.atoms)
     
     def __repr__(self):
         return '< Crystal object with unit cell of {} atoms >'.format(len(self))
@@ -103,9 +117,8 @@ class Crystal(Lattice):
                Computer Physics Communications 182, 1183-1186 (2011). doi: 10.1016/j.cpc.2011.01.013
         """
         with CIFParser(filename = path) as parser:
-            return Crystal(atoms = list(parser.atoms()), 
-                           lattice_vectors = parser.lattice_vectors(), 
-                           symmetry_operators = parser.symmetry_operators())
+            return Crystal(atoms = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
+                           lattice_vectors = parser.lattice_vectors())
     
     @classmethod
     def from_database(cls, name):
@@ -177,9 +190,8 @@ class Crystal(Lattice):
             number is provided, files will always be overwritten. 
         """
         parser = PDBParser(ID = ID, download_dir = download_dir)
-        return Crystal(atoms = list(parser.atoms()), 
-                       lattice_vectors = parser.lattice_vectors(),
-                       symmetry_operators = parser.symmetry_operators())
+        return Crystal(atoms = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
+                       lattice_vectors = parser.lattice_vectors())
     
     @classmethod
     def from_ase(cls, atoms):
@@ -194,13 +206,11 @@ class Crystal(Lattice):
         lattice_vectors = atoms.get_cell()
         
         return cls(atoms = [Atom.from_ase(atm) for atm in atoms], 
-                   lattice_vectors = lattice_vectors, 
-                   symmetry_operators = [np.eye(3)])
+                   lattice_vectors = lattice_vectors)
     
     @property
     def unitcell(self):
-        """ Crystal unit cell. """
-        return list(iter(self))
+        return self.atoms
 
     def primitive(self, symprec = 1e-2):
         """ 
@@ -225,8 +235,6 @@ class Crystal(Lattice):
         Notes
         -----
         Optional atomic properties (e.g magnetic moment) might be lost in the reduction.
-        Symmetry operators (and hence the distinction between unit cell and 
-        asymmetric unit cell) are also lost.
         """
         search = find_primitive(self.spglib_cell, symprec = symprec)
         if search is None:
@@ -240,9 +248,7 @@ class Crystal(Lattice):
         for coords, Z in zip(scaled_positions, numbers):
             atoms.append(Atom(int(Z), coords = coords))
 
-        return Crystal(atoms = atoms, 
-                       lattice_vectors = lattice_vectors, 
-                       symmetry_operators = [np.eye(3)])
+        return Crystal(atoms = atoms, lattice_vectors = lattice_vectors)
 
     @property
     def spglib_cell(self):
@@ -273,7 +279,7 @@ class Crystal(Lattice):
         """
         from ase import Atoms
         
-        return Atoms(symbols = [atm.ase_atom(lattice = self) for atm in self.unitcell],
+        return Atoms(symbols = [atm.ase_atom(lattice = self) for atm in self],
                      cell = np.array(self.lattice_vectors), **kwargs)
     
     def spacegroup_info(self, symprec = 1e-2, angle_tolerance = -1.0):
