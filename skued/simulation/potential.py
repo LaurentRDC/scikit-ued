@@ -86,16 +86,16 @@ def pelectrostatic(crystal, x, y, bounds = None):
     else:
         atoms = iter(crystal)
 
-    potential = np.zeros(shape = (np.size(x), 1), dtype = np.float)
+    potential = np.zeros_like(x, dtype = np.float)
     z = np.zeros_like(x)
     for atom in atoms:
         xa, ya, _ = atom.xyz(crystal)
         r = minimum_image_distance(x - xa, y - ya, z, lattice = np.array(crystal.lattice_vectors)).reshape(-1,1)
-        potential += np.sum( 2*atom._a*bessel(2*pi*r*np.sqrt(atom._b)) + (atom._c/atom._d) * np.exp( -(r*pi)**2 / atom._d), axis = -1)
+        potential += np.sum( 2*atom._a*bessel(2*pi*r*np.sqrt(atom._b)) + (atom._c/atom._d) * np.exp( -(r*pi)**2 / atom._d), axis = -1).reshape(x.shape)
     potential *= 2 * a0 * e * (pi**2)
     
     # Due to sampling, x,y, and z might pass through the center of atoms
     # Replace n.inf by the next largest value
     potential[np.isinf(potential)] = np.nan
     potential[np.isnan(potential)] = np.nanmax(potential)
-    return potential.reshape(x.shape)
+    return potential
