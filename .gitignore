@@ -8,10 +8,13 @@ __pycache__/
 
 # Visual studio cache
 *.vs/
+*.vscode/
 
 # Protein DataBank files and cache folder
 *.ent
-pdb_cache/
+
+# Structure file caches
+*_cache/
 
 # Jupyter notebooks
 notebooks/
