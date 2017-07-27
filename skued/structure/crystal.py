@@ -74,7 +74,7 @@ class Crystal(Lattice):
 
     Parameters
     ----------
-    atoms : iterable of ``Atom``
+    unitcell : iterable of ``Atom``
         Unit cell atoms. It is assumed that the atoms are in fractional coordinates.
     lattice_vectors : iterable of array_like
         Lattice vectors.
@@ -82,16 +82,15 @@ class Crystal(Lattice):
 
     builtins = set(map(lambda fn: os.path.basename(fn).split('.')[0], CIF_ENTRIES))
 
-    def __init__(self, atoms, lattice_vectors, **kwargs):
-        self.atoms = frozenset(atoms)
+    def __init__(self, unitcell, lattice_vectors, **kwargs):
+        self.unitcell = frozenset(unitcell)
         super().__init__(lattice_vectors, **kwargs)
     
     def __iter__(self):
-        yield from iter(self.atoms)
+        yield from iter(self.unitcell)
     
     def __len__(self):
-        # TODO: very expensive call for large crystals
-        return len(self.atoms)
+        return len(self.unitcell)
     
     def __repr__(self):
         return '< Crystal object with unit cell of {} atoms >'.format(len(self))
@@ -117,7 +116,7 @@ class Crystal(Lattice):
                Computer Physics Communications 182, 1183-1186 (2011). doi: 10.1016/j.cpc.2011.01.013
         """
         with CIFParser(filename = path) as parser:
-            return Crystal(atoms = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
+            return Crystal(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
                            lattice_vectors = parser.lattice_vectors())
     
     @classmethod
@@ -190,7 +189,7 @@ class Crystal(Lattice):
             number is provided, files will always be overwritten. 
         """
         parser = PDBParser(ID = ID, download_dir = download_dir)
-        return Crystal(atoms = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
+        return Crystal(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
                        lattice_vectors = parser.lattice_vectors())
     
     @classmethod
@@ -205,12 +204,8 @@ class Crystal(Lattice):
         """
         lattice_vectors = atoms.get_cell()
         
-        return cls(atoms = [Atom.from_ase(atm) for atm in atoms], 
+        return cls(unitcell = [Atom.from_ase(atm) for atm in atoms], 
                    lattice_vectors = lattice_vectors)
-    
-    @property
-    def unitcell(self):
-        return self.atoms
 
     def primitive(self, symprec = 1e-2):
         """ 
@@ -248,7 +243,7 @@ class Crystal(Lattice):
         for coords, Z in zip(scaled_positions, numbers):
             atoms.append(Atom(int(Z), coords = coords))
 
-        return Crystal(atoms = atoms, lattice_vectors = lattice_vectors)
+        return Crystal(unitcell = atoms, lattice_vectors = lattice_vectors)
 
     @property
     def spglib_cell(self):
@@ -279,7 +274,7 @@ class Crystal(Lattice):
         """
         from ase import Atoms
         
-        return Atoms(symbols = [atm.ase_atom(lattice = self) for atm in self],
+        return Atoms(symbols = [atm.ase_atom(lattice = self) for atm in iter(self)],
                      cell = np.array(self.lattice_vectors), **kwargs)
     
     def spacegroup_info(self, symprec = 1e-2, angle_tolerance = -1.0):
@@ -392,7 +387,7 @@ class Crystal(Lattice):
         # TODO: multicore
         potential = np.zeros_like(x, dtype = np.float)
         r = np.zeros_like(x, dtype = np.float)
-        for atom in self:
+        for atom in iter(self):
             ax, ay, az = atom.xyz(self)
             r[:] = minimum_image_distance(x - ax, y - ay, z - az, 
                                           lattice = self.lattice_vectors)
@@ -519,11 +514,11 @@ class Crystal(Lattice):
         # Pre-allocation of form factors gives huge speedups
         dwf = np.empty_like(SFsin) 	# debye-waller factor
         atomff_dict = dict()
-        for atom in self.atoms:
+        for atom in iter(self):
             if atom.element not in atomff_dict:
                 atomff_dict[atom.element] = atom.electron_form_factor(nG)
 
-        for atom in self: #TODO: implement in parallel?
+        for atom in iter(self): #TODO: implement in parallel?
             x, y, z = atom.xyz(self)
             arg = x*Gx + y*Gy + z*Gz
             atom.debye_waller_factor((Gx, Gy, Gz), out = dwf)

@@ -67,9 +67,9 @@ As an example, let's create the simplest crystal structure known:
 	import numpy as np
 
 	lattice_vectors = 3.35 * np.eye(3)
-	atoms = [Atom('Po', coords = [0,0,0])]
+	unitcell = [Atom('Po', coords = [0,0,0])]
 
-	polonium = Crystal(atoms = atoms, lattice_vectors = lattice_vectors)
+	polonium = Crystal(unitcell, lattice_vectors)
 
 In the case where atoms are given as an asymmetric unit cell and a set of symmetry operators, you can use the
 :func:`symmetry_expansion` function to generate a set of *unique* atoms (even if some symmetry operators might be redundant).
@@ -82,9 +82,20 @@ The :class:`Crystal` object provides some interfaces for easy structure manipula
 
 	for atm in graphite:	#Loops over atoms in the unit cell
 	    print(atm.element, atm.coords)
+    
+The :func:`len` of a :class:`Crystal` is the unit cell size (in number of atoms)::
 
-Note that iterating over the :attr:`crystal.atoms` attribute may or may not be equivalent to 
-:data:`iter(crystal)`, due to the way symmetry operators are defined.
+    from skued import Crystal
+
+    c = Crystal.from_pdb('1gzx') # hemoglobin
+    len(c) # 17536
+
+:class:`Crystal` instances can be equated to each other::
+
+    gold = Crystal.from_database('Au')
+    silver = Crystal.from_database('Ag')
+
+    assert gold == silver # false
 
 Lattice vectors and reciprocal space
 -------------------------------------
