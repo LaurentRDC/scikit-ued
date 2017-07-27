@@ -63,11 +63,9 @@ Simulation
 
 Baseline-determination
 ======================
-.. autofunction:: skued.baseline.baseline_dt
+.. autofunction:: skued.baseline_dt
 
-.. autofunction:: skued.baseline.baseline_dwt
-
-.. autofunction:: skued.baseline.dtcwt
+.. autofunction:: skued.baseline_dwt
 
 Image Analysis
 ==============
