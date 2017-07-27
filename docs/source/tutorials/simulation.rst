@@ -12,6 +12,7 @@ Contents
 ========
 
 * :ref:`powdersim`
+* :ref:`electrostatic`
 
 .. _powdersim:
 
@@ -50,5 +51,56 @@ After plot formatting:
 	plt.xlabel('$s = \sin{\theta}/\lambda$')
 	plt.ylabel('Diffracted intensity (A.u.)')
 	plt.title('Polycrystalline graphite diffraction')
+
+.. _electrostatic:
+
+Electrostatic Potential Simulation
+==================================
+The scattering potential of electrons is the crystal electrostatic potential; hence
+computing such potential is a useful tool.
+
+To compute the electrostatic potential for an infinite crystal on an arbitrary 3D mesh,
+take a look at :func:`electrostatic`::
+
+    from skued import Crystal
+    from skued.simulation import electrostatic
+
+    graphite = Crystal.from_database('C')
+
+    extent = np.linspace(-10, 10, 256)
+    xx, yy, zz = np.meshgrid(extent, extent, extent)
+    potential = electrostatic(graphite, xx, yy, zz)
+
+Another possibility is to calculate the electrostatic potential for an infinite slab in the 
+x-y plane, but finite in z-direction, using :func:`pelectrostatic` (p for projected)::
+
+    from skued.simulation import pelectrostatic
+
+    extent = np.linspace(-5, 5, 256)
+    xx, yy= np.meshgrid(extent, extent)
+    potential = electrostatic(graphite, xx, yy)
+
+After plot formatting:
+
+.. plot::
+
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from skued import Crystal
+    from skued.simulation import pelectrostatic
+
+    extent = np.linspace(-5, 5, 256)
+    xx, yy = np.meshgrid(extent, extent)
+
+    potential = pelectrostatic(Crystal.from_database('C'), xx, yy)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.xaxis.set_visible(False)
+    ax.yaxis.set_visible(False)
+    ax.set_title('Electrostatic potential of graphite')
+    im = ax.imshow(potential)
+    cbar = plt.colorbar(im)
+    cbar.set_label('Electrostatic potential ($V \cdot \AA$)')
 
 :ref:`Return to Top <simulation_tutorial>`

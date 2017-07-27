@@ -84,7 +84,7 @@ class Crystal(Lattice):
         Provenance, e.g. filename.
     """
 
-    builtins = set(map(lambda fn: os.path.basename(fn).split('.')[0], CIF_ENTRIES))
+    builtins = frozenset(map(lambda fn: os.path.basename(fn).split('.')[0], CIF_ENTRIES))
 
     def __init__(self, unitcell, lattice_vectors, source = None, **kwargs):
         self.unitcell = frozenset(unitcell)
@@ -371,40 +371,6 @@ class Crystal(Lattice):
         per_y = sum( (abs(np.vdot(e2,a)) for a in self.lattice_vectors) )
         per_z = sum( (abs(np.vdot(e3,a)) for a in self.lattice_vectors) )
         return per_x, per_y, per_z
-        
-    def potential(self, x, y, z):
-        """
-        Scattering potential calculated on a real-space mesh, assuming an
-        infinite crystal.
-
-        Parameters
-        ----------
-        x, y, z : `~numpy.ndarray`
-            Real space coordinates mesh. 
-        
-        Returns
-        -------
-        potential : `~numpy.ndarray`, dtype float
-            Linear superposition of atomic potential [V*Angs]
-
-        See also
-        --------
-        skued.minimum_image_distance
-        """
-        # TODO: multicore
-        potential = np.zeros_like(x, dtype = np.float)
-        r = np.zeros_like(x, dtype = np.float)
-        for atom in iter(self):
-            ax, ay, az = atom.xyz(self)
-            r[:] = minimum_image_distance(x - ax, y - ay, z - az, 
-                                          lattice = self.lattice_vectors)
-            potential += atom.potential(r)
-        
-        # Due to sampling, x,y, and z might pass through the center of atoms
-        # Replace np.inf by the next largest value
-        m = potential[np.isfinite(potential)].max()
-        potential[np.isinf(potential)] = m
-        return potential
     
     def scattering_vector(self, h, k, l):
         """
