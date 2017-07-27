@@ -10,6 +10,34 @@ import unittest
 
 #seed(23)
 
+try:
+    import ase
+    ASE = True
+except ImportError:
+    ASE = False
+
+@unittest.skipIf(not ASE, 'ASE not importable')
+class TestAseAtoms(unittest.TestCase):
+
+    def setUp(self):
+        name = choice(list(Crystal.builtins))
+        self.crystal = Crystal.from_database(name)
+    
+    def test_construction(self):
+        """ Test that ase_atoms returns without error """
+        to_ase = self.crystal.ase_atoms()
+        self.assertEqual(len(self.crystal), len(to_ase))
+    
+    def test_back_and_forth(self):
+        """ Test conversion to and from ase Atoms """
+        to_ase = self.crystal.ase_atoms()
+        crystal2 = Crystal.from_ase(to_ase)
+        
+        # ase has different handling of coordinates which can lead to
+        # rounding beyond 1e-3. Therefore, we cannot compare directly sets
+        # self.assertSetEqual(set(self.crystal), set(crystal2))
+        self.assertEqual(len(self.crystal), len(crystal2))
+
 class TestBoundedReflections(unittest.TestCase):
 
     def setUp(self):
@@ -34,9 +62,9 @@ class TestBoundedReflections(unittest.TestCase):
         norm_G = np.sqrt(Gx**2 + Gy**2 + Gz**2)
         self.assertTrue(np.all(norm_G <= bound))
 
-class TestSpacegroupInfo(unittest.TestCase):
+class TestSpglibMethods(unittest.TestCase):
     
-    def test_graphite(self):
+    def test_spacegroup_info_graphite(self):
         """ Test that Crystal.spacegroup_info() works correctly for graphite """
         c = Crystal.from_database('C')
         info = c.spacegroup_info()
@@ -49,7 +77,14 @@ class TestSpacegroupInfo(unittest.TestCase):
                     'pointgroup': 'D6h'}
         
         self.assertDictEqual(info, supposed)
-        
+    
+    def test_primitive(self):
+        """ Test that all built-in crystal have a primitive cell """
+        for name in Crystal.builtins:
+            with self.subTest(name):
+                c = Crystal.from_database(name)
+                prim = c.primitive(symprec = 0.1)
+                self.assertLessEqual(len(prim), len(c))
 
 class TestCrystalRotations(unittest.TestCase):
 
@@ -101,10 +136,13 @@ class TestCrystalRotations(unittest.TestCase):
 class TestCrystalConstructors(unittest.TestCase):
 
     def test_builtins(self):
-        """ Test that all names in Crystal.builtins build without errors """
+        """ Test that all names in Crystal.builtins build without errors,
+        and that Crystal.source is correctly recorded. """
         for name in Crystal.builtins:
             with self.subTest(name):
                 c = Crystal.from_database(name)
+
+                self.assertIn(name, c.source)
     
     def test_builtins_wrong_name(self):
         """ Test that a name not in Crystal.builtins will raise a ValueError """
@@ -115,12 +153,13 @@ class TestCrystalConstructors(unittest.TestCase):
         """ Test Crystal.from_pdb constructor """
         # the tests on PDBParser are also using the test_cache folder
         c = Crystal.from_pdb('1fbb', download_dir = 'test_cache')
+        self.assertIn('1fbb', c.source)
     
     def test_from_cod(self):
         """ Test building a Crystal object from the COD """
         # revision = None and latest revision should give the same Crystal
-        c = Crystal.from_cod(1521124)
-        c2 = Crystal.from_cod(1521124, revision = 176429)
+        c = Crystal.from_cod(1521124, download_dir = 'test_cache')
+        c2 = Crystal.from_cod(1521124, revision = 176429, download_dir = 'test_cache')
 
         self.assertSetEqual(set(c), set(c2))
 

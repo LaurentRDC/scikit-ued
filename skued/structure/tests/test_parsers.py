@@ -76,8 +76,6 @@ class TestCIFParser(unittest.TestCase):
                     
                     crystal = Crystal.from_cif(name)
                     spglib_dataset = get_symmetry_dataset(crystal.spglib_cell, symprec = 1e-2)
-                    if not spglib_dataset:
-                        continue
                     from_spglib = spglib_dataset['number']
                     self.assertEqual(from_parser, from_spglib)
     

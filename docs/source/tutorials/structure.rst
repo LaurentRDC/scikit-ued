@@ -11,63 +11,9 @@ Modeling atomic structures
 Contents
 ========
 
-* :ref:`Atom`
 * :ref:`Crystal`
+* :ref:`Atom`
 
-.. _atom:
-
-The :class:`Atom` Class
-=======================
-The basis of structure manipulations is to manipulate atoms. :class:`Atom` objects are in the
-category of `Transformable` objects, meaning that their coordinates can be transformed
-according to any affine transform.
-
-To create an atom, simply provide its element and coordinates::
-	
-	from skued import Atom
-
-	copper = Atom(element = 'Cu', coords = [0,0,0])
-
-Since we are most concerned with atoms in crystals, the coordinates here are assumed to be fractional.
-The real-space position with respect to a :class:`Crystal` or :class:`Lattice` can be accessed using the 
-:meth:`xyz` method::
-
-    from skued.structure import graphite
-    
-    carbon = list(graphite)[-1]
-    fractional = carbon.coords
-    real = carbon.xyz(lattice = graphite)
-
-One important feature of the :class:`Atom` class is the possibility to compute the electrostatic
-potential across meshes::
-
-	import numpy as np
-	import matplotlib.pyplot as plt
-
-	xx, yy = np.meshgrid(np.linspace(-0.3, 0.3, num = 100), 
-	                     np.linspace(-0.3, 0.3, num = 100))
-	dist = np.sqrt(xx**2 + yy**2)	# distance from the atom in Angstroms
-
-	es_potential = copper.potential(dist)
-	plt.imshow(es_potential)
-
-After plot formatting:
-
-.. plot::
-	
-	import numpy as np
-	import matplotlib.pyplot as plt
-	from skued.structure import Atom
-	copper = Atom(element = 'Cu', coords = [0,0,0])
-	xx, yy = np.meshgrid(np.linspace(-0.3, 0.3, num = 100), 
-						 np.linspace(-0.3, 0.3, num = 100))
-	dist = np.sqrt(xx**2 + yy**2)	# distance from the atom in Angstroms
-	es_potential = copper.potential(dist)
-	plt.title('Atomic potential of Cu (log-scale)')
-	plt.imshow(np.log(1 + es_potential), extent = [xx.min(), xx.max(), yy.min(), yy.max()])
-	plt.ylabel('x-direction ($\AA$)')
-	plt.xlabel('y-direction ($\AA$)')
-	plt.show()
 
 .. _crystal:
 
@@ -112,9 +58,7 @@ To do this, you need:
 1. iterable of :class:`Atom` objects, with coordinates. These atoms can either be the full unit cell
 or the asymmetric unit cell;
 2. three lattice vectors;
-3. Symmetry operators (optional). These symmetry operators will be applied to the atoms to generate
-the full unit cell. Hence, if your iterable of atoms contains the entire unit cell, symmetry operators do
-not need to be provided. The symmetry operators must be expressed in the reduced (or fractional) basis.
+3. (optional) symmetry operators that generate the full unit cell from the asymmetric unit cell.
 
 As an example, let's create the simplest crystal structure known: 
 `alpha-Polonium (simple cubic) <https://en.wikipedia.org/wiki/Polonium#Solid_state_form>`_::
@@ -123,11 +67,12 @@ As an example, let's create the simplest crystal structure known:
 	import numpy as np
 
 	lattice_vectors = 3.35 * np.eye(3)
-	atoms = [Atom('Po', coords = [0,0,0])]
+	unitcell = [Atom('Po', coords = [0,0,0])]
 
-	polonium = Crystal(atoms = atoms, lattice_vectors = lattice_vectors)
+	polonium = Crystal(unitcell, lattice_vectors)
 
-That's it!
+In the case where atoms are given as an asymmetric unit cell and a set of symmetry operators, you can use the
+:func:`symmetry_expansion` function to generate a set of *unique* atoms (even if some symmetry operators might be redundant).
 
 Crystal attributes
 ------------------
@@ -137,9 +82,26 @@ The :class:`Crystal` object provides some interfaces for easy structure manipula
 
 	for atm in graphite:	#Loops over atoms in the unit cell
 	    print(atm.element, atm.coords)
+    
+The :func:`len` of a :class:`Crystal` is the unit cell size (in number of atoms)::
 
-Note that iterating over the :attr:`crystal.atoms` attribute may or may not be equivalent to 
-:data:`iter(crystal)`, due to the way symmetry operators are defined.
+    from skued import Crystal
+
+    c = Crystal.from_pdb('1gzx') # hemoglobin
+    len(c) # 17536
+
+:class:`Crystal` instances can be equated to each other::
+
+    gold = Crystal.from_database('Au')
+    silver = Crystal.from_database('Ag')
+
+    assert gold == silver # false
+
+If a :class:`Crystal` was generated from a file, the path to its file can be retrieved
+from the :attr:`source` attribute::
+
+    c = Crystal.from_pdb('1gzx')
+    print(c.source)
 
 Lattice vectors and reciprocal space
 -------------------------------------
@@ -221,5 +183,81 @@ Static structure factor calculation is also possible, both for a single reflecti
 	h, k, l = graphite.bounded_reflections(12)
 	SF = graphite.structure_factor_miller(h, k, l)
 	SF.shape == h.shape 	# True
+
+Compatibility with ASE
+----------------------
+The `Atomic Simulation Environment <https://wiki.fysik.dtu.dk/ase/index.html>`_ is a powerful tool. You can harness its power and convert
+between :class:`ase.Atoms` and :class:`skued.Crystal` at will.
+
+To create an :class:`ase.Atoms` object from a :class:`Crystal`, use the :meth:`Crystal.ase_atoms` method::
+
+	from ase.calculators.abinit import Abinit
+	from skued import Crystal
+	
+	gold = Crystal.from_database('Au')
+	ase_gold = gold.ase_atoms(calculator = Abinit(...))
+
+All keywords of the :class:`ase.Atoms` constructor are supported. To get back to a :class:`Crystal` instance::
+
+	gold2 = Crystal.from_ase(ase_gold)
+
+.. _atom:
+
+The :class:`Atom` Class
+=======================
+The basis of structure manipulations is to manipulate atoms. :class:`Atom` objects are in the
+category of `Transformable` objects, meaning that their coordinates can be transformed
+according to any affine transform.
+
+To create an atom, simply provide its element and coordinates::
+	
+	from skued import Atom
+
+	copper = Atom(element = 'Cu', coords = [0,0,0])
+
+Optional information can be give, such as magnetic moment and mean-squared displacement. For users of :mod:`ase`, 
+another possibility is to instantiate an :class:`Atom` from an :class:`ase.Atom` using the :meth:`Atom.from_ase` 
+constructor.
+
+Since we are most concerned with atoms in crystals, the coordinates here are assumed to be fractional.
+The real-space position with respect to a :class:`Crystal` or :class:`Lattice` can be accessed using the 
+:meth:`xyz` method::
+
+    from skued.structure import graphite
+    
+    carbon = list(graphite)[-1]
+    fractional = carbon.coords
+    real = carbon.xyz(lattice = graphite)
+
+One important feature of the :class:`Atom` class is the possibility to compute the electrostatic
+potential across meshes::
+
+	import numpy as np
+	import matplotlib.pyplot as plt
+
+	xx, yy = np.meshgrid(np.linspace(-0.3, 0.3, num = 100), 
+	                     np.linspace(-0.3, 0.3, num = 100))
+	dist = np.sqrt(xx**2 + yy**2)	# distance from the atom in Angstroms
+
+	es_potential = copper.potential(dist)
+	plt.imshow(es_potential)
+
+After plot formatting:
+
+.. plot::
+	
+	import numpy as np
+	import matplotlib.pyplot as plt
+	from skued.structure import Atom
+	copper = Atom(element = 'Cu', coords = [0,0,0])
+	xx, yy = np.meshgrid(np.linspace(-0.3, 0.3, num = 100), 
+						 np.linspace(-0.3, 0.3, num = 100))
+	dist = np.sqrt(xx**2 + yy**2)	# distance from the atom in Angstroms
+	es_potential = copper.potential(dist)
+	plt.title('Atomic potential of Cu (log-scale)')
+	plt.imshow(np.log(1 + es_potential), extent = [xx.min(), xx.max(), yy.min(), yy.max()])
+	plt.ylabel('x-direction ($\AA$)')
+	plt.xlabel('y-direction ($\AA$)')
+	plt.show()
 
 :ref:`Return to Top <structure_tutorial>`

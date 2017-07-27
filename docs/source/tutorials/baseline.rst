@@ -87,7 +87,7 @@ Here is a usage example for the data presented above::
 
 	import numpy as np
 	from skued import gaussian
-	from skued.baseline import baseline_dwt
+	from skued import baseline_dwt
 
 	s, intensity = np.load('powder.npy')
 
@@ -103,7 +103,7 @@ Here is a usage example for the data presented above::
 	import matplotlib.pyplot as plt
 	import numpy as np
 	from skued import gaussian, spectrum_colors
-	from skued.baseline import baseline_dwt
+	from skued import baseline_dwt
 
 	s, intensity = np.load('powder.npy')
 
@@ -153,7 +153,7 @@ Here is a usage example for the data presented above::
 
 	import numpy as np
 	from skued import gaussian
-	from skued.baseline import baseline_dt
+	from skued import baseline_dt
 
 	s, intensity = np.load('powder.npy')
 
@@ -169,7 +169,7 @@ Here is a usage example for the data presented above::
 	import matplotlib.pyplot as plt
 	import numpy as np
 	from skued import gaussian, spectrum_colors
-	from skued.baseline import baseline_dt
+	from skued import baseline_dt
 
 	s, intensity = np.load('powder.npy')
 

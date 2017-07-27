@@ -9,14 +9,31 @@ from copy import deepcopy
 seed(23)
 np.random.seed(23)
 
+try:
+    import ase
+    ASE = True
+except ImportError:
+    ASE = False
+
 def random_transform():
     return rotation_matrix(random(), axis = np.random.random((3,)))
+
+@unittest.skipIf(not ASE, 'ASE not installed or importable')
+class TestASEAtom(unittest.TestCase):
+
+    def setUp(self):
+        self.atom =  Atom(randint(1, 103), coords = np.random.random((3,)))
+    
+    def test_back_and_forth(self):
+        """ Test that conversion from skued.Atom and ase.Atom is working """
+        to_ase = self.atom.ase_atom()
+        atom2 = Atom.from_ase(to_ase)
+        self.assertEqual(self.atom, atom2)
 
 class TestAtom(unittest.TestCase):
 
     def setUp(self):
-        # Atoms with Z larger than 104 have no scattering parameters available
-        self.atom =  Atom(randint(1, 104), coords = np.random.random((3,)))
+        self.atom =  Atom(randint(1, 103), coords = np.random.random((3,)))
     
     def test_init(self):
         """ Test that Atom can be instantiated with an element str or atomic number """
@@ -61,4 +78,5 @@ class TestAtom(unittest.TestCase):
         for x1, x2 in zip(tuple(before), tuple(after)):
             self.assertAlmostEqual(x1, x2)
 
-
+if __name__ == '__main__':
+    unittest.main()

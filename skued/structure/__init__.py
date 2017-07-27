@@ -9,11 +9,12 @@ class ParseError(IOError):
     pass
     
 from .atom import Atom, real_coords, frac_coords
+from .atom_data import ELEM_TO_MAGMOM, ELEM_TO_MASS, ELEM_TO_NAME, ELEM_TO_NUM, NUM_TO_ELEM
 from .lattice import Lattice, lattice_vectors_from_parameters
 from .pdb_parser import PDBParser
 from .spg_data import Hall2Number
 from .cif_parser import CIFParser
-from .crystal import Crystal
+from .crystal import Crystal, symmetry_expansion
 
 ###########################
 # Graphite built-in Crystal
@@ -35,4 +36,4 @@ unitcell = list()
 for coordinates in (r1,r2,r3,r4):
     unitcell.append(Atom(element = 'C', coords = frac_coords(coordinates, lattice_vectors)))
 
-graphite = Crystal(atoms = unitcell, lattice_vectors = lattice_vectors, symmetry_operators = [np.eye(3)])
+graphite = Crystal(unitcell, lattice_vectors = lattice_vectors)
