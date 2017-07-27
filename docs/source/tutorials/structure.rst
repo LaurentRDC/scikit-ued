@@ -97,6 +97,12 @@ The :func:`len` of a :class:`Crystal` is the unit cell size (in number of atoms)
 
     assert gold == silver # false
 
+If a :class:`Crystal` was generated from a file, the path to its file can be retrieved
+from the :attr:`source` attribute::
+
+    c = Crystal.from_pdb('1gzx')
+    print(c.source)
+
 Lattice vectors and reciprocal space
 -------------------------------------
 Once a :class:`Crystal` object is ready, you can manipulate the lattice parameters via the underlying :class:`Lattice`

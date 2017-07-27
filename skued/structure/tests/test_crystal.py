@@ -136,10 +136,13 @@ class TestCrystalRotations(unittest.TestCase):
 class TestCrystalConstructors(unittest.TestCase):
 
     def test_builtins(self):
-        """ Test that all names in Crystal.builtins build without errors """
+        """ Test that all names in Crystal.builtins build without errors,
+        and that Crystal.source is correctly recorded. """
         for name in Crystal.builtins:
             with self.subTest(name):
                 c = Crystal.from_database(name)
+
+                self.assertIn(name, c.source)
     
     def test_builtins_wrong_name(self):
         """ Test that a name not in Crystal.builtins will raise a ValueError """
@@ -150,6 +153,7 @@ class TestCrystalConstructors(unittest.TestCase):
         """ Test Crystal.from_pdb constructor """
         # the tests on PDBParser are also using the test_cache folder
         c = Crystal.from_pdb('1fbb', download_dir = 'test_cache')
+        self.assertIn('1fbb', c.source)
     
     def test_from_cod(self):
         """ Test building a Crystal object from the COD """

@@ -42,6 +42,8 @@ def symmetry_expansion(atoms, symmetry_operators):
     ------
     Atom
     """
+    # TODO: provide ability to reduce to primitive, niggli_reduce, etc.
+    #       using spglib?
     uniques = set([])
     symmetry_operators = tuple(map(affine_map, symmetry_operators))
 
@@ -78,12 +80,15 @@ class Crystal(Lattice):
         Unit cell atoms. It is assumed that the atoms are in fractional coordinates.
     lattice_vectors : iterable of array_like
         Lattice vectors.
+    source : str or None, optional
+        Provenance, e.g. filename.
     """
 
     builtins = set(map(lambda fn: os.path.basename(fn).split('.')[0], CIF_ENTRIES))
 
-    def __init__(self, unitcell, lattice_vectors, **kwargs):
+    def __init__(self, unitcell, lattice_vectors, source = None, **kwargs):
         self.unitcell = frozenset(unitcell)
+        self.source = source
         super().__init__(lattice_vectors, **kwargs)
     
     def __iter__(self):
@@ -117,7 +122,8 @@ class Crystal(Lattice):
         """
         with CIFParser(filename = path) as parser:
             return Crystal(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
-                           lattice_vectors = parser.lattice_vectors())
+                           lattice_vectors = parser.lattice_vectors(),
+                           source = str(path))
     
     @classmethod
     def from_database(cls, name):
@@ -190,7 +196,8 @@ class Crystal(Lattice):
         """
         parser = PDBParser(ID = ID, download_dir = download_dir)
         return Crystal(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
-                       lattice_vectors = parser.lattice_vectors())
+                       lattice_vectors = parser.lattice_vectors(),
+                       source = str(parser.file))
     
     @classmethod
     def from_ase(cls, atoms):
