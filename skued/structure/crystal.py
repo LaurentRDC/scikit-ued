@@ -346,32 +346,6 @@ class Crystal(Lattice):
         if err_msg:
             raise RuntimeError('Symmetry-determination has returned the following error: {}'.format(err_msg))
     
-    def periodicity(self):
-        """
-        Crystal periodicity in x, y and z direction from the lattice constants.
-        This is effectively a bounding cube for the unit cell, which is itself a unit cell.
-
-        Parameters
-        ----------
-        lattice : Lattice
-
-        Returns
-        -------
-        out : tuple
-            Periodicity in x, y and z directions [angstroms]
-        
-        Notes
-        -----
-        Warning: the periodicity of the lattice depends on its orientation in real-space.
-        """
-        # By definition of a lattice, moving by the projection of all Lattice
-        # vectors on an axis should return you to an equivalent lattice position
-        e1, e2, e3 = np.eye(3)
-        per_x = sum( (abs(np.vdot(e1,a)) for a in self.lattice_vectors) )
-        per_y = sum( (abs(np.vdot(e2,a)) for a in self.lattice_vectors) )
-        per_z = sum( (abs(np.vdot(e3,a)) for a in self.lattice_vectors) )
-        return per_x, per_y, per_z
-    
     def scattering_vector(self, h, k, l):
         """
         Returns the scattering vector G from Miller indices.
