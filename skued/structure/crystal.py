@@ -104,6 +104,14 @@ class Crystal(Lattice):
         return (isinstance(other, self.__class__) 
                 and (set(self) == set(other))
                 and super().__eq__(other))
+    
+    def __array__(self):
+        """ Returns an array in which each row represents a unit cell atom """
+        arr = np.empty(shape = (len(self), 4), dtype = np.float)
+        for row, atm in enumerate(self):
+            arr[row, 0] = atm.atomic_number
+            arr[row, 1:] = atm.coords
+        return arr
 
     @classmethod
     def from_cif(cls, path):
@@ -256,9 +264,8 @@ class Crystal(Lattice):
     def spglib_cell(self):
         """ 3-tuple of ndarrays properly formatted for spglib's routines """
         lattice = np.array(self.lattice_vectors)
-        positions = np.array([atom.coords for atom in iter(self)])
-        numbers = np.array(tuple(atom.atomic_number for atom in iter(self)))
-        return (lattice, positions, numbers)
+        arr = np.asarray(self)
+        return (lattice, arr[:, 1:], arr[:,0])
 
     def ase_atoms(self, **kwargs):
         """ 
