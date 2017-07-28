@@ -84,7 +84,7 @@ class Crystal(Lattice):
         Provenance, e.g. filename.
     """
 
-    builtins = set(map(lambda fn: os.path.basename(fn).split('.')[0], CIF_ENTRIES))
+    builtins = frozenset(map(lambda fn: os.path.basename(fn).split('.')[0], CIF_ENTRIES))
 
     def __init__(self, unitcell, lattice_vectors, source = None, **kwargs):
         self.unitcell = frozenset(unitcell)
@@ -104,6 +104,14 @@ class Crystal(Lattice):
         return (isinstance(other, self.__class__) 
                 and (set(self) == set(other))
                 and super().__eq__(other))
+    
+    def __array__(self):
+        """ Returns an array in which each row represents a unit cell atom """
+        arr = np.empty(shape = (len(self), 4), dtype = np.float)
+        for row, atm in enumerate(self):
+            arr[row, 0] = atm.atomic_number
+            arr[row, 1:] = atm.coords
+        return arr
 
     @classmethod
     def from_cif(cls, path):
@@ -256,9 +264,8 @@ class Crystal(Lattice):
     def spglib_cell(self):
         """ 3-tuple of ndarrays properly formatted for spglib's routines """
         lattice = np.array(self.lattice_vectors)
-        positions = np.array([atom.coords for atom in iter(self)])
-        numbers = np.array(tuple(atom.atomic_number for atom in iter(self)))
-        return (lattice, positions, numbers)
+        arr = np.asarray(self)
+        return (lattice, arr[:, 1:], arr[:,0])
 
     def ase_atoms(self, **kwargs):
         """ 
@@ -345,66 +352,6 @@ class Crystal(Lattice):
         err_msg = get_error_message()
         if err_msg:
             raise RuntimeError('Symmetry-determination has returned the following error: {}'.format(err_msg))
-    
-    def periodicity(self):
-        """
-        Crystal periodicity in x, y and z direction from the lattice constants.
-        This is effectively a bounding cube for the unit cell, which is itself a unit cell.
-
-        Parameters
-        ----------
-        lattice : Lattice
-
-        Returns
-        -------
-        out : tuple
-            Periodicity in x, y and z directions [angstroms]
-        
-        Notes
-        -----
-        Warning: the periodicity of the lattice depends on its orientation in real-space.
-        """
-        # By definition of a lattice, moving by the projection of all Lattice
-        # vectors on an axis should return you to an equivalent lattice position
-        e1, e2, e3 = np.eye(3)
-        per_x = sum( (abs(np.vdot(e1,a)) for a in self.lattice_vectors) )
-        per_y = sum( (abs(np.vdot(e2,a)) for a in self.lattice_vectors) )
-        per_z = sum( (abs(np.vdot(e3,a)) for a in self.lattice_vectors) )
-        return per_x, per_y, per_z
-        
-    def potential(self, x, y, z):
-        """
-        Scattering potential calculated on a real-space mesh, assuming an
-        infinite crystal.
-
-        Parameters
-        ----------
-        x, y, z : `~numpy.ndarray`
-            Real space coordinates mesh. 
-        
-        Returns
-        -------
-        potential : `~numpy.ndarray`, dtype float
-            Linear superposition of atomic potential [V*Angs]
-
-        See also
-        --------
-        skued.minimum_image_distance
-        """
-        # TODO: multicore
-        potential = np.zeros_like(x, dtype = np.float)
-        r = np.zeros_like(x, dtype = np.float)
-        for atom in iter(self):
-            ax, ay, az = atom.xyz(self)
-            r[:] = minimum_image_distance(x - ax, y - ay, z - az, 
-                                          lattice = self.lattice_vectors)
-            potential += atom.potential(r)
-        
-        # Due to sampling, x,y, and z might pass through the center of atoms
-        # Replace np.inf by the next largest value
-        m = potential[np.isfinite(potential)].max()
-        potential[np.isinf(potential)] = m
-        return potential
     
     def scattering_vector(self, h, k, l):
         """

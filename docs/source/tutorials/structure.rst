@@ -37,7 +37,7 @@ constructed like so::
 Protein DataBank files are even easier to handle; simply provide the 4-letter identification code
 and the structure file will be taken care of by scikit-ued::
 	
-	hemoglobin = Crystal.from_pdb('1gxz')
+	hemoglobin = Crystal.from_pdb('1gzx')
 
 Another convenient way to construct a :class:`Crystal` is through the `Crystallography Open Database <http://www.crystallography.net/cod/>`_::
 
@@ -100,6 +100,29 @@ from the :attr:`source` attribute::
 
     c = Crystal.from_pdb('1gzx')
     print(c.source)
+
+:class:`Crystal` instances can be converted to NumPy arrays as well::
+
+    import numpy
+
+    arr = numpy.array(Crystal.from_database('Si'))
+
+:data:`arr` will contain one row per unit cell atom:
+
+.. table::
+    :widths: grid
+
+    +--------------+-----------------------+
+    |Atomic Number |Fractional coordinates |
+    +==============+=======+========+======+
+    |      Z1      |  x1   |   y1   |  z1  |
+    +--------------+-------+--------+------+
+    |      Z2      |  x2   |   y2   |  z2  |
+    +--------------+-------+--------+------+
+    |      Z3      |  x3   |   y3   |  z3  |
+    +--------------+-------+--------+------+
+    |            ...                       |
+    +--------------------------------------+
 
 Lattice vectors and reciprocal space
 -------------------------------------

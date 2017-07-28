@@ -32,12 +32,10 @@ def electrostatic(crystal, x, y, z):
     
     See also
     --------
-    pelectrostatic
-        Projected electrostatic potential from a crystal
+    pelectrostatic: projected electrostatic potential of an infinite crystal.
     """
     # TODO: split xx and yy into smalled non-repeating unit
     # TODO: multicore
-    # TODO: pre-load scattering params _a, _b, _c, and _d into an appropriate shape
     
     potential = np.zeros_like(x, dtype = np.float)
     r = np.zeros_like(x, dtype = np.float)
@@ -53,27 +51,34 @@ def electrostatic(crystal, x, y, z):
     potential[np.isinf(potential)] = m
     return potential
 
-def pelectrostatic(crystal, xx, yy, bounds = None):
+def pelectrostatic(crystal, x, y, bounds = None):
     """
     Projected electrostatic potential from a crystal calculated on a real-space mesh, 
-    assuming an infinite crystal. Projection axis is defined as the z-axis. To project the potential
-    along a different axis, the crystal can be rotated with ``Crystal.transform``.
+    assuming an infinite crystal in x and y. Projection axis is defined as the z-axis. 
+    To project the potential along a different axis, the crystal can be rotated with ``Crystal.transform``.
 
     Parameters
     ----------
     crystal : skued.Crystal
         
-    xx, yy:  `~numpy.ndarray`
-        Real space coordinates mesh. 
+    x, y:  `~numpy.ndarray`
+        Real-space coordinates. 
+    bounds : iterable or None, optional
+        Bounds of atom inclusion. Atoms with real-space z-position outside [ min(bounds), max(bounds) )
+        are not counted in the computation.
     
     Returns
     -------
     potential : `~numpy.ndarray`, dtype float
-        Linear superposition of atomic potential [V*Angs]
+        Linear superposition of electrostatic potential [V*Angs]
+    
+    See also
+    --------
+    electrostatic: three-dimensional electrostatic potential of an infinite crystal.
     """
     # TODO: split xx and yy into smalled non-repeating unit
+    #       np.unique(np.mod(xx, per_x))
     # TODO: multicore
-    # TODO: pre-load scattering params _a, _b, _c, and _d into an appropriate shape
 
     if bounds:
         min_z, max_z = min(bounds), max(bounds)
@@ -81,12 +86,12 @@ def pelectrostatic(crystal, xx, yy, bounds = None):
     else:
         atoms = iter(crystal)
 
-    potential = np.zeros_like(xx)
-    zz = np.zeros_like(xx)
+    potential = np.zeros_like(x, dtype = np.float)
+    z = np.zeros_like(x)
     for atom in atoms:
         xa, ya, _ = atom.xyz(crystal)
-        r = minimum_image_distance(xx - xa, yy - ya, zz, lattice = np.array(crystal.lattice_vectors)).reshape(-1,1)
-        potential += np.sum( 2*atom._a*bessel(2*pi*r*np.sqrt(atom._b)) + (atom._c/atom._d) * np.exp( -(r*pi)**2 / atom._d), axis = -1).reshape(xx.shape)
+        r = minimum_image_distance(x - xa, y - ya, z, lattice = np.array(crystal.lattice_vectors)).reshape(-1,1)
+        potential += np.sum( 2*atom._a*bessel(2*pi*r*np.sqrt(atom._b)) + (atom._c/atom._d) * np.exp( -(r*pi)**2 / atom._d), axis = -1).reshape(x.shape)
     potential *= 2 * a0 * e * (pi**2)
     
     # Due to sampling, x,y, and z might pass through the center of atoms
@@ -94,11 +99,3 @@ def pelectrostatic(crystal, xx, yy, bounds = None):
     potential[np.isinf(potential)] = np.nan
     potential[np.isnan(potential)] = np.nanmax(potential)
     return potential
-
-def _proj_elec_atm(atom, xx, yy, lattice):
-    potential = np.zeros_like(xx, dtype = np.float)[:,:,None]
-    xa, ya, _ = tuple(atom.xyz(lattice))
-    r = np.zeros_like(xx)[:,:,None, None]
-    r[:,:, 0, 0] = minimum_image_distance(xx - xa, yy - ya, np.zeros_like(xx), lattice)
-    potential = np.sum( 2*atom._a*bessel(2*pi*r*np.sqrt(atom._b)) + (atom._c/atom._d) * np.exp( -(r*pi)**2 / atom._d), axis = -1)
-    return 2*a0*e*(pi**2)*np.squeeze(potential)   
