@@ -2,11 +2,9 @@
 
 .. _structure_tutorial:
 
-******************
-Structure Tutorial
-******************
-
+**************************
 Modeling atomic structures
+**************************
 
 Contents
 ========
