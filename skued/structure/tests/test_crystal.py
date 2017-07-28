@@ -38,6 +38,17 @@ class TestAseAtoms(unittest.TestCase):
         # self.assertSetEqual(set(self.crystal), set(crystal2))
         self.assertEqual(len(self.crystal), len(crystal2))
 
+class TestCrystalMethods(unittest.TestCase):
+
+    def setUp(self):
+        name = choice(list(Crystal.builtins))
+        self.crystal = Crystal.from_database(name)
+    
+    def test_array(self):
+        """ Test Crystal.__array__ """
+        arr = np.array(self.crystal)
+        self.assertSequenceEqual(arr.shape, (len(self.crystal), 4))
+
 class TestBoundedReflections(unittest.TestCase):
 
     def setUp(self):
