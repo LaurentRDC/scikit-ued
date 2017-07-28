@@ -2,7 +2,7 @@
 from math import sin, cos, tan, sqrt, radians
 import numpy as np
 from numpy.linalg import norm
-from .. import transform
+from .. import transform, change_basis_mesh
 
 e1, e2, e3 = np.eye(3) # Euclidian basis
 
@@ -112,6 +112,16 @@ class Lattice(object):
         b2 = 2*np.pi*np.cross(self.a3, self.a1)/cell_volume
         b3 = 2*np.pi*np.cross(self.a1, self.a2)/cell_volume
         return b1, b2, b3
+
+    @property
+    def periodicity(self):
+        """ Crystal periodicity in x, y and z direction from the lattice constants.
+        This is effectively a bounding cube for the unit cell, which is itself a unit cell. """
+        e1, e2, e3 = np.eye(3)
+        per_x = sum( (abs(np.vdot(e1,a)) for a in self.lattice_vectors) )
+        per_y = sum( (abs(np.vdot(e2,a)) for a in self.lattice_vectors) )
+        per_z = sum( (abs(np.vdot(e3,a)) for a in self.lattice_vectors) )
+        return per_x, per_y, per_z
 
     def transform(self, *matrices):
         """
