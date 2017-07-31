@@ -5,7 +5,7 @@ Plotting utilities
 """
 from colorsys import hsv_to_rgb
 
-from .iter_utils import linspace
+from npstreams import linspace
 
 def _hex_to_rgb(value):
 	""" Return an RGB tuple (float 0 to 1) from an hexadecimal 
