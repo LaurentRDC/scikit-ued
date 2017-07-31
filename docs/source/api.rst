@@ -73,8 +73,6 @@ Image Analysis
 
 .. automodule:: skued.image.alignment
 
-.. automodule:: skued.image.streaming
-
 .. automodule:: skued.image.symmetry
 
 .. automodule:: skued.image.correlation
