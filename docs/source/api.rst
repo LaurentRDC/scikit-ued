@@ -4,12 +4,6 @@
 Reference/API
 *************
 
-Parallel Utilities
-==================
-.. autofunction:: skued.pmap
-
-.. autofunction:: skued.preduce
-
 Plot Utilities
 ==============
 .. autofunction:: skued.spectrum_colors
@@ -19,10 +13,6 @@ Plot Utilities
 Array Utilities
 ===============
 .. automodule:: skued.array_utils
-
-Iteration/Generator Utilities
-=============================
-.. automodule:: skued.iter_utils
 
 Quantities
 ==========
