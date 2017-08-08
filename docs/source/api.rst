@@ -83,6 +83,15 @@ Array Utilities
     mirror
     repeated_array
 
+Structure Parsing
+=================
+
+.. autosummary::
+    :toctree: classes/
+
+    structure.CIFParser
+    structure.PDBParser
+
 Quantities
 ==========
 
