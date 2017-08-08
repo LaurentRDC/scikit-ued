@@ -9,6 +9,10 @@ Image Analysis/Processing Tutorial
 Diffraction patterns analysis is essentially specialized image processing. This tutorial
 will show some of the image processing and analysis techniques that are part of the :mod:`skued.image` module.
 
+.. note::
+    A lot of functionality has been moved to the package `npstreams`_. Use scikit-ued in combination
+    with `npstreams`_ to process electron diffraction data in parallel.
+
 Contents
 ========
 
@@ -315,4 +319,4 @@ First, we create a test image::
 	plt.plot(radius, intensity)
 	plt.show()
 
-:ref:`Return to Top <image_analysis_tutorial>`
+:ref:`Return to Top <baseline_tutorial>`

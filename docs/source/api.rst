@@ -1,30 +1,43 @@
+.. include:: references.txt
+
 .. _api:
 
 *************
 Reference/API
 *************
 
-Plot Utilities
+.. currentmodule:: skued
+
+Baseline-determination
+======================
+
+Please refer to the :ref:`tutorial on baseline-determination <baseline_tutorial>` for some examples.
+
+.. autosummary::
+    :toctree: functions/
+
+    baseline_dt
+    baseline_dwt
+
+Image Analysis
 ==============
-.. autofunction:: skued.spectrum_colors
 
-.. autofunction:: skued.rgb_sweep
+Combine the routines in the :mod:`skued.image` module with
+`npstreams`_ to process diffraction data in parallel. Please refer 
+to the :ref:`tutorial on image manipulation <image_analysis_tutorial>` 
+for some examples.
 
-Array Utilities
-===============
-.. automodule:: skued.array_utils
+.. autosummary::
+    :toctree: functions/
 
-Quantities
-==========
-.. automodule:: skued.quantities
-
-Voigt Profile
-=============
-.. automodule:: skued.voigt
-
-Affine Transforms
-=================
-.. automodule:: skued.affine
+    image.angular_average
+    image.powder_center
+    image.align
+    image.ialign
+    image.diff_register
+    image.shift_image
+    image.nfold
+    image.mnxc2
 
 Crystal structure
 =================
@@ -32,37 +45,77 @@ Handling crystal structure information is crucial for many data analysis and mod
 See the :ref:`Structure tutorial <structure_tutorial>` for some examples on how to use the following
 classes.
 
-.. autoclass:: skued.Crystal
-   :members:
+.. autosummary::
+    :toctree: classes/
+    
+    Crystal
+    Atom
+    Lattice
 
-   .. autoattribute:: skued.Crystal.lattice_vectors
+.. autosummary::
+    :toctree: functions/
 
-   .. autoattribute:: skued.Crystal.lattice_parameters
-
-.. autoclass:: skued.Atom
-   :members:
-
-.. autoclass:: skued.Lattice
-   :members:
-
-.. autofunction:: skued.structure.symmetry_expansion
+    skued.structure.symmetry_expansion
 
 Simulation
 ==========
-.. autofunction:: skued.simulation.powdersim
 
-Baseline-determination
-======================
-.. autofunction:: skued.baseline_dt
+.. autosummary::
+    :toctree: functions/
 
-.. autofunction:: skued.baseline_dwt
+    skued.simulation.powdersim
 
-Image Analysis
+Plot Utilities
 ==============
-.. automodule:: skued.image.powder
 
-.. automodule:: skued.image.alignment
+.. autosummary::
+    :toctree: functions/
 
-.. automodule:: skued.image.symmetry
+    spectrum_colors
+    rgb_sweep
 
-.. automodule:: skued.image.correlation
+Array Utilities
+===============
+
+.. autosummary::
+    :toctree: functions/
+
+    mirror
+    repeated_array
+
+Quantities
+==========
+
+.. autosummary::
+    :toctree: functions/
+
+    electron_wavelength
+    interaction_parameter
+    lorentz
+
+Voigt Profile
+=============
+
+.. autosummary::
+    :toctree: functions/
+
+    gaussian
+    lorentzian
+    pseudo_voigt
+
+Affine Transforms
+=================
+
+.. autosummary::
+    :toctree: functions/
+
+    affine_map
+    transform
+    change_of_basis
+    change_basis_mesh
+    is_basis
+    is_rotation_matrix
+    minimum_image_distance
+    rotation_matrix
+    translation_matrix
+    translation_rotation_matrix

@@ -4,3 +4,4 @@
 .. _Cython: http://cython.org
 .. _Pywavelets: https://pywavelets.readthedocs.io/en/latest/
 .. _PyCifRW: http://www.iucr.org/resources/cif/software/pycifrw
+.. _npstreams: https://npstreams.readthedocs.io/en/release/
