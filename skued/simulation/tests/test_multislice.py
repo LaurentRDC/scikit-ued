@@ -18,7 +18,7 @@ class TestSimMesh(unittest.TestCase):
 
         for crystal in self.crystals:
             with self.subTest('Crystal = {}'.format(crystal.source)):
-                X, Y, _, _ = sim_mesh(crystal, resolution = (512, 512))
+                X, Y, _, _ = sim_mesh(crystal, resolution = (256, 256))
                 per_x, per_y, _ = crystal.periodicity
 
                 # Rounding down to 5 digits because of floating errors
@@ -32,7 +32,7 @@ class TestSimMesh(unittest.TestCase):
         """ Test that the spatial spacing of sim_mesh divides a crystal unit cell """
         for crystal in self.crystals:
             with self.subTest('Crystal = {}'.format(crystal.source)):
-                X, Y, _, _ = sim_mesh(crystal, resolution = (512, 512))
+                X, Y, _, _ = sim_mesh(crystal, resolution = (256, 256))
                 per_x, per_y, _ = crystal.periodicity
                 dx, dy = X[1,1] - X[0,0], Y[1,1] - Y[0,0]
 
@@ -42,6 +42,6 @@ class TestSimMesh(unittest.TestCase):
 
                 self.assertAlmostEqual(ndx, int(ndx))
                 self.assertAlmostEqual(ndy, int(ndy))
-                
+
 if __name__ == '__main__':
 	unittest.main()
