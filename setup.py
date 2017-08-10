@@ -11,10 +11,16 @@ from unittest import TestLoader
 #   >>> python setup.py sdist
 #   >>> twine upload dist/scikit-ued-x.x.x.tar.gz
 
-BASE_PACKAGE = 'skued'
+PACKAGE_NAME    = 'scikit-ued'
+DESCRIPTION     = 'Collection of algorithms and functions for ultrafast electron diffraction'
+URL             = 'http://scikit-ued.readthedocs.io'
+DOWNLOAD_URL    = 'http://github.com/LaurentRDC/scikit-ued'
+AUTHOR          = 'Laurent P. René de Cotret'
+AUTHOR_EMAIL    = 'laurent.renedecotret@mail.mcgill.ca'
+BASE_PACKAGE    = 'skued'
 
-wavelets = chain.from_iterable([glob('skued\\baseline\\data\\*.npy'), 
-                                glob('skued\\baseline\\data\\*.npz')])
+WAVELET_FILES   = chain.from_iterable([glob('skued\\baseline\\data\\*.npy'), 
+                                       glob('skued\\baseline\\data\\*.npz')])
 
 base_path = os.path.dirname(__file__)
 with open(os.path.join(base_path, 'skued', '__init__.py')) as f:
@@ -24,36 +30,36 @@ with open(os.path.join(base_path, 'skued', '__init__.py')) as f:
 
 
 with open('README.rst') as f:
-    readme = f.read()
+    README = f.read()
 
 with open('requirements.txt') as f:
-    requirements = [line for line in f.read().split('\n') if len(line.strip())]
+    REQUIREMENTS = [line for line in f.read().split('\n') if len(line.strip())]
 
 exclude = {'exclude': ['external*', 'docs', '*cache']}
-packages = [BASE_PACKAGE + '.' + x for x in find_packages(os.path.join(base_path, BASE_PACKAGE), **exclude)]
-if BASE_PACKAGE not in packages:
-    packages.append(BASE_PACKAGE)
+PACKAGES = [BASE_PACKAGE + '.' + x for x in find_packages(os.path.join(base_path, BASE_PACKAGE), **exclude)]
+if BASE_PACKAGE not in PACKAGES:
+    PACKAGES.append(BASE_PACKAGE)
 
 def skued_test_suite():
     return TestLoader().discover('.')
 
 if __name__ == '__main__':
     setup(
-        name = 'scikit-ued',
-        description = 'Collection of algorithms and functions for ultrafast electron diffraction',
-        long_description = readme,
+        name = PACKAGE_NAME,
+        description = DESCRIPTION,
+        long_description = README,
         license = LICENSE,
-        url = 'http://scikit-ued.readthedocs.io',
-        download_url = 'http://github.com/LaurentRDC/scikit-ued',
+        url = URL,
+        download_url = DOWNLOAD_URL,
         version = VERSION,
-        author = 'Laurent P. René de Cotret',
-        author_email = 'laurent.renedecotret@mail.mcgill.ca',
-        maintainer = 'Laurent P. René de Cotret',
-        maintainer_email = 'laurent.renedecotret@mail.mcgill.ca',
-        install_requires = requirements,
+        author = AUTHOR,
+        author_email = AUTHOR_EMAIL,
+        maintainer = AUTHOR,
+        maintainer_email = AUTHOR_EMAIL,
+        install_requires = REQUIREMENTS,
         keywords = ['skued'],
-        packages = packages,
-        data_files = [('skued\\baseline\\data', wavelets)],
+        packages = PACKAGES,
+        data_files = [('skued\\baseline\\data', WAVELET_FILES)],
         include_package_data = True,
         zip_safe = False,
         test_suite = 'setup.skued_test_suite', 
