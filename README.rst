@@ -29,8 +29,8 @@ from various sources is easy::
 
 The ``Crystal`` object encodes multiple attributes and methods related to space-group, symmetry, and scattering.
 
-Another important part of ultrafast electron diffraction is image processing. Image-alignment, 
-streaming image operations, exploitation of symmetry and more are included.
+Another important part of ultrafast electron diffraction is image processing. Image-alignment, exploitation of 
+symmetry, azimuthal average of polycrystalline data, and more, are included.
 
 Baseline-determination in polycrystalline data is a cornerstone of this package. Using the dual-tree complex 
 wavelet transform, time-varying baselines can be extracted with high accuracy, even in cases where diffraction
@@ -59,6 +59,12 @@ Each version is tested against Python 3.5 and 3.6. If you are using a different 
 using the standard library's `unittest` module.
 
 After installing scikit-ued you can use it like any other Python module as ``skued``.
+
+Optional dependencies
+---------------------
+
+While it is not strictly required, the fourier transform routines from ``pyfftw`` will be preferred If
+``pyfftw`` is installed.
 
 Citations
 ---------
