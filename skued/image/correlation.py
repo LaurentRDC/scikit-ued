@@ -5,11 +5,15 @@ Image correlation and related functions
 from functools import partial
 import numpy as np
 from scipy.fftpack import next_fast_len
-from numpy.fft import rfft2, irfft2
+
+try:
+    from pyfftw.interfaces.numpy_fft import rfft2, irfft2
+except ImportError:
+    from numpy.fft import rfft2, irfft2
 
 from ..array_utils import mirror
 
-EPS = max(np.finfo(np.float).eps, np.finfo(np.complex).eps)
+EPS = np.finfo(np.float).eps
 
 def mnxc2(arr1, arr2, m1 = None, m2 = None, mode = 'full', axes = (0, 1)):
 	"""
@@ -61,7 +65,7 @@ def mnxc2(arr1, arr2, m1 = None, m2 = None, mode = 'full', axes = (0, 1)):
 	if len(axes) != 2:
 		raise ValueError('`axes` parameter must be 2-tuple, not `{}`'.format(axes))
 
-	arr1, arr2 = np.array(arr1), np.array(arr2)
+	arr1, arr2 = np.array(arr1, dtype = np.float), np.array(arr2, dtype = np.float)
 
 	# Determine final size along transformation axes
 	# TODO: compare with using next_fast_len and without
