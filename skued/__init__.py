@@ -9,7 +9,7 @@ from .affine import (affine_map, change_basis_mesh, change_of_basis, is_basis,
                      rotation_matrix, transform, translation_matrix,
                      translation_rotation_matrix)
 from .array_utils import mirror, repeated_array
-from .baseline import baseline_dt, baseline_dwt
+from .baseline import baseline_dt, baseline_dwt, dtcwt, idtcwt
 from npstreams import chunked, last, linspace, multilinspace
 from npstreams import pmap, preduce
 from .plot_utils import spectrum_colors, rgb_sweep
