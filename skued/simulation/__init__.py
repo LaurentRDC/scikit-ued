@@ -4,4 +4,4 @@ Diffraction simulation
 """
 from .powdersim import powdersim
 from .potential import electrostatic, pelectrostatic
-from .multislice import sim_mesh
+from .diffsim import sim_mesh, weak_phase, multislice

@@ -114,6 +114,7 @@ class Crystal(Lattice):
         return arr
 
     @classmethod
+    @lru_cache(maxsize = len(builtins)) # saves a lot of time in tests
     def from_cif(cls, path):
         """
         Returns a Crystal object created from a CIF 1.0, 1.1 or 2.0 file.
