@@ -19,6 +19,14 @@ Please refer to the :ref:`tutorial on baseline-determination <baseline_tutorial>
     baseline_dt
     baseline_dwt
 
+Dual-tree Complex Wavelet Transform
+-----------------------------------
+.. autosummary::
+    :toctree: functions/
+    
+    dtcwt
+    idtcwt
+
 Image Analysis
 ==============
 
