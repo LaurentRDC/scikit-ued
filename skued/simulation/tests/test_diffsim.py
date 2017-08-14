@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from .. import sim_mesh
+from .. import sim_mesh, weak_phase, multislice
 from ... import Crystal
+from itertools import islice
 import numpy as np
 import unittest
-from random import seed, choice
+from random import seed
 
 seed(23)
 
@@ -43,5 +44,37 @@ class TestSimMesh(unittest.TestCase):
                 self.assertAlmostEqual(ndx, int(ndx))
                 self.assertAlmostEqual(ndy, int(ndy))
 
+def wavef_norm(wavefunction):
+    return np.sum(np.abs(wavefunction)**2)
+
+class TestWeakPhase(unittest.TestCase):
+
+    # Only test a few Crystal
+    crystals = list(islice( (Crystal.from_database(name) for name in iter(Crystal.builtins)), 5))
+
+    def test_intensity_conservation(self):
+        """ Test that wavefunction intensity is conserved """
+        for crystal in self.crystals:
+            with self.subTest('Crystal = {}'.format(crystal.source)):
+                X, Y, _, _ = sim_mesh(crystal, resolution = (128, 128))
+                initial = np.ones_like(X)
+                exit_wave = weak_phase(crystal, 90, initial, resolution = (128, 128))
+
+                self.assertEqual(wavef_norm(initial), wavef_norm(exit_wave))
+
+class TestMultislice(unittest.TestCase):
+
+    # Only test a few Crystal
+    crystals = list(islice( (Crystal.from_database(name) for name in iter(Crystal.builtins)), 5))
+
+    def test_intensity_conservation(self):
+        """ Test that wavefunction intensity is conserved """
+        for crystal in self.crystals:
+            with self.subTest('Crystal = {}'.format(crystal.source)):
+                X, Y, _, _ = sim_mesh(crystal, resolution = (128, 128))
+                initial = np.ones_like(X)
+                exit_wave = weak_phase(crystal, 90, initial, resolution = (128, 128))
+
+                self.assertEqual(wavef_norm(initial), wavef_norm(exit_wave))
 if __name__ == '__main__':
 	unittest.main()
