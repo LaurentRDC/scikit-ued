@@ -23,9 +23,9 @@ def dtcwt(data, first_stage, wavelet, mode = 'constant', level = None, axis = -1
     data: array_like
         Input data. Can be of any shape, but the transform can only be applied in 1D (i.e. along a single axis).
         The length along the axis must be even.
-    first_stage : str, optional
+    first_stage : str
         Wavelet to use for the first stage. See skued.baseline.ALL_FIRST_STAGE for a list of suitable arguments
-    wavelet : str, optional
+    wavelet : str
         Wavelet to use in stages > 1. Must be appropriate for the dual-tree complex wavelet transform.
         See skued.baseline.ALL_COMPLEX_WAV for possible
     mode : str, optional
@@ -94,10 +94,10 @@ def idtcwt(coeffs, first_stage, wavelet, mode = 'constant', axis = -1):
     ----------
     coeffs : array_like
         Coefficients list [cAn, cDn, cDn-1, ..., cD2, cD1]
-    first_stage : str, optional
+    first_stage : str
         Wavelet to use for the first stage. See `pywt.wavelist()` for a list of possible
         values
-    wavelet : str, optional
+    wavelet : str
         Wavelet to use in stages > 1. Must be appropriate for the dual-tree complex wavelet transform.
         See dualtree.ALL_COMPLEX_WAV for possible arguments.
     mode : str, optional
