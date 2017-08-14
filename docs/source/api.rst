@@ -23,7 +23,7 @@ Dual-tree Complex Wavelet Transform
 -----------------------------------
 .. autosummary::
     :toctree: functions/
-    
+
     dtcwt
     idtcwt
 
