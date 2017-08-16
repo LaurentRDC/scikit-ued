@@ -67,14 +67,14 @@ class TestMultislice(unittest.TestCase):
     # Only test a few Crystal
     crystals = list(islice( (Crystal.from_database(name) for name in iter(Crystal.builtins)), 5))
 
-    def test_intensity_conservation(self):
+    def test_output_shape(self):
         """ Test that wavefunction intensity is conserved """
         for crystal in self.crystals:
             with self.subTest('Crystal = {}'.format(crystal.source)):
                 X, Y, _, _ = sim_mesh(crystal, resolution = (128, 128))
                 initial = np.ones_like(X)
-                exit_wave = weak_phase(crystal, 90, initial, resolution = (128, 128))
+                exit_wave = multislice(crystal, 90, thickness = 10, resolution = (128, 128))
 
-                self.assertEqual(wavef_norm(initial), wavef_norm(exit_wave))
+                self.assertSequenceEqual(exit_wave.shape, initial.shape)
 if __name__ == '__main__':
 	unittest.main()
