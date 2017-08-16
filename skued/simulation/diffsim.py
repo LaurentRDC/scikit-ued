@@ -5,8 +5,9 @@ Diffraction simulation
 """
 from itertools import chain, repeat
 import numpy as np
-from math import ceil
+from math import ceil, atan
 from scipy.fftpack import fftfreq, fftshift
+from scipy.interpolate import RegularGridInterpolator
 from warnings import warn
 
 from . import pelectrostatic
@@ -15,7 +16,10 @@ from .. import interaction_parameter, electron_wavelength
 FFTOPS = {}
 try:
     from pyfftw.interfaces.scipy_fftpack import fft2, ifft2
+    from pyfftw.interfaces.cache import enable, set_keepalive_time
     FFTOPS['threads'] = 2
+    enable()
+    set_keepalive_time(1)
 except ImportError:
     from scipy.fftpack import fft2, ifft2
 
@@ -25,6 +29,49 @@ class MultisliceWarning(UserWarning):
 def ncycles(iterable, n):
     """Returns the sequence elements n times"""
     return chain.from_iterable(repeat(tuple(iterable), n))
+
+def wdiffsim(crystal, energy, initial_wavefunction = None, resolution = (2048, 2048), 
+             camera_distance = 0.2235, pixel_width = 14e-6, **kwargs):
+    """
+    Electron diffraction simulation in the weak-phase object approximation.
+
+    Parameters
+    ----------
+    crystal : Crystal
+
+    energy : float
+        Electron energy [keV]
+    initial_wavefunction : `~numpy.ndarray` or None, optional
+        Initial electron wavefunction. If None (default), it will be set to a
+        unit-amplitude plane-wave.
+    resolution : 2-tuple of ints, optional
+        Simulation resolution.
+    camera_distance : float, optional
+        Camera-to-sample distance [m]
+    pixel_width : float, optional
+        Pixel size [m].
+    """
+    final_resolution = resolution
+    wavelength = electron_wavelength(energy)
+
+    # Get dimensions of CCD
+    vert_semiangle_max = atan( (resolution[0] * pixel_width / 2) / camera_distance)
+    horz_semiangle_max = atan( (resolution[1] * pixel_width / 2) / camera_distance)
+    max_k = max(vert_semiangle_max/wavelength, horz_semiangle_max/wavelength)
+
+    X, Y, KX, KY = sim_mesh(crystal, resolution = resolution, max_k = max_k)
+    if initial_wavefunction is None:
+        initial_wavefunction = np.ones_like(X, dtype = np.complex)
+
+    exit_wave = initial_wavefunction * np.exp(1j * interaction_parameter(energy) * pelectrostatic(crystal, X, Y))
+    intensity = np.abs(fftshift(fft2(exit_wave)))**2
+    return intensity
+    # Interpolate on CCD
+    #CCD_kx = np.linspace(-max_k, max_k, num = resolution[0])
+    #CCD_ky = np.linspace(-max_k, max_k, num = resolution[1])
+    #interpolator = RegularGridInterpolator((KX[0,:], KY[:,0]), intensity)
+
+    #return interpolator(CCD_kx, CCD_ky)
 
 def weak_phase(crystal, energy, initial_wavefunction = None, **kwargs):
     """
@@ -56,7 +103,7 @@ def weak_phase(crystal, energy, initial_wavefunction = None, **kwargs):
     
     return initial_wavefunction * np.exp(1j * interaction_parameter(energy) * pelectrostatic(crystal, X, Y))
 
-def multislice(crysta, energy, thickness, initial_wavefunction = None, diagnostic = None, **kwargs):
+def multislice(crystal, energy, initial_wavefunction = None, **kwargs):
     """
     Calculate the scattered electron wavefunction from a crystal with the multislice method.
 
@@ -66,13 +113,13 @@ def multislice(crysta, energy, thickness, initial_wavefunction = None, diagnosti
     
     energy : float
         Electron energy [keV]
-    thickness : int
-        Sample thickness [nm]. This parameter will be rounded to the nearest 
-        unit cell dimension to avoid artifacts.
     initial_wavefunction : `~numpy.ndarray` dtype complex, or None, optional
         Initial electron wavefunction. If None (default), initial wavefunction
         is uniform plane wave.
-    diagnostic : dict or None, optional
+    thickness : int, keyword-only
+        Sample thickness [nm]. This parameter will be rounded to the nearest 
+        unit cell dimension to avoid artifacts.
+    diagnostic : dict or None, optional, keyword-only
         Dictionary that will be filled with diagnostic information.
     kwargs
         Keyword arguments are passed to simulation mesh generation
@@ -98,7 +145,7 @@ def multislice(crysta, energy, thickness, initial_wavefunction = None, diagnosti
     slice_thickness = period_z / ceil(period_z / 2)
     
     # Round thickness to the nearest unit cell
-    sample_thickness = int(thickness * 10 / period_z) * period_z
+    sample_thickness = int(thickness * 10 / period_z) * period_z    # in Angs
     step_z = slice_thickness * period_z
     if step_z < 1:
         warn('A slice step of less than 1 Angstroms is not recommended', MultisliceWarning)
@@ -108,13 +155,14 @@ def multislice(crysta, energy, thickness, initial_wavefunction = None, diagnosti
     # Calculate projected electrostatic potential for each vertical slice of the unit cell
     potential_slices = list()
     min_z = min( (atom.coords[2] for atom in crystal) )
-    spans = [ (step_z * i - min_z, step_z * (i + 1) - min_z) for i in range(0, int(1/slice_thickness)) ]
+    spans = [ (step_z * i - min_z, step_z * (i + 1) - min_z) for i in range(0, int(sample_thickness/slice_thickness)) ]
     interaction = interaction_parameter(energy)
     for span_z in spans:
         integral = pelectrostatic
         potential_slices.append(np.exp(1j * interaction * pelectrostatic(crystal, X, Y, bounds = span_z)))
 
-    for index, potential_slice in ncycles(potential_slices, int(sample_thickness/period_z)):
+    wavefunction = np.array(initial_wavefunction)
+    for potential_slice in ncycles(potential_slices, int(sample_thickness/period_z)):
         wavefunction = ifft2(propagator * fft2(potential_slice * wavefunction))
 
         # TODO: Check that relative intensity hasn't dropped too low
