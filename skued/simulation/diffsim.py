@@ -103,7 +103,7 @@ def weak_phase(crystal, energy, initial_wavefunction = None, **kwargs):
     
     return initial_wavefunction * np.exp(1j * interaction_parameter(energy) * pelectrostatic(crystal, X, Y))
 
-def multislice(crystal, energy, initial_wavefunction = None, **kwargs):
+def multislice(crystal, energy, initial_wavefunction = None, diagnostic = dict(), **kwargs):
     """
     Calculate the scattered electron wavefunction from a crystal with the multislice method.
 
@@ -119,7 +119,7 @@ def multislice(crystal, energy, initial_wavefunction = None, **kwargs):
     thickness : int, keyword-only
         Sample thickness [nm]. This parameter will be rounded to the nearest 
         unit cell dimension to avoid artifacts.
-    diagnostic : dict or None, optional, keyword-only
+    diagnostic : dict, optional
         Dictionary that will be filled with diagnostic information.
     kwargs
         Keyword arguments are passed to simulation mesh generation
@@ -130,8 +130,6 @@ def multislice(crystal, energy, initial_wavefunction = None, **kwargs):
     exit_wave : `~numpy.ndarray`, ndim 2, dtype complex
         Scattered electron wavefunction
     """
-    if diagnostic is None:
-        diagnostic = dict()
 
     X, Y, KX, KY = sim_mesh(crystal, **kwargs)
 

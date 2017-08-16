@@ -62,6 +62,7 @@ class TestWeakPhase(unittest.TestCase):
 
                 self.assertEqual(wavef_norm(initial), wavef_norm(exit_wave))
 
+@unittest.skip('Not ready for primetime')
 class TestMultislice(unittest.TestCase):
 
     # Only test a few Crystal
