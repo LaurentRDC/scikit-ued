@@ -63,9 +63,10 @@ def angular_average(image, center, mask = None, extras = None, angular_bounds = 
 
     Returns
     -------
-    radius : `~numpy.ndarray`, shape (N,)
-        Radius of the average [px]
-    average : `~numpy.ndarray`, shape (N,)
+    radius : `~numpy.ndarray`, ndim 1
+        Radius of the average [px]. If ``mask`` is provided, ``radius`` might not start at one;
+        ``average`` is trimmed of leading invalid pixels.
+    average : `~numpy.ndarray`, ndim 1
         Angular-average of the array.
     """
     if mask is None:
