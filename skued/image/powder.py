@@ -74,10 +74,8 @@ def angular_average(image, center, mask = None, extras = None, angular_bounds = 
     xc, yc = center  
 
     #Create meshgrid and compute radial positions of the data
-    # TODO: is there no way to use rint and get a dtype np.int at the end?
-    #		astype() takes about 20% of computing time of this function.
-    Y, X = np.ogrid[0:image.shape[0],0:image.shape[1]]
-    R = np.rint(np.sqrt( (X - xc)**2 + (Y - yc)**2 )).astype(np.int)
+    Y, X = np.indices(image.shape)
+    R = np.rint(np.hypot(X - xc, Y - yc)).astype(np.int)
 
     if angular_bounds:
         mi, ma = angular_bounds
@@ -92,18 +90,35 @@ def angular_average(image, center, mask = None, extras = None, angular_bounds = 
     #R_v, image_v = R[valid].ravel(), image[valid].ravel()
     px_bin = np.bincount(R, weights = image)
     r_bin = np.bincount(R, weights = valid.ravel())
+    radius = np.arange(0, r_bin.size)
 
-    # np.bincount will start counting at 0. We ignore the leading zeroes
-    nz = r_bin > 0.0
-    radial_intensity = px_bin[nz]/r_bin[nz]
+    # We ignore the leading and trailing zeroes
+    first, last = _trim_bounds(r_bin)
+    radial_intensity = px_bin[first:last]/r_bin[first:last]
 
     # Update the extras dictionary if provided:
     # Error as the standard error in the mean, at each pixel
     # Standard error = std / sqrt(N)
     # std = sqrt(var - mean**2)
     if extras is not None:
-        var_bin = np.bincount(R, weights = image**2)[nz]/r_bin[nz]
-        radial_intensity_error = np.sqrt(var_bin - radial_intensity**2)/np.sqrt(r_bin[nz])
+        var_bin = np.bincount(R, weights = image**2)[first:last]/r_bin[first:last]
+        radial_intensity_error = np.sqrt(var_bin - radial_intensity**2)/np.sqrt(r_bin[first:last])
         extras.update({'error':radial_intensity_error})
 
-    return np.arange(0, radial_intensity.size), radial_intensity
+    return radius[first:last], radial_intensity
+
+def _trim_bounds(arr):
+    """ Returns the bounds which would be used in numpy.trim_zeros """
+    first = 0
+    for i in arr:
+        if i != 0.:
+            break
+        else:
+            first = first + 1
+    last = len(arr)
+    for i in arr[::-1]:
+        if i != 0.:
+            break
+        else:
+            last = last - 1
+    return first, last

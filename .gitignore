@@ -104,3 +104,4 @@ ENV/
 # PyCharm
 .idea/
 benchmark.py
+potential_map.py
