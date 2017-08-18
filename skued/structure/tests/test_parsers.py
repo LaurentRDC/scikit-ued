@@ -75,8 +75,7 @@ class TestCIFParser(unittest.TestCase):
                     from_parser = Hall2Number[p.hall_symbol()]
                     
                     crystal = Crystal.from_cif(name)
-                    spglib_dataset = get_symmetry_dataset(crystal.spglib_cell, symprec = 1e-2)
-                    from_spglib = spglib_dataset['number']
+                    from_spglib = crystal.spacegroup_info()['international_number']
                     self.assertEqual(from_parser, from_spglib)
     
     def test_graphite(self):
