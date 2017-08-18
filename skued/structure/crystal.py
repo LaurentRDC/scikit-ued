@@ -248,7 +248,9 @@ class Crystal(Lattice):
         -----
         Optional atomic properties (e.g magnetic moment) might be lost in the reduction.
         """
-        search = find_primitive(self.spglib_cell, symprec = symprec)
+        arr = np.asarray(self)
+        search = find_primitive((np.array(self.lattice_vectors), arr[:, 1:], arr[:, 0]), 
+                                symprec = symprec)
         if search is None:
             raise RuntimeError('Primitive cell could not be found.')
 
@@ -260,14 +262,9 @@ class Crystal(Lattice):
         for coords, Z in zip(scaled_positions, numbers):
             atoms.append(Atom(int(Z), coords = coords))
 
-        return Crystal(unitcell = atoms, lattice_vectors = lattice_vectors)
-
-    @property
-    def spglib_cell(self):
-        """ 3-tuple of ndarrays properly formatted for spglib's routines """
-        lattice = np.array(self.lattice_vectors)
-        arr = np.asarray(self)
-        return (lattice, arr[:, 1:], arr[:,0])
+        return Crystal(unitcell = atoms, 
+                       lattice_vectors = lattice_vectors, 
+                       source = self.source)
 
     def ase_atoms(self, **kwargs):
         """ 
@@ -335,7 +332,9 @@ class Crystal(Lattice):
         Note that crystals generated from the Protein Data Bank are often incomplete; 
         in such cases the space-group information will be incorrect.
         """
-        dataset = get_symmetry_dataset(cell = self.spglib_cell, symprec = 1e-2, 
+        arr = np.asarray(self)
+        dataset = get_symmetry_dataset(cell = (np.array(self.lattice_vectors), arr[:, 1:], arr[:,0]), 
+                                       symprec = 1e-2, 
                                        angle_tolerance = angle_tolerance)
 
         if dataset: 

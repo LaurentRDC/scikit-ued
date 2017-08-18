@@ -167,15 +167,6 @@ In the above example, :data:`spg_info` is a dictionary with the following four k
 
 * ``'hall_number'`` : Hall number (between 1 and 531).
 
-You can get even more information by using :mod:`spglib` functions directly::
-
-	from spglib import get_symmetry_dataset
-
-	all_the_info = get_symmetry_dataset(gold.spglib_cell)
-
-The content of the :data:`all_the_info` dictionary is documented `here <http://atztogo.github.io/spglib/python-spglib.html#get-symmetry-dataset>`_.
-Many of :mod:`spglib`'s routines can be used with :attr:`Crystal.spglib_cell`.
-
 Scattering utilities
 --------------------
 :class:`Crystal` objects have a few methods that make life easier when dealing with scattering data and modeling.
