@@ -3,6 +3,7 @@
 Module concerned with alignment of diffraction images
 =====================================================
 """
+from functools import partial
 from itertools import product
 import numpy as np
 from skimage.feature import register_translation
@@ -69,6 +70,41 @@ def align(image, reference, mask = None, fill_value = 0.0):
 	"""
 	shift = diff_register(image, reference = reference, mask = mask)
 	return shift_image(image, shift, fill_value = fill_value)
+
+def ialign(images, reference = None, mask = None, fill_value = 0.0):
+	"""
+    Generator of aligned diffraction images.
+
+    Parameters
+    ----------
+    images : iterable
+        Iterable of ndarrays of shape (N,M)
+    reference : `~numpy.ndarray`, shape (M,N)
+        Images in `images` will be aligned onto the `reference` image. If
+        'reference' is None (default), the first image in the 'images' stream
+        is used as a reference
+    mask : `~numpy.ndarray` or None, optional
+        Mask that evaluates to True on invalid pixels.
+    fill_value : float, optional
+        Edges will be filled with `fill_value` after alignment.
+
+    Yields
+    ------
+    aligned : `~numpy.ndarray`
+        Aligned image. If `reference` is None, the first aligned image is the reference.
+
+    See Also
+    --------
+    skued.image.align : align a single diffraction pattern onto a reference.
+	"""
+	images = iter(images)
+	
+	if reference is None:
+		reference = next(images)
+		yield reference
+
+	yield from map(partial(align, reference = reference, mask = mask, fill_value =  fill_value), images)
+
 
 def _crop_to_half(image, copy = False):
 	nrows, ncols = np.array(image.shape)/4

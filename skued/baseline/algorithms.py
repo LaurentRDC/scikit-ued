@@ -232,8 +232,8 @@ def _dwt_approx_rec2(array, level, wavelet, mode, axis):
 def baseline_dt(array, max_iter, level = None, first_stage = 'sym6', wavelet = 'qshift1', 
 				background_regions = [], mask = None, mode = 'constant', axis = -1):
 	"""
-	Iterative method of baseline determination based on the dual-tree complex wavelet transform.
-	This function only works in 1D, along an axis. For baseline of 2D arrays, see baseline_dwt.
+	Iterative method of baseline-determination based on the dual-tree complex wavelet transform.
+	This function only works in 1D, along an axis. For baseline of 2D arrays, see :func:`baseline_dwt`.
 
 	Parameters
 	----------
@@ -246,10 +246,10 @@ def baseline_dt(array, max_iter, level = None, first_stage = 'sym6', wavelet = '
 		the input signal (read: a lower frequency baseline). If None (default), the maximum level
 		possible is used.
 	first_stage : str, optional
-		Wavelet to use for the first stage. See skued.baseline.ALL_FIRST_STAGE for a list of suitable arguments
+		Wavelet to use for the first stage. See :data:`skued.baseline.ALL_FIRST_STAGE` for a list of suitable arguments
 	wavelet : str, optional
 		Wavelet to use in stages > 1. Must be appropriate for the dual-tree complex wavelet transform.
-		See skued.baseline.ALL_COMPLEX_WAV for possible values.
+		See :data:`skued.baseline.ALL_COMPLEX_WAV` for possible values.
 	background_regions : iterable, optional
 		Indices of the array values that are known to be purely background. Depending
 		on the dimensions of array, the format is different:

@@ -6,7 +6,7 @@ from skimage import data
 from skimage.filters import gaussian
 from skimage.transform import rotate
 
-from .. import shift_image, align, diff_register
+from .. import shift_image, align, diff_register, ialign
 from .test_powder import circle_image
 
 np.random.seed(23)
@@ -78,6 +78,33 @@ class TestDiffRegister(unittest.TestCase):
 			arr.setflags(write = False)
 		
 		shift = diff_register(im1, im2, mask)
+
+class TestIAlign(unittest.TestCase):
+
+	def test_trivial(self):
+		""" Test alignment of identical images """
+		aligned = tuple(ialign([data.camera() for _ in range(5)]))
+		
+		self.assertEqual(len(aligned), 5)
+		self.assertSequenceEqual(data.camera().shape, aligned[0].shape)
+		
+	def test_misaligned_canned_images(self):
+		""" shift images from skimage.data by entire pixels.
+	   We don't expect perfect alignment."""
+		original = data.camera()
+		misaligned = [shift_image(original, (randint(-4, 4), randint(-4, 4))) 
+					  for _ in range(5)]
+
+		aligned = ialign(misaligned, reference = original)
+
+		# TODO: find a better figure-of-merit for alignment
+		for im in aligned:
+			# edge will be filled with zeros, we ignore
+			diff = np.abs(original[5:-5, 5:-5] - im[5:-5, 5:-5])
+
+			# Want less than 1% difference
+			percent_diff = np.sum(diff) / (diff.size * (original.max() - original.min()))
+			self.assertLess(percent_diff, 1)
 
 class TestShiftImage(unittest.TestCase):
 	

@@ -114,6 +114,7 @@ class Crystal(Lattice):
         return arr
 
     @classmethod
+    @lru_cache(maxsize = len(builtins)) # saves a lot of time in tests
     def from_cif(cls, path):
         """
         Returns a Crystal object created from a CIF 1.0, 1.1 or 2.0 file.
@@ -144,7 +145,8 @@ class Crystal(Lattice):
             Name of tne databse entry. Available items can be retrieved from `Crystal.builtins`
         """
         if name not in cls.builtins:
-            raise ValueError('Entry {} is not available in the database. See Crystal.builtins for valid entries.')
+            raise ValueError('Entry {} is not available in the database. See \
+                              Crystal.builtins for valid entries.'.format(name))
         
         path = os.path.join(os.path.dirname(__file__), 'cifs', name + '.cif')
         return cls.from_cif(path)

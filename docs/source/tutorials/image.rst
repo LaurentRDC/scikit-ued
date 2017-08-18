@@ -9,109 +9,16 @@ Image Analysis/Processing Tutorial
 Diffraction patterns analysis is essentially specialized image processing. This tutorial
 will show some of the image processing and analysis techniques that are part of the :mod:`skued.image` module.
 
+.. note::
+    A lot of functionality has been moved to the package `npstreams`_. Use scikit-ued in combination
+    with `npstreams`_ to process electron diffraction data in parallel.
+
 Contents
 ========
 
-* :ref:`streaming`
 * :ref:`alignment`
 * :ref:`symmetry`
 * :ref:`powder`
-
-.. _streaming:
-
-Streaming Image Processing
-==========================
-
-Diffraction datasets can be large, much larger than a machine can handle
-in-memory. In this case, it makes sense to assemble processing pipelines instead
-of working on the data all at once.
-
-Consider the following snippet to combine 50 images 
-from an iterable :data:`source`::
-
-	import numpy as np
-
-	images = np.empty( shape = (2048, 2048, 50) )
-	from index, im in enumerate(source):
-	    images[:,:,index] = im
-	
-	avg = np.average(images, axis = 2)
-
-If the :data:`source` iterable provided 1000 images, the above routine would
-not work on most machines. Moreover, what if we want to transform the images 
-one by one before averaging them? What about looking at the average while it 
-is being computed?
-
-Scikit-ued provides some functions that can make streaming processing possible. These
-function will have an 'i' prefix (for :func:`iter`). Let's look at an example::
-
-	import numpy as np
-	from skued.image import ialign, iaverage
-	from skimage.io import imread
-
-	stream = map(imread, list_of_filenames)
-	aligned = ialign(stream)
-	averaged = iaverage(aligned)
-
-At this point, the generators :func:`map`, :func:`ialign`, and :func:`iaverage` are 'wired'
-but will not compute anything until it is requested. We can use the function
-:func:`last` to get at the final average, but we could also look at the average
-step-by-step by calling :func:`next`::
-
-	from skued import last
-
-	avg = next(averaged) # only one images is loaded, aligned and added to the average
-	total = last(averaged) # average of the entire stream
-
-An important advantage of processing images in a streaming fashion is the lower
-memory usage; this allows the use of multiple processes in parallel::
-
-	from skued import pmap
-
-	def align_and_avg(filenames):
-	    stream = map(imread, filenames)
-	    aligned = ialign(stream)
-	    return last(iaverage(aligned))
-	
-	batches = [list_of_filenames1, list_of_filenames2, list_of_filenames3]
-	
-	for avg in pmap(align_and_avg, batches, processes = 3):
-	    # write to disk of display
-	    pass
-
-Scikit-ued provides a few streaming statistical functions (:func:`ivar`, :func:`istd`, 
-:func:`isem`, :func:`iaverage`) which are tested to have exact same results are the familiar
-:mod:`numpy` and :mod:`scipy` equivalents. You can also find more specialized streaming functions (e.g. :func:`ialign`).
-
-Example: averaging with error
-------------------------------
-
-It is possible to combine :func:`iaverage` and :func:`isem` into a single stream using :func:`itertools.tee`. 
-Here is a recipe for it::
-
-	def iaverage_with_error(images, weights):    
-	    """ 
-	    Combined streaming average and standard error of diffraction images. 
-		
-	    Parameters
-	    ----------
-	    images : iterable of ndarrays
-	    	Images to be averaged. This iterable can also a generator.
-	    weights : iterable of ndarray, iterable of floats, or None, optional
-	    	Array of weights. See `numpy.average` for further information. If None (default), 
-	    	total picture intensity of valid pixels is used to weight each picture.
-	    
-	    Yields
-	    ------
-	    avg : `~numpy.ndarray`
-	    	Weighted average. 
-	    sem : `~numpy.ndarray`
-	    	Standard error in the mean
-	    """
-	    stream1, stream2 = itertools.tee(images, 2)
-	    averages = iaverage(stream1, weights = weights)
-	    errors = isem(stream2)
-	    yield from zip(averages, errors)
 
 .. _alignment:
 
@@ -412,4 +319,4 @@ First, we create a test image::
 	plt.plot(radius, intensity)
 	plt.show()
 
-:ref:`Return to Top <image_analysis_tutorial>`
+:ref:`Return to Top <baseline_tutorial>`
