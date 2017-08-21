@@ -42,7 +42,7 @@ def angular_average(*args, **kwargs):
     warn('angular_average is deprecated. See azimuthal_average for more features.', DeprecationWarning)
     return azimuthal_average(*args, **kwargs)
 
-def azimuthal_average(image, center, mask = None, angular_bounds = None, interp = False):
+def azimuthal_average(image, center, mask = None, angular_bounds = None):
     """
     This function returns an angularly-averaged pattern computed from a diffraction pattern, 
     e.g. polycrystalline diffraction.
@@ -60,9 +60,6 @@ def azimuthal_average(image, center, mask = None, angular_bounds = None, interp 
         (inclusively) will be used for the average. Angle bounds are specified in degrees.
         0 degrees is defined as the positive x-axis. Angle bounds outside [0, 360) are mapped back
         to [0, 360).
-    interp : bool, optional
-        If True, ``image`` is interpolated to the nearest integer radius before averaging.
-        This can improve quality at the expense of speed.
 
     Returns
     -------
@@ -72,6 +69,7 @@ def azimuthal_average(image, center, mask = None, angular_bounds = None, interp 
     average : `~numpy.ndarray`, ndim 1
         Angular-average of the array.
     """
+    # TODO: interpolation?
     if mask is None:
         mask = np.zeros_like(image, dtype = np.bool)
 
