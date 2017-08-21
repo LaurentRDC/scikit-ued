@@ -3,7 +3,7 @@ Array utility functions
 """
 
 from itertools import repeat
-from numpy import concatenate, swapaxes
+from numpy import concatenate, swapaxes, hypot, arctan2, sin, cos
 
 def repeated_array(arr, num, axes = -1):
     """
@@ -73,3 +73,35 @@ def mirror(arr, axes = None):
             reverse[axis] = slice(None, None, -1)
     
     return arr[reverse]
+
+def cart2polar(x, y):
+    """ 
+    Transform cartesian coordinates to polar coordinates
+
+    Parameters
+    ----------
+    x, y : `~numpy.ndarray`
+        Cartesian coordinates
+    
+    Returns
+    -------
+    r, t : `~numpy.ndarray`
+        Radius and polar angle coordinates
+    """
+    return hypot(x,y), arctan2(y, x)
+
+def polar2cart(r, t):
+    """
+    Transform cartesian coordinates to polar coordinates
+
+    Parameters
+    ----------
+    r, t : `~numpy.ndarray`
+        Radius and polar angle coordinates
+
+    Returns
+    -------
+    x, y : `~numpy.ndarray`
+        Cartesian coordinates
+    """
+    return r * cos(t), r * sin(t)
