@@ -337,7 +337,7 @@ class Crystal(Lattice):
         in such cases the space-group information will be incorrect.
         """
         dataset = get_symmetry_dataset(cell = self._spglib_cell(),
-                                       symprec = 1e-2, 
+                                       symprec = symprec, 
                                        angle_tolerance = angle_tolerance)
 
         if dataset: 
