@@ -70,6 +70,7 @@ def azimuthal_average(image, center, mask = None, angular_bounds = None):
         Angular-average of the array.
     """
     # TODO: interpolation?
+    # TODO: error?
     if mask is None:
         mask = np.zeros_like(image, dtype = np.bool)
 
@@ -86,15 +87,16 @@ def azimuthal_average(image, center, mask = None, angular_bounds = None):
         angles = np.rad2deg(np.arctan2(Y - yc, X - xc))
         mask[np.logical_not(np.logical_and(mi <= angles, angles <= ma))] = True
 
-    valid = np.logical_not(mask)
-    image = np.array(valid*image, dtype = np.float).ravel()
+    valid = np.logical_not(mask).ravel()
+    image = image.ravel()
+    image = np.array(valid*image, dtype = np.float)
 
     px_bin = np.bincount(Rint, weights = image)
-    r_bin = np.bincount(Rint, weights = valid.ravel())
+    r_bin = np.bincount(Rint, weights = valid)
     radius = np.arange(0, r_bin.size)
 
     # We ignore the leading and trailing zeroes
-    first, last = _trim_bounds(r_bin)
+    first, last = _trim_bounds(px_bin)
     radial_intensity = px_bin[first:last]/r_bin[first:last]
 
     # Error as the standard error in the mean, at each pixel
