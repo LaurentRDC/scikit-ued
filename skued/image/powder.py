@@ -89,13 +89,12 @@ def azimuthal_average(image, center, mask = None, angular_bounds = None):
 
     valid = np.logical_not(mask).ravel()
     image = image.ravel()
-    image = np.array(valid*image, dtype = np.float)
 
-    px_bin = np.bincount(Rint, weights = image)
+    px_bin = np.bincount(Rint, weights = valid*image)
     r_bin = np.bincount(Rint, weights = valid)
     radius = np.arange(0, r_bin.size)
 
-    # We ignore the leading and trailing zeroes
+    # We ignore the leading and trailing zeroes, which could be due to
     first, last = _trim_bounds(px_bin)
     radial_intensity = px_bin[first:last]/r_bin[first:last]
 
