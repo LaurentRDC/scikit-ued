@@ -1,0 +1,58 @@
+data_Hg
+loop_
+_publ_author_name
+'R. St. Amand'
+'B. C. Giessen'
+_publ_section_title
+;
+On the metastable system Mercury-Thallium
+;
+_chemical_formula_structural     'Hg'
+_chemical_formula_sum            'Hg'
+_chemical_name_systematic        'Mercury'
+_space_group_IT_number           166
+_symmetry_Int_Tables_number      166
+_symmetry_space_group_name_Hall  '-P 3* 2'
+_symmetry_space_group_name_H-M   'R -3 m:R'
+_cell_angle_alpha                98.27
+_cell_angle_beta                 98.27
+_cell_angle_gamma                98.27
+_cell_formula_units_Z            1
+_cell_length_a                   4.572
+_cell_length_b                   4.572
+_cell_length_c                   4.572
+_cell_volume                     92.262
+_cell_measurement_temperature    83
+loop_
+_journal_name_full
+_journal_volume
+_journal_page_first
+_journal_page_last
+_journal_year
+'Journal of the Less-Common Metals' 58 161 172 1978
+loop_
+_symmetry_equiv_pos_site_id
+_symmetry_equiv_pos_as_xyz
+1 'x, y, z'
+2 'z, x, y'
+3 'y, z, x'
+4 '-y, -x, -z'
+5 '-x, -z, -y'
+6 '-z, -y, -x'
+7 '-x, -y, -z'
+8 '-z, -x, -y'
+9 '-y, -z, -x'
+10 'y, x, z'
+11 'x, z, y'
+12 'z, y, x'
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_symmetry_multiplicity
+_atom_site_Wyckoff_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+_atom_site_attached_hydrogens
+Hg Hg 3 a 0 0 0 1 0 
