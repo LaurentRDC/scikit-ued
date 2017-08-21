@@ -95,7 +95,7 @@ class TestCIFParser(unittest.TestCase):
     
     def test_vo2(self):
         """ Test CIFParser on vo2.cif (monoclinic M1) """
-        VO2_path = os.path.join('skued', 'structure', 'cifs', 'vo2.cif')
+        VO2_path = os.path.join('skued', 'structure', 'cifs', 'vo2-m1.cif')
         vo2 = Crystal.from_cif(VO2_path)
 
         self.assertEqual(len(vo2), 12)
