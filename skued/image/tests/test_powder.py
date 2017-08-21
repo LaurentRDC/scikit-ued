@@ -128,7 +128,7 @@ class TestAzimuthalAverage(unittest.TestCase):
 
         mask = np.zeros_like(image, dtype = np.bool)
         mask[rr < 20] = True
-        image[rr < 20] = 0
+        #image[rr < 20] = 0
 
         radius, intensity = azimuthal_average(image, center)
         self.assertEqual(radius.min(), 0)
