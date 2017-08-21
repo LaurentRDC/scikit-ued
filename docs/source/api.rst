@@ -38,7 +38,7 @@ for some examples.
 .. autosummary::
     :toctree: functions/
 
-    image.angular_average
+    image.azimuthal_average
     image.powder_center
     image.align
     image.ialign
@@ -90,6 +90,8 @@ Array Utilities
 
     mirror
     repeated_array
+    cart2polar
+    polar2cart
 
 Structure Parsing
 =================

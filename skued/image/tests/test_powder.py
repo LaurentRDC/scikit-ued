@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from .. import angular_average, powder_center
+from .. import azimuthal_average, powder_center
 import unittest
 
 from skimage.filters import gaussian
@@ -37,20 +37,20 @@ class TestPowderCenter(unittest.TestCase):
         im += (im.max() / 5) * np.random.random(size = im.shape)
         self.assertTrue(np.allclose(center, powder_center(im), atol = 1))
 
-class TestAngularAverage(unittest.TestCase):
+class TestAzimuthalAverage(unittest.TestCase):
     
     def test_trivial_array(self):
-        """ Test angular_average on an array of zeroes """
+        """ Test azimuthal_average on an array of zeroes """
         image = np.zeros(shape = (256, 256), dtype = np.float)
         center = (image.shape[0]/2, image.shape[1]/2)
 
-        radius, intensity = angular_average(image, center)
+        radius, intensity = azimuthal_average(image, center)
         
         self.assertTrue(intensity.sum() == 0)
         self.assertSequenceEqual(intensity.shape, radius.shape)
         
     def test_ring(self):
-        """ Test angular_average on an image with a wide ring """
+        """ Test azimuthal_average on an image with a wide ring """
         image = np.zeros(shape = (256, 256), dtype = np.float)
         center = (image.shape[0]/2, image.shape[1]/2)
         xc, yc = center
@@ -61,12 +61,12 @@ class TestAngularAverage(unittest.TestCase):
         rr = np.sqrt((xx - xc)**2 + (yy - yc)**2)
         image[np.logical_and(24 < rr,rr < 26)] = 1
 
-        radius, intensity = angular_average(image, center)
+        radius, intensity = azimuthal_average(image, center)
         self.assertEqual(intensity.max(), image.max())
         self.assertSequenceEqual(radius.shape, intensity.shape)
     
     def test_angular_bounds(self):
-        """ Test angular_average with a restrictive angular_bounds argument """
+        """ Test azimuthal_average with a restrictive angular_bounds argument """
         image = np.zeros(shape = (256, 256), dtype = np.float)
         center = (image.shape[0]/2, image.shape[1]/2)
         xc, yc = center
@@ -79,23 +79,23 @@ class TestAngularAverage(unittest.TestCase):
         image[np.logical_and(0 <= angles, angles <= 60)] = 1
         
         with self.subTest('Outside angle bounds'):
-            radius, intensity = angular_average(image, center, angular_bounds = (0, 60))
+            radius, intensity = azimuthal_average(image, center, angular_bounds = (0, 60))
             self.assertTrue(np.allclose(intensity, np.ones_like(intensity)))
 
         with self.subTest('Overlapping bounds'):
-            radius, intensity = angular_average(image, center, angular_bounds = (15, 75))
+            radius, intensity = azimuthal_average(image, center, angular_bounds = (15, 75))
             self.assertFalse(np.allclose(intensity, np.ones_like(intensity)))
         
         with self.subTest('Inside angle bounds'):
-            radius, intensity = angular_average(image, center, angular_bounds = (60, 360))
+            radius, intensity = azimuthal_average(image, center, angular_bounds = (60, 360))
             self.assertTrue(np.allclose(intensity, np.zeros_like(intensity)))
         
         with self.subTest('Inside angle bounds with 360deg rollover'):
-            radius, intensity = angular_average(image, center, angular_bounds = (60 + 360, 360 + 360))
+            radius, intensity = azimuthal_average(image, center, angular_bounds = (60 + 360, 360 + 360))
             self.assertTrue(np.allclose(intensity, np.zeros_like(intensity)))
     
     def test_ring_with_mask(self):
-        """ Test angular_average on an image with a wide ring """
+        """ Test azimuthal_average on an image with a wide ring """
         image = np.zeros(shape = (256, 256), dtype = np.float)
         center = (image.shape[0]/2, image.shape[1]/2)
         xc, yc = center
@@ -109,7 +109,7 @@ class TestAngularAverage(unittest.TestCase):
         rr = np.sqrt((xx - xc)**2 + (yy - yc)**2)
         image[np.logical_and(24 < rr,rr < 26)] = 1
 
-        radius, intensity = angular_average(image, center, mask = mask)
+        radius, intensity = azimuthal_average(image, center, mask = mask)
 
         self.assertEqual(intensity.max(), image.max())
         self.assertSequenceEqual(radius.shape, intensity.shape)
@@ -130,10 +130,10 @@ class TestAngularAverage(unittest.TestCase):
         mask[rr < 20] = True
         image[rr < 20] = 0
 
-        radius, intensity = angular_average(image, center)
+        radius, intensity = azimuthal_average(image, center)
         self.assertEqual(radius.min(), 0)
 
-        radius_trimmed, intensity_trimmed = angular_average(image, center, mask = mask)
+        radius_trimmed, intensity_trimmed = azimuthal_average(image, center, mask = mask)
         self.assertEqual(radius_trimmed.min(), 20)
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 import numpy as np
-from .. import repeated_array, mirror
+from .. import repeated_array, mirror, cart2polar, polar2cart
 
 np.random.seed(23)
 
@@ -53,6 +53,19 @@ class TestMirror(unittest.TestCase):
 		arr[15, 3] = 1
 		self.assertTrue(np.allclose(arr[:, ::-1], mirror(arr, axes = 1)))
 		self.assertTrue(np.allclose(arr[::-1, :], mirror(arr, axes = 0)))
+
+class TestCart2Polar(unittest.TestCase):
+
+    def test_back_and_forth(self):
+        """ Test that cart2polar and polar2cart are reciprocal """
+        x = np.random.random(size = (16, 8))
+        y = np.random.random(size = (16, 8))
+
+        r, t = cart2polar(x, y)
+
+        xp, yp = polar2cart(r,t)
+        self.assertTrue(np.allclose(x, xp))
+        self.assertTrue(np.allclose(y, yp))
 		
 if __name__ == '__main__':
 	unittest.main()
