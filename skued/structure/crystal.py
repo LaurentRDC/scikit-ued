@@ -224,6 +224,11 @@ class Crystal(Lattice):
         return cls(unitcell = [Atom.from_ase(atm) for atm in atoms], 
                    lattice_vectors = lattice_vectors)
 
+    def _spglib_cell(self):
+        """ Returns an array in spglib's cell format. """
+        arr = np.asarray(self)
+        return np.array(self.lattice_vectors), arr[:, 1:], arr[:, 0]
+
     def primitive(self, symprec = 1e-2):
         """ 
         Returns a Crystal object in the primitive unit cell.
@@ -248,8 +253,7 @@ class Crystal(Lattice):
         -----
         Optional atomic properties (e.g magnetic moment) might be lost in the reduction.
         """
-        arr = np.asarray(self)
-        search = find_primitive((np.array(self.lattice_vectors), arr[:, 1:], arr[:, 0]), 
+        search = find_primitive(self._spglib_cell(), 
                                 symprec = symprec)
         if search is None:
             raise RuntimeError('Primitive cell could not be found.')
@@ -332,8 +336,7 @@ class Crystal(Lattice):
         Note that crystals generated from the Protein Data Bank are often incomplete; 
         in such cases the space-group information will be incorrect.
         """
-        arr = np.asarray(self)
-        dataset = get_symmetry_dataset(cell = (np.array(self.lattice_vectors), arr[:, 1:], arr[:,0]), 
+        dataset = get_symmetry_dataset(cell = self._spglib_cell(),
                                        symprec = 1e-2, 
                                        angle_tolerance = angle_tolerance)
 
