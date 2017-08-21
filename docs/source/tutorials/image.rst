@@ -292,15 +292,15 @@ First, we create a test image::
 
 ... and we can easily compute an angular average::
 	
-	from skued.image import angular_average
+	from skued.image import azimuthal_average
 
-	radius, intensity = angular_average(image, (xc, yc))
+	radius, intensity = azimuthal_average(image, (xc, yc))
 
 	plt.plot(radius, intensity)
 
 .. plot::
 	
-	from skued.image import angular_average
+	from skued.image import azimuthal_average
 	from skued import gaussian
 	import numpy as np
 	import matplotlib.pyplot as plt
@@ -315,7 +315,7 @@ First, we create a test image::
 	image[np.logical_and(rr < 100, rr > 98)] = 0.5
 	image /= image.max()	# Normalize max to 1
 	image += np.random.random(size = image.shape)
-	radius, intensity = angular_average(image, (xc, yc))
+	radius, intensity = azimuthal_average(image, (xc, yc))
 	plt.plot(radius, intensity)
 	plt.show()
 
