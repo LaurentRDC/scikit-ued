@@ -44,13 +44,9 @@ class TestAngularAverage(unittest.TestCase):
         image = np.zeros(shape = (256, 256), dtype = np.float)
         center = (image.shape[0]/2, image.shape[1]/2)
 
-        extras = dict()
-        radius, intensity = angular_average(image, center, extras = extras)
+        radius, intensity = angular_average(image, center)
         
         self.assertTrue(intensity.sum() == 0)
-
-        error = extras['error']
-        self.assertSequenceEqual(radius.shape, error.shape)
         self.assertSequenceEqual(intensity.shape, radius.shape)
         
     def test_ring(self):
