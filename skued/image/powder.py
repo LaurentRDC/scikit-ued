@@ -4,6 +4,7 @@ Image manipulation of powder diffraction
 ========================================
 """
 import numpy as np
+from warnings import warn
 from .alignment import diff_register
 
 def powder_center(image, mask = None):
@@ -37,7 +38,11 @@ def powder_center(image, mask = None):
 	center = shift[::-1]/2 + midpoints - np.array([0.5, 0.5])
 	return tuple(center)
 
-def angular_average(image, center, mask = None, angular_bounds = None):
+def angular_average(*args, **kwargs):
+    warn('angular_average is deprecated. See azimuthal_average for more features.', DeprecationWarning)
+    return azimuthal_average(*args, **kwargs)
+
+def azimuthal_average(image, center, mask = None, angular_bounds = None, interp = False):
     """
     This function returns an angularly-averaged pattern computed from a diffraction pattern, 
     e.g. polycrystalline diffraction.
@@ -55,6 +60,9 @@ def angular_average(image, center, mask = None, angular_bounds = None):
         (inclusively) will be used for the average. Angle bounds are specified in degrees.
         0 degrees is defined as the positive x-axis. Angle bounds outside [0, 360) are mapped back
         to [0, 360).
+    interp : bool, optional
+        If True, ``image`` is interpolated to the nearest integer radius before averaging.
+        This can improve quality at the expense of speed.
 
     Returns
     -------
@@ -71,7 +79,8 @@ def angular_average(image, center, mask = None, angular_bounds = None):
 
     #Create meshgrid and compute radial positions of the data
     Y, X = np.indices(image.shape)
-    R = np.rint(np.hypot(X - xc, Y - yc)).astype(np.int)
+    R = np.hypot(X - xc, Y - yc).ravel()
+    Rint = np.rint(R).astype(np.int)
 
     if angular_bounds:
         mi, ma = angular_bounds
@@ -81,10 +90,9 @@ def angular_average(image, center, mask = None, angular_bounds = None):
 
     valid = np.logical_not(mask)
     image = np.array(valid*image, dtype = np.float).ravel()
-    R = R.ravel()
 
-    px_bin = np.bincount(R, weights = image)
-    r_bin = np.bincount(R, weights = valid.ravel())
+    px_bin = np.bincount(Rint, weights = image)
+    r_bin = np.bincount(Rint, weights = valid.ravel())
     radius = np.arange(0, r_bin.size)
 
     # We ignore the leading and trailing zeroes

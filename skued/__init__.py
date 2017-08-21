@@ -8,7 +8,7 @@ from .affine import (affine_map, change_basis_mesh, change_of_basis, is_basis,
                      is_rotation_matrix, minimum_image_distance,
                      rotation_matrix, transform, translation_matrix,
                      translation_rotation_matrix)
-from .array_utils import mirror, repeated_array
+from .array_utils import mirror, repeated_array, cart2polar, polar2cart
 from .baseline import baseline_dt, baseline_dwt, dtcwt, idtcwt
 from npstreams import chunked, last, linspace, multilinspace
 from npstreams import pmap, preduce
