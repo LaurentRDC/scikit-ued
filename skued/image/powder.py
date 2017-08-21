@@ -37,24 +37,19 @@ def powder_center(image, mask = None):
 	center = shift[::-1]/2 + midpoints - np.array([0.5, 0.5])
 	return tuple(center)
 
-def angular_average(image, center, mask = None, extras = None, angular_bounds = None):
+def angular_average(image, center, mask = None, angular_bounds = None):
     """
     This function returns an angularly-averaged pattern computed from a diffraction pattern, 
     e.g. polycrystalline diffraction.
 
     Parameters
     ----------
-    arr : array_like, shape (M, N)
+    image : array_like, shape (M, N)
         Array or image.
     center : array_like, shape (2,)
         coordinates of the center (in pixels).
     mask : `~numpy.ndarray` or None, optional
         Evaluates to True on invalid elements of array.
-    extras : dict-like or None, optional
-        if not None, this dict-like object will be updated with:
-
-        * ``'error'``: standard error in mean across radii.
-
     angular_bounds : 2-tuple or None, optional
         If not None, the angles between first and second elements of `angular_bounds`
         (inclusively) will be used for the average. Angle bounds are specified in degrees.
@@ -88,7 +83,6 @@ def angular_average(image, center, mask = None, extras = None, angular_bounds = 
     image = np.array(valid*image, dtype = np.float).ravel()
     R = R.ravel()
 
-    #R_v, image_v = R[valid].ravel(), image[valid].ravel()
     px_bin = np.bincount(R, weights = image)
     r_bin = np.bincount(R, weights = valid.ravel())
     radius = np.arange(0, r_bin.size)
@@ -97,14 +91,12 @@ def angular_average(image, center, mask = None, extras = None, angular_bounds = 
     first, last = _trim_bounds(r_bin)
     radial_intensity = px_bin[first:last]/r_bin[first:last]
 
-    # Update the extras dictionary if provided:
     # Error as the standard error in the mean, at each pixel
     # Standard error = std / sqrt(N)
     # std = sqrt(var - mean**2)
-    if extras is not None:
-        var_bin = np.bincount(R, weights = image**2)[first:last]/r_bin[first:last]
-        radial_intensity_error = np.sqrt(var_bin - radial_intensity**2)/np.sqrt(r_bin[first:last])
-        extras.update({'error':radial_intensity_error})
+    #if extras is not None:
+    #    var_bin = np.bincount(R, weights = image**2)[first:last]/r_bin[first:last]
+    #    radial_intensity_error = np.sqrt(var_bin - radial_intensity**2)/np.sqrt(r_bin[first:last])
 
     return radius[first:last], radial_intensity
 
