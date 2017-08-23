@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Image correlation and related functions
 =======================================

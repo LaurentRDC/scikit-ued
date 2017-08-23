@@ -46,6 +46,7 @@ for some examples.
     shift_image
     nfold
     mnxc2
+    mask_from_collection
 
 Crystal structure
 =================
@@ -59,11 +60,6 @@ classes.
     Crystal
     Atom
     Lattice
-
-.. autosummary::
-    :toctree: functions/
-
-    skued.structure.symmetry_expansion
 
 Simulation
 ==========
@@ -94,15 +90,6 @@ Array Utilities
     repeated_array
     cart2polar
     polar2cart
-
-Structure Parsing
-=================
-
-.. autosummary::
-    :toctree: classes/
-
-    structure.CIFParser
-    structure.PDBParser
 
 Quantities
 ==========
