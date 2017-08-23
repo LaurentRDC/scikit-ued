@@ -5,8 +5,10 @@ Image mask routines
 """
 from collections import Iterable
 from itertools import tee
+
 import numpy as np
-from npstreams import peek, array_stream, istd
+
+from npstreams import array_stream, istd, peek, last, iprod
 
 # array_stream decorator ensures that input images are cast to ndarrays
 @array_stream
@@ -18,6 +20,8 @@ def mask_from_collection(images, px_thresh = (0, 3e4), std_thresh = 10):
         * Pixels with a value above a certain threshold or below zero, for any image in the set, are considered dead;
         * Pixels with a cumulative standard deviation above a certain threshold are considered uncertain.
 
+    This function operates in constant memory, so large collections of images can be used.
+    
     Parameters
     ----------
     images : iterable of ndarray
@@ -34,13 +38,16 @@ def mask_from_collection(images, px_thresh = (0, 3e4), std_thresh = 10):
     -------
     mask : `~numpy.ndarray`, dtype bool
         Pixel mask. Pixels where ``mask`` is True are invalid.
+    
+    Notes
+    -----
+    ``numpy.inf`` can be used to have a lower pixel value bound but no upper bound. For example, to
+    reject all negative pixels only, set ``px_thresh = (0, numpy.inf)``
     """
     if isinstance(px_thresh, Iterable):
-        min_int = min(px_thresh)
-        max_int = max(px_thresh)
+        min_int, max_int = min(px_thresh), max(px_thresh)
     else:
-        min_int = None
-        max_int = px_thresh
+        min_int, max_int = None, px_thresh
     
     first, images = peek(images)
     mask = np.zeros_like(first, dtype = np.bool)    # 0 = False
@@ -55,3 +62,18 @@ def mask_from_collection(images, px_thresh = (0, 3e4), std_thresh = 10):
             mask[image < min_int] = True
     
     return mask
+
+def combine_masks(*masks):
+    """ 
+    Combine multiple pixel masks into one. This assumes that pixel masks evaluate
+    to ``True`` on invalid pixels.
+
+    Returns
+    -------
+    combined : `~numpy.ndarray`, dtype bool 
+    """
+    # By multiplying boolean arrays, values of False propagate
+    # Hence, much easier to do if invalue pixels are False instead of True
+    valids = map(np.logical_not, masks)
+    combined_valid = last(iprod(valids, dtype = np.bool))
+    return np.logical_not(combined_valid)

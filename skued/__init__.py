@@ -10,8 +10,8 @@ from .affine import (affine_map, change_basis_mesh, change_of_basis, is_basis,
                      translation_rotation_matrix)
 from .array_utils import cart2polar, mirror, polar2cart, repeated_array
 from .baseline import baseline_dt, baseline_dwt, dtcwt, idtcwt
-from .image import (align, azimuthal_average, diff_register, ialign,
-                    mask_from_collection, mnxc2, nfold, powder_center,
+from .image import (align, azimuthal_average, combine_masks, diff_register,
+                    ialign, mask_from_collection, mnxc2, nfold, powder_center,
                     shift_image)
 from .plot_utils import rgb_sweep, spectrum_colors
 from .quantities import electron_wavelength, interaction_parameter, lorentz

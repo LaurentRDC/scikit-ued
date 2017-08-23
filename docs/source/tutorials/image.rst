@@ -18,6 +18,7 @@ Contents
 
 * :ref:`alignment`
 * :ref:`symmetry`
+* :ref:`pixel_masks`
 * :ref:`powder`
 
 .. _alignment:
@@ -170,6 +171,35 @@ To use :func:`nfold`, all you need to know is the center of the diffraction patt
 
     im = imread('graphite.tif')
     av = nfold(im, mod = 6, center = center)    # mask is optional
+
+
+.. _pixel_masks:
+
+Pixel Masks
+===========
+
+Image data can be rejected on a per-pixel basis by using pixel masks. These masks are represented
+by boolean arrays that evaluate to ``True`` on invalid pixels.
+
+:mod:`scikit-ued` offers some functions related to creation and manipulation of pixel masks.
+
+Creation of a pixel mask
+------------------------
+
+A pixel mask can be created from a set of images sharing the same properties. For example, diffraction patterns
+before photoexcitation (i.e. dark runs) form a set of images that should be identical.
+
+Let's imaging a set of such images with filenames `dark_run_*.tif`. We can create a pixel mask with the :func:`mask_from_collection`::
+
+    from glob import iglob
+    from skimage.io import imread
+    from skued import mask_from_collection
+
+    dark_runs = map(imread, iglob('dark_run_*.tif'))    # Can be a huge stack of images
+    mask = mask_from_collection(dark_runs)
+
+In the above example, pixel values outside opf the [0, 30000] range will be marked as invalid (default behaviour). Moreover,
+the per-pixel standard deviation over the image set is computed; pixels that fluctuate too much are also rejected.
 
 .. _powder:
 

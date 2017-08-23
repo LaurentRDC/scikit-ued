@@ -47,6 +47,7 @@ for some examples.
     nfold
     mnxc2
     mask_from_collection
+    combine_masks
 
 Crystal structure
 =================
