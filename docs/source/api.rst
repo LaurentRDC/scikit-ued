@@ -71,7 +71,9 @@ Simulation
 .. autosummary::
     :toctree: functions/
 
-    skued.simulation.powdersim
+    powdersim
+    electrostatic
+    pelectrostatic
 
 Plot Utilities
 ==============

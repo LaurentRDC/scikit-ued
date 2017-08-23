@@ -14,5 +14,6 @@ from .image import (azimuthal_average, powder_center, align, ialign, shift_image
                     nfold, mnxc2)
 from .plot_utils import spectrum_colors, rgb_sweep
 from .quantities import electron_wavelength, interaction_parameter, lorentz
+from .simulation import powdersim, electrostatic, pelectrostatic
 from .structure import Crystal, Atom, Lattice
 from .voigt import gaussian, lorentzian, pseudo_voigt
