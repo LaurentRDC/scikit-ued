@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from .. import mask_from_collection, combine_masks
+from .. import mask_from_collection, combine_masks, mask_image
 import unittest
 
 class TestMaskFromCollection(unittest.TestCase):
@@ -63,6 +63,23 @@ class TestCombineMasks(unittest.TestCase):
 
         self.assertEqual(np.sum(combined), 1)
         self.assertTrue(combined[4, 6])
+
+class TestMaskImage(unittest.TestCase):
+
+    def test_trivial(self):
+        mask = np.zeros((64,64), dtype = np.bool)
+        image = np.random.random((64,64))
+        masked = mask_image(image, mask)
+
+        self.assertTrue(np.allclose(image, masked))
+    
+    def test_no_copy(self):
+        """ Test that mask_image can work in-place """
+        mask = np.random.randint(0, 1, size = (64,64), dtype = np.bool)
+        image = np.random.random((64,64))
+        masked = mask_image(image, mask, copy = False)
+
+        self.assertIs(image, masked)
 
 if __name__ == '__main__':
     unittest.main()

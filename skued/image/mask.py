@@ -21,7 +21,7 @@ def mask_from_collection(images, px_thresh = (0, 3e4), std_thresh = 10):
         * Pixels with a cumulative standard deviation above a certain threshold are considered uncertain.
 
     This function operates in constant memory, so large collections of images can be used.
-    
+
     Parameters
     ----------
     images : iterable of ndarray
@@ -77,3 +77,31 @@ def combine_masks(*masks):
     valids = map(np.logical_not, masks)
     combined_valid = last(iprod(valids, dtype = np.bool))
     return np.logical_not(combined_valid)
+
+def mask_image(image, mask, fill_value = 0, copy = True):
+    """
+    Fill invalid pixels in an image with another value, according to a pixel mask.
+    While this function has simply functionality, it is ideal for integrating into a
+    pipeline with ``functools.partial``.
+
+    Parameters
+    ---------
+    image : `~numpy.ndarray`
+    
+    mask : `~numpy.ndarray`
+        Boolean array. ``mask`` should evaluate to ``True`` on invalid pixels.
+    fill_value : float, optional
+        Invalid pixels fill value.
+    copy : bool, optional
+        If True (default), ``image`` is copied before masking. If False, ``image`` is modified in-place.
+    
+    Returns
+    -------
+    masked : `~numpy.ndarray`
+        Masked image. If ``copy = True``, masked points to the same object as ``image``.
+    """
+    image = np.array(image, copy = copy)
+    mask = np.asarray(mask, dtype = np.bool)
+
+    image[mask] = fill_value
+    return image
