@@ -30,22 +30,22 @@ Dual-tree Complex Wavelet Transform
 Image Analysis
 ==============
 
-Combine the routines in the :mod:`skued.image` module with
-`npstreams`_ to process diffraction data in parallel. Please refer 
+Combine the routines below with
+`npstreams`_ to process diffraction data in parallel. Refer 
 to the :ref:`tutorial on image manipulation <image_analysis_tutorial>` 
 for some examples.
 
 .. autosummary::
     :toctree: functions/
 
-    image.azimuthal_average
-    image.powder_center
-    image.align
-    image.ialign
-    image.diff_register
-    image.shift_image
-    image.nfold
-    image.mnxc2
+    azimuthal_average
+    powder_center
+    align
+    ialign
+    diff_register
+    shift_image
+    nfold
+    mnxc2
 
 Crystal structure
 =================

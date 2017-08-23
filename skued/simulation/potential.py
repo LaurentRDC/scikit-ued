@@ -4,7 +4,7 @@ Electrostatic potential simulation
 ==================================
 """
 from functools import partial
-from .. import chunked, minimum_image_distance, repeated_array
+from .. import minimum_image_distance, repeated_array
 from scipy.special import k0 as bessel
 import numpy as np
 from numpy import pi
