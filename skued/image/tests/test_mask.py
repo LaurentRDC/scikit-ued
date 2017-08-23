@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from .. import mask_from_collection
+from .. import mask_from_collection, combine_masks
 import unittest
 
 class TestMaskFromCollection(unittest.TestCase):
@@ -26,7 +26,7 @@ class TestMaskFromCollection(unittest.TestCase):
         """ Test that intensity threshold is respected """
         images = [np.zeros((64,64)) for _ in range(5)]
         images[2][32,4] = -10
-        mask = mask_from_collection(images, px_thresh = (0, 10))
+        mask = mask_from_collection(images, px_thresh = (0, np.inf))
 
         self.assertEqual(np.sum(mask), 1)   # only one pixels is masked
         self.assertEqual(mask[32, 4], True)
@@ -47,6 +47,22 @@ class TestMaskFromCollection(unittest.TestCase):
         mask = mask_from_collection(images)
 
         self.assertFalse(np.any(mask))
+
+class TestCombineMasks(unittest.TestCase):
+
+    def test_trivial(self):
+        masks = tuple([np.zeros((64,64)) for _ in range(5)])
+        combined = combine_masks(*masks)
+
+        self.assertFalse(np.any(combined))
+    
+    def test_single_element(self):
+        masks = tuple([np.zeros((64,64)) for _ in range(5)])
+        masks[0][4, 6] = True
+        combined = combine_masks(*masks)
+
+        self.assertEqual(np.sum(combined), 1)
+        self.assertTrue(combined[4, 6])
 
 if __name__ == '__main__':
     unittest.main()
