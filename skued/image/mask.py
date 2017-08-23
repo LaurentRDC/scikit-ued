@@ -12,7 +12,7 @@ from npstreams import array_stream, istd, peek, last, iprod
 
 # array_stream decorator ensures that input images are cast to ndarrays
 @array_stream
-def mask_from_collection(images, px_thresh = (0, 3e4), std_thresh = 10):
+def mask_from_collection(images, px_thresh = (0, 3e4), std_thresh = None):
     """ 
     Determine binary mask from a set of images. These images should represent identical measurements, e.g. a set
     of diffraction patterns before photoexcitation. Pixels are rejected on the following two criteria:
@@ -30,9 +30,9 @@ def mask_from_collection(images, px_thresh = (0, 3e4), std_thresh = 10):
         Pixels with a value outside of [``min(px_thresh)``, ``max(px_thresh)``] in any of the images in ``images``
         are rejected. If ``px_thresh`` is a single float, it is assumed to be the maximal intensity, and no lower
         bound is enforced.
-    std_thresh : int or float, optional
+    std_thresh : int or float or None, optional
         Standard-deviation threshold. If the standard deviation of a pixel exceeds ``std_thresh``, 
-        it is rejected.
+        it is rejected. If None (default), a threshold is not enforced.
     
     Returns
     -------
@@ -56,7 +56,9 @@ def mask_from_collection(images, px_thresh = (0, 3e4), std_thresh = 10):
     for image, std in zip(images, istd(images_for_std)):
         
         mask[image > max_int] = True
-        mask[std > std_thresh] = True
+        
+        if std_thresh is not None:
+            mask[std > std_thresh] = True
 
         if min_int is not None:
             mask[image < min_int] = True
