@@ -201,6 +201,9 @@ Let's imaging a set of such images with filenames `dark_run_*.tif`. We can creat
 In the above example, pixel values outside opf the [0, 30000] range will be marked as invalid (default behaviour). Moreover,
 the per-pixel standard deviation over the image set is computed; pixels that fluctuate too much are also rejected.
 
+Note that since :func:`mask_from_collection` uses :mod:`npstreams` under the hood, the collection used to compute the 
+mask can be huge.
+
 .. _powder:
 
 Image analysis on polycrystalline diffraction patterns
