@@ -10,8 +10,8 @@ from .affine import (affine_map, change_basis_mesh, change_of_basis, is_basis,
                      translation_rotation_matrix)
 from .array_utils import mirror, repeated_array, cart2polar, polar2cart
 from .baseline import baseline_dt, baseline_dwt, dtcwt, idtcwt
-from npstreams import chunked, last, linspace, multilinspace
-from npstreams import pmap, preduce
+from .image import (azimuthal_average, powder_center, align, ialign, shift_image, diff_register,
+                    nfold, mnxc2)
 from .plot_utils import spectrum_colors, rgb_sweep
 from .quantities import electron_wavelength, interaction_parameter, lorentz
 from .structure import Crystal, Atom, Lattice
