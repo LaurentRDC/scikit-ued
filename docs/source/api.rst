@@ -48,6 +48,7 @@ for some examples.
     mnxc2
     mask_from_collection
     combine_masks
+    mask_image
 
 Crystal structure
 =================
