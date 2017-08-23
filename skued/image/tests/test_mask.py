@@ -13,11 +13,20 @@ class TestMaskFromCollection(unittest.TestCase):
         self.assertSequenceEqual(images[0].shape, mask.shape)
         self.assertFalse(np.any(mask))
 
-    def test_intensity_threshold(self):
+    def test_intensity_threshold_no_lower_bound(self):
         """ Test that intensity threshold is respected """
         images = [np.zeros((64,64)) for _ in range(5)]
         images[2][32,4] = 10
-        mask = mask_from_collection(images, int_thresh = 9)
+        mask = mask_from_collection(images, px_thresh = 9)
+
+        self.assertEqual(np.sum(mask), 1)   # only one pixels is masked
+        self.assertEqual(mask[32, 4], True)
+
+    def test_intensity_threshold_with_lower_bound(self):
+        """ Test that intensity threshold is respected """
+        images = [np.zeros((64,64)) for _ in range(5)]
+        images[2][32,4] = -10
+        mask = mask_from_collection(images, px_thresh = (0, 10))
 
         self.assertEqual(np.sum(mask), 1)   # only one pixels is masked
         self.assertEqual(mask[32, 4], True)
@@ -26,7 +35,7 @@ class TestMaskFromCollection(unittest.TestCase):
         """ Test that std threshold is respected """
         images = [np.zeros((64,64)) for _ in range(5)]
         images[0][5, 12] = 1000
-        mask = mask_from_collection(images, int_thresh = 10000, std_thresh = 1)
+        mask = mask_from_collection(images, px_thresh = 10000, std_thresh = 1)
 
         self.assertEqual(np.sum(mask), 1)   # only one pixels is masked
         self.assertEqual(mask[5, 12], True)
