@@ -8,45 +8,45 @@ h = 6.63*10**(-34)      # Planck's constant [J*s]
 e = 1.602*10**(-19)     # electron charge [C]
 m0 = 9.109*10**(-31)    # electron mass [kg]
 
-def lorentz(kV):
+def lorentz(keV):
     """
     Relativistic factor.
 
     Parameters
     ----------
-    kV : array_like or float
-        Electron energy [kV].
+    keV : array_like or float
+        Electron energy [keV].
     
     Returns
     -------
     out : array_like or float
     """
-    return np.sqrt(1 + (e*kV*1e3)/(2*m0*c**2))
+    return 1/np.sqrt(1 + (e*keV*1e3)/(2*m0*c**2))
 
-def electron_wavelength(kV):
+def electron_wavelength(keV):
     """ 
     Relativistic wavelength of an accelerated electron.
         
     Parameters
     ----------
-    kV : array_like or float
-        Electron energy [kV].
+    keV : array_like or float
+        Electron energy [keV].
     
     Returns
     -------
     out : float
         Electron wavelength [Angs]
     """
-    return (h/np.sqrt(2*m0*e*kV*1e3))/lorentz(kV)*1e10
+    return (h/np.sqrt(2*m0*e*keV*1e3))*lorentz(keV)*1e10
 
-def interaction_parameter(kV):
+def interaction_parameter(keV):
     """
     Interaction parameter from relativistic electron wavelength.
 
     Parameters
     ----------
-    kV : array_like or float
-        Electron energy [kV].
+    keV : array_like or float
+        Electron energy [keV].
     
     Returns
     -------
@@ -57,7 +57,7 @@ def interaction_parameter(kV):
     ----------
     .. Kirkland 2010 Eq. 5.6
     """
-    l = electron_wavelength(kV)
-    V = kV * 1e3
+    l = electron_wavelength(keV)
+    V = keV * 1e3
 
-    return (2*np.pi)/(electron_wavelength(kV)*V)*(m0*c**2 + e * V)/(2*m0*c**2 + e * V)
+    return (2*np.pi)/(electron_wavelength(keV)*V)*(m0*c**2 + e * V)/(2*m0*c**2 + e * V)
