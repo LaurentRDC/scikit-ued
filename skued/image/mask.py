@@ -4,7 +4,7 @@ Image mask routines
 ===================
 """
 from collections import Iterable
-from itertools import tee
+from itertools import tee, repeat
 
 import numpy as np
 
