@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-Physical quantities relevant to other modules\packages
-"""
+""" Electron properties """
+
 import numpy as np
 
 c = 299792458           # speed of light [m/s]
