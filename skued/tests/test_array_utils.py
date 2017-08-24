@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 import numpy as np
-from .. import repeated_array, mirror, cart2polar, polar2cart
+from .. import repeated_array, mirror, cart2polar, polar2cart, plane_mesh
 
 np.random.seed(23)
 
@@ -66,6 +66,27 @@ class TestCart2Polar(unittest.TestCase):
         xp, yp = polar2cart(r,t)
         self.assertTrue(np.allclose(x, xp))
         self.assertTrue(np.allclose(y, yp))
+
+class TestPlaneMesh(unittest.TestCase):
+
+    def test_shape(self):
+        """ Test that shape is as expected """
+        extent1 = np.linspace(0, 10, num = 64)
+        extent2 = np.linspace(0, 10, num = 128)
+        v1, v2, _ = np.eye(3)
+        
+        for arr in plane_mesh(v1, v2, extent1, extent2):
+            self.assertSequenceEqual(arr.shape, (64, 128))
+    
+    def test_origin(self):
+        """ Test that plane_mesh is generated from origin """
+        extent1 = np.linspace(0, 10, num = 64)
+        extent2 = np.linspace(0, 10, num = 128)
+        v1, v2, _ = np.eye(3)
+
+        for arr in plane_mesh(v1, v2, extent1, extent2, origin = (-4, -4, -4)):
+            self.assertEqual(arr.min(), -4)
+        
 		
 if __name__ == '__main__':
 	unittest.main()
