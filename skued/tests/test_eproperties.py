@@ -13,6 +13,13 @@ class TestLorentz(unittest.TestCase):
         """ Test lorentz() on an array of energies """
         kV = np.zeros((128,), dtype = np.float)
         self.assertTrue(np.allclose(lorentz(kV), np.ones_like(kV)))
+    
+    def test_range(self):
+        """ Test that lorentz factor is always in the range (0, 1] """
+        kv = np.linspace(0, 1e6, num = 256)
+        factors = lorentz(kv)
+        self.assertTrue(np.all(factors <= 1))
+        self.assertTrue(np.all(factors > 0))
 
 class TestElectronWavelength(unittest.TestCase):
     
