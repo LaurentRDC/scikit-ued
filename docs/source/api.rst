@@ -38,14 +38,34 @@ for some examples.
 .. autosummary::
     :toctree: functions/
 
+Routines for polycrystalline data
+---------------------------------
+
+.. autosummary::
+    :toctree: functions/
+
     azimuthal_average
     powder_center
+
+Image alignment
+---------------
+
+.. autosummary::
+    :toctree: functions/
+
     align
     ialign
     diff_register
     shift_image
     nfold
     mnxc2
+
+Pixel mask manipulations
+------------------------
+
+.. autosummary::
+    :toctree: functions/
+
     mask_from_collection
     combine_masks
     mask_image
@@ -92,9 +112,10 @@ Array Utilities
     repeated_array
     cart2polar
     polar2cart
+    plane_mesh
 
-Quantities
-==========
+Electron Properties
+===================
 
 .. autosummary::
     :toctree: functions/

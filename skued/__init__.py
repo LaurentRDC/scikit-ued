@@ -8,7 +8,7 @@ from .affine import (affine_map, change_basis_mesh, change_of_basis, is_basis,
                      is_rotation_matrix, minimum_image_distance,
                      rotation_matrix, transform, translation_matrix,
                      translation_rotation_matrix)
-from .array_utils import cart2polar, mirror, polar2cart, repeated_array
+from .array_utils import cart2polar, mirror, polar2cart, repeated_array, plane_mesh
 from .baseline import baseline_dt, baseline_dwt, dtcwt, idtcwt
 from .image import (align, azimuthal_average, combine_masks, diff_register,
                     ialign, mask_from_collection, mask_image, mnxc2, nfold, 
