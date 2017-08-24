@@ -52,8 +52,13 @@ def mask_from_collection(images, px_thresh = (0, 3e4), std_thresh = None):
     first, images = peek(images)
     mask = np.zeros_like(first, dtype = np.bool)    # 0 = False
 
-    images, images_for_std = tee(images)
-    for image, std in zip(images, istd(images_for_std)):
+    if std_thresh is not None:
+        images, images_for_std = tee(images)
+        std_calc = istd(images_for_std)
+    else:
+        std_calc = repeat(np.inf)
+
+    for image, std in zip(images, std_calc):
         
         mask[image > max_int] = True
         
