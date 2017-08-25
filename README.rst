@@ -14,29 +14,7 @@ scikit-ued
 Collection of algorithms and functions for ultrafast electron diffraction. It aims to be a fully-tested package
 taking advantage of Python's most recent features.
 
-Examples
---------
-
-First and foremost, ``skued`` is concerned with the diffraction of crystals. Hence, building a ``Crystal`` object
-from various sources is easy::
-
-    from skued import Crystal
-
-    tise2 = Crystal.from_cif('tise2.cif')
-    graphite = Crystal.from_database('C')       # Internal database
-    hemoglobin = Crystal.from_pdb('1gzx')       # Protein Data Bank
-    vo2 = Crystal.from_cod(1521124)             # Crystallography Open Database
-
-The ``Crystal`` object encodes multiple attributes and methods related to space-group, symmetry, and scattering.
-
-Another important part of ultrafast electron diffraction is image processing. Image-alignment, exploitation of 
-symmetry, azimuthal average of polycrystalline data, and more, are included.
-
-Baseline-determination in polycrystalline data is a cornerstone of this package. Using the dual-tree complex 
-wavelet transform, time-varying baselines can be extracted with high accuracy, even in cases where diffraction
-peaks overlap over the entire dataset. 
-
-For more examples, see our `tutorials <http://scikit-ued.readthedocs.io/en/latest/tutorials/index.html>`_.
+For examples, see our `tutorials <http://scikit-ued.readthedocs.io/en/latest/tutorials/index.html>`_.
 
 API Reference
 -------------
