@@ -22,6 +22,8 @@ BASE_PACKAGE    = 'skued'
 WAVELET_FILES   = chain.from_iterable([glob('skued\\baseline\\data\\*.npy'), 
                                        glob('skued\\baseline\\data\\*.npz')])
 
+CIF_FILES       = chain.from_iterable([glob('skued\\structure\\cifs\\*.cif')])
+
 base_path = os.path.dirname(__file__)
 with open(os.path.join(base_path, BASE_PACKAGE, '__init__.py')) as f:
     module_content = f.read()
@@ -59,7 +61,8 @@ if __name__ == '__main__':
         install_requires = REQUIREMENTS,
         keywords = ['skued'],
         packages = PACKAGES,
-        data_files = [('skued\\baseline\\data', WAVELET_FILES)],
+        data_files = [('skued\\baseline\\data', WAVELET_FILES),
+                      ('skued\\structure\\cifs', CIF_FILES)],
         include_package_data = True,
         zip_safe = False,
         test_suite = 'setup.skued_test_suite', 
