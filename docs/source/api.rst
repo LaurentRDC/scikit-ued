@@ -70,6 +70,15 @@ Pixel mask manipulations
     combine_masks
     mask_image
 
+Image metrics
+-------------
+
+.. autosummary::
+    :toctree: functions/
+
+    snr_from_collection
+    isnr
+    
 Crystal structure
 =================
 Handling crystal structure information is crucial for many data analysis and modelling tasks.

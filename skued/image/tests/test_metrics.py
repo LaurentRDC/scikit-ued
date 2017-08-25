@@ -1,7 +1,46 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from .. import mask_from_collection, combine_masks, mask_image
+from npstreams import last
+from .. import snr_from_collection, isnr, mask_from_collection, mask_image, combine_masks
 import unittest
+
+class TestSNRFromCollection(unittest.TestCase):
+
+    def test_trivial(self):
+        """ Test snr_from_collection on series of identical images """
+        images = [np.ones((64,64)) for _ in range(10)]
+        snr = snr_from_collection(images)
+
+        self.assertTrue(np.allclose(snr, np.zeros_like(snr)))
+    
+    def test_correctess(self):
+        """ Test that snr_from_collection is equivalent to np.mean / np.std """
+        images = [np.random.random((64,64)) for _ in range(10)]
+        stack = np.dstack(images)
+
+        from_numpy = np.mean(stack, axis = 2)/np.std(stack, axis = 2)
+        from_skued = snr_from_collection(images)
+
+        self.assertTrue(np.allclose(from_numpy, from_skued))
+
+class TestISNR(unittest.TestCase):
+
+    def test_trivial(self):
+        """ Test snr_from_collection on series of identical images """
+        images = [np.ones((64,64)) for _ in range(10)]
+        snr = last(isnr(images))
+
+        self.assertTrue(np.allclose(snr, np.zeros_like(snr)))
+    
+    def test_correctess(self):
+        """ Test that snr_from_collection is equivalent to np.mean / np.std """
+        images = [np.random.random((64,64)) for _ in range(10)]
+        stack = np.dstack(images)
+
+        from_numpy = np.mean(stack, axis = 2)/np.std(stack, axis = 2)
+        from_skued = last(isnr(images))
+
+        self.assertTrue(np.allclose(from_numpy, from_skued))
 
 class TestMaskFromCollection(unittest.TestCase):
 
@@ -80,6 +119,7 @@ class TestMaskImage(unittest.TestCase):
         masked = mask_image(image, mask, copy = False)
 
         self.assertIs(image, masked)
+
 
 if __name__ == '__main__':
     unittest.main()
