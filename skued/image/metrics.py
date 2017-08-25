@@ -8,7 +8,68 @@ from itertools import tee, repeat
 
 import numpy as np
 
-from npstreams import array_stream, istd, peek, last, iprod
+from npstreams import array_stream, istd, imean, peek, last, iprod
+
+@array_stream
+def isnr(images, fill_value = 0.0):
+    """
+    Streaming, pixelwise signal-to-noise ratio (SNR).
+    
+    Parameters
+    ----------
+    images : iterable of ndarray
+        These images should represent identical measurements. ``images`` can also be a generator.
+    fill_value : float, optional
+        Division-by-zero results will be filled with this value.
+
+    Yields
+    ------
+    snr : `~numpy.ndarray`
+        Pixelwise signal-to-noise ratio
+
+    See Also
+    --------
+    snr_from_collection : pixelwise signal-to-noise ratio from a collection of measurements
+    """
+    first, images = peek(images)
+    snr = np.empty_like(first)
+
+    images1, images2 = tee(images, 2)
+    for mean, std in zip(imean(images1), istd(images2)):
+        valid = std != 0
+        snr[valid] = mean[valid] / std[valid]
+        snr[np.logical_not(valid)] = fill_value
+        yield snr
+
+@array_stream
+def snr_from_collection(images, fill_value = 0.0):
+    """
+    Signal-to-noise ratio (SNR) on a per-pixel basis, for images in a collection.
+    These images should represent identical measurements.
+
+    SNR is defined as :math:`snr = \mu/\sigma` where :math:`\mu`
+    is the average pixel value and :math:`\sigma` is the standard deviation of that pixel value.  
+
+    This function operates in constant-memory; it is therefore safe to use on a large collection
+    of images (>10GB).     
+
+    Parameters
+    ----------
+    images : iterable of ndarray
+        These images should represent identical measurements. ``images`` can also be a generator.
+    fill_value : float, optional
+        Division-by-zero results will be filled with this value.
+
+    Returns
+    -------
+    snr : `~numpy.ndarray`
+        Pixelwise signal-to-noise ratio
+
+    See Also
+    --------
+    isnr : streaming signal-to-noise ratio
+    """
+    return last(isnr(images, fill_value = fill_value))
 
 # array_stream decorator ensures that input images are cast to ndarrays
 @array_stream
@@ -20,7 +81,8 @@ def mask_from_collection(images, px_thresh = (0, 3e4), std_thresh = None):
         * Pixels with a value above a certain threshold or below zero, for any image in the set, are considered dead;
         * Pixels with a cumulative standard deviation above a certain threshold are considered uncertain.
 
-    This function operates in constant memory, so large collections of images can be used.
+    This function operates in constant-memory; it is therefore safe to use on a large collection
+    of images (>10GB).
 
     Parameters
     ----------
@@ -42,7 +104,7 @@ def mask_from_collection(images, px_thresh = (0, 3e4), std_thresh = None):
     Notes
     -----
     ``numpy.inf`` can be used to have a lower pixel value bound but no upper bound. For example, to
-    reject all negative pixels only, set ``px_thresh = (0, numpy.inf)``
+    reject all negative pixels only, set ``px_thresh = (0, numpy.inf)``.
     """
     if isinstance(px_thresh, Iterable):
         min_int, max_int = min(px_thresh), max(px_thresh)
