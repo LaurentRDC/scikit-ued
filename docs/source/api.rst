@@ -30,23 +30,55 @@ Dual-tree Complex Wavelet Transform
 Image Analysis
 ==============
 
-Combine the routines in the :mod:`skued.image` module with
-`npstreams`_ to process diffraction data in parallel. Please refer 
+Combine the routines below with
+`npstreams`_ to process diffraction data in parallel. Refer 
 to the :ref:`tutorial on image manipulation <image_analysis_tutorial>` 
 for some examples.
 
 .. autosummary::
     :toctree: functions/
 
-    image.azimuthal_average
-    image.powder_center
-    image.align
-    image.ialign
-    image.diff_register
-    image.shift_image
-    image.nfold
-    image.mnxc2
+Routines for polycrystalline data
+---------------------------------
 
+.. autosummary::
+    :toctree: functions/
+
+    azimuthal_average
+    powder_center
+
+Image alignment
+---------------
+
+.. autosummary::
+    :toctree: functions/
+
+    align
+    ialign
+    diff_register
+    shift_image
+    nfold
+    mnxc2
+
+Pixel mask manipulations
+------------------------
+
+.. autosummary::
+    :toctree: functions/
+
+    mask_from_collection
+    combine_masks
+    mask_image
+
+Image metrics
+-------------
+
+.. autosummary::
+    :toctree: functions/
+
+    snr_from_collection
+    isnr
+    
 Crystal structure
 =================
 Handling crystal structure information is crucial for many data analysis and modelling tasks.
@@ -60,18 +92,15 @@ classes.
     Atom
     Lattice
 
-.. autosummary::
-    :toctree: functions/
-
-    skued.structure.symmetry_expansion
-
 Simulation
 ==========
 
 .. autosummary::
     :toctree: functions/
 
-    skued.simulation.powdersim
+    powdersim
+    electrostatic
+    pelectrostatic
 
 Plot Utilities
 ==============
@@ -92,18 +121,10 @@ Array Utilities
     repeated_array
     cart2polar
     polar2cart
+    plane_mesh
 
-Structure Parsing
-=================
-
-.. autosummary::
-    :toctree: classes/
-
-    structure.CIFParser
-    structure.PDBParser
-
-Quantities
-==========
+Electron Properties
+===================
 
 .. autosummary::
     :toctree: functions/

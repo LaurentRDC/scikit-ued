@@ -3,7 +3,9 @@ Array utility functions
 """
 
 from itertools import repeat
-from numpy import concatenate, swapaxes, hypot, arctan2, sin, cos
+import numpy as np
+from numpy.linalg import norm
+from warnings import warn
 
 def repeated_array(arr, num, axes = -1):
     """
@@ -38,11 +40,11 @@ def repeated_array(arr, num, axes = -1):
     if len(num) != len(axes):
         raise ValueError('num and axes must have the same length')
     
-    composite = concatenate(tuple(repeat(arr, times = num[0])), axis = axes[0])
+    composite = np.concatenate(tuple(repeat(arr, times = num[0])), axis = axes[0])
 
     if len(num) > 1:
         for n, ax in zip(num[1:], axes[1:]):
-            composite = concatenate(tuple(repeat(composite, times = n)), axis = ax)
+            composite = np.concatenate(tuple(repeat(composite, times = n)), axis = ax)
     
     return composite
 
@@ -88,7 +90,7 @@ def cart2polar(x, y):
     r, t : `~numpy.ndarray`
         Radius and polar angle coordinates
     """
-    return hypot(x,y), arctan2(y, x)
+    return np.hypot(x,y), np.arctan2(y, x)
 
 def polar2cart(r, t):
     """
@@ -104,4 +106,39 @@ def polar2cart(r, t):
     x, y : `~numpy.ndarray`
         Cartesian coordinates
     """
-    return r * cos(t), r * sin(t)
+    return r * np.cos(t), r * np.sin(t)
+
+def plane_mesh(v1, v2, x1, x2 = None, origin = [0,0,0]):
+    """
+    Generate a spatial mesh for a plane defined by two vectors.
+
+    Parameters
+    ----------
+    v1, v2 : `~numpy.ndarray`, shape (3,)
+        Basis vector of the plane. A warning is raised if 
+        ``v1`` and ``v2`` are not orthogonal.
+    x1, x2 : iterable, shape (N,)
+        1-D arrays representing the coordinates on the grid, along basis
+        vectors ``v1`` and ``v2`` respectively. If ``x2`` is not specified,
+        ``x1`` and ``x2`` are taken to be the same
+    origin : iterable, shape (3,), optional
+        Plane mesh will be generated with respect to this origin.
+    
+    Returns
+    -------
+    x, y, z : `~numpy.ndarray`, ndim 2
+        Mesh arrays for the coordinate of the plane.
+    """
+    v1, v2 = v1/norm(v1), v2/norm(v2)
+
+    if x2 is None:
+        x2 = np.array(x1)
+
+    if np.dot(v1, v2) != 0:
+        warn('Plane basis vectors are not orthogonal', RuntimeWarning)
+    
+    along_v1, along_v2 = np.meshgrid(x1, x2, indexing = 'ij')
+    xx, yy, zz = tuple(along_v1 * v1[i] + along_v2 * v2[i] for i in range(3))
+
+    ox, oy, oz = tuple(origin)
+    return (xx + ox, yy + oy, zz + oz)
