@@ -95,12 +95,39 @@ classes.
 Simulation
 ==========
 
+Polycrystalline diffraction
+---------------------------
+
 .. autosummary::
     :toctree: functions/
 
     powdersim
+
+Electrostatic potential
+-----------------------
+
+.. autosummary::
+    :toctree: functions/
+
     electrostatic
     pelectrostatic
+
+Structure factor calculations
+-----------------------------
+
+.. autosummary::
+    :toctree: functions/
+
+    structure_factor
+    structure_factor_miller
+
+Miscellaneous
+-------------
+
+.. autosummary::
+    :toctree: functions/
+
+    bounded_reflections
 
 Plot Utilities
 ==============

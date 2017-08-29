@@ -4,6 +4,7 @@ Polycrystalline diffraction pattern simulation
 ==============================================
 """
 from ..voigt import pseudo_voigt
+from .structure_factors import structure_factor, bounded_reflections
 import numpy as np
 
 def powdersim(crystal, scattering_length, fwhm_g = 0.01, fwhm_l = 0.02, **kwargs):
@@ -25,9 +26,9 @@ def powdersim(crystal, scattering_length, fwhm_g = 0.01, fwhm_l = 0.02, **kwargs
 	pattern : `~numpy.ndarray`, shape (N,)
 		Diffraction pattern
 	"""
-	Gx, Gy, Gz = crystal.scattering_vector(*crystal.bounded_reflections(4*np.pi*scattering_length.max()))
+	Gx, Gy, Gz = crystal.scattering_vector(*bounded_reflections(crystal, nG = 4*np.pi*scattering_length.max()))
 	scatt_length = np.sqrt(Gx**2 + Gy**2 + Gz**2)/(4*np.pi)
-	intensities = np.absolute(crystal.structure_factor((Gx, Gy, Gz)))**2
+	intensities = np.absolute(structure_factor(crystal, G = (Gx, Gy, Gz)))**2
 
 	psf = pseudo_voigt(scattering_length, center = np.mean(scattering_length), fwhm_g = fwhm_g, fwhm_l = fwhm_l)
 
