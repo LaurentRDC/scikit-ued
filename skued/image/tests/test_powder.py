@@ -75,18 +75,23 @@ class TestAzimuthalAverage(unittest.TestCase):
         extent = np.arange(0, image.shape[0])
         xx, yy = np.meshgrid(extent, extent)
         rr = np.sqrt((xx - xc)**2 + (yy - yc)**2)
-        angles = np.rad2deg(np.arctan2(yy - yc, xx - xc))
+        angles = np.rad2deg(np.arctan2(yy - yc, xx - xc)) + 180
         image[np.logical_and(0 <= angles, angles <= 60)] = 1
+
+        with self.subTest('0 - 360'):
+            radius, intensity = azimuthal_average(image, center, angular_bounds = None)
+            r360, int360 = azimuthal_average(image, center, angular_bounds = (0, 360))
+            self.assertTrue(np.allclose(intensity, int360))
         
-        with self.subTest('Outside angle bounds'):
+        with self.subTest('Inside angle bounds'):
             radius, intensity = azimuthal_average(image, center, angular_bounds = (0, 60))
             self.assertTrue(np.allclose(intensity, np.ones_like(intensity)))
 
         with self.subTest('Overlapping bounds'):
             radius, intensity = azimuthal_average(image, center, angular_bounds = (15, 75))
-            self.assertFalse(np.allclose(intensity, np.ones_like(intensity)))
+            self.assertFalse(np.all(intensity < np.ones_like(intensity)))
         
-        with self.subTest('Inside angle bounds'):
+        with self.subTest('Outside angle bounds'):
             radius, intensity = azimuthal_average(image, center, angular_bounds = (60, 360))
             self.assertTrue(np.allclose(intensity, np.zeros_like(intensity)))
         

@@ -42,6 +42,18 @@ def angular_average(*args, **kwargs):
     warn('angular_average is deprecated. See azimuthal_average for more features.', DeprecationWarning)
     return azimuthal_average(*args, **kwargs)
 
+def _angle_bounds(bounds):
+    b1, b2 = bounds
+    while b1 < 0:
+        b1 += 360
+    while b1 > 360:
+        b1 -= 360
+    while b2 < 0:
+        b2 += 360
+    while b2 > 360:
+        b2 -= 360
+    return tuple(sorted((b1, b2)))
+    
 def azimuthal_average(image, center, mask = None, angular_bounds = None):
     """
     This function returns an angularly-averaged pattern computed from a diffraction pattern, 
@@ -78,17 +90,19 @@ def azimuthal_average(image, center, mask = None, angular_bounds = None):
 
     #Create meshgrid and compute radial positions of the data
     Y, X = np.indices(image.shape)
-    R = np.hypot(X - xc, Y - yc).ravel()
+    R = np.hypot(X - xc, Y - yc)
     Rint = np.rint(R).astype(np.int)
 
     if angular_bounds:
-        mi, ma = angular_bounds
-        mi, ma = mi % 360, ma % 360
-        angles = np.rad2deg(np.arctan2(Y - yc, X - xc))
-        mask[np.logical_not(np.logical_and(mi <= angles, angles <= ma))] = True
+        mi, ma = _angle_bounds(angular_bounds)
+        angles = np.rad2deg(np.arctan2(Y - yc, X - xc)) + 180  # arctan2 is defined on [-pi, pi] but we want [0, pi]
+        in_bounds = np.logical_and(mi <= angles, angles <= ma)
+    else:
+        in_bounds = np.ones_like(image, dtype = np.bool)
 
-    valid = np.logical_not(mask).ravel()
-    image = image.ravel()
+    valid = np.logical_not(mask)[in_bounds]
+    image = image[in_bounds]
+    Rint = Rint[in_bounds]
 
     px_bin = np.bincount(Rint, weights = valid*image)
     r_bin = np.bincount(Rint, weights = valid)
