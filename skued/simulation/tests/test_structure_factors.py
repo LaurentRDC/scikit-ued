@@ -2,8 +2,20 @@
 import unittest
 import numpy as np
 
-from .. import structure_factor, structure_factor_miller, bounded_reflections
-from ... import Crystal
+from .. import structure_factor, structure_factor_miller, bounded_reflections, electron_form_factor
+from ... import Crystal, Atom
+
+class TestElectronFormFactor(unittest.TestCase):
+
+    def test_side_effects(self):
+        nG = np.random.random(size = (16, 32))
+        nG.setflags(write = False)  # if nG is written to, Exception is raised
+        electron_form_factor(Atom('He', coords = [0,0,0]), nG)
+    
+    def test_out_shape(self):
+        nG = np.random.random(size = (16, 32))
+        eff = electron_form_factor(Atom('He', coords = [0,0,0]), nG)
+        self.assertSequenceEqual(eff.shape, nG.shape)
 
 class TestStructureFactor(unittest.TestCase):
 
@@ -13,7 +25,7 @@ class TestStructureFactor(unittest.TestCase):
     def test_shape_and_dtype(self):
         """ Test that output of structure_factor is same shape as input,
         and that the dtype is complex """
-        Gx, Gy, Gz = np.meshgrid([-1,0,1], [-1,0,1], [-1,0,1])
+        Gx, Gy, Gz = np.meshgrid([1, 2, 3], [1, 2, 3], [1, 2, 3])
         sf = structure_factor(self.crystal, (Gx, Gy, Gz))
 
         self.assertSequenceEqual(sf.shape, Gx.shape)

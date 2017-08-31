@@ -9,6 +9,39 @@ import numpy as np
 from numpy.linalg import norm
 
 from .. import change_basis_mesh
+from .scattering_params import scattering_params
+
+def electron_form_factor(atom, nG):
+    """
+    Electron form factor
+
+    Parameters
+    ----------
+    atom : Atom instance
+        If ``atom`` is an integer, it is assumed to be the atomic number.
+    nG : array_like
+        Scattering vector norm (G = 4 pi s)
+    
+    Returns
+    -------
+    eff : `~numpy.ndarray`, dtype float
+        Atomic form factor for electron scattering.
+
+    Raises
+    ------
+    ValueError : scattering information is not available, for example if ``atom.atomic_number > 103 ``
+    """
+    try:
+        _, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[atom.atomic_number]
+    except KeyError:
+        raise ValueError('Scattering information for element {} is unavailable.'.format(atom.element))
+
+    vec_norm = nG / (2*np.pi)	# In the units of Kirkland 2010
+    vec_norm2 = np.square(vec_norm)
+
+    sum1 = (a1 + a2 + a3) / vec_norm2 + (b1 + b2 + b3)
+    sum2 = c1 * np.exp(-d1 * vec_norm2) + c2 * np.exp(-d2 * vec_norm2) + c3 * np.exp(-d3 * vec_norm2)
+    return sum1 + sum2
 
 def structure_factor(crystal, G):
     """
@@ -59,7 +92,7 @@ def structure_factor(crystal, G):
     for atom in crystal: #TODO: implement in parallel?
 
         if atom.element not in atomff_dict:
-            atomff_dict[atom.element] = atom.electron_form_factor(nG)
+            atomff_dict[atom.element] = electron_form_factor(atom, nG)
 
         x, y, z = atom.xyz(crystal)
         arg = x*Gx + y*Gy + z*Gz
