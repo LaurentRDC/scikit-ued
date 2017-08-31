@@ -75,6 +75,7 @@ Simulation
 
     structure_factor
     structure_factor_miller
+    affe
     powdersim
     electrostatic
     pelectrostatic

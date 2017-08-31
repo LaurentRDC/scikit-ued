@@ -11,9 +11,10 @@ from numpy.linalg import norm
 from .. import change_basis_mesh
 from .scattering_params import scattering_params
 
-def electron_form_factor(atom, nG):
+def affe(atom, nG):
     """
-    Electron form factor
+    Atomic form factors for electrons, for neutral atoms. 
+    Parametrization is taken from Kirkland 2010.
 
     Parameters
     ----------
@@ -92,7 +93,7 @@ def structure_factor(crystal, G):
     for atom in crystal: #TODO: implement in parallel?
 
         if atom.element not in atomff_dict:
-            atomff_dict[atom.element] = electron_form_factor(atom, nG)
+            atomff_dict[atom.element] = affe(atom, nG)
 
         x, y, z = atom.xyz(crystal)
         arg = x*Gx + y*Gy + z*Gz

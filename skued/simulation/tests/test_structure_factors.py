@@ -2,7 +2,7 @@
 import unittest
 import numpy as np
 
-from .. import structure_factor, structure_factor_miller, bounded_reflections, electron_form_factor
+from .. import structure_factor, structure_factor_miller, bounded_reflections, affe
 from ... import Crystal, Atom
 
 class TestElectronFormFactor(unittest.TestCase):
@@ -10,11 +10,11 @@ class TestElectronFormFactor(unittest.TestCase):
     def test_side_effects(self):
         nG = np.random.random(size = (16, 32))
         nG.setflags(write = False)  # if nG is written to, Exception is raised
-        electron_form_factor(Atom('He', coords = [0,0,0]), nG)
+        affe(Atom('He', coords = [0,0,0]), nG)
     
     def test_out_shape(self):
         nG = np.random.random(size = (16, 32))
-        eff = electron_form_factor(Atom('He', coords = [0,0,0]), nG)
+        eff = affe(Atom('He', coords = [0,0,0]), nG)
         self.assertSequenceEqual(eff.shape, nG.shape)
 
 class TestStructureFactor(unittest.TestCase):
