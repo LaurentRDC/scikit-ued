@@ -2,7 +2,7 @@
 import unittest
 import numpy as np
 
-from .. import structure_factor, structure_factor_miller, bounded_reflections, affe
+from .. import structure_factor, bounded_reflections, affe
 from ... import Crystal, Atom
 
 class TestElectronFormFactor(unittest.TestCase):
