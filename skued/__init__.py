@@ -15,7 +15,6 @@ from .image import (align, azimuthal_average, combine_masks, diff_register,
                     ialign, isnr, mask_from_collection, mask_image, mnxc2, nfold, 
                     powder_center, shift_image, snr_from_collection)
 from .plot_utils import rgb_sweep, spectrum_colors
-from .simulation import (electrostatic, pelectrostatic, powdersim, structure_factor, 
-                         structure_factor_miller, bounded_reflections)
+from .simulation import electrostatic, pelectrostatic, powdersim, structure_factor, bounded_reflections
 from .structure import Atom, Crystal, Lattice
 from .voigt import gaussian, lorentzian, pseudo_voigt

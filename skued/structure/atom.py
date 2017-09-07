@@ -7,7 +7,6 @@ from .. import (change_of_basis, is_rotation_matrix, transform, translation_matr
 from .atom_data import (ELEM_TO_MAGMOM, ELEM_TO_MASS, ELEM_TO_NAME,
                         ELEM_TO_NUM, NUM_TO_ELEM)
 from .lattice import Lattice
-from .scattering_params import scattering_params
 
 # Constants
 m = 9.109*10**(-31)     #in kg
@@ -82,18 +81,6 @@ class Atom(object):
         self.coords = np.array(coords, dtype = np.float)
         self.displacement = np.array(displacement, dtype = np.float)
         self.magmom = magmom
-
-        # Atomic potential parameters loaded on instantiation
-        # These are used to compute atomic potential
-        try:
-            _, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[self.atomic_number]
-        except KeyError:
-            raise ValueError('Scattering information for element {} is unavailable.'.format(self.element))
-
-        self._a = np.array((a1, a2, a3)).reshape((1,3))
-        self._b = np.array((b1, b2, b3)).reshape((1,3))
-        self._c = np.array((c1, c2, c3)).reshape((1,3))
-        self._d = np.array((d1, d2, d3)).reshape((1,3))
         
     def __repr__(self):
         name = ELEM_TO_NAME[self.element]
@@ -191,30 +178,6 @@ class Atom(object):
             return self.xyz(lattice.lattice_vectors)
         return real_coords(self.coords, lattice)
     
-    def electron_form_factor(self, nG):
-        """
-        Vectorized electron form factor calculation.
-
-        Parameters
-        ----------
-        nG : array_like
-            Scattering vector norm (G = 4 pi s)
-        
-        Returns
-        -------
-        atomff : `~numpy.ndarray`
-        """
-        scatt_vector_norm = nG / (2*np.pi)	# In the units of Kirkland 2010
-        
-        s = scatt_vector_norm.shape
-        scatt_vector_norm = scatt_vector_norm.reshape((-1,1))
-        scatt_vector_norm2 = np.square(scatt_vector_norm)
-
-        sum1 = np.sum(self._a/(scatt_vector_norm2 + self._b), axis = 1)
-        sum2 = np.sum(self._c * np.exp(-self._d * scatt_vector_norm2), axis = 1)
-        
-        return (sum1 + sum2).reshape(s)
-    
     def debye_waller_factor(self, G, out = None):
         """
         Debye-Waller factor, calculated with the average of the 
@@ -234,35 +197,6 @@ class Atom(object):
         Gx, Gy, Gz = G
         dot = self.displacement[0]*Gx + self.displacement[1]*Gy + self.displacement[2]*Gz
         return np.exp(-0.5*dot**2, out = out)   # Factor of 1/2 from average of u = sin(wt)
-    
-    def potential(self,r):
-        """
-        Electrostatic atomic potential.
-
-        Parameters
-        ----------
-        r : array_like
-            Radial distance from the atom [Angs].
-
-        Returns
-        -------
-        out : ndarray
-            Potential [V * Angs]
-
-        References
-        ----------
-        Kirkland 2010 Eq. C.19
-        """
-        r = np.array(r, copy = False)
-        
-        s = r.shape
-        r = r.reshape((-1,1))
-        sum1 = np.sum((self._a/r) * np.exp(-2*np.pi*r*np.sqrt(self._b)), axis = 1)
-        sum2 = np.sum(self._c*self._d**(-1.5) * np.exp( -(r*np.pi)**2 / self._d), axis = 1)
-
-        e = 14.4 #[Volt-Angstrom]
-        res = 2*a0*e*(np.pi**2 * sum1 + np.pi**(2.5) * sum2)
-        return res.reshape(s)
     
     def transform(self, *matrices):
         """

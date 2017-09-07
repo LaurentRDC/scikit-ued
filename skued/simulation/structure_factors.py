@@ -9,24 +9,56 @@ import numpy as np
 from numpy.linalg import norm
 
 from .. import change_basis_mesh
+from .scattering_params import scattering_params
 
-def structure_factor(crystal, G):
+def affe(atom, nG):
     """
-    Computation of the static structure factor. This function is meant for 
-    general scattering vectors, not Miller indices. 
+    Atomic form factors for electrons, for neutral atoms. 
+    Parametrization is taken from Kirkland 2010.
+
+    Parameters
+    ----------
+    atom : Atom instance
+        If ``atom`` is an integer, it is assumed to be the atomic number.
+    nG : array_like
+        Scattering vector norm, in units of $\AA^{-1}$. ($|G| = 4 pi s$). 
+    
+    Returns
+    -------
+    eff : `~numpy.ndarray`, dtype float
+        Atomic form factor for electron scattering.
+
+    Raises
+    ------
+    ValueError : scattering information is not available, for example if ``atom.atomic_number > 103 ``
+    """
+    try:
+        _, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[atom.atomic_number]
+    except KeyError:
+        raise ValueError('Scattering information for element {} is unavailable.'.format(atom.element))
+    
+    # Parametrization of form factors is done in terms of q = 2 s = 2 pi |G|
+    q = nG / (2*np.pi)
+    q2 = np.square(q)
+    sum1 = a1/(q2 + b1) + a2/(q2 + b2) + a3/(q2 + b3)
+    sum2 = c1 * np.exp(-d1 * q2) + c2 * np.exp(-d2 * q2) + c3 * np.exp(-d3 * q2)
+    return sum1 + sum2
+
+def structure_factor(crystal, h, k, l):
+    """
+    Computation of the static structure factor for electron diffraction. 
     
     Parameters
     ----------
     crystal : Crystal
         Crystal instance
-    G : array-like
-        Scattering vector. Can be given in a few different formats:
+    h, k, l : array_likes or floats
+        Miller indices. Can be given in a few different formats:
         
-        * array-like of numericals, shape (3,): returns structure factor computed for a single scattering vector
+        * floats : returns structure factor computed for a single scattering vector
             
-        * list of 3 coordinate ndarrays, shapes (L,M,N): returns structure factor computed over all coordinate space
-        
-        WARNING: Scattering vector is not equivalent to the Miller indices.
+        * 3 coordinate ndarrays, shapes (L,M,N) : returns structure factor computed over all coordinate space
+    
     
     Returns
     -------
@@ -46,7 +78,7 @@ def structure_factor(crystal, G):
     # Distribute input
     # This works whether G is a list of 3 numbers, a ndarray shape(3,) or 
     # a list of meshgrid arrays.
-    Gx, Gy, Gz = G
+    Gx, Gy, Gz = crystal.scattering_vector(h, k, l)
     nG = np.sqrt(Gx**2 + Gy**2 + Gz**2)
     
     # Separating the structure factor into sine and cosine parts avoids adding
@@ -59,7 +91,7 @@ def structure_factor(crystal, G):
     for atom in crystal: #TODO: implement in parallel?
 
         if atom.element not in atomff_dict:
-            atomff_dict[atom.element] = atom.electron_form_factor(nG)
+            atomff_dict[atom.element] = affe(atom, nG)
 
         x, y, z = atom.xyz(crystal)
         arg = x*Gx + y*Gy + z*Gz
@@ -68,34 +100,8 @@ def structure_factor(crystal, G):
         SFsin += atomff * dwf * np.sin(arg)
         SFcos += atomff * dwf * np.cos(arg)
     
+    # TODO: normalization
     return SFcos + 1j*SFsin
-
-def structure_factor_miller(crystal, h, k, l):
-    """
-    Computation of the static structure factor from Miller indices.
-    
-    Parameters
-    ----------
-    crystal : Crystal
-        Crystal instance
-    h, k, l : array_likes or floats
-        Miller indices. Can be given in a few different formats:
-        
-        * floats : returns structure factor computed for a single scattering vector
-            
-        * list of 3 coordinate ndarrays, shapes (L,M,N) : returns structure factor computed over all coordinate space
-    
-    Returns
-    -------
-    sf : ndarray, dtype complex
-        Output is the same shape as h, k, or l.
-    
-    See also
-    --------
-    structure_factor
-        Vectorized structure factor calculation for general scattering vectors.	
-    """
-    return structure_factor(crystal, G = crystal.scattering_vector(h, k, l))
 
 def bounded_reflections(crystal, nG):
     """

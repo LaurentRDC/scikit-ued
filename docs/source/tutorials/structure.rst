@@ -241,35 +241,4 @@ The real-space position with respect to a :class:`Crystal` or :class:`Lattice` c
     fractional = carbon.coords
     real = carbon.xyz(lattice = graphite)
 
-One important feature of the :class:`Atom` class is the possibility to compute the electrostatic
-potential across meshes::
-
-	import numpy as np
-	import matplotlib.pyplot as plt
-
-	xx, yy = np.meshgrid(np.linspace(-0.3, 0.3, num = 100), 
-	                     np.linspace(-0.3, 0.3, num = 100))
-	dist = np.sqrt(xx**2 + yy**2)	# distance from the atom in Angstroms
-
-	es_potential = copper.potential(dist)
-	plt.imshow(es_potential)
-
-After plot formatting:
-
-.. plot::
-	
-	import numpy as np
-	import matplotlib.pyplot as plt
-	from skued.structure import Atom
-	copper = Atom(element = 'Cu', coords = [0,0,0])
-	xx, yy = np.meshgrid(np.linspace(-0.3, 0.3, num = 100), 
-						 np.linspace(-0.3, 0.3, num = 100))
-	dist = np.sqrt(xx**2 + yy**2)	# distance from the atom in Angstroms
-	es_potential = copper.potential(dist)
-	plt.title('Atomic potential of Cu (log-scale)')
-	plt.imshow(np.log(1 + es_potential), extent = [xx.min(), xx.max(), yy.min(), yy.max()])
-	plt.ylabel('x-direction ($\AA$)')
-	plt.xlabel('y-direction ($\AA$)')
-	plt.show()
-
 :ref:`Return to Top <structure_tutorial>`

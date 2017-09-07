@@ -2,15 +2,11 @@
 """ Electron properties """
 
 import numpy as np
-
-c = 299792458           # speed of light [m/s]
-h = 6.63*10**(-34)      # Planck's constant [J*s]
-e = 1.602*10**(-19)     # electron charge [C]
-m0 = 9.109*10**(-31)    # electron mass [kg]
+from scipy.constants import speed_of_light, Planck, elementary_charge, electron_mass
 
 def lorentz(keV):
     """
-    Relativistic factor.
+    Relativistic factor :math:`\gamma`, defined as :math:`\gamma = \\frac{1}{\sqrt{1 - v^2/c^2}}`
 
     Parameters
     ----------
@@ -21,7 +17,7 @@ def lorentz(keV):
     -------
     out : array_like or float
     """
-    return 1/np.sqrt(1 + (e*keV*1e3)/(2*m0*c**2))
+    return 1/np.sqrt(1 + (elementary_charge*keV*1e3)/(2*electron_mass*speed_of_light**2))
 
 def electron_wavelength(keV):
     """ 
@@ -37,7 +33,7 @@ def electron_wavelength(keV):
     out : float
         Electron wavelength [Angs]
     """
-    return (h/np.sqrt(2*m0*e*keV*1e3))*lorentz(keV)*1e10
+    return (Planck/np.sqrt(2*electron_mass*elementary_charge*keV*1e3))*lorentz(keV)*1e10
 
 def interaction_parameter(keV):
     """
@@ -60,4 +56,4 @@ def interaction_parameter(keV):
     l = electron_wavelength(keV)
     V = keV * 1e3
 
-    return (2*np.pi)/(electron_wavelength(keV)*V)*(m0*c**2 + e * V)/(2*m0*c**2 + e * V)
+    return (2*np.pi)/(electron_wavelength(keV)*V)*(electron_mass*speed_of_light**2 + elementary_charge * V)/(2*electron_mass*speed_of_light**2 + elementary_charge * V)

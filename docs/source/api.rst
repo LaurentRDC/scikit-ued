@@ -8,6 +8,7 @@ Reference/API
 
 .. currentmodule:: skued
 
+======================
 Baseline-determination
 ======================
 
@@ -15,18 +16,14 @@ Please refer to the :ref:`tutorial on baseline-determination <baseline_tutorial>
 
 .. autosummary::
     :toctree: functions/
+    :nosignatures:
 
     baseline_dt
     baseline_dwt
-
-Dual-tree Complex Wavelet Transform
------------------------------------
-.. autosummary::
-    :toctree: functions/
-
     dtcwt
     idtcwt
 
+==============
 Image Analysis
 ==============
 
@@ -37,48 +34,23 @@ for some examples.
 
 .. autosummary::
     :toctree: functions/
-
-Routines for polycrystalline data
----------------------------------
-
-.. autosummary::
-    :toctree: functions/
+    :nosignatures:
 
     azimuthal_average
     powder_center
-
-Image alignment
----------------
-
-.. autosummary::
-    :toctree: functions/
-
     align
     ialign
     diff_register
     shift_image
     nfold
     mnxc2
-
-Pixel mask manipulations
-------------------------
-
-.. autosummary::
-    :toctree: functions/
-
     mask_from_collection
     combine_masks
     mask_image
-
-Image metrics
--------------
-
-.. autosummary::
-    :toctree: functions/
-
     snr_from_collection
     isnr
     
+=================
 Crystal structure
 =================
 Handling crystal structure information is crucial for many data analysis and modelling tasks.
@@ -87,62 +59,45 @@ classes.
 
 .. autosummary::
     :toctree: classes/
+    :nosignatures:
     
     Crystal
     Atom
     Lattice
 
+==========
 Simulation
 ==========
 
-Polycrystalline diffraction
----------------------------
-
 .. autosummary::
     :toctree: functions/
-
-    powdersim
-
-Electrostatic potential
------------------------
-
-.. autosummary::
-    :toctree: functions/
-
-    electrostatic
-    pelectrostatic
-
-Structure factor calculations
------------------------------
-
-.. autosummary::
-    :toctree: functions/
+    :nosignatures:
 
     structure_factor
-    structure_factor_miller
-
-Miscellaneous
--------------
-
-.. autosummary::
-    :toctree: functions/
-
+    affe
+    powdersim
+    electrostatic
+    pelectrostatic
     bounded_reflections
 
+==============
 Plot Utilities
 ==============
 
 .. autosummary::
     :toctree: functions/
+    :nosignatures:
 
     spectrum_colors
     rgb_sweep
 
+===============
 Array Utilities
 ===============
 
 .. autosummary::
     :toctree: functions/
+    :nosignatures:
 
     mirror
     repeated_array
@@ -150,31 +105,37 @@ Array Utilities
     polar2cart
     plane_mesh
 
+===================
 Electron Properties
 ===================
 
 .. autosummary::
     :toctree: functions/
+    :nosignatures:
 
     electron_wavelength
     interaction_parameter
     lorentz
 
+=============
 Voigt Profile
 =============
 
 .. autosummary::
     :toctree: functions/
+    :nosignatures:
 
     gaussian
     lorentzian
     pseudo_voigt
 
+=================
 Affine Transforms
 =================
 
 .. autosummary::
     :toctree: functions/
+    :nosignatures:
 
     affine_map
     transform
