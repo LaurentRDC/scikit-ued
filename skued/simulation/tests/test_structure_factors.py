@@ -25,10 +25,10 @@ class TestStructureFactor(unittest.TestCase):
     def test_shape_and_dtype(self):
         """ Test that output of structure_factor is same shape as input,
         and that the dtype is complex """
-        Gx, Gy, Gz = np.meshgrid([1, 2, 3], [1, 2, 3], [1, 2, 3])
-        sf = structure_factor(self.crystal, (Gx, Gy, Gz))
+        h, k, l = np.meshgrid([1, 2, 3], [1, 2, 3], [1, 2, 3])
+        sf = structure_factor(self.crystal, h, k, l)
 
-        self.assertSequenceEqual(sf.shape, Gx.shape)
+        self.assertSequenceEqual(sf.shape, h.shape)
         self.assertEqual(sf.dtype, np.complex)
 
 class TestBoundedReflections(unittest.TestCase):
