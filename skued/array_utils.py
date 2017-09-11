@@ -78,28 +78,30 @@ def mirror(arr, axes = None):
 
 def cart2polar(x, y):
     """ 
-    Transform cartesian coordinates to polar coordinates
+    Transform cartesian coordinates to polar coordinates.
 
     Parameters
     ----------
     x, y : `~numpy.ndarray`
-        Cartesian coordinates
+        Cartesian coordinates.
     
     Returns
     -------
     r, t : `~numpy.ndarray`
-        Radius and polar angle coordinates
+        Radius and polar angle coordinates. Polar angle coordinates
+        are in radians.
     """
     return np.hypot(x,y), np.arctan2(y, x)
 
 def polar2cart(r, t):
     """
-    Transform cartesian coordinates to polar coordinates
+    Transform polar coordinates to cartesian coordinates.
 
     Parameters
     ----------
     r, t : `~numpy.ndarray`
-        Radius and polar angle coordinates
+        Radius and polar angle coordinates. Angles
+        are assumed to be radians.
 
     Returns
     -------
@@ -107,6 +109,52 @@ def polar2cart(r, t):
         Cartesian coordinates
     """
     return r * np.cos(t), r * np.sin(t)
+
+def spherical2cart(r, p, t):
+    """
+    Transform spherical coordinates into cartesian coordinates.
+    
+    Parameters
+    ----------
+    r : `~numpy.ndarray`
+        Radial coordinate.
+    p : `~numpy.ndarray`
+        Polar angle coordinate in radians.
+    t : `~numpy.ndarray`
+        Azimuthal coordinate in radians.
+    
+    Returns
+    -------
+    x, y, z : `~numpy.ndarray`
+        Cartesian coordinates.
+    """
+    x = r * np.sin(t) * np.cos(p)
+    y = r * np.sin(t) * np.sin(p)
+    z = r * np.cos(t)
+    return x, y, z
+
+def cart2spherical(x, y, z):
+    """
+    Transform cartesian coordinates into spherical coordinates .
+    
+    Parameters
+    ----------
+    x, y, z : `~numpy.ndarray`
+        Cartesian coordinates
+    
+    Returns
+    -------
+    r : `~numpy.ndarray`
+        Radial coordinate.
+    p : `~numpy.ndarray`
+        Polar angle coordinate in radians.
+    t : `~numpy.ndarray`
+        Azimuthal coordinate in radians.
+    """
+    r = np.sqrt(x**2 + y**2 + z**2)
+    p = np.arctan2(y, x)
+    t = np.arccos(z/r)
+    return r, p, t
 
 def plane_mesh(v1, v2, x1, x2 = None, origin = [0,0,0]):
     """

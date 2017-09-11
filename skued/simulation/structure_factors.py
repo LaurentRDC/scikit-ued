@@ -20,7 +20,7 @@ def affe(atom, nG):
     atom : Atom instance or int
         If ``atom`` is an integer, it is assumed to be the atomic number.
     nG : array_like
-        Scattering vector norm, in units of :math:`A^{-1}`. (:math:`|G| = 4 \pi s`). 
+        Scattering vector norm, in units of Angstroms:math:`^{-1}`. (:math:`|G| = 4 \pi s`). 
     
     Returns
     -------

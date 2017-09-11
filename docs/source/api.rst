@@ -103,6 +103,8 @@ Array Utilities
     repeated_array
     cart2polar
     polar2cart
+    cart2spherical
+    spherical2cart
     plane_mesh
 
 ===================
