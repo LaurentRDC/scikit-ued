@@ -18,10 +18,10 @@ def affe(atom, nG):
 
     Parameters
     ----------
-    atom : Atom instance
+    atom : Atom instance or int
         If ``atom`` is an integer, it is assumed to be the atomic number.
     nG : array_like
-        Scattering vector norm, in units of $\AA^{-1}$. ($|G| = 4 pi s$). 
+        Scattering vector norm, in units of :math:`\AA^{-1}`. (:math:`|G| = 4 pi s`). 
     
     Returns
     -------
@@ -32,10 +32,15 @@ def affe(atom, nG):
     ------
     ValueError : scattering information is not available, for example if ``atom.atomic_number > 103 ``
     """
+    if isinstance(atom, int):
+        atomic_number = atom
+    else:
+        atomic_number = atom.atomic_number
+
     try:
-        _, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[atom.atomic_number]
+        _, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[atomic_number]
     except KeyError:
-        raise ValueError('Scattering information for element {} is unavailable.'.format(atom.element))
+        raise ValueError('Scattering information for element Z={} is unavailable.'.format(atomic_number))
     
     # Parametrization of form factors is done in terms of q = 2 s = 2 pi |G|
     q = nG / (2*np.pi)
