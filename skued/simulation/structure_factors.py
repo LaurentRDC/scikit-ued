@@ -14,14 +14,13 @@ from .scattering_params import scattering_params
 def affe(atom, nG):
     """
     Atomic form factors for electrons, for neutral atoms. 
-    Parametrization is taken from Kirkland 2010.
 
     Parameters
     ----------
     atom : Atom instance or int
         If ``atom`` is an integer, it is assumed to be the atomic number.
     nG : array_like
-        Scattering vector norm, in units of :math:`\AA^{-1}`. (:math:`|G| = 4 pi s`). 
+        Scattering vector norm, in units of :math:`A^{-1}`. (:math:`|G| = 4 \pi s`). 
     
     Returns
     -------
@@ -30,7 +29,7 @@ def affe(atom, nG):
 
     Raises
     ------
-    ValueError : scattering information is not available, for example if ``atom.atomic_number > 103 ``
+    ValueError : scattering information is not available, for example if the atomic number is larger than 103
     """
     if isinstance(atom, int):
         atomic_number = atom
