@@ -132,6 +132,41 @@ class Lattice(object):
         per_z = sum( (abs(np.vdot(e3,a)) for a in self.lattice_vectors) )
         return per_x, per_y, per_z
 
+    def scattering_vector(self, h, k, l):
+        """
+        Scattering vector from Miller indices.
+
+        Parameters
+        ----------
+        h, k, l : array_like
+            Miller indices. 
+
+        Returns
+        -------
+        Gx, Gy, Gz : `~numpy.ndarray`
+            Components of the scattering vectors, of the same shape 
+            as ``h``, ``k``, and ``l``.
+        """
+        h, k, l = np.atleast_1d(h, k, l)
+        return change_basis_mesh(h, k, l, basis1 = self.reciprocal_vectors, basis2 = np.eye(3))
+
+    def miller_indices(self, Gx, Gy, Gz):
+        """
+        Miller indices from scattering vector components.
+
+        Parameters
+        ----------
+        Gx, Gy, Gz : `~numpy.ndarray`
+            Scattering vector components, in :math:`A^{-1}`.
+        
+        Returns
+        -------
+        h, k, l : `~numpy.ndarray`
+            Miller indices.
+        """
+        Gx, Gy, Gz = np.atleast_1d(Gx, Gy, Gz)
+        return change_basis_mesh(Gx, Gy, Gz, basis1 = np.eye(3), basis2 = self.reciprocal_vectors)
+
     def transform(self, *matrices):
         """
         Transforms the real space coordinates according to a matrix.
