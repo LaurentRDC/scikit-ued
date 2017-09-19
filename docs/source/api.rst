@@ -49,6 +49,8 @@ for some examples.
     mask_image
     snr_from_collection
     isnr
+    triml
+    trimr
     
 =================
 Crystal structure
