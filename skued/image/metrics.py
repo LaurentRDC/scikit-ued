@@ -200,8 +200,6 @@ def triml(array, percentile, axis = None, fill_value = 0):
     trimr : trim values in percentiles above a specific percentile.
     """
     array = np.array(array)
-    percentile = float(percentile)
-
     val_percentile = np.percentile(array, q = float(percentile), axis = axis, keepdims = True)
     array[array < val_percentile] = fill_value
     return array
@@ -231,8 +229,6 @@ def trimr(array, percentile, axis = None, fill_value = 0):
     triml : trim values in percentiles below a specific percentile.
     """
     array = np.array(array)
-    percentile = float(percentile)
-
     val_percentile = np.percentile(array, q = float(percentile), axis = axis, keepdims = True)
     array[array > val_percentile] = fill_value
     return array
