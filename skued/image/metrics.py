@@ -174,3 +174,61 @@ def mask_image(image, mask, fill_value = 0, copy = True):
 
     image[mask] = fill_value
     return image
+
+def triml(array, percentile, axis = None, fill_value = 0):
+    """
+    Trim values in an array that fall below (i.e. to the left) a certain percentile.
+
+    Parameters
+    ----------
+    array : `~numpy.ndarray`
+        Array to be trimmed, typically an image.
+    percentile : float in range [0, 100]
+        Percentile below which array elements are set to ``fill_value``.
+    axis : int or None, optional
+        Axis along which to trim data. If None (default), compute over the whole array.
+    fill_value : float, optional
+        Trimmed array elements are replaced with this value.
+    
+    Returns
+    -------
+    trimmed : `~numpy.ndarray`
+        Trimmed array of the same shape as ``array``.
+
+    See Also
+    --------
+    trimr : trim values in percentiles above a specific percentile.
+    """
+    array = np.array(array)
+    val_percentile = np.percentile(array, q = float(percentile), axis = axis, keepdims = True)
+    array[array < val_percentile] = fill_value
+    return array
+
+def trimr(array, percentile, axis = None, fill_value = 0):
+    """
+    Trim values in an array that fall above (i.e. to the right) a certain percentile.
+
+    Parameters
+    ----------
+    array : `~numpy.ndarray`
+        Array to be trimmed, typically an image.
+    percentile : float in range [0, 100]
+        Percentile above which array elements are set to ``fill_value``.
+    axis : int or None, optional
+        Axis along which to trim data. If None (default), compute over the whole array.
+    fill_value : float, optional
+        Trimmed array elements are replaced with this value.
+    
+    Returns
+    -------
+    trimmed : `~numpy.ndarray`
+        Trimmed array of the same shape as ``array``.
+
+    See Also
+    --------
+    triml : trim values in percentiles below a specific percentile.
+    """
+    array = np.array(array)
+    val_percentile = np.percentile(array, q = float(percentile), axis = axis, keepdims = True)
+    array[array > val_percentile] = fill_value
+    return array

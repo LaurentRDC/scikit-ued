@@ -1,28 +1,16 @@
 # -*- coding: utf-8 -*-
 import os
-from collections.abc import Iterable
 from copy import deepcopy as copy
 from functools import lru_cache
 from glob import glob
-from itertools import count, product, takewhile
-from tempfile import TemporaryDirectory
 from urllib.request import urlretrieve
-from warnings import warn
 
 import numpy as np
-from numpy import pi
-from numpy.linalg import norm
 from spglib import (get_error_message, get_spacegroup_type, 
                     get_symmetry_dataset, find_primitive)
 
 from . import Atom, CIFParser, Lattice, PDBParser
-from .. import (affine_map, change_basis_mesh, change_of_basis,
-                is_rotation_matrix, minimum_image_distance, transform)
-
-# Constants
-m = 9.109*10**(-31)     #electron mass in kg
-a0 = 0.5291             #in Angs
-e = 14.4                #electron charge in Volt*Angstrom
+from .. import affine_map
 
 CIF_ENTRIES = glob(os.path.join(os.path.dirname(__file__), 'cifs', '*.cif'))
 
@@ -54,7 +42,6 @@ def symmetry_expansion(atoms, symmetry_operators):
             new.coords[:] = np.mod(new.coords, 1)
             uniques.add(new)
     yield from uniques
-
 
 class Crystal(Lattice):
     """
@@ -356,50 +343,3 @@ class Crystal(Lattice):
         err_msg = get_error_message()
         if err_msg:
             raise RuntimeError('Symmetry-determination has returned the following error: {}'.format(err_msg))
-    
-    # TODO: move scattering_vector and miller_indices to Lattice class
-    def scattering_vector(self, h, k, l):
-        """
-        Returns the scattering vector G from Miller indices.
-        
-        Parameters
-        ----------
-        h, k, l : int or ndarrays
-            Miller indices.
-        
-        Returns
-        -------
-        G : array-like
-            If `h`, `k`, `l` are integers, returns a single array of shape (3,)
-            If `h`, `k`, `l` are arrays, returns three arrays Gx, Gy, Gz
-        """
-        if isinstance(h, Iterable):
-            return change_basis_mesh(h, k, l, basis1 = self.reciprocal_vectors, basis2 = np.eye(3))
-
-        b1,b2,b3 = self.reciprocal_vectors
-        return int(h)*b1 + int(k)*b2 + int(l)*b3
-    
-    def miller_indices(self, G):
-        """
-        Returns the miller indices associated with a scattering vector.
-        
-        Parameters
-        ----------
-        G : array-like, shape (3,)
-            Scattering vector.
-        
-        Returns
-        -------
-        hkl : ndarray, shape (3,), dtype int
-            Miller indices [h, k, l].
-        """
-        G = np.asarray(G, dtype = np.float)
-    
-        # Transformation matric between reciprocal space and miller indices
-        # TODO: refactor to use skued.change_of_basis
-        matrix_trans = np.empty(shape = (3,3), dtype = np.float)
-        for i in range(len(self.reciprocal_vectors)):
-            matrix_trans[:,i] = self.reciprocal_vectors[i]
-
-        matrix_trans = np.linalg.inv(matrix_trans)
-        return transform(matrix_trans, G).astype(np.int)

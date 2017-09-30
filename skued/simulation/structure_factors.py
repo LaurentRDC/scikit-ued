@@ -14,14 +14,13 @@ from .scattering_params import scattering_params
 def affe(atom, nG):
     """
     Atomic form factors for electrons, for neutral atoms. 
-    Parametrization is taken from Kirkland 2010.
 
     Parameters
     ----------
-    atom : Atom instance
+    atom : Atom instance or int
         If ``atom`` is an integer, it is assumed to be the atomic number.
     nG : array_like
-        Scattering vector norm, in units of $\AA^{-1}$. ($|G| = 4 pi s$). 
+        Scattering vector norm, in units of Angstroms:math:`^{-1}`. (:math:`|G| = 4 \pi s`). 
     
     Returns
     -------
@@ -30,12 +29,17 @@ def affe(atom, nG):
 
     Raises
     ------
-    ValueError : scattering information is not available, for example if ``atom.atomic_number > 103 ``
+    ValueError : scattering information is not available, for example if the atomic number is larger than 103
     """
+    if isinstance(atom, int):
+        atomic_number = atom
+    else:
+        atomic_number = atom.atomic_number
+
     try:
-        _, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[atom.atomic_number]
+        _, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[atomic_number]
     except KeyError:
-        raise ValueError('Scattering information for element {} is unavailable.'.format(atom.element))
+        raise ValueError('Scattering information for element Z={} is unavailable.'.format(atomic_number))
     
     # Parametrization of form factors is done in terms of q = 2 s = 2 pi |G|
     q = nG / (2*np.pi)
@@ -44,7 +48,7 @@ def affe(atom, nG):
     sum2 = c1 * np.exp(-d1 * q2) + c2 * np.exp(-d2 * q2) + c3 * np.exp(-d3 * q2)
     return sum1 + sum2
 
-def structure_factor(crystal, h, k, l):
+def structure_factor(crystal, h, k, l, normalized = False):
     """
     Computation of the static structure factor for electron diffraction. 
     
@@ -59,6 +63,9 @@ def structure_factor(crystal, h, k, l):
             
         * 3 coordinate ndarrays, shapes (L,M,N) : returns structure factor computed over all coordinate space
     
+    normalized : bool, optional
+        If True, the normalized structure factor :math`E` is returned. This is the statis structure
+        factor normalized by the sum of form factors squared.
     
     Returns
     -------
@@ -73,7 +80,7 @@ def structure_factor(crystal, h, k, l):
             
     Notes
     -----
-    By convention, scattering vectors G are defined such that norm(G) = 4 pi s
+    By convention, scattering vectors :math:`G` are defined such that :math:`G = 4 \pi s`
     """
     # Distribute input
     # This works whether G is a list of 3 numbers, a ndarray shape(3,) or 
@@ -100,8 +107,12 @@ def structure_factor(crystal, h, k, l):
         SFsin += atomff * dwf * np.sin(arg)
         SFcos += atomff * dwf * np.cos(arg)
     
-    # TODO: normalization
-    return SFcos + 1j*SFsin
+    SF = SFcos + 1j*SFsin
+
+    if normalized:
+        SF /= np.sqrt(sum(atomff_dict[atom.element]**2 for atom in crystal))
+    
+    return SF
 
 def bounded_reflections(crystal, nG):
     """
@@ -112,7 +123,7 @@ def bounded_reflections(crystal, nG):
     crystal : Crystal
         Crystal instance
     nG : float
-        Maximal scattering vector norm. By our convention, norm(G) = 4 pi s.
+        Maximal scattering vector norm. By our convention, :math:`G = 4 \pi s`.
     
     Returns
     -------

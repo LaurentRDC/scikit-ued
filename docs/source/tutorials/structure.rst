@@ -169,32 +169,15 @@ In the above example, :data:`spg_info` is a dictionary with the following four k
 
 Scattering utilities
 --------------------
-:class:`Crystal` objects have a few methods that make life easier when dealing with scattering data and modeling.
+:class:`Lattice` objects have a few methods that make life easier when dealing with scattering data and modeling.
 
 The conversion between Miller indices and scattering vectors is available:: 
 
 	from skued.structure import graphite
 
+    # Behavior inherited from Lattice superclass
 	G = graphite.scattering_vector(1,0,0)
 	h, k, l = graphite.miller_indices(G) #1, 0, 0
-
-Arrays of Miller indices can be generated for all Miller indices that fall below a bound::
-
-	h, k, l = graphite.bounded_reflections(12) 	# All reflections below 12 Angs^-1
-
-In this example, :data:`h`, :data:`k`, and :data:`l` are arrays of integers; each combined row is a reflection.
-
-Static structure factor calculation is also possible, both for a single reflection and arrays of reflections::
-
-	import numpy as np
-
-	# For a single reflection
-	SF = graphite.structure_factor_miller(1, 0, 0)
-
-	# For an array of reflections: vectorized calculation
-	h, k, l = graphite.bounded_reflections(12)
-	SF = graphite.structure_factor_miller(h, k, l)
-	SF.shape == h.shape 	# True
 
 Compatibility with ASE
 ----------------------

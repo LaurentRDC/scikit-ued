@@ -79,7 +79,7 @@ class Lattice(object):
     
     @property
     def lattice_parameters(self):
-        """ Lattice parameters as three lengths [Angstroms] and three angles [degrees]. """
+        """ Lattice parameters as three lengths [:math:`\AA`] and three angles [degrees]. """
         a, b, c = norm(self.a1), norm(self.a2), norm(self.a3)
         alpha = np.arccos(np.vdot(self.a2, self.a3)/(b*c))
         beta = np.arccos(np.vdot(self.a1, self.a3)/(a*c))
@@ -88,7 +88,7 @@ class Lattice(object):
     
     @property
     def volume(self):
-        """ Lattice cell volume [Angstroms**3] """
+        """ Lattice cell volume [:math:`\^3`] """
         return np.dot(self.a1, np.cross(self.a2, self.a3))
     
     @property
@@ -107,6 +107,15 @@ class Lattice(object):
 
     @property
     def reciprocal_vectors(self):
+        """
+        Reciprocal lattice vectors, defined as:
+
+        .. math::
+
+            b_i = 2 \pi \\frac{a_j \\times a_k}{v}
+        
+        For :math:`v` the unit cell volume.
+        """
         cell_volume = self.volume
         b1 = 2*np.pi*np.cross(self.a2, self.a3)/cell_volume
         b2 = 2*np.pi*np.cross(self.a3, self.a1)/cell_volume
@@ -122,6 +131,41 @@ class Lattice(object):
         per_y = sum( (abs(np.vdot(e2,a)) for a in self.lattice_vectors) )
         per_z = sum( (abs(np.vdot(e3,a)) for a in self.lattice_vectors) )
         return per_x, per_y, per_z
+
+    def scattering_vector(self, h, k, l):
+        """
+        Scattering vector from Miller indices.
+
+        Parameters
+        ----------
+        h, k, l : array_like
+            Miller indices. 
+
+        Returns
+        -------
+        Gx, Gy, Gz : `~numpy.ndarray`
+            Components of the scattering vectors, of the same shape 
+            as ``h``, ``k``, and ``l``.
+        """
+        h, k, l = np.atleast_1d(h, k, l)
+        return change_basis_mesh(h, k, l, basis1 = self.reciprocal_vectors, basis2 = np.eye(3))
+
+    def miller_indices(self, Gx, Gy, Gz):
+        """
+        Miller indices from scattering vector components.
+
+        Parameters
+        ----------
+        Gx, Gy, Gz : `~numpy.ndarray`
+            Scattering vector components, in :math:`A^{-1}`.
+        
+        Returns
+        -------
+        h, k, l : `~numpy.ndarray`
+            Miller indices.
+        """
+        Gx, Gy, Gz = np.atleast_1d(Gx, Gy, Gz)
+        return change_basis_mesh(Gx, Gy, Gz, basis1 = np.eye(3), basis2 = self.reciprocal_vectors)
 
     def transform(self, *matrices):
         """

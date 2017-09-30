@@ -49,6 +49,8 @@ for some examples.
     mask_image
     snr_from_collection
     isnr
+    triml
+    trimr
     
 =================
 Crystal structure
@@ -103,6 +105,8 @@ Array Utilities
     repeated_array
     cart2polar
     polar2cart
+    cart2spherical
+    spherical2cart
     plane_mesh
 
 ===================

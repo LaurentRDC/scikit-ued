@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 from npstreams import last
-from .. import snr_from_collection, isnr, mask_from_collection, mask_image, combine_masks
+from .. import snr_from_collection, isnr, mask_from_collection, mask_image, combine_masks, trimr, triml
 import unittest
 
 class TestSNRFromCollection(unittest.TestCase):
@@ -119,6 +119,46 @@ class TestMaskImage(unittest.TestCase):
         masked = mask_image(image, mask, copy = False)
 
         self.assertIs(image, masked)
+
+class TestTrimLeft(unittest.TestCase):
+
+    def test_trivial(self):
+        """ Test that nothing is trimmed when percentile is zero """
+        array = np.arange(0, 101)
+        trimmed = triml(array, percentile = 0)
+        self.assertTrue(np.allclose(array, trimmed))
+    
+    def test_all_axes(self):
+        """ Test that trimming is working """
+        array = np.arange(0, 101) # [0, 1, 2, ..., 100]
+        trimmed = triml(array, percentile = 20, fill_value = 100)
+        self.assertTrue(np.all(trimmed >= 20))
+    
+    def test_fill_value(self):
+        """ Test that fill_value is indeed introduced """
+        array = np.arange(0, 101, dtype = np.float) # [0, 1, 2, ..., 100]
+        trimmed = triml(array, percentile = 20, fill_value = np.nan)
+        self.assertTrue(np.any(np.isnan(trimmed)))
+
+class TestTrimRight(unittest.TestCase):
+
+    def test_trivial(self):
+        """ Test that nothing is trimmed when percentile is 100 """
+        array = np.arange(0, 101)
+        trimmed = trimr(array, percentile = 100)
+        self.assertTrue(np.allclose(array, trimmed))
+
+    def test_trimming(self):
+        """ Test that trimming is working """
+        array = np.arange(0, 101) # [0, 1, 2, ..., 100]
+        trimmed = trimr(array, percentile = 20, fill_value = 0)
+        self.assertTrue(np.all(trimmed <= 20))
+
+    def test_fill_value(self):
+        """ Test that fill_value is indeed introduced """
+        array = np.arange(0, 101, dtype = np.float) # [0, 1, 2, ..., 100]
+        trimmed = trimr(array, percentile = 20, fill_value = np.nan)
+        self.assertTrue(np.any(np.isnan(trimmed)))
 
 
 if __name__ == '__main__':

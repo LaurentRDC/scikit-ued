@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import unittest
 import numpy as np
-from .. import repeated_array, mirror, cart2polar, polar2cart, plane_mesh
+from .. import (repeated_array, mirror, cart2polar, polar2cart, plane_mesh,
+                spherical2cart, cart2spherical)
 
 np.random.seed(23)
 
@@ -66,6 +67,21 @@ class TestCart2Polar(unittest.TestCase):
         xp, yp = polar2cart(r,t)
         self.assertTrue(np.allclose(x, xp))
         self.assertTrue(np.allclose(y, yp))
+
+class TestSpherical2Cart(unittest.TestCase):
+
+    def test_back_and_forth(self):
+        """ Test that cart2polar and polar2cart are reciprocal """
+        x = np.random.random(size = (16, 8))
+        y = np.random.random(size = (16, 8))
+        z = np.random.random(size = (16, 8))
+
+        r, p, t = cart2spherical(x, y, z)
+
+        xp, yp, zp = spherical2cart(r,p, t)
+        self.assertTrue(np.allclose(x, xp))
+        self.assertTrue(np.allclose(y, yp))
+        self.assertTrue(np.allclose(z, zp))
 
 class TestPlaneMesh(unittest.TestCase):
 

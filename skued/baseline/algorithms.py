@@ -42,6 +42,9 @@ def _iterative_baseline(array, max_iter, mask, background_regions, axes, approx_
 
 		# Wavelet reconstruction using approximation coefficients
 		background[:] = approx_rec(signal)
+
+		# The baselien cannot physically be negative
+		background[background < 0] = 0
 		
 		# Modify the signal so it cannot be more than the background
 		# This reduces the influence of the peaks in the wavelet decomposition
@@ -230,7 +233,8 @@ def _dwt_approx_rec2(array, level, wavelet, mode, axis):
 	return reconstructed
 
 def baseline_dt(array, max_iter, level = None, first_stage = 'sym6', wavelet = 'qshift1', 
-				background_regions = [], mask = None, mode = 'constant', axis = -1):
+				background_regions = [], mask = None, mode = 'constant', axis = -1,
+				nonnegative = True):
 	"""
 	Iterative method of baseline-determination based on the dual-tree complex wavelet transform.
 	This function only works in 1D, along an axis. For baseline of 2D arrays, see :func:`baseline_dwt`.

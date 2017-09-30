@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 import numpy as np
+from random import randint
 
 from .. import structure_factor, bounded_reflections, affe
 from ... import Crystal, Atom
@@ -16,6 +17,16 @@ class TestElectronFormFactor(unittest.TestCase):
         nG = np.random.random(size = (16, 32))
         eff = affe(Atom('He', coords = [0,0,0]), nG)
         self.assertSequenceEqual(eff.shape, nG.shape)
+    
+    def test_int(self):
+        """ Test that affe(int, ...) also works """
+        atomic_number = randint(1, 103)
+        nG = np.random.random(size = (16, 32))
+
+        from_int = affe(atomic_number, nG)
+        from_atom = affe(Atom(atomic_number, [0,0,0]), nG)
+
+        self.assertTrue(np.allclose(from_int, from_atom))
 
 class TestStructureFactor(unittest.TestCase):
 

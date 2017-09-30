@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from functools import lru_cache
 import numpy as np
 
-from .. import (change_of_basis, is_rotation_matrix, transform, translation_matrix)
+from .. import (change_of_basis, transform)
 from .atom_data import (ELEM_TO_MAGMOM, ELEM_TO_MASS, ELEM_TO_NAME,
                         ELEM_TO_NUM, NUM_TO_ELEM)
 from .lattice import Lattice
