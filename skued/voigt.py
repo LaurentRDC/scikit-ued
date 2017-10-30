@@ -82,6 +82,23 @@ def lorentzian(coordinates, center, fwhm):
 	-------
 	out : ndarray
 		Lorentzian function of unit integral.
+
+	Notes
+	-----
+	The functional form of the Lorentzian is given by:
+
+	.. math::
+
+		L(x) = \\frac{1}{\pi} \\frac{(\gamma/2)}{(x-c)^2 + (\gamma/2)^2}
+	
+	where :math:`\gamma` is the full-width at half-maximum, and :math:`c` is the
+	center.
+
+	For n dimensions, the functional form of the Lorentzian is given by:
+
+	.. math::
+
+		L(x_1, ..., x_n) = \\frac{1}{n \pi} \\frac{(\gamma/2)}{(\sum_i{(x_i - c_i)^2} + (\gamma/2)^2)^{\\frac{1+n}{2}}}
         
 	Example
 	-------
@@ -91,9 +108,9 @@ def lorentzian(coordinates, center, fwhm):
 	>>> span = np.arange(-10, 10, 0.1)
 	>>> xx, yy = np.meshgrid(span, span)
 	>>> center = [0,0]
-	>>> g = gaussian( coordinates = [xx,yy], center = [0,0], std = 1)
-	>>> g.shape == xx.shape		  #True
-	>>> np.sum(g)*0.1**2         #Integral should be unity (spacing = 0.1)
+	>>> l = lorentzian( coordinates = [xx,yy], center = [0,0], fwhm = 1)
+	>>> l.shape == xx.shape		  #True
+	>>> np.sum(l)*0.1**2          #Integral should be unity (spacing = 0.1)
 	"""
 	width = 0.5*fwhm
 
