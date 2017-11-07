@@ -21,7 +21,13 @@ def lorentz(keV):
 
 def electron_wavelength(keV):
     """ 
-    Relativistic wavelength of an accelerated electron.
+    Relativistic wavelength :math:`\lambda` of an accelerated electron.
+
+    .. math::
+
+        \lambda = \\frac{h}{\sqrt{2 m_e e V}}\gamma
+    
+    where :math:`\gamma` is the relativistic Lorentz factor.
         
     Parameters
     ----------
@@ -34,6 +40,26 @@ def electron_wavelength(keV):
         Electron wavelength [Angs]
     """
     return (Planck/np.sqrt(2*electron_mass*elementary_charge*keV*1e3))*lorentz(keV)*1e10
+
+def electron_velocity(keV):
+    """
+    Relativistic velocity :math:`v_e` of an accelerated electron.
+
+    .. math::
+
+        v_e = \\frac{p}{m_e} = \\frac{h}{m_e \lambda}
+
+    Parameters
+    ----------
+    keV : array_like or float
+        Electron energy [keV].
+    
+    Returns
+    -------
+    out : float
+        Electron velocity [Angs/s]
+    """
+    return Planck/(electron_mass*electron_wavelength(keV))
 
 def interaction_parameter(keV):
     """
