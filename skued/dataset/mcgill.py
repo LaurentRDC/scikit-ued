@@ -6,22 +6,21 @@ of RawDatasetBase
 from contextlib import suppress
 from glob import iglob
 from os import listdir
+from os.path import isdir, join
 from re import search
 
 from cached_property import cached_property
-from tifffile import imread as tiffread
+from skimage.io import imread
 
 from npstreams import imean, last
 
-from . import RawDatasetBase
+from . import AbstractRawDataset
 
-class McGillRawDataset(RawDatasetBase):
 
-    # Since diffraction data is saved into TIFFFILE
-    # we change the default image load function
-    # NOTE: the default scikit-image loading function
-    # will also work.
-    image_load_func = tiffread
+class McGillRawDataset(AbstractRawDataset):
+    """
+    Raw dataset
+    """
 
     @staticmethod
     def parse_tagfile(path):
@@ -38,8 +37,12 @@ class McGillRawDataset(RawDatasetBase):
         
         return metadata
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, directory, **kwargs):
         super().__init__(*args, **kwargs)
+
+        if not isdir(directory):
+            raise ValueError('{} does not point to an existing directory'.format(directory))
+        self.directory = directory
 
         # Populate experimental parameters
         # from a metadata file called 'tagfile.txt'
@@ -76,7 +79,7 @@ class McGillRawDataset(RawDatasetBase):
     # implemented to have a valid RawDataset:
     #   * pumpon_background
     #   * pumpoff_background
-    #   * raw_data_filename
+    #   * raw_data
 
     @cached_property
     def pumpon_background(self):
@@ -88,20 +91,36 @@ class McGillRawDataset(RawDatasetBase):
         backgrounds = map(imread, iglob(join(self.directory, 'background.*.pumpoff.tif')))
         return last(imean(backgrounds))
 
-    def raw_data_filename(self, timedelay, scan = 1):
+    def raw_data(self, timedelay, scan = 1, bgr = True, **kwargs): 
         """
-        Filename of the raw image.
-
+        Returns an array of the image at a timedelay and scan.
+        
         Parameters
         ----------
-        timdelay : float
-            Acquisition time-delay
-        scan : int
-            Scan number.
-        """
+        timedelay : float
+            Time-delay in picoseconds.
+        scan : int, optional
+            Scan number. 
+        bgr : bool, optional
+            If True, pump-on background is removed from the pattern
+            before being returned.
+        
+        Returns
+        -------
+        arr : ndarray, shape (N,M)
+        
+        Raises
+        ------
+        ImageNotFoundError
+            Filename is not associated with an image/does not exist.
+        """ 
         #Template filename looks like:
         #    'data.timedelay.+1.00.nscan.04.pumpon.tif'
         sign = '' if float(timedelay) < 0 else '+'
         str_time = sign + '{0:.2f}'.format(float(timedelay))
         filename = 'data.timedelay.' + str_time + '.nscan.' + str(int(scan)).zfill(2) + '.pumpon.tif'
-        return join(self.directory, filename)
+
+        im = imread(join(self.directory, filename))
+        if bgr:
+            return uint_subtract_safe(im, self.pumpon_background)
+        return im

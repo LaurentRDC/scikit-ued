@@ -67,6 +67,17 @@ classes.
     Atom
     Lattice
 
+================
+Dataset Handling
+================
+
+.. autosummary::
+    :toctree: classes/
+    :nosignatures:
+
+    AbstractRawDataset
+    McGillRawDataset
+
 ==========
 Simulation
 ==========
