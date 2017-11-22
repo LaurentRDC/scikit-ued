@@ -5,9 +5,8 @@ import unittest
 class TestRawDataset(AbstractRawDataset):
 
     test = ExperimentalParameter('test', int, default = 0)
-    readonly = ExperimentalParameter('readonly', str, default = '', readonly = True)
 
-    def raw_data(self): return None
+    def raw_data(self, timedelay, scan = 1): return None
 
 class TestAbstractRawDataset(unittest.TestCase):
 
@@ -40,14 +39,21 @@ class TestAbstractRawDataset(unittest.TestCase):
         with self.subTest('Parameter type'):
             with self.assertRaises(TypeError):
                 test_dataset.test = 'test'
-        
-        with self.subTest('Read-only'):
-            with self.assertRaises(AttributeError):
-                test_dataset.readonly = 'something else'
     
     def test_valid_metadata(self):
         """ Test that the class attribute 'valid_metadata' is working as intended """
         
         self.assertIn('test', TestRawDataset.valid_metadata)
-        self.assertIn('readonly', TestRawDataset.valid_metadata)
         self.assertLessEqual(AbstractRawDataset.valid_metadata, TestRawDataset.valid_metadata)
+    
+    def test_init_metadata(self):
+        """ Test that metadata is recorded correctly inside __init__ and
+        that invalid metadata is ignored. """
+        test_dataset = TestRawDataset(metadata = {'test': 5, 
+                                                  'fluence': -2,
+                                                  'random_attr': None})
+        self.assertEqual(test_dataset.test, 5)
+        self.assertEqual(test_dataset.fluence, -2)
+
+        # Invalid metadata should be ignored.
+        self.assertFalse(hasattr(test_dataset, 'random_attr'))
