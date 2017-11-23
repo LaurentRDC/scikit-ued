@@ -67,6 +67,17 @@ classes.
     Atom
     Lattice
 
+================
+Dataset Handling
+================
+
+.. autosummary::
+    :toctree: classes/
+    :nosignatures:
+
+    AbstractRawDataset
+    McGillRawDataset
+
 ==========
 Simulation
 ==========
@@ -118,6 +129,7 @@ Electron Properties
     :nosignatures:
 
     electron_wavelength
+    electron_velocity
     interaction_parameter
     lorentz
 

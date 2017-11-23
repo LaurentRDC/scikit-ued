@@ -117,9 +117,9 @@ class Crystal(Lattice):
                Computer Physics Communications 182, 1183-1186 (2011). doi: 10.1016/j.cpc.2011.01.013
         """
         with CIFParser(filename = path) as parser:
-            return Crystal(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
-                           lattice_vectors = parser.lattice_vectors(),
-                           source = str(path))
+            return cls(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
+                       lattice_vectors = parser.lattice_vectors(),
+                       source = str(path))
     
     @classmethod
     def from_database(cls, name):
@@ -192,9 +192,9 @@ class Crystal(Lattice):
             number is provided, files will always be overwritten. 
         """
         parser = PDBParser(ID = ID, download_dir = download_dir)
-        return Crystal(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
-                       lattice_vectors = parser.lattice_vectors(),
-                       source = str(parser.file))
+        return cls(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
+                   lattice_vectors = parser.lattice_vectors(),
+                   source = str(parser.file))
     
     @classmethod
     def from_ase(cls, atoms):
