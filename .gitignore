@@ -108,3 +108,4 @@ ENV/
 .idea/
 benchmark.py
 potential_map.py
+docs/source/dataset.rst
