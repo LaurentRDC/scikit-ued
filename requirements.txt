@@ -5,5 +5,3 @@ pywavelets >=0.5.2
 npstreams >= 1.0.0
 spglib
 pycifrw
-cached_property
-tifffile >= 0.12
