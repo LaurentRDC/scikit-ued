@@ -44,6 +44,14 @@ Optional dependencies
 While it is not strictly required, the fourier transform routines from ``pyfftw`` will be preferred If
 ``pyfftw`` is installed.
 
+Related projects
+----------------
+
+A graphical user interface for the dual-tree complex wavelet transform baseline-removal routine is available as a 
+`separate package <https://pypi.python.org/pypi/dtgui>`_.
+
+Streaming operations on NumPy arrays are available in the `npstreams package <https://pypi.python.org/pypi/npstreams>`_.
+
 Citations
 ---------
 
