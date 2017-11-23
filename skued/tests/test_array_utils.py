@@ -82,7 +82,7 @@ class TestSpherical2Cart(unittest.TestCase):
         self.assertTrue(np.allclose(x, xp))
         self.assertTrue(np.allclose(y, yp))
         self.assertTrue(np.allclose(z, zp))
-
+        
 class TestPlaneMesh(unittest.TestCase):
 
     def test_shape(self):

@@ -59,6 +59,7 @@ def azimuthal_average(image, center, mask = None, angular_bounds = None):
     This function returns an angularly-averaged pattern computed from a diffraction pattern, 
     e.g. polycrystalline diffraction.
 
+
     Parameters
     ----------
     image : array_like, shape (M, N)

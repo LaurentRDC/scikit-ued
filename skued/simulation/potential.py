@@ -34,7 +34,7 @@ def _electrostatic_atom(atom, r):
     e = 14.4                # [Volt-Angstrom]
     a0 = 0.5291             # [Angs]
     return 2*a0*e*(pi**2 * sum1 + pi**(2.5) * sum2)
-
+  
 def electrostatic(crystal, x, y, z):
     """
     Electrostatic potential from a crystal calculated on a real-space mesh, 

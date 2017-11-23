@@ -219,7 +219,7 @@ class Crystal(Lattice):
     def primitive(self, symprec = 1e-2):
         """ 
         Returns a Crystal object in the primitive unit cell.
-
+        
         Parameters
         ----------
         symprec : float, optional

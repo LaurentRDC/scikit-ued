@@ -160,6 +160,5 @@ class TestTrimRight(unittest.TestCase):
         trimmed = trimr(array, percentile = 20, fill_value = np.nan)
         self.assertTrue(np.any(np.isnan(trimmed)))
 
-
 if __name__ == '__main__':
     unittest.main()
