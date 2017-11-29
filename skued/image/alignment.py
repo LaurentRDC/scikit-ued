@@ -6,20 +6,21 @@ Module concerned with alignment of diffraction images
 from functools import partial
 import numpy as np
 from skimage.filters import gaussian
+from scipy.ndimage import shift as subpixel_shift
 from .correlation import mnxc2
 
 non = lambda s: s if s < 0 else None
 mom = lambda s: max(0, s)
-def shift_image(arr, shift, fill_value = 0, axes = (0,1)):
+def shift_image(arr, shift, fill_value = 0):
 	""" 
-	Shift an image at a 1-pixel resolution. Shift
+	Shift an image. Subpixel resolution shifts are also possible.
 
 	Parameters
 	----------
 	arr : `~numpy.ndarray`
 		Array to be shifted.
 	shift : array_like, shape (2,)
-		Shifts in the x and y directions, respectively.
+		Shifts in the x and y directions, respectively. S
 	fill_value : numerical, optional
 		Edges will be filled with `fill_value` after shifting. 
 
@@ -28,28 +29,38 @@ def shift_image(arr, shift, fill_value = 0, axes = (0,1)):
 	out : `~numpy.ndarray`
 		Shifted array. The type of the shifted array will be the smallest size
 		that accomodates the types of `arr` and `fill_value`.
+	
+	See Also
+	--------
+	scipy.ndimage.shift : shift an image via interpolation
 	"""
 	# Since the fill value is often NaN, but arrays may be integers
 	# We need to promote the final type to smallest coherent type
 	final_type = np.promote_types(arr.dtype, np.dtype(type(fill_value)))
+	output = np.full_like(arr, fill_value = fill_value, dtype = final_type)
+
+	# Floating point shifts are much slower
 
 	j, i = tuple(shift)
-	i, j = int(round(i)), int(round(j))
+	if (int(i) != i) or (int(j) != j):	# shift is float
+		subpixel_shift(arr, (i, j), output = output, cval = fill_value)
+		return output
+	
+	i, j = int(i), int(j)
 
 	dst_slices = [slice(None, None)] * arr.ndim
 	src_slices = [slice(None, None)] * arr.ndim
 
-	for s, ax in zip((i, j), axes):
+	for s, ax in zip((i, j), (0, 1)):
 		dst_slices[ax] = slice(mom(s), non(s))
 		src_slices[ax] = slice(mom(-s), non(-s))
 
-	shifted = np.full_like(arr, fill_value = fill_value, dtype = final_type)
-	shifted[dst_slices] = arr[src_slices]
-	return shifted
+	output[dst_slices] = arr[src_slices]
+	return output
 
 def align(image, reference, mask = None, fill_value = 0.0):
 	"""
-	Align a diffraction image to a reference.
+	Align a diffraction image to a reference. Subpixel resolution available.
 
 	Parameters
 	----------

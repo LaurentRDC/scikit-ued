@@ -125,7 +125,6 @@ class TestShiftImage(unittest.TestCase):
 		arr = np.random.randint(0, 255, size = (64, 64), dtype = np.uint8)
 		shifted = shift_image(arr, shift = (10, 10), fill_value = np.nan) # np.nan is float
 		self.assertEqual(shifted.dtype, np.float)
-
 	
 	def test_out_of_bounds(self):
 		""" Test that shifting by more than the size of an array
@@ -139,12 +138,6 @@ class TestShiftImage(unittest.TestCase):
 		arr = np.random.random( size = (64, 64) )
 		shifted = shift_image(arr, shift = (0, 10), fill_value = np.nan)
 		self.assertTrue(np.all(np.isnan(shifted[:10, :])))
-	
-	def test_axes(self):
-		""" Test shift_image on 3D array """
-		arr = np.random.random( size = (64, 64, 8) )
-		shifted = shift_image(arr, shift = (0, 10), fill_value = np.nan, axes = (1, 2))
-		self.assertTrue(np.all(np.isnan(shifted[:, :10, :])))
 
 class TestAlign(unittest.TestCase):
 	
