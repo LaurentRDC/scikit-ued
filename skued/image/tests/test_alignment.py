@@ -120,6 +120,13 @@ class TestShiftImage(unittest.TestCase):
 		shifted2 = shift_image(shifted1, (-5, 3))
 		self.assertTrue(np.allclose(arr[5:-5, 5:-5], shifted2[5:-5, 5:-5]))
 	
+	def test_return_type(self):
+		""" Test that a shifted array will cast accordingly to the fill_value """
+		arr = np.random.randint(0, 255, size = (64, 64), dtype = np.uint8)
+		shifted = shift_image(arr, shift = (10, 10), fill_value = np.nan) # np.nan is float
+		self.assertEqual(shifted.dtype, np.float)
+
+	
 	def test_out_of_bounds(self):
 		""" Test that shifting by more than the size of an array
 		returns an array full of the fill_value parameter """
@@ -140,14 +147,6 @@ class TestShiftImage(unittest.TestCase):
 		self.assertTrue(np.all(np.isnan(shifted[:, :10, :])))
 
 class TestAlign(unittest.TestCase):
-
-	def test_trivial(self):
-		""" Test alignment of identical images """
-		im = np.array(data.coins(), dtype = np.float)
-		aligned = align(im, reference = im, fill_value = np.nan)
-		#self.assertFalse(np.any(np.isnan(aligned)))
-
-		self.assertTrue(np.allclose(aligned, im))
 	
 	def test_no_side_effects(self):
 		""" Test that aligned images are not modified in-place """
