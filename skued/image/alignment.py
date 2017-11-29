@@ -4,11 +4,8 @@ Module concerned with alignment of diffraction images
 =====================================================
 """
 from functools import partial
-from itertools import product
 import numpy as np
-from skimage.feature import register_translation
 from skimage.filters import gaussian
-from warnings import warn
 from .correlation import mnxc2
 
 non = lambda s: s if s < 0 else None
@@ -24,12 +21,18 @@ def shift_image(arr, shift, fill_value = 0, axes = (0,1)):
 	shift : array_like, shape (2,)
 		Shifts in the x and y directions, respectively.
 	fill_value : numerical, optional
-		Edges will be filled with `fill_value` after shifting.
+		Edges will be filled with `fill_value` after shifting. 
 
 	Returns
 	-------
 	out : `~numpy.ndarray`
+		Shifted array. The type of the shifted array will be the smallest size
+		that accomodates the types of `arr` and `fill_value`.
 	"""
+	# Since the fill value is often NaN, but arrays may be integers
+	# We need to promote the final type to smallest coherent type
+	final_type = np.promote_types(arr.dtype, np.dtype(type(fill_value)))
+
 	j, i = tuple(shift)
 	i, j = int(round(i)), int(round(j))
 
@@ -40,7 +43,7 @@ def shift_image(arr, shift, fill_value = 0, axes = (0,1)):
 		dst_slices[ax] = slice(mom(s), non(s))
 		src_slices[ax] = slice(mom(-s), non(-s))
 
-	shifted = np.full_like(arr, fill_value = fill_value)
+	shifted = np.full_like(arr, fill_value = fill_value, dtype = final_type)
 	shifted[dst_slices] = arr[src_slices]
 	return shifted
 
@@ -126,8 +129,8 @@ def diff_register(image, reference, mask = None):
 	
 	Returns
 	-------
-	shift : `~numpy.ndarray`, shape (2,)
-		Shift in rows and columns. Compatible with `shift_image`
+	shift : `~numpy.ndarray`, shape (2,), dtype float
+		Shift in rows and columns. The ordering is compatible with :func:`shift_image`
 	
 	References
 	----------
@@ -155,4 +158,4 @@ def diff_register(image, reference, mask = None):
 	
 	# Due to centering of mnxc2, +1 is required
 	shift_row_col = center - np.array(xcorr.shape)/2  + 1
-	return -shift_row_col[::-1].astype(np.int)	# Reversing to be compatible with shift_image
+	return -shift_row_col[::-1]	# Reversing to be compatible with shift_image

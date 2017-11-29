@@ -21,7 +21,6 @@ class TestDiffRegister(unittest.TestCase):
 
 		with self.subTest('No noise'):
 			shift = diff_register(im, im)
-
 			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
 		
 		with self.subTest('With 5% noise'):
@@ -144,18 +143,22 @@ class TestAlign(unittest.TestCase):
 
 	def test_trivial(self):
 		""" Test alignment of identical images """
-		im = data.coins()[0:64, 0:64]
-		aligned = align(im, reference = im)
+		im = np.array(data.coins(), dtype = np.float)
+		aligned = align(im, reference = im, fill_value = np.nan)
+		#self.assertFalse(np.any(np.isnan(aligned)))
 
-		diff = np.abs(im - aligned)
-
-		# Want less than 1% difference
-		percent_diff = np.sum(diff) / (diff.size * (im.max() - im.min()))
-		self.assertLess(percent_diff, 1)
+		self.assertTrue(np.allclose(aligned, im))
+	
+	def test_no_side_effects(self):
+		""" Test that aligned images are not modified in-place """
+		im = np.array(data.camera()[0:64, 0:64])
+		im.setflags(write = False)
+		aligned = align(im, reference = im, fill_value = np.nan)
+		self.assertEqual(im.dtype, data.camera().dtype)
 
 	def test_misaligned_canned_images(self):
 		""" shift images from skimage.data by entire pixels.
-	   We don't expect perfect alignment."""
+	   	We don't expect perfect alignment."""
 		original = data.camera()
 		misaligned = shift_image(original, (randint(-4, 4), randint(-4, 4))) 
 
