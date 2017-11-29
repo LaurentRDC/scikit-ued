@@ -53,10 +53,8 @@ If you don't have a file on hand, or want to create an idealized crystal, consid
 object by hand.
 
 To do this, you need:
-1. iterable of :class:`Atom` objects, with coordinates. These atoms can either be the full unit cell
-or the asymmetric unit cell;
+1. iterable of :class:`Atom` objects, with coordinates. These atoms must be the full unit cell;
 2. three lattice vectors;
-3. (optional) symmetry operators that generate the full unit cell from the asymmetric unit cell.
 
 As an example, let's create the simplest crystal structure known: 
 `alpha-Polonium (simple cubic) <https://en.wikipedia.org/wiki/Polonium#Solid_state_form>`_::
@@ -71,6 +69,7 @@ As an example, let's create the simplest crystal structure known:
 
 In the case where atoms are given as an asymmetric unit cell and a set of symmetry operators, you can use the
 :func:`symmetry_expansion` function to generate a set of *unique* atoms (even if some symmetry operators might be redundant).
+The generated set of atoms can be passed to the constructor of :class:`Crystal`.
 
 Crystal attributes
 ------------------
@@ -79,7 +78,7 @@ The :class:`Crystal` object provides some interfaces for easy structure manipula
 	from skued.structure import graphite
 
 	for atm in graphite:	#Loops over atoms in the unit cell
-	    print(atm.element, atm.coords)
+	    print(atm)
     
 The :func:`len` of a :class:`Crystal` is the unit cell size (in number of atoms)::
 
@@ -140,7 +139,7 @@ The standard `three lengths and angles` description of a lattice is also accessi
 
 The unit cell volume (and by extensions, density) is also accessible:
 
-	vol = graphite.volume
+	vol = graphite.volume	# Angstroms cubed
 	density = vol/len(graphite)
 
 Space-group Information
@@ -178,25 +177,6 @@ The conversion between Miller indices and scattering vectors is available::
     # Behavior inherited from Lattice superclass
 	G = graphite.scattering_vector(1,0,0)
 	h, k, l = graphite.miller_indices(G) #1, 0, 0
-
-Compatibility with ASE
-----------------------
-The `Atomic Simulation Environment <https://wiki.fysik.dtu.dk/ase/index.html>`_ is a powerful tool. You can harness its power and convert
-between :class:`ase.Atoms` and :class:`skued.Crystal` at will.
-
-To create an :class:`ase.Atoms` object from a :class:`Crystal`, use the :meth:`Crystal.ase_atoms` method::
-
-	from ase.calculators.abinit import Abinit
-	from skued import Crystal
-	
-	gold = Crystal.from_database('Au')
-	ase_gold = gold.ase_atoms(calculator = Abinit(...))
-
-All keywords of the :class:`ase.Atoms` constructor are supported. To get back to a :class:`Crystal` instance::
-
-	gold2 = Crystal.from_ase(ase_gold)
-
-.. _atom:
 
 Compatibility with ASE
 ----------------------
