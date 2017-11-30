@@ -249,9 +249,7 @@ class Crystal(Lattice):
         if numbers.size == len(self):   # Then there's no point in creating a new crystal
             return self
 
-        atoms = list()
-        for coords, Z in zip(scaled_positions, numbers):
-            atoms.append(Atom(int(Z), coords = coords))
+        atoms = [Atom(int(Z), coords = coords) for Z, coords in zip(numbers, scaled_positions)]
 
         return Crystal(unitcell = atoms, 
                        lattice_vectors = lattice_vectors, 

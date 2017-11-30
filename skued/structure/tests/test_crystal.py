@@ -65,37 +65,22 @@ class TestSpglibMethods(unittest.TestCase):
         
         self.assertDictEqual(info, supposed)
     
-    def test_primitive(self):
+    def test_primitive_for_builtins(self):
         """ Test that all built-in crystal have a primitive cell """
         for name in Crystal.builtins:
             with self.subTest(name):
                 c = Crystal.from_database(name)
                 prim = c.primitive(symprec = 0.1)
                 self.assertLessEqual(len(prim), len(c))
-
-class TestSpglibMethods(unittest.TestCase):
     
-    def test_spacegroup_info_graphite(self):
-        """ Test that Crystal.spacegroup_info() works correctly for graphite """
-        c = Crystal.from_database('C')
-        info = c.spacegroup_info()
-        
-        supposed = {'international_number': 194, 
-                    'hall_number': 488,
-                    'international_symbol': 'P6_3/mmc',
-                    'international_full': 'P 6_3/m 2/m 2/c' ,
-                    'hall_symbol': '-P 6c 2c',
-                    'pointgroup': 'D6h'}
-        
-        self.assertDictEqual(info, supposed)
-    
-    def test_primitive(self):
-        """ Test that all built-in crystal have a primitive cell """
+    def test_primitive_uniqueness(self):
+        """ Test that the primitive cell of a primitive cell is itself """
         for name in Crystal.builtins:
             with self.subTest(name):
                 c = Crystal.from_database(name)
                 prim = c.primitive(symprec = 0.1)
-                self.assertLessEqual(len(prim), len(c))
+                prim2 = prim.primitive(symprec = 0.1)
+                self.assertIs(prim, prim2)
 
 class TestCrystalRotations(unittest.TestCase):
 
@@ -172,7 +157,7 @@ class TestCrystalConstructors(unittest.TestCase):
         c = Crystal.from_cod(1521124, download_dir = 'test_cache')
         c2 = Crystal.from_cod(1521124, revision = 176429, download_dir = 'test_cache')
 
-        self.assertSetEqual(set(c), set(c2))
+        self.assertEqual(c, c2)
 
 if __name__ == '__main__':
     unittest.main()
