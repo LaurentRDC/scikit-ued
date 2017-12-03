@@ -8,7 +8,6 @@ References
     the elements 2013 (IUPAC Technical Report). Pure and Applied Chemistry,
     88(3), pp. 265-291. Retrieved 30 Nov. 2016, doi:10.1515/pac-2015-0305
 """
-import numpy as np
 from math import nan
 
 chemical_symbols = [

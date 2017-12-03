@@ -6,7 +6,8 @@ from urllib.request import urlretrieve
 
 import numpy as np
 
-from . import Atom, frac_coords, lattice_vectors_from_parameters, ParseError
+from . import Atom, ParseError, frac_coords, lattice_vectors_from_parameters
+
 
 def retrieve_pdb_file(pdb_code, download_dir = None, server = 'ftp://ftp.wwpdb.org', overwrite = False):
     """ 

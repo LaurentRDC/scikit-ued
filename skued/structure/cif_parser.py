@@ -17,9 +17,10 @@ import numpy as np
 from CifFile import ReadCif, get_number_with_esd
 from numpy.linalg import inv
 
-from . import Atom, frac_coords, lattice_vectors_from_parameters, ParseError
+from . import Atom, ParseError, frac_coords, lattice_vectors_from_parameters
 from .. import affine_map, transform
 from .spg_data import HM2Hall, Number2Hall, SymOpsHall
+
 
 def sym_ops(equiv_site):
     """ Parse a symmetry operator from an equivalent-site representation 

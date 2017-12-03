@@ -4,11 +4,13 @@ Image mask routines
 ===================
 """
 from collections import Iterable
-from itertools import tee, repeat
+from itertools import repeat
 
 import numpy as np
 
-from npstreams import array_stream, istd, imean, peek, last, iprod
+# array_stream decorator ensures that input images are cast to ndarrays
+from npstreams import array_stream, imean, iprod, istd, itercopy, last, peek
+
 
 @array_stream
 def isnr(images, fill_value = 0.0):
@@ -34,7 +36,7 @@ def isnr(images, fill_value = 0.0):
     first, images = peek(images)
     snr = np.empty_like(first)
 
-    images1, images2 = tee(images, 2)
+    images1, images2 = itercopy(images, 2)
     for mean, std in zip(imean(images1), istd(images2)):
         valid = std != 0
         snr[valid] = mean[valid] / std[valid]
@@ -71,7 +73,6 @@ def snr_from_collection(images, fill_value = 0.0):
     """
     return last(isnr(images, fill_value = fill_value))
 
-# array_stream decorator ensures that input images are cast to ndarrays
 @array_stream
 def mask_from_collection(images, px_thresh = (0, 3e4), std_thresh = None):
     """ 
@@ -115,7 +116,7 @@ def mask_from_collection(images, px_thresh = (0, 3e4), std_thresh = None):
     mask = np.zeros_like(first, dtype = np.bool)    # 0 = False
 
     if std_thresh is not None:
-        images, images_for_std = tee(images)
+        images, images_for_std = itercopy(images)
         std_calc = istd(images_for_std)
     else:
         std_calc = repeat(np.inf)

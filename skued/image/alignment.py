@@ -4,9 +4,11 @@ Module concerned with alignment of diffraction images
 =====================================================
 """
 from functools import partial
+
 import numpy as np
-from skimage.filters import gaussian
 from scipy.ndimage import shift as subpixel_shift
+from skimage.filters import gaussian
+
 from .correlation import mnxc2
 
 non = lambda s: s if s < 0 else None

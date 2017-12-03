@@ -4,11 +4,14 @@ Image manipulation involving symmetry
 =====================================
 """
 from functools import partial, wraps
-from skimage.transform import rotate
-import numpy as np
 from warnings import warn
 
+import numpy as np
+from skimage.transform import rotate
+
+
 # TODO: out parameter?
+# TODO: use istack from npstreams
 def nfold(im, mod, center = None, mask = None, fill_value = 0.0, **kwargs):
     """ 
     Returns an images averaged according to n-fold rotational symmetry.

@@ -3,9 +3,12 @@
 Image manipulation of powder diffraction
 ========================================
 """
-import numpy as np
 from warnings import warn
+
+import numpy as np
+
 from .alignment import diff_register
+
 
 def powder_center(image, mask = None):
 	"""

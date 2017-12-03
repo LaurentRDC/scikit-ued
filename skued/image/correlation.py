@@ -4,8 +4,11 @@ Image correlation and related functions
 =======================================
 """
 from functools import partial
+
 import numpy as np
 from scipy.fftpack import next_fast_len
+
+from ..array_utils import mirror
 
 FFTOPS = {}
 try:
@@ -14,7 +17,6 @@ try:
 except ImportError:
     from numpy.fft import rfft2, irfft2
 
-from ..array_utils import mirror
 
 EPS = np.finfo(np.float).eps
 

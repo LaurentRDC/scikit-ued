@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-from math import sin, cos, tan, sqrt, radians
+from math import cos, radians, sin, sqrt, tan
+
 import numpy as np
 from numpy.linalg import norm
-from .. import transform, change_basis_mesh
+
+from .. import change_basis_mesh, transform
 
 e1, e2, e3 = np.eye(3) # Euclidian basis
 

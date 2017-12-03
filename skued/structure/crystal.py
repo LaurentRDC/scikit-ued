@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
-import os
 from copy import deepcopy as copy
 from functools import lru_cache
 from glob import glob
+from os.path import basename, dirname, isdir, isfile, join
 from urllib.request import urlretrieve
 
 import numpy as np
-from spglib import (get_error_message, get_spacegroup_type, 
-                    get_symmetry_dataset, find_primitive)
+from spglib import (find_primitive, get_error_message, get_spacegroup_type,
+                    get_symmetry_dataset)
 
 from . import Atom, CIFParser, Lattice, PDBParser
 from .. import affine_map
 
-CIF_ENTRIES = glob(os.path.join(os.path.dirname(__file__), 'cifs', '*.cif'))
+CIF_ENTRIES = glob(join(dirname(__file__), 'cifs', '*.cif'))
 
 def symmetry_expansion(atoms, symmetry_operators):
     """
@@ -71,7 +71,7 @@ class Crystal(Lattice):
         Provenance, e.g. filename.
     """
 
-    builtins = frozenset(map(lambda fn: os.path.basename(fn).split('.')[0], CIF_ENTRIES))
+    builtins = frozenset(map(lambda fn: basename(fn).split('.')[0], CIF_ENTRIES))
 
     def __init__(self, unitcell, lattice_vectors, source = None, **kwargs):
         self.unitcell = frozenset(unitcell)
@@ -135,7 +135,7 @@ class Crystal(Lattice):
             raise ValueError('Entry {} is not available in the database. See \
                               Crystal.builtins for valid entries.'.format(name))
         
-        path = os.path.join(os.path.dirname(__file__), 'cifs', name + '.cif')
+        path = join(dirname(__file__), 'cifs', name + '.cif')
         return cls.from_cif(path)
     
     @classmethod
@@ -158,7 +158,7 @@ class Crystal(Lattice):
         if revision is None:
             overwrite = True
         
-        if not os.path.isdir(download_dir):
+        if not isdir(download_dir):
             os.mkdir(download_dir)
         
         url = 'http://www.crystallography.net/cod/{}.cif'.format(num)
@@ -168,9 +168,9 @@ class Crystal(Lattice):
             base = '{iden}-{rev}.cif'.format(iden = num, rev = revision)
         else:
             base = '{}.cif'.format(num)
-        path = os.path.join(download_dir, base)
+        path = join(download_dir, base)
 
-        if (not os.path.isfile(path)) or overwrite:
+        if (not isfile(path)) or overwrite:
             urlretrieve(url, path)
         
         return cls.from_cif(path)
