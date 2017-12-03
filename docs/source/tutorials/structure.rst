@@ -75,7 +75,8 @@ Crystal attributes
 ------------------
 The :class:`Crystal` object provides some interfaces for easy structure manipulation. First, a :class:`Crystal` is an iterable::
 
-	from skued.structure import graphite
+	from skued import Crystal
+	graphite = Crystal.from_database('C')
 
 	for atm in graphite:	#Loops over atoms in the unit cell
 	    print(atm)
@@ -128,7 +129,8 @@ Lattice vectors and reciprocal space
 Once a :class:`Crystal` object is ready, you can manipulate the lattice parameters via the underlying :class:`Lattice`
 super-class. Let's use the built-in example of graphite::
 
-	from skued.structure import graphite
+	from skued import Crystal
+	graphite = Crystal.from_database('C')
 	
 	a1, a2, a3 = graphite.lattice_vectors
 	b1, b2, b3 = graphite.reciprocal_vectors
@@ -172,7 +174,8 @@ Scattering utilities
 
 The conversion between Miller indices and scattering vectors is available:: 
 
-	from skued.structure import graphite
+	from skued import Crystal
+	graphite = Crystal.from_database('C')
 
     # Behavior inherited from Lattice superclass
 	G = graphite.scattering_vector(1,0,0)
@@ -217,7 +220,8 @@ Since we are most concerned with atoms in crystals, the coordinates here are ass
 The real-space position with respect to a :class:`Crystal` or :class:`Lattice` can be accessed using the 
 :meth:`xyz` method::
 
-    from skued.structure import graphite
+	from skued import Crystal
+	graphite = Crystal.from_database('C')
     
     carbon = list(graphite)[-1]
     fractional = carbon.coords

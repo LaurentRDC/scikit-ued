@@ -4,7 +4,7 @@ from copy import deepcopy, copy
 from random import choice, seed
 from itertools import permutations
 import numpy as np
-from .. import Crystal, Atom, Lattice, graphite
+from .. import Crystal, Atom, Lattice
 from ... import rotation_matrix, transform
 import unittest
 

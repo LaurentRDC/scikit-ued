@@ -67,6 +67,12 @@ classes.
     Atom
     Lattice
 
+To help with fleshing out unit cell atoms from symmetry operators:
+
+.. autosummary::
+    :toctree: functions/
+    symmetry_expansion
+
 ==========
 Simulation
 ==========

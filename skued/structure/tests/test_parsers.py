@@ -6,7 +6,7 @@ from warnings import filterwarnings
 
 import numpy as np
 
-from .. import Crystal, graphite
+from .. import Crystal
 from ... import transform
 from ..cif_parser import CIFParser
 from ..pdb_parser import PDBParser
@@ -77,14 +77,6 @@ class TestCIFParser(unittest.TestCase):
                     crystal = Crystal.from_cif(name)
                     from_spglib = crystal.spacegroup_info()['international_number']
                     self.assertEqual(from_parser, from_spglib)
-    
-    def test_graphite(self):
-        """ Test CIFParser on C.cif and compare to built-in graphite """
-        C_path = os.path.join('skued', 'structure', 'cifs', 'C.cif')
-        c = Crystal.from_cif(C_path)
-        
-        self.assertEqual(len(c), len(graphite))
-        self.assertAlmostEqual(c.volume, graphite.volume, places = -1)
     
     def test_silicon(self):
         """ Test CIFParser on Si.cif (diamond structure) """
