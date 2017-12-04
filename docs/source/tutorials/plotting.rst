@@ -48,13 +48,13 @@ My favourite way to plot time-series data is to make use of rainbow colors to in
 
 This functionality can be accessed through the :func:`spectrum_colors` generator::
 
-    from skued import spectrum_colors, last
+    from skued import spectrum_colors
 
     colors = spectrum_colors(5)
     
     # Colors always go from purple to red (increasing wavelength)
     purple = next(colors)
-    red = last(colors)
+    red = list(colors)[-1]
 
 You can see some examples of uses of :func:`spectrum_colors` in the :ref:`baseline tutorial <baseline_tutorial>`.
 

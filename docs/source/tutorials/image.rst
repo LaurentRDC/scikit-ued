@@ -68,7 +68,7 @@ All of this is taken care of in scikit-ued's :func:`diff_register` function. Let
 From the difference pattern, we can see that the 'Data' pattern is shifted from 'Reference' quite a bit.
 To determine the exact shift, we need to use a mask that obscures the beam-block and main beam::
 
-	from skued.image import diff_register, shift_image
+	from skued import diff_register, shift_image
 	import numpy as np
 
 	ref = imread('Cr_1.tif')
@@ -87,7 +87,7 @@ Let's look at the difference:
 	from skimage.io import imread
 	import matplotlib.pyplot as plt
 	import numpy as np
-	from skued.image import diff_register, shift_image
+	from skued import diff_register, shift_image
 
 	ref = imread('Cr_1.tif')
 	im = imread('Cr_2.tif')
@@ -136,7 +136,7 @@ rotational symmetry.
 
     import matplotlib.pyplot as plt
     from skimage.io import imread
-    from skued.image import nfold
+    from skued import nfold
     import numpy as np
 
     center = (1010, 1111)
@@ -237,7 +237,7 @@ This is a noisy diffraction pattern of polycrystalline vanadium dioxide.
 Finding the center of such a symmetry pattern can be done with the 
 :func:`powder_center` routine::
 	
-	from skued.image import powder_center
+	from skued import powder_center
 	ic, jc = powder_center(im, mask = mask)
 	
 	# Plotting the center as a black disk
@@ -257,7 +257,7 @@ Finding the center of such a symmetry pattern can be done with the
     import matplotlib.pyplot as plt
     path = 'Cr_1.tif'
     im = imread(path, plugin = 'tifffile')
-    from skued.image import powder_center
+    from skued import powder_center
     mask = np.zeros_like(im, dtype = np.bool)
     mask[0:1250, 950:1250] = True
     ic, jc = powder_center(im, mask = mask)
@@ -325,7 +325,7 @@ First, we create a test image::
 
 ... and we can easily compute an angular average::
 	
-	from skued.image import azimuthal_average
+	from skued import azimuthal_average
 
 	radius, intensity = azimuthal_average(image, (xc, yc))
 
@@ -333,11 +333,9 @@ First, we create a test image::
 
 .. plot::
 	
-	from skued.image import azimuthal_average
-	from skued import gaussian
+	from skued import azimuthal_average, gaussian
 	import numpy as np
 	import matplotlib.pyplot as plt
-	from skued import gaussian
 	image = np.zeros( (256, 256) )
 	xc, yc = image.shape[0]/2, image.shape[1]/2	# center
 	extent = np.arange(0, image.shape[0])

@@ -26,7 +26,7 @@ scattering angles `s` as :math:`s = \sin{\theta}/\lambda`::
 	
 	import matplotlib.pyplot as plt
 	import numpy as np
-	from skued.simulation import powdersim
+	from skued import powdersim
 	from skued import Crystal
 	graphite = Crystal.from_database('C')
 
@@ -44,7 +44,7 @@ After plot formatting:
 	import numpy as np
 	from skued import Crystal
 	graphite = Crystal.from_database('C')
-	from skued.simulation import powdersim
+	from skued import powdersim
 	s = np.linspace(0.1, 0.8, 1000)
 	diff = powdersim(crystal = graphite, scattering_length = s)
 	plt.figure()
