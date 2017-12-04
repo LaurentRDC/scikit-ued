@@ -25,11 +25,13 @@ class TestNFoldSymmetry(unittest.TestCase):
         im = np.zeros((128, 128), dtype = np.int)
         mask = np.zeros_like(im, dtype = np.bool)
 
-        im[0:20] = 1
-        mask[0:20] = True
-        
-        rot = nfold(im, mod = 2, mask = mask)
-        self.assertTrue(np.allclose(rot, np.zeros_like(rot)))
+        with catch_warnings():
+            simplefilter('ignore')
+            im[0:20] = 1
+            mask[0:20] = True
+            
+            rot = nfold(im, mod = 2, mask = mask)
+            self.assertTrue(np.allclose(rot, np.zeros_like(rot)))
     
     def test_no_side_effects(self):
         """ Test that nfold() does not modify the input image and mask """

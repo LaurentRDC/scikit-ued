@@ -4,14 +4,14 @@ Image manipulation involving symmetry
 =====================================
 """
 from functools import partial, wraps
-from warnings import warn
+from warnings import warn, catch_warnings
 
 import numpy as np
 from skimage.transform import rotate
+from npstreams import imean, last
 
 
 # TODO: out parameter?
-# TODO: use istack from npstreams
 def nfold(im, mod, center = None, mask = None, fill_value = 0.0, **kwargs):
     """ 
     Returns an images averaged according to n-fold rotational symmetry.
@@ -61,13 +61,8 @@ def nfold(im, mod, center = None, mask = None, fill_value = 0.0, **kwargs):
     rotate_kwargs = {'mode': 'constant', 'preserve_range': True}
     rotate_kwargs.update(kwargs)
 
-    stack = np.dstack([rotate(im, angle, center = center, **rotate_kwargs) for angle in angles])
-    avg = np.nanmean(stack, axis = 2)
+    rotated = (rotate(im, angle, center = center, **rotate_kwargs) for angle in angles)
+    avg = last(imean(rotated, axis = 2, ignore_nan = True))
     
     avg[np.isnan(avg)] = fill_value
     return avg
-
-def nfold_symmetry(*args, **kwargs):
-    warn('nfold_symmetry() is deprecated. Please use nfold in \
-          the future, as it supports more features.', DeprecationWarning)
-    return nfold(*args, **kwargs)

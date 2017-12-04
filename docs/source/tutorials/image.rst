@@ -166,7 +166,7 @@ rotational symmetry.
 
 To use :func:`nfold`, all you need to know is the center of the diffraction pattern::
 
-    from skued.image import nfold
+    from skued import nfold
     from skimage.io import imread
 
     im = imread('graphite.tif')
