@@ -5,7 +5,8 @@ Plotting utilities
 """
 from colorsys import hsv_to_rgb
 
-from npstreams import linspace
+from npstreams import linspace, multilinspace
+
 
 def _hex_to_rgb(value):
 	""" Return an RGB tuple (float 0 to 1) from an hexadecimal 
@@ -79,11 +80,4 @@ def rgb_sweep(num_colors, source, dest):
 	if isinstance(dest, str):
 		dest = _hex_to_rgb(dest)
 
-	red_src, grn_src, blu_src = source
-	red_dst, grn_dst, blu_dst = dest
-
-	reds = linspace(red_src, red_dst, num = num_colors)
-	greens = linspace(grn_src, grn_dst, num = num_colors)
-	blues = linspace(blu_src, blu_dst, num = num_colors)
-
-	yield from zip(reds, greens, blues)
+	yield from multilinspace(source, dest, num = num_colors)

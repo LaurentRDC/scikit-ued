@@ -126,6 +126,9 @@ def _crop_to_half(image, copy = False):
 	nrows, ncols = np.array(image.shape)/4
 	return np.array(image[int(nrows):-int(nrows), int(ncols):-int(ncols)], copy = copy)
 
+# TODO: add option to upsample, akin to skimage.feature.register_translation
+#		Could this be done initially by zero-padding?
+#		See https://github.com/scikit-image/scikit-image/blob/master/skimage/feature/register_translation.py#L109
 def diff_register(image, reference, mask = None):
 	"""
 	Register translation of diffraction patterns by masked 

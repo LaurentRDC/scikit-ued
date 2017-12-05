@@ -3,9 +3,11 @@ Array utility functions
 """
 
 from itertools import repeat
+from warnings import warn
+
 import numpy as np
 from numpy.linalg import norm
-from warnings import warn
+
 
 def repeated_array(arr, num, axes = -1):
     """

@@ -6,6 +6,7 @@ Inspired by Christoph Gohlke's transformation.py <http://www.lfd.uci.edu/~gohlke
 """
 
 import math
+
 import numpy as np
 
 #standard basis
