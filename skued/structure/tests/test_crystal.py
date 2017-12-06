@@ -1,20 +1,24 @@
 # -*- coding: utf-8 -*-
-from math import radians
-from copy import deepcopy, copy
-from random import choice, seed
-from itertools import permutations
-import numpy as np
-from .. import Crystal, Atom, Lattice
-from ... import rotation_matrix, transform
+import pickle
 import unittest
+from copy import copy, deepcopy
+from itertools import permutations
+from math import radians
+from random import choice, seed
+
+import numpy as np
+
+from .. import Atom, Crystal, Lattice
+from ... import rotation_matrix, transform
 
 #seed(23)
 
 try:
     import ase
-    ASE = True
 except ImportError:
     ASE = False
+else:
+    ASE = True
 
 @unittest.skipIf(not ASE, 'ASE not importable')
 class TestAseAtoms(unittest.TestCase):
@@ -48,6 +52,20 @@ class TestCrystalMethods(unittest.TestCase):
         """ Test Crystal.__array__ """
         arr = np.array(self.crystal)
         self.assertSequenceEqual(arr.shape, (len(self.crystal), 4))
+
+    def test_picklable(self):
+        """ Test that Crystal instances can be pickled, and that the unpickled instance
+        is identical to the source """
+        pickled = pickle.dumps(self.crystal)
+        unpickled = pickle.loads(pickled)
+        self.assertEqual(self.crystal, unpickled)
+    
+    def test_hash(self):
+        """ Test that Crystal instances are hashable """
+        # We test the hash uniqueness by putting all builtin Crystals in a set
+        # If hashes are not unique, the set size will be smaller than expected
+        all_builtins = {Crystal.from_database(name) for name in Crystal.builtins}
+        self.assertEqual(len(all_builtins), len(Crystal.builtins))
 
 class TestSpglibMethods(unittest.TestCase):
     
@@ -157,7 +175,8 @@ class TestCrystalConstructors(unittest.TestCase):
         c = Crystal.from_cod(1521124, download_dir = 'test_cache')
         c2 = Crystal.from_cod(1521124, revision = 176429, download_dir = 'test_cache')
 
-        self.assertEqual(c, c2)
+        self.assertEqual(c, c2)              
+    
 
 if __name__ == '__main__':
     unittest.main()

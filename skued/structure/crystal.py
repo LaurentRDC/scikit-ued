@@ -45,8 +45,7 @@ def symmetry_expansion(atoms, symmetry_operators):
 
 class Crystal(Lattice):
     """
-    This object is the basis for inorganic crystals such as VO2, 
-    and protein crystals such as bR. 
+    This object is the basis for Crystalline matter.
 
     In addition to constructing the ``Crystal`` object yourself, other constructors
     are also available (and preferred):
@@ -61,12 +60,15 @@ class Crystal(Lattice):
 
     * ``Crystal.from_ase``: create an instance from an ``ase.Atoms`` instance.
 
+    :class:`Crystal` instances are picklable as well.
+
     Parameters
     ----------
     unitcell : iterable of ``Atom``
         Unit cell atoms. It is assumed that the atoms are in fractional coordinates.
     lattice_vectors : iterable of array_like
-        Lattice vectors.
+        Lattice vectors. If ``lattice_vectors`` is provided as a 3x3 array, it 
+        is assumed that each lattice vector is a row.
     source : str or None, optional
         Provenance, e.g. filename.
     """
@@ -84,8 +86,14 @@ class Crystal(Lattice):
     def __len__(self):
         return len(self.unitcell)
     
+    def __hash__(self):
+        # To be able to hash the lattice vectors,
+        # they need to be flattened into a tuple
+        tupled_lv = tuple(np.array(self.lattice_vectors).flatten().tolist())
+        return hash((self.unitcell, self.source, tupled_lv))
+    
     def __repr__(self):
-        return '< Crystal object with unit cell of {} atoms >'.format(len(self))
+        return '< Crystal object with unit cell of {} atoms. Source: {} >'.format(len(self), self.source or 'N/A')
     
     def __eq__(self, other):
         return (isinstance(other, self.__class__) 

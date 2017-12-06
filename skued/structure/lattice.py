@@ -90,7 +90,7 @@ class Lattice(object):
     
     @property
     def volume(self):
-        """ Lattice cell volume [:math:`\^3`] """
+        """ Lattice cell volume Angtroms cubed """
         return np.dot(self.a1, np.cross(self.a2, self.a3))
     
     @property
