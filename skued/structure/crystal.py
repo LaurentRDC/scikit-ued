@@ -351,8 +351,8 @@ class Crystal(Lattice):
             info.update( {'international_full': spg_type['international_full'],
                           'pointgroup': spg_type['pointgroup_international']} )
 
-            return info
-
         err_msg = get_error_message()
-        if err_msg:
+        if (err_msg != 'no error'):
             raise RuntimeError('Symmetry-determination has returned the following error: {}'.format(err_msg))
+        else:
+            return info
