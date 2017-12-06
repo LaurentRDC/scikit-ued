@@ -45,7 +45,8 @@ def symmetry_expansion(atoms, symmetry_operators):
 
 class Crystal(Lattice):
     """
-    This object is the basis for Crystalline matter.
+    :class:`Crystal` instances represent crystalline matter. They are set-like objects
+    that can be iterated over. 
 
     In addition to constructing the ``Crystal`` object yourself, other constructors
     are also available (and preferred):
@@ -82,6 +83,11 @@ class Crystal(Lattice):
     
     def __iter__(self):
         yield from iter(self.unitcell)
+    
+    def __contains__(self, item):
+        # Default is to implement __contains__ through __iter__
+        # Much faster to check containership of a set
+        return (item in self.unitcell)
     
     def __len__(self):
         return len(self.unitcell)

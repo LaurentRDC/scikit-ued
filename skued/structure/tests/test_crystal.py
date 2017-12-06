@@ -66,6 +66,11 @@ class TestCrystalMethods(unittest.TestCase):
         # If hashes are not unique, the set size will be smaller than expected
         all_builtins = {Crystal.from_database(name) for name in Crystal.builtins}
         self.assertEqual(len(all_builtins), len(Crystal.builtins))
+    
+    def test_containership(self):
+        """ Test that ``x in c`` works for Crystal instances """
+        atm = next(iter(self.crystal))
+        self.assertIn(atm, self.crystal)
 
 class TestSpglibMethods(unittest.TestCase):
     
