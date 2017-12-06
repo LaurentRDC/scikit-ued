@@ -2,6 +2,7 @@
 from copy import deepcopy as copy
 from functools import lru_cache
 from glob import glob
+from os import mkdir
 from os.path import basename, dirname, isdir, isfile, join
 from urllib.request import urlretrieve
 
@@ -173,7 +174,7 @@ class Crystal(Lattice):
             overwrite = True
         
         if not isdir(download_dir):
-            os.mkdir(download_dir)
+            mkdir(download_dir)
         
         url = 'http://www.crystallography.net/cod/{}.cif'.format(num)
 
