@@ -88,6 +88,13 @@ The :func:`len` of a :class:`Crystal` is the unit cell size (in number of atoms)
     c = Crystal.from_pdb('1gzx') # hemoglobin
     len(c) # 17536
 
+The :class:`Crystal` class is a set-like container; checking containership (with the builtin ``in`` statement) is very fast:
+
+	graphite = Crystal.from_database('C')
+	carbon = next(iter(graphite))
+
+	assert carbon in graphite 
+
 :class:`Crystal` instances can be equated to each other::
 
     gold = Crystal.from_database('Au')
