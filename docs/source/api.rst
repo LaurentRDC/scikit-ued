@@ -51,27 +51,6 @@ for some examples.
     isnr
     triml
     trimr
-    
-=================
-Crystal structure
-=================
-Handling crystal structure information is crucial for many data analysis and modelling tasks.
-See the :ref:`Structure tutorial <structure_tutorial>` for some examples on how to use the following
-classes.
-
-.. autosummary::
-    :toctree: classes/
-    :nosignatures:
-    
-    Crystal
-    Atom
-    Lattice
-
-To help with fleshing out unit cell atoms from symmetry operators:
-
-.. autosummary::
-    :toctree: functions/
-    symmetry_expansion
 
 ==========
 Simulation

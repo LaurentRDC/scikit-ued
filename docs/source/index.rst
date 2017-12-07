@@ -33,8 +33,9 @@ General Documentation
     :maxdepth: 2
 
     installation
-    tutorials/index
+    manip_structure
     api
+    tutorials/index
 
 Related Projects
 ================

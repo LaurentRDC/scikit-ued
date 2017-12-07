@@ -15,7 +15,7 @@ Requirements
     excellent `Intel Distribution for Python <https://software.intel.com/en-us/intel-distribution-for-python>`_
     which provides easy access to all of the above dependencies and more.
 
-**scikit-ued** works on Linux, Mac OS X and Windows. It requires Python 3.5+ 
+works on Linux, Mac OS X and Windows. It requires Python 3.5+ 
 as well as the following packages:
 
 * `numpy`_
