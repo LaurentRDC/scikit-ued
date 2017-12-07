@@ -83,8 +83,6 @@ The :class:`Crystal` object provides some interfaces for easy structure manipula
     
 The :func:`len` of a :class:`Crystal` is the unit cell size (in number of atoms)::
 
-    from skued import Crystal
-
     c = Crystal.from_pdb('1gzx') # hemoglobin
     len(c) # 17536
 
@@ -219,9 +217,11 @@ To create an atom, simply provide its element and coordinates::
 
 	copper = Atom(element = 'Cu', coords = [0,0,0])
 
-Optional information can be give, such as magnetic moment and mean-squared displacement. For users of :mod:`ase`, 
+Optional information can be given, such as magnetic moment and mean-squared displacement. For users of :mod:`ase`, 
 another possibility is to instantiate an :class:`Atom` from an :class:`ase.Atom` using the :meth:`Atom.from_ase` 
 constructor.
+
+:class:`Atom` instances are hashable; they can be used as ``dict`` keys or stored in a ``set``.
 
 Since we are most concerned with atoms in crystals, the coordinates here are assumed to be fractional.
 The real-space position with respect to a :class:`Crystal` or :class:`Lattice` can be accessed using the 
@@ -233,5 +233,11 @@ The real-space position with respect to a :class:`Crystal` or :class:`Lattice` c
     carbon = list(graphite)[-1]
     fractional = carbon.coords
     real = carbon.xyz(lattice = graphite)
+
+The distance between two atoms can be calculated by taking their difference::
+
+	copper = Atom('Cu', coords = [0,0,0])
+	silver = Atom('Ag', coords = [1,0,0])
+	dist = silver - copper			# distance in fractional coordinates
 
 :ref:`Return to Top <structure_tutorial>`
