@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from itertools import repeat
 from math import cos, radians, sin, sqrt, tan
 
 import numpy as np
@@ -168,6 +169,71 @@ class Lattice(object):
         """
         Gx, Gy, Gz = np.atleast_1d(Gx, Gy, Gz)
         return change_basis_mesh(Gx, Gy, Gz, basis1 = np.eye(3), basis2 = self.reciprocal_vectors)
+    
+    @staticmethod
+    def frac_mesh(*xi, indexing = 'xy'):
+        """
+        Coordinate arrays for fractional coordinates.
+
+        Parameters
+        ----------
+        x1, x2, x3 : `~numpy.ndarray`, shape (N,)
+            1d coordinate vectors. If only ``x1`` is provided, it is assumed
+            that ``x1 = x2 = x3``. Otherwise, three coordinate vectors are expected.
+        indexing : str, {'ij', 'xy'}
+            Cartesian (‘xy’, default) or matrix (‘ij’) indexing of output.
+        
+        Returns
+        -------
+        out1, out2, out3 : `~numpy.ndarray`
+            Fractional coordinate arrays.
+        
+        Raises
+        ------
+        ValueError : if number of input vectors is neither 1 nor 3.
+        
+        See Also
+        --------
+        numpy.meshgrid : Coordinate arrays from coordinate vectors
+        Lattice.mesh : Real-space coordinate arrays from fractional coordinate vectors
+        """
+        if len(xi) == 1:
+            xi = tuple(repeat(xi[0], times = 3))
+        elif len(xi) != 3:
+            raise ValueError('1 or 3 coordinate arrays are required, but received {}'.format(len(xi)))
+        
+        return np.meshgrid(*xi, indexing = indexing)
+
+    def mesh(self, *xi, indexing = 'xy'):   
+        """
+        Real-space coordinate arrays from fractional coordinate vectors.
+
+        Parameters
+        ----------
+        x1, x2, x3 : `~numpy.ndarray`, shape (N,)
+            1d coordinate vectors in fractional coordinates. 
+            If only ``x1`` is provided, it is assumed that ``x1 = x2 = x3``. 
+            Otherwise, three coordinate vectors are expected.
+        indexing : str, {'ij', 'xy'}
+            Cartesian (‘xy’, default) or matrix (‘ij’) indexing of output.
+        
+        Returns
+        -------
+        out1, out2, out3 : `~numpy.ndarray`
+            Real-space oordinate arrays.
+        
+        Raises
+        ------
+        ValueError : if number of input vectors is neither 1 nor 3.
+        
+        See Also
+        --------
+        numpy.meshgrid : Coordinate arrays from coordinate vectors
+        Lattice.frac_mesh : Coordinate arrays for fractional coordinates
+        """ 
+        return change_basis_mesh(*self.frac_mesh(*xi, indexing = indexing),
+                                 basis1 = np.array(self.lattice_vectors),
+                                 basis2 = np.eye(3) )
 
     def transform(self, *matrices):
         """

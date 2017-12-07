@@ -29,6 +29,41 @@ class TestEuclidianLattice(unittest.TestCase):
     
     def test_volume(self):
         self.assertEqual(self.lattice.volume, 1)
+    
+class TestLatticeMeshes(unittest.TestCase):
+
+    def test_frac_mesh(self):
+        """ Test that Lattice.frac_mesh is working as expected compared to numpy.meshgrid """
+        lattice = Lattice(np.eye(3))
+        x = np.linspace(0, 1, num = 8)
+
+        for out, n in zip(lattice.frac_mesh(x), np.meshgrid(x,x,x)):
+            self.assertTrue(np.allclose(out, n))
+
+    def test_frac_mesh_two_arr(self):
+        """ Test that Lattice.frac_mesh is raising an exception for two input vectors """
+        lattice = Lattice(np.eye(3))
+        x = np.linspace(0, 1, num = 2)
+
+        with self.assertRaises(ValueError):
+            lattice.frac_mesh(x, x)
+    
+    def test_real_mesh_trivial(self):
+        """ Test that Lattice.mesh works identically to Lattice.frac_mesh for trivial lattice """
+        lattice = Lattice(np.eye(3))
+        x = np.linspace(0, 1, num = 8)
+
+        for frac, real in zip(lattice.frac_mesh(x), lattice.mesh(x)):
+            self.assertTrue(np.allclose(frac, real))
+    
+    def test_real_mesh(self):
+        """ Test that Lattice.mesh works as expected """
+        lattice = Lattice(2*np.eye(3))
+        x = np.linspace(0, 1, num = 8)
+        
+        # since lattice is a stretched euclidian lattice, we expect
+        # a maximum length of 2
+        self.assertTrue(np.max(lattice.mesh(x)[0]) == 2)
 
 class TestLatticeTransform(unittest.TestCase):
     
