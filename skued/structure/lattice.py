@@ -63,6 +63,9 @@ class Lattice(object):
     def __repr__(self):
         return '< Lattice object. a1 : {} \n, a2 : {} \n, a3 : {}>'.format(self.a1, self.a2, self.a3)
 
+    def __hash__(self):
+        return hash(self.lattice_parameters)
+
     def __eq__(self, other):
         return np.allclose(self.lattice_vectors, other.lattice_vectors)
 

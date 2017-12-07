@@ -94,10 +94,7 @@ class Crystal(Lattice):
         return len(self.unitcell)
     
     def __hash__(self):
-        # To be able to hash the lattice vectors,
-        # they need to be flattened into a tuple
-        tupled_lv = tuple(np.array(self.lattice_vectors).flatten().tolist())
-        return hash((self.unitcell, self.source, tupled_lv))
+        return hash((self.unitcell, self.source, self.lattice_parameters))
     
     def __repr__(self):
         return '< Crystal object with unit cell of {} atoms. Source: {} >'.format(len(self), self.source or 'N/A')
