@@ -156,7 +156,7 @@ class Atom(object):
                     magmom = self.magmom,
                     mass = self.mass, **kwargs)
 
-    @lru_cache
+    @lru_cache()
     def xyz(self, lattice):
         """ 
         Real-space position of the atom
