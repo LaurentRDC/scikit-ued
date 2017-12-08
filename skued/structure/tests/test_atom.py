@@ -44,6 +44,7 @@ class TestAtom(unittest.TestCase):
     def test_equality(self):
         """ Test __eq__ for atoms """
         other = deepcopy(self.atom)
+        self.assertEqual(self.atom, self.atom)
         self.assertEqual(self.atom, other)
 
         other.coords = self.atom.coords + 1

@@ -125,7 +125,7 @@ autodoc_member_order = 'groupwise'
 
 
 def autodoc_skip_member(app, what, name, obj, skip, options):
-    exclusions = {'__weakref__', '__doc__', '__module__', '__dict__', '__array__'}
+    exclusions = {'__weakref__', '__doc__', '__module__', '__dict__'}
     exclude = name in exclusions
     return skip or exclude
 

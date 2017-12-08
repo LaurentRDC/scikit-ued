@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
-from math import radians, degrees
 import unittest
+from copy import deepcopy
+from math import degrees, radians
+
 import numpy as np
 from numpy.linalg import norm
-from ... import rotation_matrix
+
 from .. import Lattice, lattice_vectors_from_parameters
+from ... import rotation_matrix
 
 np.random.seed(23)
 
@@ -29,6 +32,13 @@ class TestEuclidianLattice(unittest.TestCase):
     
     def test_volume(self):
         self.assertEqual(self.lattice.volume, 1)
+    
+    def test_equality(self):
+        """ Test equality between identical Lattice instances and copies """
+        self.assertEqual(self.lattice, self.lattice)
+        self.assertEqual(self.lattice, deepcopy(self.lattice))
+        
+        self.assertNotEqual(self.lattice, Lattice(2*np.eye(3)))
     
 class TestLatticeMeshes(unittest.TestCase):
 

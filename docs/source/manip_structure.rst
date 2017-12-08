@@ -25,11 +25,21 @@ The Atom class
 
 .. autoclass:: Atom
 
-=================
-The Lattice class
-=================
+============
+Base classes
+============
+
+The :class:`Lattice` class allows for manipulating lattice information separately from
+atomic information.
 
 .. autoclass:: Lattice
+
+In order to abstract away the possibility of crystal substructures in the future,
+the :class:`Crystal` class derives from the following base class:
+
+.. autoclass:: AtomicStructure
+    :members:
+    :special-members:
 
 =========
 Utilities

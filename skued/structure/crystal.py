@@ -10,7 +10,7 @@ import numpy as np
 from spglib import (find_primitive, get_error_message, get_spacegroup_type,
                     get_symmetry_dataset)
 
-from . import Atom, CIFParser, Lattice, PDBParser
+from . import Atom, AtomicStructure, CIFParser, Lattice, PDBParser
 from .. import affine_map
 
 CIF_ENTRIES = glob(join(dirname(__file__), 'cifs', '*.cif'))
@@ -44,7 +44,7 @@ def symmetry_expansion(atoms, symmetry_operators):
             uniques.add(new)
     yield from uniques
 
-class Crystal(Lattice):
+class Crystal(AtomicStructure, Lattice):
     """
     :class:`Crystal` instances represent crystalline matter. They are set-like objects
     that can be iterated over. 
@@ -78,39 +78,14 @@ class Crystal(Lattice):
     builtins = frozenset(map(lambda fn: basename(fn).split('.')[0], CIF_ENTRIES))
 
     def __init__(self, unitcell, lattice_vectors, source = None, **kwargs):
-        self.unitcell = frozenset(unitcell)
+        super().__init__(atoms = unitcell, lattice_vectors = lattice_vectors, **kwargs)
         self.source = source
-        super().__init__(lattice_vectors, **kwargs)
-    
-    def __iter__(self):
-        yield from iter(self.unitcell)
-    
-    def __contains__(self, item):
-        # Default is to implement __contains__ through __iter__
-        # Much faster to check containership of a set
-        return (item in self.unitcell)
-    
-    def __len__(self):
-        return len(self.unitcell)
     
     def __hash__(self):
-        return hash((self.unitcell, self.source, self.lattice_parameters))
+        return hash((self.source,)) | super().__hash__()
     
     def __repr__(self):
         return '< Crystal object with unit cell of {} atoms. Source: {} >'.format(len(self), self.source or 'N/A')
-    
-    def __eq__(self, other):
-        return (isinstance(other, self.__class__) 
-                and (set(self) == set(other))
-                and super().__eq__(other))
-    
-    def __array__(self):
-        """ Returns an array in which each row represents a unit cell atom """
-        arr = np.empty(shape = (len(self), 4), dtype = np.float)
-        for row, atm in enumerate(self):
-            arr[row, 0] = atm.atomic_number
-            arr[row, 1:] = atm.coords
-        return arr
 
     @classmethod
     @lru_cache(maxsize = len(builtins), typed = True) # saves a lot of time in tests

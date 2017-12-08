@@ -5,6 +5,7 @@ from math import cos, radians, sin, sqrt, tan
 import numpy as np
 from numpy.linalg import norm
 
+from .base import Base
 from .. import change_basis_mesh, transform
 
 e1, e2, e3 = np.eye(3) # Euclidian basis
@@ -42,7 +43,7 @@ def lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma):
 
     return a1, a2, c*(c1*e1 + c2*e2 + c3*e3)
 
-class Lattice(object):
+class Lattice(Base):
     """
     Container class for lattice information and manipulations.
 
@@ -59,15 +60,18 @@ class Lattice(object):
         self.a1 = np.asarray(a1, dtype = np.float) 
         self.a2 = np.asarray(a2, dtype = np.float) 
         self.a3 = np.asarray(a3, dtype = np.float)
+        super().__init__(**kwargs)
     
     def __repr__(self):
         return '< Lattice object. a1 : {} \n, a2 : {} \n, a3 : {}>'.format(self.a1, self.a2, self.a3)
 
     def __hash__(self):
-        return hash(self.lattice_parameters)
+        return hash(self.lattice_parameters) | super().__hash__()
 
     def __eq__(self, other):
-        return np.allclose(self.lattice_vectors, other.lattice_vectors)
+        if isinstance(other, self.__class__):
+            return np.allclose(self.lattice_vectors, other.lattice_vectors) and super().__eq__(other)
+        return NotImplemented
 
     @classmethod
     def from_parameters(cls, a, b, c, alpha, beta, gamma):
