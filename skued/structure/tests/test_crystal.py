@@ -44,36 +44,6 @@ class TestAseAtoms(unittest.TestCase):
         # self.assertSetEqual(set(self.crystal), set(crystal2))
         self.assertEqual(len(self.crystal), len(crystal2))
 
-class TestCrystalMethods(unittest.TestCase):
-
-    def setUp(self):
-        name = choice(list(Crystal.builtins))
-        self.crystal = Crystal.from_database(name)
-    
-    def test_array(self):
-        """ Test Crystal.__array__ """
-        arr = np.array(self.crystal)
-        self.assertSequenceEqual(arr.shape, (len(self.crystal), 4))
-
-    def test_picklable(self):
-        """ Test that Crystal instances can be pickled, and that the unpickled instance
-        is identical to the source """
-        pickled = pickle.dumps(self.crystal)
-        unpickled = pickle.loads(pickled)
-        self.assertEqual(self.crystal, unpickled)
-    
-    def test_hash(self):
-        """ Test that Crystal instances are hashable """
-        # We test the hash uniqueness by putting all builtin Crystals in a set
-        # If hashes are not unique, the set size will be smaller than expected
-        all_builtins = {Crystal.from_database(name) for name in Crystal.builtins}
-        self.assertEqual(len(all_builtins), len(Crystal.builtins))
-    
-    def test_containership(self):
-        """ Test that ``x in c`` works for Crystal instances """
-        atm = next(iter(self.crystal))
-        self.assertIn(atm, self.crystal)
-
 class TestSpglibMethods(unittest.TestCase):
     
     def test_spacegroup_info_graphite(self):

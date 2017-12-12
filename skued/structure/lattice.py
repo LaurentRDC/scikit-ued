@@ -264,6 +264,8 @@ class Lattice(Base):
             self.a2 = transform(matrix, self.a2)
             self.a3 = transform(matrix, self.a3)
 
+# TODO: also determine body-centered, primitive, face-centered, etc.
+#       https://en.wikipedia.org/wiki/Bravais_lattice#Bravais_lattices_in_3_dimensions
 def lattice_system(lattice, atol = 1e-2):
     """
     Determine the lattice system. All _cyclic permutations are checked,
