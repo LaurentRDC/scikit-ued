@@ -41,10 +41,6 @@ def powder_center(image, mask = None):
 	center = shift[::-1]/2 + midpoints - np.array([0.5, 0.5])
 	return tuple(center)
 
-def angular_average(*args, **kwargs):
-    warn('angular_average is deprecated. See azimuthal_average for more features.', DeprecationWarning)
-    return azimuthal_average(*args, **kwargs)
-
 def _angle_bounds(bounds):
     b1, b2 = bounds
     while b1 < 0:
@@ -61,7 +57,6 @@ def azimuthal_average(image, center, mask = None, angular_bounds = None):
     """
     This function returns an angularly-averaged pattern computed from a diffraction pattern, 
     e.g. polycrystalline diffraction.
-
 
     Parameters
     ----------
@@ -85,14 +80,15 @@ def azimuthal_average(image, center, mask = None, angular_bounds = None):
     average : `~numpy.ndarray`, ndim 1
         Angular-average of the array.
     """
-    # TODO: interpolation?
     # TODO: error?
     if mask is None:
         mask = np.zeros_like(image, dtype = np.bool)
 
     xc, yc = center  
 
-    #Create meshgrid and compute radial positions of the data
+    # Create meshgrid and compute radial positions of the data
+    # The radial positions are rounded to the nearest integer
+    # TODO: interpolation? or is that too slow?
     Y, X = np.indices(image.shape)
     R = np.hypot(X - xc, Y - yc)
     Rint = np.rint(R).astype(np.int)

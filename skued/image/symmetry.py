@@ -10,7 +10,6 @@ import numpy as np
 from skimage.transform import rotate
 from npstreams import imean, last
 
-
 # TODO: out parameter?
 def nfold(im, mod, center = None, mask = None, fill_value = 0.0, **kwargs):
     """ 
@@ -49,7 +48,7 @@ def nfold(im, mod, center = None, mask = None, fill_value = 0.0, **kwargs):
     --------
     skimage.transform.rotate : Rotate images by interpolation.
     """
-    if (360 % mod) != 0:
+    if (360 % mod):
         raise ValueError('{}-fold rotational symmetry is not valid (not a divisor of 360).'.format(mod))
     angles = range(0, 360, int(360/mod))
 
