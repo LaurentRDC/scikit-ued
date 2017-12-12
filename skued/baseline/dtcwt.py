@@ -47,7 +47,8 @@ def dtcwt(data, first_stage, wavelet, mode = 'constant', level = None, axis = -1
     
     Raises
     ------
-    ValueError: Raised if axis argument is invalid (e.g. too large).
+    ValueError: Raised if axis argument is invalid (e.g. too large) or if the input data
+                is not even along the transform direction.
     
     Notes
     -----
@@ -73,6 +74,9 @@ def dtcwt(data, first_stage, wavelet, mode = 'constant', level = None, axis = -1
     # Check axis bounds
     if axis > data.ndim - 1:
         raise ValueError('Input array has {} dimensions, but input axis is {}'.format(data.ndim, axis))
+    elif (data.shape[axis] % 2):
+        raise ValueError('Input array has shape {} along transform direction \
+                          (axis = {}). Even length is required.'.format(data.shape[axis], axis))
         
     real_wavelet, imag_wavelet = dualtree_wavelet(wavelet)
     real_first, imag_first = dt_first_stage(first_stage)

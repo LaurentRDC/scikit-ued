@@ -18,6 +18,8 @@ The Crystal class
 
 .. autoclass:: Crystal
     :show-inheritance:
+    :members:
+    :inherited-members:
 
 ==============
 The Atom class
