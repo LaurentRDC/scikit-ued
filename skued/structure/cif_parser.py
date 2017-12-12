@@ -8,7 +8,7 @@ References
                  Computer Physics Communications 182, 1183-1186 (2011) doi: 10.1016/j.cpc.2011.01.013
 """ 
 import warnings
-from contextlib import suppress
+from contextlib import suppress, AbstractContextManager
 from functools import lru_cache
 from re import sub
 from string import digits, punctuation
@@ -65,7 +65,7 @@ def sym_ops(equiv_site):
     symmetry_operation[:3,3] = translation
     return symmetry_operation
 
-class CIFParser(object):
+class CIFParser(AbstractContextManager):
     """
     Collection of methods that parses CIF files based on cif2cell. The preferred method
     of using this object is as a context manager.
@@ -85,9 +85,6 @@ class CIFParser(object):
         # Therefore, more clear to pass an open file
         self._handle = open(filename, mode = 'r')
         self.file = ReadCif(self._handle, **kwargs)
-
-    def __enter__(self):
-        return self
     
     def __exit__(self, type, value, traceback):
         self._handle.close()
@@ -111,7 +108,8 @@ class CIFParser(object):
             
             if h_m_symbol is not None:
                 h_m_symbol = sub('\s+', '', h_m_symbol)
-                hall_symbol =  HM2Hall[h_m_symbol]
+                with suppress(KeyError):    # Symbol could be meaningless, e.g. h_m_symbol = '?' (True story)
+                    hall_symbol =  HM2Hall[h_m_symbol]
         
         # Again, if hall_symbol is still missing OR invalid
         if (hall_symbol is None) or (hall_symbol not in SymOpsHall):
@@ -189,10 +187,11 @@ class CIFParser(object):
         if isinstance(equivalent_sites_str, str):
             equivalent_sites_str = [equivalent_sites_str]
 
-        if not equivalent_sites_str:
-            equivalent_sites_str = SymOpsHall[self.hall_symbol()]
-        elif len(equivalent_sites_str) != len(SymOpsHall[self.hall_symbol()]):
-            warnings.warn('The number of equivalent sites is not in line with the database. The file might be incomplete')
+        with suppress(ParseError):
+            if not equivalent_sites_str:
+                equivalent_sites_str = SymOpsHall[self.hall_symbol()]
+            elif len(equivalent_sites_str) != len(SymOpsHall[self.hall_symbol()]):
+                warnings.warn('The number of equivalent sites is not in line with the database. The file might be incomplete')
 
         yield from map(sym_ops, equivalent_sites_str)
     

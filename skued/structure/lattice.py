@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
-from itertools import repeat
-from math import cos, radians, sin, sqrt, tan, isclose
 from functools import partial
+from itertools import repeat
+from math import cos, isclose, radians, sin, sqrt, tan
 
 import numpy as np
 from numpy.linalg import norm
 
-from .base import Base
+from npstreams import cyclic
+
 from .. import change_basis_mesh, transform
+from .base import Base
 
 e1, e2, e3 = np.eye(3) # Euclidian basis
 
@@ -268,7 +270,7 @@ class Lattice(Base):
 #       https://en.wikipedia.org/wiki/Bravais_lattice#Bravais_lattices_in_3_dimensions
 def lattice_system(lattice, atol = 1e-2):
     """
-    Determine the lattice system. All _cyclic permutations are checked,
+    Determine the lattice system. All cyclic permutations are checked,
     so that no convention on ordering of lattice parameters is assumed.
 
     Parameters
@@ -299,7 +301,7 @@ def lattice_system(lattice, atol = 1e-2):
     # i.e. a != c and beta != 90
     #   or b != c and alpha != 90
     #   or a != b and gamma != 90
-    for clengths, cangles in zip(_cyclic(lengths), _cyclic(angles)):
+    for clengths, cangles in zip(cyclic(lengths), cyclic(angles)):
         (l1, l2, l3), (a1, a2, a3) = clengths, cangles
         if ((not lengthclose(l1, l3)) and angleclose(a1, 90) and angleclose(a3, 90) 
                 and (not angleclose(a2, 90))):
@@ -341,9 +343,3 @@ def _two_equal(iterable, atol):
         if sum(isclose(i, l, abs_tol = atol) for l in iterable) == 2:
             return True
     return False
-
-def _cyclic(iterable):
-    """ Create _cyclic permutations of an iterable """
-    iterable = tuple(iterable)
-    n = len(iterable)
-    yield from ([[iterable[i - j] for i in range(n)] for j in range(n)])
