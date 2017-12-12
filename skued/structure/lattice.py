@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from itertools import repeat
-from math import cos, radians, sin, sqrt, tan
+from math import cos, radians, sin, sqrt, tan, isclose
+from functools import partial
 
 import numpy as np
 from numpy.linalg import norm
@@ -41,7 +42,7 @@ def lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma):
     except ValueError:
         raise ValueError('Invalid lattice parameters')
 
-    return a1, a2, c*(c1*e1 + c2*e2 + c3*e3)
+    return a1, a2, c*(c1*e1 + c2*e2 + c3*e3)    
 
 class Lattice(Base):
     """
@@ -95,6 +96,12 @@ class Lattice(Base):
         beta = np.arccos(np.vdot(self.a1, self.a3)/(a*c))
         gamma = np.arccos(np.vdot(self.a1, self.a2)/(a*b))
         return a, b, c, np.rad2deg(alpha), np.rad2deg(beta), np.rad2deg(gamma)
+
+    @property
+    def lattice_system(self):
+        """ Crystal family, one of {'triclinic', 'monoclinic', 'orthorhombic', 
+        'tetragonal', 'cubic', 'hexagonal', 'rhombohedral', 'cubic'} """
+        return lattice_system(self, atol = 5e-2)
     
     @property
     def volume(self):
@@ -256,3 +263,85 @@ class Lattice(Base):
             self.a1 = transform(matrix, self.a1)
             self.a2 = transform(matrix, self.a2)
             self.a3 = transform(matrix, self.a3)
+
+def lattice_system(lattice, atol = 1e-2):
+    """
+    Determine the lattice system. All _cyclic permutations are checked,
+    so that no convention on ordering of lattice parameters is assumed.
+
+    Parameters
+    ----------
+    lattice : Lattice
+        Lattice instance or subclass.
+    atol : float, optional
+        Absolute tolerance (in Angstroms)
+    
+    Returns
+    -------
+    system : str, {'triclinic', 'monoclinic', 'orthorhombic', 
+                   'tetragonal', 'cubic', 'hexagonal', 'rhombohedral', 'cubic'}
+        Lattice system. This is equivalent to crystal families, except that the hexagonal lattice
+        family is split in hexagonal and rhombohedral.
+    """
+    angleclose = partial(isclose, abs_tol = 1)
+    lengthclose = partial(isclose, abs_tol = atol)
+
+    a, b, c, alpha, beta, gamma = lattice.lattice_parameters
+    lengths, angles = (a, b, c), (alpha, beta, gamma)
+
+    lengths_equal = all(lengthclose(length, a) for length in lengths)
+    angles_equal = all(angleclose(angle, alpha) for angle in angles)
+
+    # Checking for monoclinic lattice system is generalized 
+    # to the case where (a, b, c) can be cycled
+    # i.e. a != c and beta != 90
+    #   or b != c and alpha != 90
+    #   or a != b and gamma != 90
+    for clengths, cangles in zip(_cyclic(lengths), _cyclic(angles)):
+        (l1, l2, l3), (a1, a2, a3) = clengths, cangles
+        if ((not lengthclose(l1, l3)) and angleclose(a1, 90) and angleclose(a3, 90) 
+                and (not angleclose(a2, 90))):
+            return 'monoclinic'
+    
+    if (lengths_equal and angles_equal):
+        if angleclose(alpha, 90):
+            return 'cubic'
+        else:
+            return 'rhombohedral'
+    
+    # Special note : technically, a hexagonal lattice system
+    # could have all three lengths equal
+    elif lengths_equal and (not angles_equal):
+        if (any(isclose(angle, 120) for angle in angles) and 
+             (sum(isclose(i, 90) for i in angles) == 2)):
+            return 'hexagonal'
+    
+    # At this point, two lengths are equal at most
+    elif _two_equal(lengths, atol = atol):
+        if angles_equal and angleclose(alpha, 90):
+            return 'tetragonal'
+
+        elif (any(isclose(angle, 120) for angle in angles) and 
+             (sum(isclose(i, 90) for i in angles) == 2)):
+            return 'hexagonal'
+
+    # At this point, all lengths are unequal
+    elif angles_equal and angleclose(alpha, 90):
+        return 'orthorombic'
+
+    else:
+        return 'triclinic'
+
+def _two_equal(iterable, atol):
+    """ Returns True if and only if two items are equal """
+    iterable = tuple(iterable)
+    for i in iterable:
+        if sum(isclose(i, l, abs_tol = atol) for l in iterable) == 2:
+            return True
+    return False
+
+def _cyclic(iterable):
+    """ Create _cyclic permutations of an iterable """
+    iterable = tuple(iterable)
+    n = len(iterable)
+    yield from ([[iterable[i - j] for i in range(n)] for j in range(n)])

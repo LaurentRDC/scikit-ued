@@ -48,3 +48,4 @@ Utilities
 To help with fleshing out unit cell atoms from symmetry operators:
 
 .. autofunction:: symmetry_expansion
+.. autofunction:: lattice_system

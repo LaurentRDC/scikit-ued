@@ -6,7 +6,7 @@ from math import degrees, radians
 import numpy as np
 from numpy.linalg import norm
 
-from .. import Lattice, lattice_vectors_from_parameters
+from .. import Lattice, lattice_vectors_from_parameters, Crystal
 from ... import rotation_matrix
 
 np.random.seed(23)
@@ -149,6 +149,86 @@ class TestLatticeParameters(unittest.TestCase):
         triclinic = (3, 4, 20, 45, 90, 126)
         triclinic2 = Lattice.from_parameters(*triclinic).reciprocal.reciprocal.lattice_parameters
         self.assertTrue(np.allclose(triclinic, triclinic2))
+
+class TestLatticeSystems(unittest.TestCase):
+
+    def test_cubic_lattice_system(self):
+        """ Test that the Lattice.lattice_system attribute is working properly for cubic lattice """
+        self.assertEqual(Lattice(2*np.eye(3)).lattice_system, 'cubic')
+
+    def test_tetragonal_lattice_system(self):
+        """ Test that the Lattice.lattice_system attribute is working properly for tetragonal lattice """
+        parameters = (2,2,3, 90, 90, 90)
+        l = Lattice.from_parameters(*parameters)
+        self.assertEqual(l.lattice_system, 'tetragonal')
+
+    def test_rhombohedral_lattice_system(self):
+        """ Test that the Lattice.lattice_system attribute is working properly for rhombohedral lattice """
+        parameters = (1, 1, 1, 87, 87, 87)
+        l = Lattice.from_parameters(*parameters)
+        self.assertEqual(l.lattice_system, 'rhombohedral')
+
+    def test_monoclinic_lattice_system(self):
+        """ Test that the Lattice.lattice_system attribute is working properly for monoclinic lattice
+        including all possible permutations. """
+        with self.subTest('permutation 1'):
+            parameters = (1, 2, 3, 90, 115, 90)
+            l = Lattice.from_parameters(*parameters)
+            self.assertEqual(l.lattice_system, 'monoclinic')
+        
+        with self.subTest('permutation 2'):
+            parameters = (2, 3, 1, 115, 90, 90)
+            l = Lattice.from_parameters(*parameters)
+            self.assertEqual(l.lattice_system, 'monoclinic')
+
+        with self.subTest('permutation 3'):
+            parameters = (3, 1, 2, 90, 90, 115)
+            l = Lattice.from_parameters(*parameters)
+            self.assertEqual(l.lattice_system, 'monoclinic')
+
+    def test_hexagonal_lattice_system(self):
+        """ Test that the Lattice.lattice_system attribute is working properly for hexagonal lattice,
+        including all possible permutations of lattice parameters. """
+        with self.subTest('Gamma = 120deg'):
+            parameters = (2,2,3, 90, 90, 120)
+            l = Lattice.from_parameters(*parameters)
+            self.assertEqual(l.lattice_system, 'hexagonal')
+        
+        with self.subTest('alpha = 120deg'):
+            parameters = (3,2,2, 120, 90, 90)
+            l = Lattice.from_parameters(*parameters)
+            self.assertEqual(l.lattice_system, 'hexagonal')
+
+        with self.subTest('beta = 120deg'):
+            parameters = (2,3,2, 90, 120, 90)
+            l = Lattice.from_parameters(*parameters)
+            self.assertEqual(l.lattice_system, 'hexagonal')
+        
+        with self.subTest('Equal lengths'):
+            parameters = (2,2,2, 90, 120, 90)
+            l = Lattice.from_parameters(*parameters)
+            self.assertEqual(l.lattice_system, 'hexagonal')
+    
+    def test_triclinic_lattice_system(self):
+        """ Test that the Lattice.lattice_system attribute is working properly for triclinic lattice """
+        l = Lattice.from_parameters(1, 2, 3, 75, 40, 81)
+        self.assertEqual(l.lattice_system, 'triclinic')
+
+    def test_graphite(self):
+        """ Test that the builtin Crystal for graphite has a hexagonal lattice system """
+        graphite = Crystal.from_database('C')
+        self.assertEqual(graphite.lattice_system, 'hexagonal')
+    
+    def test_lead(self):
+        """ Test that the builtin Crystal for lead has a cubic lattice system """
+        pb = Crystal.from_database('Pb')
+        self.assertEqual(pb.lattice_system, 'cubic')
+    
+    def test_vo2(self):
+        """ Test that the builtin Crystal for monoclinic M1 VO2 has a monoclinic lattice system """
+        vo2 = Crystal.from_database('vo2-m1')
+        self.assertEqual(vo2.lattice_system, 'monoclinic')
+
 
 class TestLatticeMillerScattering(unittest.TestCase):
 

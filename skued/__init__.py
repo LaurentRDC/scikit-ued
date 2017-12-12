@@ -20,5 +20,6 @@ from .image import (align, azimuthal_average, combine_masks, diff_register,
 from .plot_utils import rgb_sweep, spectrum_colors
 from .simulation import (affe, bounded_reflections, electrostatic,
                          pelectrostatic, powdersim, structure_factor)
-from .structure import Atom, AtomicStructure, Crystal, Lattice, symmetry_expansion
+from .structure import (Atom, AtomicStructure, Crystal, Lattice, 
+                        symmetry_expansion, lattice_system)
 from .voigt import gaussian, lorentzian, pseudo_voigt

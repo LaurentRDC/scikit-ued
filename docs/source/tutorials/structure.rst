@@ -151,7 +151,14 @@ The unit cell volume (and by extensions, density) is also accessible:
 
 Space-group Information
 -----------------------
-Thanks to `spglib <http://atztogo.github.io/spglib/>`_, we can get symmetry and space-group information 
+The `lattice system <https://en.wikipedia.org/wiki/Bravais_lattice#Bravais_lattices_in_3_dimensions>`_ of a Lattice or Crystal instance is also available via the :attr:`lattice_system` attribute::
+
+	vo2 = Crystal.from_database('vo2-m1') # Monoclinic M1 VO2
+	print(vo2.lattice_system)             # = 'monoclinic'
+
+Better control on length tolerances is available via the :func:`lattice_system` function.
+
+Thanks to `spglib <http://atztogo.github.io/spglib/>`_, we can get space-group information 
 from a :class:`Crystal` instance::
 
 	from skued import Crystal
@@ -159,7 +166,7 @@ from a :class:`Crystal` instance::
 	gold = Crystal.from_database('Au')
 	spg_info = gold.spacegroup_info()
 
-In the above example, :data:`spg_info` is a dictionary with the following four keys:
+In the above example, :data:`spg_info` is a dictionary with the following keys:
 
 * ``'international_symbol'``: International Tables of Crystallography space-group symbol (short);
 
