@@ -2,7 +2,7 @@
 import unittest
 import numpy as np
 from .. import (repeated_array, mirror, cart2polar, polar2cart, plane_mesh,
-                spherical2cart, cart2spherical)
+                spherical2cart, cart2spherical, complex_array)
 
 np.random.seed(23)
 
@@ -33,6 +33,28 @@ class TestRepeatedArray(unittest.TestCase):
 			composite = repeated_array(self.arr, num = (2, 3), axes = (1, 0))
 			expected_new_shape = (self.arr.shape[0]*3, self.arr.shape[1]*2)
 			self.assertEqual(composite.shape, expected_new_shape)
+
+class TestComplexArray(unittest.TestCase):
+
+	def test_floats(self):
+		""" Test that two floating arrays are cast correctly """
+		real, imag = np.empty((3,4), dtype = np.float), np.empty((3,4), dtype = np.float)
+		self.assertEqual(complex_array(real, imag).dtype, np.complex)
+	
+	def test_non_floats(self):
+		""" Test that two integer arrays are cast correctly """
+		real, imag = np.empty((3,4), dtype = np.int16), np.empty((3,4), dtype = np.int8)
+		self.assertEqual(complex_array(real, imag).dtype, np.complex)
+	
+	def test_results(self):
+		""" test that ``complex_array`` returns appropriate results """
+		arr1 = np.random.random((4, 5))
+		arr2 = np.random.random((4, 5))
+
+		from_complex_array = complex_array(arr1, arr2)
+		by_hand = arr1 + 1j*arr2
+		self.assertEqual(from_complex_array.dtype, by_hand.dtype)
+		self.assertTrue(np.allclose(from_complex_array, by_hand))
 
 class TestMirror(unittest.TestCase):
 

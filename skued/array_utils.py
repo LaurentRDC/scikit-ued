@@ -50,6 +50,25 @@ def repeated_array(arr, num, axes = -1):
     
     return composite
 
+def complex_array(real, imag):
+    """
+    Combine two real ndarrays into a complex array.
+
+    Parameters
+    ----------
+    real, imag : array_like
+        Real and imaginary parts of a complex array.
+    
+    Returns
+    -------
+    complex : `~numpy.ndarray`
+        Complex array.
+    """
+    real, imag = np.asfarray(real), np.asfarray(imag)
+    comp = real.astype(np.complex)
+    comp += 1j*imag
+    return comp
+
 def mirror(arr, axes = None):
     """ 
     Reverse array over many axes. Generalization of arr[::-1] for many dimensions.

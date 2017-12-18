@@ -9,7 +9,8 @@ from .affine import (affine_map, change_basis_mesh, change_of_basis, is_basis,
                      rotation_matrix, transform, translation_matrix,
                      translation_rotation_matrix)
 from .array_utils import (cart2polar, cart2spherical, mirror, plane_mesh,
-                          polar2cart, repeated_array, spherical2cart)
+                          polar2cart, repeated_array, spherical2cart,
+                          complex_array)
 from .baseline import baseline_dt, baseline_dwt, dtcwt, idtcwt
 from .eproperties import (electron_velocity, electron_wavelength,
                           interaction_parameter, lorentz)
