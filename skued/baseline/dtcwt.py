@@ -12,7 +12,7 @@ from os.path import join, dirname
 DATADIR = join(dirname(__file__), 'data')
 ALL_QSHIFT = frozenset({'qshift1', 'qshift2', 'qshift3', 'qshift4', 'qshift5', 'qshift6'})
 ALL_COMPLEX_WAV = ALL_QSHIFT
-ALL_FIRST_STAGE = frozenset([wav for wav in wavelist(kind = 'discrete') if wav != 'dmey'])
+ALL_FIRST_STAGE = frozenset(filter(lambda name: name != 'dmey', wavelist(kind = 'discrete')))
 
 def dtcwt(data, first_stage, wavelet, mode = 'constant', level = None, axis = -1):
     """
