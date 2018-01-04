@@ -2,7 +2,7 @@
 __author__ = 'Laurent P. René de Cotret'
 __email__ = 'laurent.renedecotret@mail.mcgill.ca'
 __license__ = 'MIT'
-__version__ = '1.0.0' # TODO: automatic versioning?
+__version__ = '0.5.0' # TODO: automatic versioning?
 
 from .affine import (affine_map, change_basis_mesh, change_of_basis, is_basis,
                      is_rotation_matrix, minimum_image_distance,
@@ -23,4 +23,5 @@ from .simulation import (affe, bounded_reflections, electrostatic,
                          pelectrostatic, powdersim, structure_factor)
 from .structure import (Atom, AtomicStructure, Crystal, Lattice, 
                         symmetry_expansion, lattice_system)
+from .time_series import time_shift, time_shifts
 from .voigt import gaussian, lorentzian, pseudo_voigt

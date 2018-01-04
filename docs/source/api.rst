@@ -23,6 +23,19 @@ Please refer to the :ref:`tutorial on baseline-determination <baseline_tutorial>
     dtcwt
     idtcwt
 
+====================
+Time-series analysis
+====================
+
+Time-series exploration and analysis.
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+
+    time_shift
+    time_shifts
+
 ==============
 Image Analysis
 ==============
