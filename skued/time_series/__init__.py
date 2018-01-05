@@ -7,3 +7,4 @@ in the context of ultrafast diffraction.
 """
 
 from .time_zero import time_shift, time_shifts
+from .nfft_routines import nfftfreq, nfft

@@ -62,7 +62,7 @@ def mnxc2(arr1, arr2, m1 = None, m2 = None, mode = 'full', axes = (0, 1), out = 
     References
     ----------
     .. [PADF] Dirk Padfield. Masked Object Registration in the Fourier Domain. 
-        IEEE Transactions on Image Processing, vol.21(5), pp. 2706-2718, 2012. 
+        IEEE Transactions on Image Processing, vol.21(5), pp. 2706-2718 (2012). 
     """
     # TODO: implement for complex arrays
     # TODO: implement multidims

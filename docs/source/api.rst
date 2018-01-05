@@ -29,12 +29,23 @@ Time-series analysis
 
 Time-series exploration and analysis.
 
+Measurement of time-shifts between physically-equivalent time traces:
+
 .. autosummary::
     :toctree: functions/
     :nosignatures:
 
     time_shift
     time_shifts
+
+Routines related to the Non-uniform Fast Fourier Transform:
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+
+    nfft
+    nfftfreq
 
 ==============
 Image Analysis
