@@ -25,7 +25,7 @@ class Testnfft(unittest.TestCase):
         y = np.sin(2*np.pi*x)
 
         k = np.fft.fftfreq(y.size)
-        knfft = nfftfreq(len(x), fr = 0.02)
+        knfft = nfftfreq(len(x), df = 1)
 
         dft = np.fft.fft(y)
         from_nfft = nfft(x,y, M = len(x))

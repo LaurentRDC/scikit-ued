@@ -8,38 +8,23 @@ import numpy as np
 from scipy.fftpack import fft, ifft
 from math import sqrt, log, pi
 
-def nfftfreq(M, fr = 1):
+def nfftfreq(M, df = 1):
     """
-    Compute the frequency range used in nfft for `M` frequency bins, resulting in the frequencies:
-    
-    .. math::
-    
-        f \in \left\{ \\text{fr} \cdot m \mid m = \overbrace{-1/2, ..., 1/2}^{M \\text{ points}} \\right\}
+    Compute the frequency range used in nfft for `M` frequency bins.
 
     Parameters
     ----------
     M : int
         Number of frequency bins.
-    fr : float, optional
+    df : float, optional
         Frequency range.
     
     Returns
     -------
     freqs : `~numpy.ndarray`
-        Frequencies will be distributed evenly between ``-fr/2`` and ``fr/2``
     """
     M = int(M)
-    return (fr/M) * np.arange(-(M // 2), M - (M // 2))
-
-@lru_cache(maxsize = 8)
-def _compute_grid_params(M, eps):
-    # Choose Msp & tau from eps following Dutt & Rokhlin (1993)
-    ratio = 2 if eps > 1E-11 else 3
-    Msp = int(-log(eps) / (pi * (ratio - 1) / (ratio - 0.5)) + 0.5)
-    Mr = max(ratio * M, 2 * Msp)
-    lambda_ = Msp / (ratio * (ratio - 0.5))
-    tau = pi * lambda_ / M ** 2
-    return Mr, Msp, tau
+    return df * np.arange(-(M // 2), M - (M // 2))
 
 def _gaussian_grid_1D(x, y, Mr, Msp, tau):
     """Compute the 1D gaussian gridding """
@@ -60,7 +45,7 @@ def _gaussian_grid_1D(x, y, Mr, Msp, tau):
 
     return ftau
 
-def nfft(x, y, M, fr = 1.0, eps = 1E-15):
+def nfft(x, y, M, df = 1.0, eps = 1E-15):
     """
     Non-uniform Fast Fourier Transform (NFFT) computed on a uniform
     frequency grid.
@@ -73,9 +58,9 @@ def nfft(x, y, M, fr = 1.0, eps = 1E-15):
         Signal, possibly complex.
     M : int
         Number of frequencies on which the transform is computed.
-    fr : float, optional
+    df : float, optional
         Frequency range. Frequencies will be evenly distributed
-        between ``-fr/2`` and ``fr/2``.
+        between ``-df/2`` and ``df/2``.
     eps : float, optional
         The desired approximate error for the FFT result.
 
@@ -103,9 +88,12 @@ def nfft(x, y, M, fr = 1.0, eps = 1E-15):
                           compared to signal shape {} '.format(x.shape, y.shape))
 
     M = int(M)
-    k = nfftfreq(M, fr)
+    k = nfftfreq(M, df)
 
-    Mr, Msp, tau = _compute_grid_params(M, eps)
+    R = 3
+    Mr = R*M
+    Msp = int(-log(eps) / (pi * (R - 1) / (R - 0.5)) + 0.5)
+    tau = pi *  Msp / (R * (R - 0.5)) / M ** 2
     ftau = _gaussian_grid_1D(x, y, Mr, Msp, tau)
 
     # Compute the FFT on the convolved grid
