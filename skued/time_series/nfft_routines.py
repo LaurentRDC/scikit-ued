@@ -26,25 +26,6 @@ def nfftfreq(M, df = 1):
     M = int(M)
     return df * np.arange(-(M // 2), M - (M // 2))
 
-def _gaussian_grid_1D(x, y, Mr, Msp, tau):
-    """Compute the 1D gaussian gridding """
-    ftau = np.zeros(Mr, dtype = y.dtype)
-    hx = 2 * pi / Mr
-    xmod = x % (2 * pi)
-
-    m = 1 + (xmod // hx).astype(int)
-    msp = np.arange(-Msp, Msp)[:, np.newaxis]
-    mm = m + msp
-    
-    E1 = np.exp(-0.25 * (xmod - hx * m) ** 2 / tau)
-    E2 = np.exp(msp * (xmod - hx * m) * pi / (Mr * tau))
-    E3 = np.exp(-(pi * msp / Mr) ** 2 / tau)
-    
-    spread = (y * E1) * E2 * E3
-    np.add.at(ftau, mm % Mr, spread)
-
-    return ftau
-
 def nfft(x, y, M, df = 1.0, eps = 1E-15):
     """
     Non-uniform Fast Fourier Transform (NFFT) computed on a uniform
@@ -94,7 +75,7 @@ def nfft(x, y, M, df = 1.0, eps = 1E-15):
     Mr = R*M
     Msp = int(-log(eps) / (pi * (R - 1) / (R - 0.5)) + 0.5)
     tau = pi *  Msp / (R * (R - 0.5)) / M ** 2
-    ftau = _gaussian_grid_1D(x, y, Mr, Msp, tau)
+    ftau = _fast_gaussian_grid(x, y, Mr, Msp, tau)
 
     # Compute the FFT on the convolved grid
     Ftau = (1 / Mr) * fft(ftau)
@@ -102,3 +83,21 @@ def nfft(x, y, M, df = 1.0, eps = 1E-15):
 
     # Deconvolve the grid using convolution theorem
     return (1 / len(x)) * sqrt(pi / tau) * np.exp(tau * k ** 2) * Ftau
+
+def _fast_gaussian_grid(x, y, Mr, Msp, tau):
+    ftau = np.zeros(Mr, dtype = y.dtype)
+    hx = 2 * pi / Mr
+    xmod = x % (2 * pi)
+
+    m = 1 + (xmod // hx).astype(int)
+    msp = np.arange(-Msp, Msp)[:, np.newaxis]
+    mm = m + msp
+    
+    E1 = np.exp(-0.25 * (xmod - hx * m) ** 2 / tau)
+    E2 = np.exp(msp * (xmod - hx * m) * pi / (Mr * tau))
+    E3 = np.exp(-(pi * msp / Mr) ** 2 / tau)
+    
+    spread = (y * E1) * E2 * E3
+    np.add.at(ftau, mm % Mr, spread)
+
+    return ftau
