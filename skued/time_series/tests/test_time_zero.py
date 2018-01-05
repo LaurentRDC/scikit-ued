@@ -58,6 +58,23 @@ class TestTimeShifts(unittest.TestCase):
             traces = [np.sin(2*np.pi*np.linspace(0, 10, 31)) for _ in range(10)]
             shifts = time_shifts(traces)
             self.assertTrue(np.allclose(shifts, np.zeros_like(shifts)))
+    
+    def test_output_shape(self):
+        """ Test the output shape """
+        with self.subTest('reference = None'):
+            traces = [np.sin(2*np.pi*np.linspace(0, 10, 64) + i) for i in range(10)]
+            shifts = time_shifts(traces)
+            self.assertTupleEqual(shifts.shape, (len(traces), ))
+            # The first shift should then be zero
+            # because it is the shift between the reference and itself
+            self.assertEqual(shifts[0], 0)
+
+        with self.subTest('reference is not None'):
+            traces = [np.sin(2*np.pi*np.linspace(0, 10, 64) + i) for i in range(10)]
+            shifts = time_shifts(traces, reference = np.array(traces[0], copy = True))
+            self.assertTupleEqual(shifts.shape, (len(traces), ))
+
+
 
 if __name__ == '__main__':
     unittest.main()

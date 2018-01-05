@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
+from collections.abc import Sized
 from functools import partial
 
 import numpy as np
 from scipy.signal import correlate
+
+from npstreams import peek, array_stream
 
 
 def time_shift(trace, reference, method = 'auto'):
@@ -46,9 +49,10 @@ def time_shift(trace, reference, method = 'auto'):
     maxima = np.transpose(np.nonzero(xcorr == xcorr.max())) 
     return np.mean(maxima) - int(xcorr.shape[0]/2)
 
+@array_stream
 def time_shifts(traces, reference = None, method = 'auto'):
     """
-    Measure the time shifts between time traces and a reference.
+    Measure the time shifts between time traces and a reference by cross-correlation.
 
     Parameters
     ----------
@@ -65,7 +69,9 @@ def time_shifts(traces, reference = None, method = 'auto'):
     Returns
     -------
     shifts : `~numpy.ndarray`, ndim 1, dtype float
-        Time shifts as indices (possibly fractional).
+        Time shifts as indices (possibly fractional). The length of ``shifts`` is always 
+        equal to the number of time-traces; in the case where ``reference = None``, the first
+        shifts will always be identically zero.
     
     Raises
     ------
@@ -75,11 +81,10 @@ def time_shifts(traces, reference = None, method = 'auto'):
     --------
     time_shift : measure time-shift between a single trace and a reference.
     """
-    # TODO: if ``traces`` has a length, we can allocate the shifts array
     traces = iter(traces)
 
     if reference is None:
-        reference = next(traces)
+        reference, traces = peek(traces)
     reference = np.atleast_1d(reference)
 
     kwargs = {'reference': reference, 'method': method}
