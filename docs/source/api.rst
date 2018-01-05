@@ -41,6 +41,17 @@ Measurement of time-shifts between physically-equivalent time traces:
     time_shift
     time_shifts
 
+Filtering and outliers
+----------------------
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+
+    mad
+    outliers_mad
+
+
 Non-uniform Fast Fourier Transform
 ----------------------------------
 
