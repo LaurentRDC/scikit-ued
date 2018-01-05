@@ -29,6 +29,9 @@ Time-series analysis
 
 Time-series exploration and analysis.
 
+Time-zero tracking
+------------------
+
 Measurement of time-shifts between physically-equivalent time traces:
 
 .. autosummary::
@@ -38,7 +41,8 @@ Measurement of time-shifts between physically-equivalent time traces:
     time_shift
     time_shifts
 
-Routines related to the Non-uniform Fast Fourier Transform:
+Non-uniform Fast Fourier Transform
+----------------------------------
 
 .. autosummary::
     :toctree: functions/
@@ -56,21 +60,56 @@ Combine the routines below with
 to the :ref:`tutorial on image manipulation <image_analysis_tutorial>` 
 for some examples.
 
+Symmetry
+--------
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+
+    nfold
+
+Polycrystalline diffraction
+---------------------------
+
 .. autosummary::
     :toctree: functions/
     :nosignatures:
 
     azimuthal_average
     powder_center
+
+Image alignment
+---------------
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+
     align
     ialign
     diff_register
     shift_image
-    nfold
     mnxc2
+
+Image masking
+-------------
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+
     mask_from_collection
     combine_masks
     mask_image
+
+Image noise
+-----------
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+
     snr_from_collection
     isnr
     triml
