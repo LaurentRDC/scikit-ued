@@ -24,7 +24,7 @@ Please refer to the :ref:`tutorial on baseline-determination <baseline_tutorial>
     idtcwt
 
 ====================
-Time-series analysis
+Time-series Analysis
 ====================
 
 Time-series exploration and analysis.
@@ -41,16 +41,14 @@ Measurement of time-shifts between physically-equivalent time traces:
     time_shift
     time_shifts
 
-Filtering and outliers
-----------------------
+Robust statistics
+-----------------
 
 .. autosummary::
     :toctree: functions/
     :nosignatures:
 
     mad
-    outliers_mad
-
 
 Non-uniform Fast Fourier Transform
 ----------------------------------

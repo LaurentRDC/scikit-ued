@@ -81,6 +81,13 @@ def time_shifts(traces, reference = None, method = 'auto'):
     --------
     time_shift : measure time-shift between a single trace and a reference.
     """
+    # fromiter can preallocate the full array if the number of traces
+    # is known in advance
+    try:
+        count = len(traces)
+    except TypeError:
+        count = -1
+
     traces = iter(traces)
 
     if reference is None:
@@ -90,4 +97,4 @@ def time_shifts(traces, reference = None, method = 'auto'):
     kwargs = {'reference': reference, 'method': method}
 
     shifts = map(partial(time_shift, **kwargs), traces)
-    return np.fromiter(shifts, dtype = np.float)
+    return np.fromiter(shifts, dtype = np.float, count = count)
