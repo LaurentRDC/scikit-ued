@@ -36,6 +36,13 @@ atomic information.
 
 .. autoclass:: Lattice
 
+The possible lattice systems are stored in the :class:`LatticeSystem` enumeration:
+
+.. autoclass:: LatticeSystem
+    :show-inheritance:
+    :members:
+    :undoc-members:
+
 In order to abstract away the possibility of crystal substructures in the future,
 the :class:`Crystal` class derives from the following base class:
 

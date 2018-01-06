@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from enum import Enum, auto
 from functools import partial
 from itertools import repeat
 from math import cos, isclose, radians, sin, sqrt, tan
@@ -45,6 +46,22 @@ def lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma):
         raise ValueError('Invalid lattice parameters')
 
     return a1, a2, c*(c1*e1 + c2*e2 + c3*e3)    
+
+class LatticeSystem(Enum):
+    """
+    Lattice system enumeration. 
+    
+    Equivalent to Crystal family
+    except that the hexagonal crystal family is split between 
+    the rhombohedral system and hexagonal system
+    """
+    triclinic    = 1
+    monoclinic   = 2
+    orthorhombic = 3
+    tetragonal   = 4
+    rhombohedral = 5
+    hexagonal    = 6
+    cubic        = 7
 
 class Lattice(Base):
     """
@@ -101,8 +118,7 @@ class Lattice(Base):
 
     @property
     def lattice_system(self):
-        """ Crystal family, one of {'triclinic', 'monoclinic', 'orthorhombic', 
-        'tetragonal', 'cubic', 'hexagonal', 'rhombohedral', 'cubic'} """
+        """ One of the seven lattice system, returned in the form of the :class:`LatticeSystem` enumeration. """
         return lattice_system(self, atol = 5e-2)
     
     @property
@@ -282,8 +298,7 @@ def lattice_system(lattice, atol = 1e-2):
     
     Returns
     -------
-    system : str, {'triclinic', 'monoclinic', 'orthorhombic', 
-                   'tetragonal', 'cubic', 'hexagonal', 'rhombohedral', 'cubic'}
+    system : LatticeSystem
         Lattice system. This is equivalent to crystal families, except that the hexagonal lattice
         family is split in hexagonal and rhombohedral.
     """
@@ -305,36 +320,36 @@ def lattice_system(lattice, atol = 1e-2):
         (l1, l2, l3), (a1, a2, a3) = clengths, cangles
         if ((not lengthclose(l1, l3)) and angleclose(a1, 90) and angleclose(a3, 90) 
                 and (not angleclose(a2, 90))):
-            return 'monoclinic'
+            return LatticeSystem['monoclinic']
     
     if (lengths_equal and angles_equal):
         if angleclose(alpha, 90):
-            return 'cubic'
+            return LatticeSystem['cubic']
         else:
-            return 'rhombohedral'
+            return LatticeSystem['rhombohedral']
     
     # Special note : technically, a hexagonal lattice system
     # could have all three lengths equal
     elif lengths_equal and (not angles_equal):
         if (any(isclose(angle, 120) for angle in angles) and 
              (sum(isclose(i, 90) for i in angles) == 2)):
-            return 'hexagonal'
+            return LatticeSystem['hexagonal']
     
     # At this point, two lengths are equal at most
     elif _two_equal(lengths, atol = atol):
         if angles_equal and angleclose(alpha, 90):
-            return 'tetragonal'
+            return LatticeSystem['tetragonal']
 
         elif (any(isclose(angle, 120) for angle in angles) and 
              (sum(isclose(i, 90) for i in angles) == 2)):
-            return 'hexagonal'
+            return LatticeSystem['hexagonal']
 
     # At this point, all lengths are unequal
     elif angles_equal and angleclose(alpha, 90):
-        return 'orthorombic'
+        return LatticeSystem['orthorombic']
 
     else:
-        return 'triclinic'
+        return LatticeSystem['triclinic']
 
 def _two_equal(iterable, atol):
     """ Returns True if and only if two items are equal """
