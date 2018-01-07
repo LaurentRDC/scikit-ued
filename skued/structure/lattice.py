@@ -59,6 +59,10 @@ class Lattice(Base):
         if isinstance(other, self.__class__):
             return np.allclose(self.lattice_vectors, other.lattice_vectors) and super().__eq__(other)
         return NotImplemented
+    
+    def __array__(self, *args, **kwargs):
+        """ Returns a 3x3 float array in which each row is a lattice vector """
+        return np.array(self.lattice_vectors, *args, **kwargs)
 
     # TODO: Introduce conventions on ordering a, b, c and angles
     #       based on http://atztogo.github.io/spglib/definition.html
@@ -286,8 +290,7 @@ def lattice_system(lattice, atol = 1e-2):
     Returns
     -------
     system : LatticeSystem
-        Lattice system. This is equivalent to crystal families, except that the hexagonal lattice
-        family is split in hexagonal and rhombohedral.
+        One of the seven lattice system.
     """
     angleclose = partial(isclose, abs_tol = 1)
     lengthclose = partial(isclose, abs_tol = atol)

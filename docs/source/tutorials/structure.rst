@@ -84,9 +84,9 @@ The :class:`Crystal` object provides some interfaces for easy structure manipula
 The :func:`len` of a :class:`Crystal` is the unit cell size (in number of atoms)::
 
     c = Crystal.from_pdb('1gzx') # hemoglobin
-    len(c) # 17536
+    len(c) 	                     `# 17536
 
-The :class:`Crystal` class is a set-like container; checking containership (with the builtin ``in`` statement) is very fast:
+The :class:`Crystal` class is a set-like container; checking containership (with the builtin ``in`` statement) is very fast::
 
 	graphite = Crystal.from_database('C')
 	carbon = next(iter(graphite))
@@ -144,10 +144,12 @@ The standard `three lengths and angles` description of a lattice is also accessi
 
 	a, b, c, alpha, beta, gamma = graphite.lattice_parameters
 
-The unit cell volume (and by extensions, density) is also accessible:
+The unit cell volume (and by extensions, density) is also accessible::
 
 	vol = graphite.volume	# Angstroms cubed
 	density = vol/len(graphite)
+
+As a lattice can be fully described by its basis vectors, a NumPy array can be created from a :class:`Lattice` instance.
 
 Space-group Information
 -----------------------
@@ -189,7 +191,7 @@ The conversion between Miller indices and scattering vectors is available::
 	from skued import Crystal
 	graphite = Crystal.from_database('C')
 
-    # Behavior inherited from Lattice superclass
+	# Behavior inherited from Lattice superclass
 	G = graphite.scattering_vector(1,0,0)
 	h, k, l = graphite.miller_indices(G) #1, 0, 0
 
@@ -236,7 +238,7 @@ The real-space position with respect to a :class:`Crystal` or :class:`Lattice` c
 
 	from skued import Crystal
 	graphite = Crystal.from_database('C')
-    
+	
     carbon = list(graphite)[-1]
     fractional = carbon.coords
     real = carbon.xyz(lattice = graphite)

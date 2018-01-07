@@ -78,9 +78,9 @@ class AtomicStructure(Base):
     def __repr__(self):
         return '<AtomicStructure instance with {} orphan atoms and {} substructures>'.format(len(self.atoms), len(self.substructures))
 
-    def __array__(self):
+    def __array__(self, *args, **kwargs):
         """ Returns an array in which each row represents an :class:`Atom` instance. Order is not guaranteed. """
-        arr = np.empty(shape = (len(self), 4), dtype = np.float)
+        arr = np.empty(shape = (len(self), 4), *args, **kwargs)
         for row, atm in enumerate(self):
             arr[row, 0] = atm.atomic_number
             arr[row, 1:] = atm.coords

@@ -39,7 +39,21 @@ class TestEuclidianLattice(unittest.TestCase):
         self.assertEqual(self.lattice, deepcopy(self.lattice))
         
         self.assertNotEqual(self.lattice, Lattice(2*np.eye(3)))
+
+class TestLatticeArray(unittest.TestCase):
     
+    def test_shape(self):
+        """ Test that array(Lattice(...)) is always 3x3 """
+        arr = np.random.random(size = (3,3))
+        lattice = Lattice(arr)
+        self.assertTrue(np.allclose(arr, np.array(lattice)))
+    
+    def test_dtype(self):
+        """ Test that the data-type of array(Lattice(...)) is respected """
+        arr = np.random.random(size = (3,3))
+        lattice = Lattice(arr)
+        self.assertTrue(np.array(lattice, dtype = np.int).dtype, np.int)
+
 class TestLatticeMeshes(unittest.TestCase):
 
     def test_frac_mesh(self):
