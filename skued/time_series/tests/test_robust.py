@@ -18,6 +18,12 @@ class TestMad(unittest.TestCase):
         explicit = np.abs(arr - np.median(arr))
 
         self.assertTrue(np.allclose(from_mad, explicit))
+    
+    def test_side_effects(self):
+        """ Test that input array is not modified by mad() """
+        arr = np.random.random(size = (32,))
+        arr.setflags(write = False)
+        mad(arr)
 
 if __name__ == '__main__':
     unittest.main()
