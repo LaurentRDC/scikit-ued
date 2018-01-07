@@ -6,7 +6,7 @@ from math import degrees, radians
 import numpy as np
 from numpy.linalg import norm
 
-from .. import Lattice, LatticeSystem, lattice_vectors_from_parameters, Crystal
+from .. import Lattice, LatticeSystem, Crystal
 from ... import rotation_matrix
 
 np.random.seed(23)
@@ -110,14 +110,14 @@ class TestLatticeParameters(unittest.TestCase):
 
     def test_orthorombic(self):
         """ alpha = beta = gamma = 90"""
-        a1, a2, a3 = lattice_vectors_from_parameters(2,1,5,90,90,90)
+        a1, a2, a3 = Lattice.from_parameters(2,1,5,90,90,90).lattice_vectors
         self.assertTrue(np.allclose(a1, [2,0,0]))
         self.assertTrue(np.allclose(a2, [0,1,0]))
         self.assertTrue(np.allclose(a3, [0,0,5]))
 
     def test_monoclinic(self):
         """ beta =\= 90 """
-        a1, a2, a3 = lattice_vectors_from_parameters(1,2,3, 90, 120, 90)
+        a1, a2, a3 = Lattice.from_parameters(1,2,3, 90, 120, 90).lattice_vectors
         
         with self.subTest('Lengths'):
             self.assertAlmostEqual(norm(a1), 1)
@@ -131,7 +131,7 @@ class TestLatticeParameters(unittest.TestCase):
 
     def test_triclinic(self):
         """ alpha, beta, gama =\= 90 """
-        a1, a2, a3 = lattice_vectors_from_parameters(1, 2, 3, 75, 40, 81)
+        a1, a2, a3 = Lattice.from_parameters(1, 2, 3, 75, 40, 81).lattice_vectors
 
         with self.subTest('Lengths'):
             self.assertAlmostEqual(norm(a1), 1)

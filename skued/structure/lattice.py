@@ -12,40 +12,7 @@ from npstreams import cyclic
 from .. import change_basis_mesh, transform
 from .base import Base
 
-e1, e2, e3 = np.eye(3) # Euclidian basis
-
-# TODO: Introduce conventions on ordering a, b, c and angles
-#       based on http://atztogo.github.io/spglib/definition.html
-def lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma):
-    """ 
-    Returns the lattice vectors from three lengths and angles.
-    
-    Parameters
-    ----------
-    a, b, c : float
-        Lengths of lattice vectors [Angstroms]
-    alpha, beta, gamma : float
-        Angles of lattice vectors [degrees]. 
-    
-    Returns
-    -------
-    a1, a2 a3 : `~numpy.ndarray`, shape (3,)
-        Lattice vectors
-    """
-    alpha, beta, gamma = map(radians, (alpha, beta, gamma))
-
-    a1 = a*e1
-    a2 = b * (cos(gamma)*e1 + sin(gamma)*e2)
-
-    # Determine a3 = c1 *e1 + c2 * e2 + c3 * e3
-    c1 = cos(beta)
-    c2 = cos(alpha)/sin(gamma) - cos(beta)/tan(gamma)
-    try:
-        c3 = sqrt(1 - c1**2 - c2**2)    #
-    except ValueError:
-        raise ValueError('Invalid lattice parameters')
-
-    return a1, a2, c*(c1*e1 + c2*e2 + c3*e3)    
+E1, E2, E3 = np.eye(3) # Euclidian basis
 
 class LatticeSystem(Enum):
     """
@@ -72,8 +39,8 @@ class Lattice(Base):
 
     Parameters
     ----------
-    lattice_vectors: iterable of `~numpy.ndarray`, shape (3,), optional
-        Lattice vectors. Default is a cartesian lattice.
+    lattice_vectors: iterable of `~numpy.ndarray`, shape (3,)
+        Lattice vectors.
     """
     def __init__(self, lattice_vectors, **kwargs):
         a1, a2, a3 = lattice_vectors
@@ -81,7 +48,7 @@ class Lattice(Base):
         self.a2 = np.asarray(a2, dtype = np.float) 
         self.a3 = np.asarray(a3, dtype = np.float)
         super().__init__(**kwargs)
-    
+
     def __repr__(self):
         return '< Lattice object. a1 : {} \n, a2 : {} \n, a3 : {}>'.format(self.a1, self.a2, self.a3)
 
@@ -93,23 +60,43 @@ class Lattice(Base):
             return np.allclose(self.lattice_vectors, other.lattice_vectors) and super().__eq__(other)
         return NotImplemented
 
+    # TODO: Introduce conventions on ordering a, b, c and angles
+    #       based on http://atztogo.github.io/spglib/definition.html
     @classmethod
     def from_parameters(cls, a, b, c, alpha, beta, gamma):
         """ 
-        Create a lattice instance from three lengths and angles.
+        Create a Lattice instance from three lengths and angles.
 
         Parameters
         ----------
         a, b, c : floats
-            Lattice vectors lengths [Angs]
+            Lattice vectors lengths [Å]
         alpha, beta, gamma : floats
             Angles between lattice vectors [deg]
+        
+        Raises
+        ------
+        ValueError : if lattice parameters are invalid.
         """
-        return cls(lattice_vectors = lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma))
+        alpha, beta, gamma = map(radians, (alpha, beta, gamma))
+
+        a1 = a*E1
+        a2 = b * (cos(gamma)*E1 + sin(gamma)*E2)
+
+        # Determine a3 = c1 *E1 + c2 * E2 + c3 * E3
+        c1 = cos(beta)
+        c2 = cos(alpha)/sin(gamma) - cos(beta)/tan(gamma)
+        try:
+            c3 = sqrt(1 - c1**2 - c2**2)    #
+        except ValueError:
+            raise ValueError('Invalid lattice parameters')
+        a3 = c*(c1*E1 + c2*E2 + c3*E3)
+
+        return cls(lattice_vectors = (a1, a2, a3) )
     
     @property
     def lattice_parameters(self):
-        """ Lattice parameters as three lengths [:math:`\AA`] and three angles [degrees]. """
+        """ Lattice parameters as three lengths [Å] and three angles [degrees]. """
         a, b, c = norm(self.a1), norm(self.a2), norm(self.a3)
         alpha = np.arccos(np.vdot(self.a2, self.a3)/(b*c))
         beta = np.arccos(np.vdot(self.a1, self.a3)/(a*c))
@@ -161,10 +148,10 @@ class Lattice(Base):
     def periodicity(self):
         """ Crystal periodicity in x, y and z direction from the lattice constants.
         This is effectively a bounding cube for the unit cell, which is itself a unit cell. """
-        e1, e2, e3 = np.eye(3)
-        per_x = sum( (abs(np.vdot(e1,a)) for a in self.lattice_vectors) )
-        per_y = sum( (abs(np.vdot(e2,a)) for a in self.lattice_vectors) )
-        per_z = sum( (abs(np.vdot(e3,a)) for a in self.lattice_vectors) )
+        E1, E2, E3 = np.eye(3)
+        per_x = sum( (abs(np.vdot(E1,a)) for a in self.lattice_vectors) )
+        per_y = sum( (abs(np.vdot(E2,a)) for a in self.lattice_vectors) )
+        per_z = sum( (abs(np.vdot(E3,a)) for a in self.lattice_vectors) )
         return per_x, per_y, per_z
 
     def scattering_vector(self, h, k, l):

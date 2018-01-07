@@ -6,7 +6,7 @@ from urllib.request import urlretrieve
 
 import numpy as np
 
-from . import Atom, ParseError, frac_coords, lattice_vectors_from_parameters
+from . import Atom, Lattice, ParseError, frac_coords
 
 
 def retrieve_pdb_file(pdb_code, download_dir = None, server = 'ftp://ftp.wwpdb.org', overwrite = False):
@@ -64,7 +64,7 @@ def retrieve_pdb_file(pdb_code, download_dir = None, server = 'ftp://ftp.wwpdb.o
 
 class PDBParser(object):
     """
-    Collection of methods that parses PDB files. Insipred from BioPython.PDB module.
+    Collection of methods that parses PDB files.
     
     Parameters
     ----------
@@ -106,7 +106,7 @@ class PDBParser(object):
             else:
                 raise ParseError('No CRYST1 line found')
 
-        return lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma)
+        return Lattice.from_parameters(a, b, c, alpha, beta, gamma).lattice_vectors
     
     def atoms(self):
         """

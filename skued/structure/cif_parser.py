@@ -17,7 +17,7 @@ import numpy as np
 from CifFile import ReadCif, get_number_with_esd
 from numpy.linalg import inv
 
-from . import Atom, ParseError, frac_coords, lattice_vectors_from_parameters
+from . import Atom, Lattice, ParseError, frac_coords
 from .. import affine_map, transform
 from .spg_data import HM2Hall, Number2Hall, SymOpsHall
 
@@ -166,7 +166,7 @@ class CIFParser:
         -------
         lv : list of ndarrays, shape (3,)
         """
-        return lattice_vectors_from_parameters(*self.lattice_parameters())
+        return Lattice.from_parameters(*self.lattice_parameters()).lattice_vectors
     
     def symmetry_operators(self):
         """
