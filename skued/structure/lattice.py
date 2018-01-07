@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from enum import Enum, auto
+from enum import Enum
 from functools import partial
 from itertools import repeat
 from math import cos, isclose, radians, sin, sqrt, tan
@@ -53,7 +53,7 @@ class LatticeSystem(Enum):
     
     Equivalent to Crystal family
     except that the hexagonal crystal family is split between 
-    the rhombohedral system and hexagonal system
+    the rhombohedral system and hexagonal system.
     """
     triclinic    = 1
     monoclinic   = 2
