@@ -40,8 +40,7 @@ def nfft(x, y, M, df = 1.0, eps = 1E-15):
     M : int
         Number of frequencies on which the transform is computed.
     df : float, optional
-        Frequency range. Frequencies will be evenly distributed
-        between ``-df/2`` and ``df/2``.
+        Frequency range.
     eps : float, optional
         The desired approximate error for the FFT result.
 
