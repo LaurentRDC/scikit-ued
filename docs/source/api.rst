@@ -99,6 +99,15 @@ Image alignment
     ialign
     diff_register
     shift_image
+
+Correlations
+------------
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+    
+    xcorr
     mnxc2
 
 Image masking

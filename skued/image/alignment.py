@@ -173,5 +173,7 @@ def diff_register(image, reference, mask = None):
 	center = np.mean(maxima, axis = 0)
 	
 	# Due to centering of mnxc2, +1 is required
+	# TODO: was this due to wrong output shape
+	# 		of mnxc2?
 	shift_row_col = center - np.array(xcorr.shape)/2  + 1
 	return -shift_row_col[::-1]	# Reversing to be compatible with shift_image

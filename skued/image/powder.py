@@ -36,10 +36,8 @@ def powder_center(image, mask = None):
 
 	shift = diff_register(image, np.rot90(image, k = 2), mask = mask * np.rot90(mask, k = 2))
 	midpoints = np.array([int(axis_size / 2) for axis_size in image.shape])
-	
-	# I have found that there is always a residual (0.5, 0.5)
-	center = shift[::-1]/2 + midpoints - np.array([0.5, 0.5])
-	return tuple(center)
+    
+	return tuple(shift[::-1]/2 + midpoints)
 
 def _angle_bounds(bounds):
     b1, b2 = bounds

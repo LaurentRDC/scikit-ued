@@ -17,7 +17,7 @@ from .eproperties import (electron_velocity, electron_wavelength,
 from .image import (align, azimuthal_average, combine_masks, diff_register,
                     ialign, isnr, mask_from_collection, mask_image, mnxc2,
                     nfold, powder_center, shift_image, snr_from_collection,
-                    triml, trimr)
+                    triml, trimr, xcorr)
 from .plot_utils import rgb_sweep, spectrum_colors
 from .simulation import (affe, bounded_reflections, electrostatic,
                          pelectrostatic, powdersim, structure_factor)
