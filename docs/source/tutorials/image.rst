@@ -52,7 +52,7 @@ All of this is taken care of in scikit-ued's :func:`diff_register` function. Let
 	fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize = (9,3))
 	ax1.imshow(ref, vmin = 0, vmax = 200)
 	ax2.imshow(im, vmin = 0, vmax = 200)
-	ax3.imshow(ref - im, cmap = 'RdBu_r')
+	ax3.imshow(ref - im, cmap = 'RdBu_r', vmin = -100, vmax = 100)
 
 	for ax in (ax1, ax2, ax3):
 		ax.get_xaxis().set_visible(False)
@@ -101,10 +101,10 @@ Let's look at the difference:
 	fig, ((ax1, ax2, ax3), (ax4, ax5, ax6)) = plt.subplots(nrows = 2, ncols = 3, figsize = (9,6))
 	ax1.imshow(ref, vmin = 0, vmax = 200)
 	ax2.imshow(im, vmin = 0, vmax = 200)
-	ax3.imshow(ref - im, cmap = 'RdBu_r')
+	ax3.imshow(ref - im, cmap = 'RdBu_r', vmin = -100, vmax = 100)
 	ax4.imshow(mask, vmin = 0, vmax = 1, cmap = 'binary')
 	ax5.imshow(shifted, vmin = 0, vmax = 200)
-	ax6.imshow(ref - shifted, cmap = 'RdBu_r')
+	ax6.imshow(ref - shifted, cmap = 'RdBu_r', vmin = -100, vmax = 100)
 
 	for ax in (ax1, ax2, ax3, ax4, ax5, ax6):
 		ax.get_xaxis().set_visible(False)
