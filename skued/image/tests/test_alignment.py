@@ -31,7 +31,7 @@ class TestDiffRegister(unittest.TestCase):
 			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
 		
 		with self.subTest('With random masks'):
-			m1 = np.random.choice([True, False], size = im.shape, p = [0.1, 0.9])
+			m1 = np.random.choice([True, False], size = im.shape, p = [0.05, 0.95])
 
 			shift = diff_register(im, im, m1, crop = True)
 			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
@@ -54,7 +54,7 @@ class TestDiffRegister(unittest.TestCase):
 			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
 		
 		with self.subTest('With random masks'):
-			m1 = np.random.choice([True, False], size = im.shape, p = [0.1, 0.9])
+			m1 = np.random.choice([True, False], size = im.shape, p = [0.05, 0.95])
 
 			shift = diff_register(im, im, m1, crop = False)
 			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
@@ -120,14 +120,32 @@ class TestIAlign(unittest.TestCase):
 		self.assertEqual(len(aligned), 5)
 		self.assertSequenceEqual(data.camera().shape, aligned[0].shape)
 		
-	def test_misaligned_canned_images(self):
+	def test_misaligned_canned_images_fast(self):
 		""" shift images from skimage.data by entire pixels.
 	   We don't expect perfect alignment."""
 		original = data.camera()
 		misaligned = [shift_image(original, (randint(-4, 4), randint(-4, 4))) 
 					  for _ in range(5)]
 
-		aligned = ialign(misaligned, reference = original)
+		aligned = ialign(misaligned, reference = original, fast = True)
+
+		# TODO: find a better figure-of-merit for alignment
+		for im in aligned:
+			# edge will be filled with zeros, we ignore
+			diff = np.abs(original[5:-5, 5:-5] - im[5:-5, 5:-5])
+
+			# Want less than 1% difference
+			percent_diff = np.sum(diff) / (diff.size * (original.max() - original.min()))
+			self.assertLess(percent_diff, 1)
+
+	def test_misaligned_canned_images_notfast(self):
+		""" shift images from skimage.data by entire pixels.
+	   We don't expect perfect alignment."""
+		original = data.camera()
+		misaligned = [shift_image(original, (randint(-4, 4), randint(-4, 4))) 
+					  for _ in range(5)]
+
+		aligned = ialign(misaligned, reference = original, fast = False)
 
 		# TODO: find a better figure-of-merit for alignment
 		for im in aligned:
@@ -181,13 +199,28 @@ class TestAlign(unittest.TestCase):
 		aligned = align(im, reference = im, fill_value = np.nan)
 		self.assertEqual(im.dtype, data.camera().dtype)
 
-	def test_misaligned_canned_images(self):
+	def test_misaligned_canned_images_fast(self):
 		""" shift images from skimage.data by entire pixels.
 	   	We don't expect perfect alignment."""
 		original = data.camera()
 		misaligned = shift_image(original, (randint(-4, 4), randint(-4, 4))) 
 
-		aligned = align(misaligned, reference = original)
+		aligned = align(misaligned, reference = original, fast = True)
+
+		# edge will be filled with zeros, we ignore
+		diff = np.abs(original[5:-5, 5:-5] - aligned[5:-5, 5:-5])
+
+		# Want less than 1% difference
+		percent_diff = np.sum(diff) / (diff.size * (original.max() - original.min()))
+		self.assertLess(percent_diff, 1)
+
+	def test_misaligned_canned_images_notfast(self):
+		""" shift images from skimage.data by entire pixels.
+	   	We don't expect perfect alignment."""
+		original = data.camera()
+		misaligned = shift_image(original, (randint(-4, 4), randint(-4, 4))) 
+
+		aligned = align(misaligned, reference = original, fast = False)
 
 		# edge will be filled with zeros, we ignore
 		diff = np.abs(original[5:-5, 5:-5] - aligned[5:-5, 5:-5])

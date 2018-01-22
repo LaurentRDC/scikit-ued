@@ -60,7 +60,7 @@ def shift_image(arr, shift, fill_value = 0):
 	output[dst_slices] = arr[src_slices]
 	return output
 
-def align(image, reference, mask = None, fill_value = 0.0):
+def align(image, reference, mask = None, fill_value = 0.0, fast = True):
 	"""
 	Align a diffraction image to a reference. Subpixel resolution available.
 
@@ -74,6 +74,9 @@ def align(image, reference, mask = None, fill_value = 0.0):
 		Mask that evaluates to True on invalid pixels of the array `image`.
 	fill_value : float, optional
 		Edges will be filled with `fill_value` after alignment.
+	fast : bool, optional
+		If True (default), alignment is done on images cropped to half
+		(one quarter area). Disable for small images, e.g. 256x256.
 	
 	Returns
 	-------
@@ -84,10 +87,10 @@ def align(image, reference, mask = None, fill_value = 0.0):
 	--------
 	ialign : generator of aligned images
 	"""
-	shift = diff_register(image, reference = reference, mask = mask)
+	shift = diff_register(image, reference = reference, mask = mask, crop = fast)
 	return shift_image(image, shift, fill_value = fill_value)
 
-def ialign(images, reference = None, mask = None, fill_value = 0.0):
+def ialign(images, reference = None, mask = None, fill_value = 0.0, fast = True):
 	"""
     Generator of aligned diffraction images.
 
@@ -103,6 +106,9 @@ def ialign(images, reference = None, mask = None, fill_value = 0.0):
         Mask that evaluates to True on invalid pixels.
     fill_value : float, optional
         Edges will be filled with `fill_value` after alignment.
+	fast : bool, optional
+		If True (default), alignment is done on images cropped to half
+		(one quarter area). Disable for small images, e.g. 256x256.
 
     Yields
     ------
@@ -119,7 +125,7 @@ def ialign(images, reference = None, mask = None, fill_value = 0.0):
 		reference = next(images)
 		yield reference
 
-	yield from map(partial(align, reference = reference, mask = mask, fill_value =  fill_value), images)
+	yield from map(partial(align, reference = reference, mask = mask, fill_value =  fill_value, fast = fast), images)
 
 
 def _crop_to_half(image, copy = False):
