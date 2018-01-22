@@ -129,7 +129,7 @@ def _crop_to_half(image, copy = False):
 # TODO: add option to upsample, akin to skimage.feature.register_translation
 #		Could this be done initially by zero-padding?
 #		See https://github.com/scikit-image/scikit-image/blob/master/skimage/feature/register_translation.py#L109
-def diff_register(image, reference, mask = None):
+def diff_register(image, reference, mask = None, crop = True, sigma = 5):
 	"""
 	Register translation of diffraction patterns by masked 
 	normalized cross-correlation.
@@ -142,6 +142,13 @@ def diff_register(image, reference, mask = None):
 		This is the reference image to which `image` will be aligned. 
 	mask : `~numpy.ndarray` or None, optional
 		Mask that evaluates to True on invalid pixels of the array `image`.
+	crop : bool, optional
+		If True (default), ``image`` and ``reference`` are cropped to one
+		quarter of their areas; this results in faster execution at the expense of 
+		precision. Disable for small images.
+	sigma : float or None, optional
+		Standard deviation for Gaussian kernel with which to smooth 
+		``image`` and ``reference``. If None, no smoothing is performed.
 	
 	Returns
 	-------
@@ -155,18 +162,20 @@ def diff_register(image, reference, mask = None):
 	"""
 	if mask is None:
 		mask = np.zeros_like(image, dtype = np.bool)
-
-	cropped = _crop_to_half(image, copy = True)
-	cropped_ref = _crop_to_half(reference, copy = True)
-	cropped_mask = _crop_to_half(mask, copy = True)
+	
+	if crop:
+		image = _crop_to_half(image, copy = True)
+		reference = _crop_to_half(reference, copy = True)
+		mask = _crop_to_half(mask, copy = True)
 
 	# Diffraction images register better with some filtering
-	cropped[:] = gaussian(cropped, 5, preserve_range = True)
-	cropped_ref[:] = gaussian(cropped_ref, 5, preserve_range = True)
+	if sigma:
+		image = gaussian(image, sigma, preserve_range = True)
+		reference = gaussian(reference, sigma, preserve_range = True)
 
 	# Contrary to Padfield, we do not have to crop out the edge
 	# since we are using the 'valid' correlation mode.
-	xcorr = mnxc2(cropped_ref, cropped, cropped_mask, mode = 'same')
+	xcorr = mnxc2(reference, image, mask, mode = 'same')
 
 	# Generalize to the average of multiple maxima
 	maxima = np.transpose(np.nonzero(xcorr == xcorr.max()))
@@ -175,5 +184,5 @@ def diff_register(image, reference, mask = None):
 	# Due to centering of mnxc2, +1 is required
 	# TODO: was this due to wrong output shape
 	# 		of mnxc2?
-	shift_row_col = center - np.array(xcorr.shape)/2  + 1
+	shift_row_col = center - np.array(xcorr.shape)/2 + 1
 	return -shift_row_col[::-1]	# Reversing to be compatible with shift_image

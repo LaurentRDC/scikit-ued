@@ -1,7 +1,7 @@
 numpy>= 1.12
 scipy>= 0.17
-scikit-image
+scikit-image >= 0.13
 pywavelets >=0.5.2
 npstreams >= 1.2.0
-spglib
-pycifrw
+spglib >= 1.10
+pycifrw >= 4

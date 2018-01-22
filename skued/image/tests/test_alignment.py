@@ -13,27 +13,50 @@ np.random.seed(23)
 
 class TestDiffRegister(unittest.TestCase):
 
-	def test_trivial_skimage_data(self):
+	def test_trivial_skimage_data_cropped(self):
 		""" Test that the translation between two identical images is (0,0), even
-		with added random noise and random masks """
+		with added random noise and random masks, with diff_register(..., crop = True) """
 
 		im = np.asfarray(data.camera())
 
 		with self.subTest('No noise'):
-			shift = diff_register(im, im)
+			shift = diff_register(im, im, crop = True)
 			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
 		
 		with self.subTest('With 5% noise'):
 			noise1 = 0.05 * im.max() * np.random.random(size = im.shape)
 			noise2 = 0.05 * im.max() * np.random.random(size = im.shape)
 
-			shift = diff_register(im + noise1, im + noise2)
+			shift = diff_register(im + noise1, im + noise2, crop = True)
 			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
 		
 		with self.subTest('With random masks'):
-			m1 = np.random.choice([True, False], size = im.shape)
+			m1 = np.random.choice([True, False], size = im.shape, p = [0.1, 0.9])
 
-			shift = diff_register(im, im, m1)
+			shift = diff_register(im, im, m1, crop = True)
+			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
+
+	def test_trivial_skimage_data_no_crop(self):
+		""" Test that the translation between two identical images is (0,0), even
+		with added random noise and random masks, with diff_register(..., crop = False) """
+
+		im = np.asfarray(data.camera())
+
+		with self.subTest('No noise'):
+			shift = diff_register(im, im, crop = False)
+			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
+		
+		with self.subTest('With 5% noise'):
+			noise1 = 0.05 * im.max() * np.random.random(size = im.shape)
+			noise2 = 0.05 * im.max() * np.random.random(size = im.shape)
+
+			shift = diff_register(im + noise1, im + noise2, crop = False)
+			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
+		
+		with self.subTest('With random masks'):
+			m1 = np.random.choice([True, False], size = im.shape, p = [0.1, 0.9])
+
+			shift = diff_register(im, im, m1, crop = False)
 			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
 	
 	def test_shifted_skimage_data(self):
@@ -65,6 +88,13 @@ class TestDiffRegister(unittest.TestCase):
 
 			shift = diff_register(im, im2, m1)
 			self.assertTrue(np.allclose(shift, -random_shift, atol = 1))
+		
+		with self.subTest('No crop with 10% noise'):
+			noise1 = 0.1 * im.max() * np.random.random(size = im.shape)
+			noise2 = 0.1 * im.max() * np.random.random(size = im.shape)
+
+			shift = diff_register(im + noise1, im2 + noise2, edge_mask, crop = False)
+			self.assertTrue(np.allclose(shift, -random_shift, atol = 1))
 	
 	def test_side_effects(self):
 		""" Test that arrays registered by diff_register are not modified """
@@ -76,7 +106,10 @@ class TestDiffRegister(unittest.TestCase):
 		for arr in (im1, im2, mask):
 			arr.setflags(write = False)
 		
-		shift = diff_register(im1, im2, mask)
+		shift = diff_register(im1, im2, mask, crop = True, sigma = 5)
+		shift = diff_register(im1, im2, mask, crop = False, sigma = 5)
+		shift = diff_register(im1, im2, mask, crop = True, sigma = None)
+		shift = diff_register(im1, im2, mask, crop = False, sigma = None)
 
 class TestIAlign(unittest.TestCase):
 
