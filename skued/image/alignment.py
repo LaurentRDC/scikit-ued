@@ -7,7 +7,10 @@ from functools import partial
 
 import numpy as np
 from scipy.ndimage import shift as subpixel_shift
+from skimage.feature import register_translation
 from skimage.filters import gaussian
+
+from npstreams import array_stream, peek
 
 from .correlation import mnxc2
 
@@ -60,6 +63,46 @@ def shift_image(arr, shift, fill_value = 0):
 	output[dst_slices] = arr[src_slices]
 	return output
 
+@array_stream
+def itrack_peak(images, row_slice = None, col_slice = None):
+    """
+    Generator function that tracks a diffraction peak in a stream of images.
+    
+    Parameters
+    ----------
+    images : iterable of array-like
+        Iterable of diffraction images. This function also supports generators.
+    row_slice : slice or None, optional
+        Slice object for which image rows to use. If None (default), all rows are used. 
+    col_slice : slice or None, optional
+        Slice object for which image columns to use. If None (default), all columns are used.
+    
+    Yields
+    ------
+    shift : 2-tuple of floats
+        [row, col] shifts of the peak with respect to the position of this peak
+        in the first image.
+    """
+	if row_slice is None:
+		row_slice = np.s_[:]
+	
+	if col_slice is None:
+		col_slice = np.s_[:]
+
+    first = next(images)
+    
+	# The shift between the first image and itself needs not
+	# be computed!
+    yield (0.0, 0.0)
+
+    ref = np.array(first[row_slice, col_slice], copy = True)
+    sub = np.empty_like(ref)
+
+    for image in images:
+        sub[:] = image[row_slice, col_slice]
+        shift, *_ = register_translation(ref, sub, upsample_factor = 5)
+        yield tuple(shift)
+
 def align(image, reference, mask = None, fill_value = 0.0, fast = True):
 	"""
 	Align a diffraction image to a reference. Subpixel resolution available.
@@ -90,6 +133,7 @@ def align(image, reference, mask = None, fill_value = 0.0, fast = True):
 	shift = diff_register(image, reference = reference, mask = mask, crop = fast)
 	return shift_image(image, shift, fill_value = fill_value)
 
+@array_stream
 def ialign(images, reference = None, mask = None, fill_value = 0.0, fast = True):
 	"""
     Generator of aligned diffraction images.

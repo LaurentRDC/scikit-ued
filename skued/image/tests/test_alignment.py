@@ -6,7 +6,7 @@ from skimage import data
 from skimage.filters import gaussian
 from skimage.transform import rotate
 
-from .. import shift_image, align, diff_register, ialign
+from .. import shift_image, align, diff_register, ialign, itrack_peak
 from .test_powder import circle_image
 
 np.random.seed(23)
@@ -210,6 +210,27 @@ class TestAlign(unittest.TestCase):
 		# Want less than 1% difference
 		percent_diff = np.sum(diff) / (diff.size * (original.max() - original.min()))
 		self.assertLess(percent_diff, 1)
+
+class TestItrackPeak(unittest.TestCase):
+
+    def test_trivial(self):
+        """ Test that shift is identically zero for images that are identical """
+        # Array prototype is just zeros
+        # with a 'peak' in the center
+        prototype = np.zeros(shape = (17, 17))
+        prototype[9,9] = 10
+        images = [np.array(prototype) for _ in range(20)]
+        shifts = itrack_peak(images, row_slice = np.s_[:], col_slice = np.s_[:])
+
+        for shift in shifts:
+            self.assertTupleEqual(shift, (0.0, 0.0))
+
+    def test_length(self):
+        """ Test that shifts yielded by itrack_peak are as numerous as the number of input pictures """
+        images = [np.random.random(size = (4,4)) for _ in range(20)]
+        shifts = list(itrack_peak(images, row_slice = np.s_[:], col_slice = np.s_[:]))
+
+        self.assertEqual(len(shifts), len(images))
 
 if __name__ == '__main__':
 	unittest.main()

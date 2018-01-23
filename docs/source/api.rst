@@ -99,6 +99,7 @@ Image alignment
     ialign
     diff_register
     shift_image
+    itrack_peak
 
 Correlations
 ------------
