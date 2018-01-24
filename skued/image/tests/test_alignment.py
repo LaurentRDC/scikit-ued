@@ -223,7 +223,7 @@ class TestItrackPeak(unittest.TestCase):
         shifts = itrack_peak(images, row_slice = np.s_[:], col_slice = np.s_[:])
 
         for shift in shifts:
-            self.assertTupleEqual(shift, (0.0, 0.0))
+            self.assertTrue(np.allclose(shift, (0.0, 0.0)))
 
     def test_length(self):
         """ Test that shifts yielded by itrack_peak are as numerous as the number of input pictures """
