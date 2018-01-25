@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+from datetime import datetime
 
 def mibheader(filepath, hoffset = 0):
     """ 
-    Get the first header of an MIB file 
+    Get an image header from a Merlin Image Binary file. 
     
     Parameters
     ----------
@@ -16,6 +17,20 @@ def mibheader(filepath, hoffset = 0):
     Returns
     -------
     header : dict
+        Header information. The following keys are available:
+
+        * ``'ID'`` : Detector identification
+        * ``'seq_num'`` : Image sequence number
+        * ``'offset'`` : Length of the header in bytes
+        * ``'nchips'`` :  Number of readout circuits used to build the sensor.
+        * ``'shape'`` : image shape tuple (width, height)
+        * ``'dtype'`` : resulting data-type.
+        * ``'timestamp'`` : epoch representation of the time-stamp, down to the micro-second
+
+    Notes
+    -----
+    Merlin Image Binary files can be composed of multiple images; in this case, the
+    file is composed of alternating image headers and binary data.
     """
     # First step : read small part of the header
     # to get the offset
@@ -28,7 +43,11 @@ def mibheader(filepath, hoffset = 0):
     header_items = header.decode('ascii').split(',')
 
     # TODO: more header items
-    header_ID, seq_num, data_offset, nchips, size_x, size_y, dtype_str, *_ = header_items
+    (header_ID, seq_num, data_offset, nchips, 
+     size_x, size_y, dtype_str, _, _, timestamp, *_) = header_items
+
+    # Parse the date
+    timestamp = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S.%f').timestamp()
 
     # Special case : dtype
     # For NumPy, U16 is unicode; unsigned 16-bit (2 bytes) integers is u2
@@ -41,11 +60,12 @@ def mibheader(filepath, hoffset = 0):
             'offset'   : int(data_offset),
             'nchips'   : int(nchips),
             'shape'    : ( int(size_x), int(size_y) ),
-            'dtype'    : dtype}
+            'dtype'    : dtype,
+            'timestamp': timestamp}
 
 def imibread(filepath):
     """
-    Generator of images contained in a Merlin Image Binary (MIB) file as NumPy arrays.
+    Generator of images contained in a Merlin Image Binary file as NumPy arrays.
 
     Parameters
     ----------
@@ -59,7 +79,7 @@ def imibread(filepath):
 
     See Also
     --------
-    mibread : Extract images from a MIB file as a monolithic array
+    mibread : Extract images from a MIB file as a dense NumPy array
     """
     coffset = 0         # current image offset (header + data)
 
