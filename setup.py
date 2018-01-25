@@ -42,6 +42,8 @@ PACKAGES = [BASE_PACKAGE + '.' + x for x in find_packages(os.path.join(base_path
 if BASE_PACKAGE not in PACKAGES:
     PACKAGES.append(BASE_PACKAGE)
 
+print(PACKAGES)
+
 def skued_test_suite():
     return TestLoader().discover('.')
 

@@ -149,6 +149,20 @@ Simulation
     pelectrostatic
     bounded_reflections
 
+============
+Input/Output
+============
+
+Merlin Image Binary (.mib) files:
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+
+    mibheader
+    mibread
+    imibread
+
 ==============
 Plot Utilities
 ==============
