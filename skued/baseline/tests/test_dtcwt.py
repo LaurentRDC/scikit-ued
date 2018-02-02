@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from ..dtcwt import (dtcwt, idtcwt, dt_max_level, dualtree_wavelet, 
-						dt_first_stage, 
-						ALL_QSHIFT, ALL_FIRST_STAGE, ALL_COMPLEX_WAV)
+						dt_first_stage, ALL_FIRST_STAGE, ALL_COMPLEX_WAV)
 
 import numpy as np
 import pywt
