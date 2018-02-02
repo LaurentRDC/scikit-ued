@@ -31,8 +31,14 @@ def _iterative_baseline(array, max_iter, mask, background_regions, axes, approx_
 	if mask is None:
 		mask = np.zeros_like(array, dtype = np.bool)
 	
-	signal = np.array(array, copy = True)
-	background = np.zeros_like(array, dtype = np.float)
+	# Preperation for loop
+	original_signal = np.array(array, copy = True)
+	signal = np.array(original_signal, copy = True)
+	background = np.zeros_like(signal, dtype = np.float)
+
+	background_negative  = np.empty_like(background, dtype = np.bool)
+	background_too_large = np.empty_like(background, dtype = np.bool)
+	signal_too_large     = np.empty_like(background, dtype = np.bool)
 	for i in range(max_iter):
 		
 		# Make sure the background values are equal to the original signal values in the
@@ -44,11 +50,17 @@ def _iterative_baseline(array, max_iter, mask, background_regions, axes, approx_
 		background[:] = approx_rec(signal)
 
 		# The baselien cannot physically be negative
-		background[background < 0] = 0
+		np.less(background, 0, out = background_negative)
+		background[background_negative] = 0
+
+		# The baseline cannot physically be larger than the original signal
+		np.greater_equal(background, original_signal, out = background_too_large)
+		background[background_too_large] = signal[background_too_large]
 		
 		# Modify the signal so it cannot be more than the background
 		# This reduces the influence of the peaks in the wavelet decomposition
-		signal[signal > background] = background[signal > background]
+		np.greater(signal, background, out = signal_too_large)
+		signal[signal_too_large] = background[signal_too_large]
 	
 	# The background should be identically 0 where the data points are invalid
 	background[mask] = 0 

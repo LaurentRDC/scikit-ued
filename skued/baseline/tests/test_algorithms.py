@@ -89,6 +89,20 @@ class TestbaselineDT(unittest.TestCase):
 		arr = np.zeros_like(self.arr)
 		self.assertTrue(np.allclose(arr, baseline_dt(arr, max_iter = 10, level = None)))
 	
+	def test_positive_baseline(self):
+		""" Test that the baseline is never negative """
+		arr = 10*np.random.random(size = (128,))
+		baseline = baseline_dt(arr, max_iter = 10)
+
+		self.assertTrue(np.all(np.greater_equal(baseline, 0)))
+
+	def test_baseline_limit(self):
+		""" Test that the baseline is never more than the original signal """
+		arr = 10*np.random.random(size = (128,))
+		baseline = baseline_dt(arr, max_iter = 10)
+		
+		self.assertTrue(np.all(np.greater_equal(arr, baseline)))
+	
 	def test_final_shape(self):
 		""" Test that baseline_dt returns an array of the same shape as input """
 		
