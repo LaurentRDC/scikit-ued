@@ -153,6 +153,17 @@ Simulation
 Input/Output
 ============
 
+General diffraction image I/O and plotting. Note that
+for :func:`diffshow`, the packages PyQtGraph and PyQt5 must be
+installed.
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+
+    diffread
+    diffshow
+
 Merlin Image Binary (.mib) files:
 
 .. autosummary::

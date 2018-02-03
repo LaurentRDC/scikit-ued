@@ -44,6 +44,8 @@ Optional dependencies
 While it is not strictly required, the fourier transform routines from ``pyfftw`` will be preferred If
 ``pyfftw`` is installed.
 
+For displaying diffraction images using the ``skued.diffshow`` function, PyQtGraph and PyQt5 are both required.
+
 Related projects
 ----------------
 
