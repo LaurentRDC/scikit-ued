@@ -18,12 +18,12 @@ else:
 def diffread(fname):
     """
     Load an image from a file. This function is a generalization
-    of scikit-image's ``imread`` function.
+    of scikit-image's ``imread`` function. ``Path`` objects are also supported.
 
     Parameters
     ----------
-    fname : str
-        Image file name, e.g. ``test.mib`` or ``test.jpg``.
+    fname : str or Path
+        Image file name, e.g. ``test.mib`` or ``test.jpg``. 
     
     Returns
     -------
@@ -40,6 +40,8 @@ def diffread(fname):
     Supported file formats are the same as Scikit-image, with
     the inclusion of Merlin Image Binary (.mib).
     """
+    fname = str(fname)  # In case of pathlib.Path
+
     if fname.endswith(('tiff', 'tif')):
         return tiffread(fname)
     elif fname.endswith('.mib'):
