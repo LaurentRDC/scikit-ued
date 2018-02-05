@@ -20,7 +20,7 @@ class TestPDBParser(unittest.TestCase):
         self.parser = PDBParser('1fbb', download_dir = 'test_cache')
     
     def test_fractional_atoms(self):
-        """ Test the CIFParser returns fractional atomic coordinates. """
+        """ Test the PDBParser returns fractional atomic coordinates. """
         for atm in self.parser.atoms():
             self.assertLessEqual(atm.coords.max(), 1)
             self.assertGreaterEqual(atm.coords.min(), 0)

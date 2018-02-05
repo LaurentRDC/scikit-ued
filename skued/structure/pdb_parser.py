@@ -62,7 +62,7 @@ def retrieve_pdb_file(pdb_code, download_dir = None, server = 'ftp://ftp.wwpdb.o
 
     return final_file
 
-class PDBParser(object):
+class PDBParser:
     """
     Collection of methods that parses PDB files.
     
