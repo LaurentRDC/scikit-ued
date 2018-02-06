@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import gzip
 import os
-from contextlib import AbstractContextManager
 from functools import lru_cache
 from urllib.request import urlretrieve
 
@@ -63,7 +62,7 @@ def retrieve_pdb_file(pdb_code, download_dir = None, server = 'ftp://ftp.wwpdb.o
 
     return final_file
 
-class PDBParser(AbstractContextManager):
+class PDBParser:
     """
     Collection of methods that parses PDB files. This object should be used as a context manager.
     
@@ -84,9 +83,11 @@ class PDBParser(AbstractContextManager):
                                      overwrite = overwrite)
         self._handle = open(filename, 'r')
     
+    def __enter__(self):
+        return self
+    
     def __exit__(self, *args, **kwargs):
         self._handle.close()
-        super().__exit__(*args, **kwargs)
     
     @property
     def filename(self):
