@@ -11,7 +11,6 @@ Contents
 
 * :ref:`dwt_baseline`
 * :ref:`dual_tree_baseline`
-* :ref:`denoising`
 
 Due to the high electron cross-section, background signals (or baseline) are
 much more of a problem for electron diffraction than equivalent X-ray experiments.
@@ -204,58 +203,5 @@ Here is a usage example for the data presented above::
 
 The :func:`baseline_dt` routine will usually be more accurate than its :func:`baseline_dwt` counterpart.
 However, :func:`baseline_dwt` can be applied to 1D and 2D data.
-
-.. _denoising:
-
-Bonus : Removing Hot Spots
-==========================
-
-An interesting use-case of baseline-removal is the removal of hot spots from images.
-
-Consider the following diffraction pattern:
-
-.. plot::
-
-	import matplotlib.pyplot as plt
-	from skued import diffread
-
-	im = diffread('hotspots.tif')
-	fig = plt.figure()
-	ax = fig.add_subplot(111)
-	ax.imshow(im, vmin = 0, vmax = 2e3)
-	ax.xaxis.set_visible(False)
-	ax.yaxis.set_visible(False)
-	plt.show()
-
-We can consider the image *without hotspots* as the baseline of the image *with hotspots* ::
-
-	from skued import diffread, baseline_dwt
-
-	im = diffread('hotspots.tif')
-	denoised = baseline_dwt(im, max_iter = 250, level = 1, wavelet = 'sym2', axis = (0, 1))
-
-The result is plotted below:
-
-.. plot::
-
-	import matplotlib.pyplot as plt
-	from skued import diffread, baseline_dwt
-
-	im = diffread('hotspots.tif')
-	denoised = baseline_dwt(im, max_iter = 250, level = 1, wavelet = 'sym2', axis = (0, 1))
-
-	fig, (ax1, ax2) = plt.subplots(1, 2)
-	ax1.imshow(im, vmin = 0, vmax = 2e3)
-	ax2.imshow(denoised, vmin = 0, vmax = 2e3)
-
-	for ax in (ax1, ax2):
-		ax.xaxis.set_visible(False)
-		ax.yaxis.set_visible(False)
-	plt.show()
-
-Try different combinations of wavelets, levels, and number of iterations (``max_iter``).
-
-Notice that the baseline-removal function used in the case of an image is :func:`baseline_dwt`, which works on 2D arrays.
-The same is not possible with :func:`baseline_dt`, which only works on 1D arrays at this time.
 
 :ref:`Return to Top <baseline_tutorial>`
