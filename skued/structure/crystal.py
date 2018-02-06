@@ -178,10 +178,10 @@ class Crystal(AtomicStructure, Lattice):
             Whether or not to overwrite files in cache if they exist. If no revision 
             number is provided, files will always be overwritten. 
         """
-        parser = PDBParser(ID = ID, download_dir = download_dir)
-        return cls(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
-                   lattice_vectors = parser.lattice_vectors(),
-                   source = str(parser.file))
+        with PDBParser(ID = ID, download_dir = download_dir) as parser:
+            return cls(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
+                       lattice_vectors = parser.lattice_vectors(),
+                       source = parser.filename)
     
     @classmethod
     def from_ase(cls, atoms):

@@ -16,21 +16,20 @@ filterwarnings('ignore', category = UserWarning)
 
 class TestPDBParser(unittest.TestCase):
 
-    def setUp(self):
-        self.parser = PDBParser('1fbb', download_dir = 'test_cache')
-    
     def test_fractional_atoms(self):
         """ Test the PDBParser returns fractional atomic coordinates. """
-        for atm in self.parser.atoms():
-            self.assertLessEqual(atm.coords.max(), 1)
-            self.assertGreaterEqual(atm.coords.min(), 0)
+        with PDBParser('1fbb', download_dir = 'test_cache') as parser:
+            for atm in parser.atoms():
+                self.assertLessEqual(atm.coords.max(), 1)
+                self.assertGreaterEqual(atm.coords.min(), 0)
         
     def test_symmetry_operators(self):
         """ Test that the non-translation part of the symmetry_operators is an invertible
         matrix of determinant 1 | -1 """
-        for sym_op in self.parser.symmetry_operators():
-            t = sym_op[:3,:3]
-            self.assertAlmostEqual(abs(np.linalg.det(t)), 1, places = 5)
+        with PDBParser('1fbb', download_dir = 'test_cache') as parser:
+            for sym_op in parser.symmetry_operators():
+                t = sym_op[:3,:3]
+                self.assertAlmostEqual(abs(np.linalg.det(t)), 1, places = 5)
 
 class TestCIFParser(unittest.TestCase):
     """ Test the CIFParser on all CIF files stored herein """
