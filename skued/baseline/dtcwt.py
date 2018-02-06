@@ -142,7 +142,7 @@ def idtcwt(coeffs, first_stage, wavelet, mode = 'constant', axis = -1):
 
 def dt_max_level(data, first_stage, wavelet, axis = -1):
     """
-    Returns the maximum decomposition level from the dual-tree complex wavelet transform.
+    Returns the maximum decomposition level possible from the dual-tree complex wavelet transform.
 
     Parameters
     ----------
@@ -159,6 +159,7 @@ def dt_max_level(data, first_stage, wavelet, axis = -1):
     Returns
     -------
     max_level : int
+        Maximum decomposition level.
     """
     real_wavelet, imag_wavelet = dualtree_wavelet(wavelet)
     return dwt_max_level(data_len = data.shape[axis], 
