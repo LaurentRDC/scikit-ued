@@ -3,8 +3,6 @@
 Image manipulation of powder diffraction
 ========================================
 """
-from warnings import warn
-
 import numpy as np
 
 from .alignment import diff_register
@@ -53,7 +51,7 @@ def _angle_bounds(bounds):
     
 def azimuthal_average(image, center, mask = None, angular_bounds = None):
     """
-    This function returns an angularly-averaged pattern computed from a diffraction pattern, 
+    This function returns an azimuthally-averaged pattern computed from an image, 
     e.g. polycrystalline diffraction.
 
     Parameters
@@ -73,12 +71,10 @@ def azimuthal_average(image, center, mask = None, angular_bounds = None):
     Returns
     -------
     radius : `~numpy.ndarray`, ndim 1
-        Radius of the average [px]. If ``mask`` is provided, ``radius`` might not start at one;
-        ``average`` is trimmed of leading invalid pixels.
+        Radius of the average [px].
     average : `~numpy.ndarray`, ndim 1
         Angular-average of the array.
     """
-    # TODO: error?
     if mask is None:
         mask = np.zeros_like(image, dtype = np.bool)
 
@@ -101,36 +97,8 @@ def azimuthal_average(image, center, mask = None, angular_bounds = None):
     valid = np.logical_not(mask)[in_bounds]
     image = image[in_bounds]
     Rint = Rint[in_bounds]
+    
+    px_bin = np.bincount(Rint, weights = valid*image)[1:]
+    r_bin = np.bincount(Rint, weights = valid)[1:]
 
-    px_bin = np.bincount(Rint, weights = valid*image)
-    r_bin = np.bincount(Rint, weights = valid)
-    radius = np.arange(0, r_bin.size)
-
-    # We ignore the leading and trailing zeroes, which could be due to
-    first, last = _trim_bounds(px_bin)
-    radial_intensity = px_bin[first:last]/r_bin[first:last]
-
-    # Error as the standard error in the mean, at each pixel
-    # Standard error = std / sqrt(N)
-    # std = sqrt(var - mean**2)
-    #if extras is not None:
-    #    var_bin = np.bincount(R, weights = image**2)[first:last]/r_bin[first:last]
-    #    radial_intensity_error = np.sqrt(var_bin - radial_intensity**2)/np.sqrt(r_bin[first:last])
-
-    return radius[first:last], radial_intensity
-
-def _trim_bounds(arr):
-    """ Returns the bounds which would be used in numpy.trim_zeros """
-    first = 0
-    for i in arr:
-        if i != 0.:
-            break
-        else:
-            first = first + 1
-    last = len(arr)
-    for i in arr[::-1]:
-        if i != 0.:
-            break
-        else:
-            last = last - 1
-    return first, last
+    return np.arange(0, r_bin.size), px_bin/ np.maximum(1, r_bin)

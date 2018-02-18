@@ -12,8 +12,6 @@ from npstreams import cyclic
 from .. import change_basis_mesh, transform
 from .base import Base
 
-E1, E2, E3 = np.eye(3) # Euclidian basis
-
 class LatticeSystem(Enum):
     """
     Lattice system enumeration. 
@@ -50,7 +48,7 @@ class Lattice(Base):
         super().__init__(**kwargs)
 
     def __repr__(self):
-        return '< Lattice object. a1 : {} \n, a2 : {} \n, a3 : {}>'.format(self.a1, self.a2, self.a3)
+        return '< Lattice object \n a1 : {} \n, a2 : {} \n, a3 : {}>'.format(self.a1, self.a2, self.a3)
 
     def __hash__(self):
         return hash(self.lattice_parameters) | super().__hash__()
@@ -64,8 +62,6 @@ class Lattice(Base):
         """ Returns a 3x3 float array in which each row is a lattice vector """
         return np.array(self.lattice_vectors, *args, **kwargs)
 
-    # TODO: Introduce conventions on ordering a, b, c and angles
-    #       based on http://atztogo.github.io/spglib/definition.html
     @classmethod
     def from_parameters(cls, a, b, c, alpha, beta, gamma):
         """ 
@@ -82,21 +78,7 @@ class Lattice(Base):
         ------
         ValueError : if lattice parameters are invalid.
         """
-        alpha, beta, gamma = map(radians, (alpha, beta, gamma))
-
-        a1 = a*E1
-        a2 = b * (cos(gamma)*E1 + sin(gamma)*E2)
-
-        # Determine a3 = c1 *E1 + c2 * E2 + c3 * E3
-        c1 = cos(beta)
-        c2 = cos(alpha)/sin(gamma) - cos(beta)/tan(gamma)
-        try:
-            c3 = sqrt(1 - c1**2 - c2**2)    #
-        except ValueError:
-            raise ValueError('Invalid lattice parameters')
-        a3 = c*(c1*E1 + c2*E2 + c3*E3)
-
-        return cls(lattice_vectors = (a1, a2, a3) )
+        return cls(lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma))
     
     @property
     def lattice_parameters(self):
@@ -110,7 +92,7 @@ class Lattice(Base):
     @property
     def lattice_system(self):
         """ One of the seven lattice system, returned in the form of the :class:`LatticeSystem` enumeration. """
-        return lattice_system(self, atol = 5e-2)
+        return lattice_system(*self.lattice_parameters, atol = 5e-2)
     
     @property
     def volume(self):
@@ -273,17 +255,47 @@ class Lattice(Base):
             self.a2 = transform(matrix, self.a2)
             self.a3 = transform(matrix, self.a3)
 
+# TODO: Introduce conventions on ordering a, b, c and angles
+#       based on http://atztogo.github.io/spglib/definition.html#def-idealize-cell
+def lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma):
+    """
+
+    Parameters
+    ----------
+    a, b, c : floats
+        Lattice vectors lengths [Å]
+    alpha, beta, gamma : floats
+        Angles between lattice vectors [deg]
+    """
+    e1, e2, e3 = np.eye(3) # Euclidian basis
+    alpha, beta, gamma = map(radians, (alpha, beta, gamma))
+
+    a1 = a*e1
+    a2 = b * (cos(gamma)*e1 + sin(gamma)*e2)
+
+    c1 = cos(beta)
+    c2 = cos(alpha)/sin(gamma) - cos(beta)/tan(gamma)
+    try:
+        c3 = sqrt(1 - c1**2 - c2**2)    #
+    except ValueError:
+        raise ValueError('Invalid lattice parameters')
+    a3 = c*(c1*e1 + c2*e2 + c3*e3)
+
+    return a1, a2, a3
+
 # TODO: also determine body-centered, primitive, face-centered, etc.
 #       https://en.wikipedia.org/wiki/Bravais_lattice#Bravais_lattices_in_3_dimensions
-def lattice_system(lattice, atol = 1e-2):
+def lattice_system(a, b, c, alpha, beta, gamma, atol = 1e-2):
     """
     Determine the lattice system. All cyclic permutations are checked,
     so that no convention on ordering of lattice parameters is assumed.
 
     Parameters
     ----------
-    lattice : Lattice
-        Lattice instance or subclass.
+    a, b, c : floats
+        Lattice vectors lengths [Å]
+    alpha, beta, gamma : floats
+        Angles between lattice vectors [deg]
     atol : float, optional
         Absolute tolerance (in Angstroms)
     
@@ -292,11 +304,10 @@ def lattice_system(lattice, atol = 1e-2):
     system : LatticeSystem
         One of the seven lattice system.
     """
+    lengths, angles = (a, b, c), (alpha, beta, gamma)
+
     angleclose = partial(isclose, abs_tol = 1)
     lengthclose = partial(isclose, abs_tol = atol)
-
-    a, b, c, alpha, beta, gamma = lattice.lattice_parameters
-    lengths, angles = (a, b, c), (alpha, beta, gamma)
 
     lengths_equal = all(lengthclose(length, a) for length in lengths)
     angles_equal = all(angleclose(angle, alpha) for angle in angles)

@@ -118,28 +118,6 @@ class TestAzimuthalAverage(unittest.TestCase):
 
         self.assertEqual(intensity.max(), image.max())
         self.assertSequenceEqual(radius.shape, intensity.shape)
-    
-    def test_trim_and_mask(self):
-        """ Test that regions that only have masks contributions are not present
-        in the angular average """
-        image = np.ones(shape = (256, 256), dtype = np.float)
-        center = (image.shape[0]/2, image.shape[1]/2)
-        xc, yc = center
-
-        # Create an image with a wide ring
-        extent = np.arange(0, image.shape[0])
-        xx, yy = np.meshgrid(extent, extent)
-        rr = np.hypot(xx - xc, yy - yc)
-
-        mask = np.zeros_like(image, dtype = np.bool)
-        mask[rr < 20] = True
-        #image[rr < 20] = 0
-
-        radius, intensity = azimuthal_average(image, center)
-        self.assertEqual(radius.min(), 0)
-
-        radius_trimmed, intensity_trimmed = azimuthal_average(image, center, mask = mask)
-        self.assertEqual(radius_trimmed.min(), 20)
 
 if __name__ == '__main__':
     unittest.main()
