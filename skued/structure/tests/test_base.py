@@ -2,6 +2,7 @@
 import pickle
 import unittest
 from copy import deepcopy
+import collections.abc as abc
 
 import numpy as np
 
@@ -51,6 +52,11 @@ class TestAtomicStructure(unittest.TestCase):
         pickled = pickle.dumps(self.structure)
         unpickled = pickle.loads(pickled)
         self.assertEqual(self.structure, unpickled)
+    
+    def test_abstract_base_classes(self):
+        """ Test that AtomicStructure fits with collections.abc module """
+        for abstract_base_class in (abc.Hashable, abc.Iterable, abc.Sized, abc.Collection):
+            self.assertIsInstance(self.structure, abstract_base_class)
 
 if __name__ == '__main__':
     unittest.main()
