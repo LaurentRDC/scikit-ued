@@ -55,7 +55,7 @@ class TestAtomicStructure(unittest.TestCase):
     
     def test_abstract_base_classes(self):
         """ Test that AtomicStructure fits with collections.abc module """
-        for abstract_base_class in (abc.Hashable, abc.Iterable, abc.Sized, abc.Collection):
+        for abstract_base_class in (abc.Hashable, abc.Iterable, abc.Sized):
             self.assertIsInstance(self.structure, abstract_base_class)
 
 if __name__ == '__main__':
