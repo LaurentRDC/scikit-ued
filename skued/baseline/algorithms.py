@@ -245,8 +245,7 @@ def _dwt_approx_rec2(array, level, wavelet, mode, axis):
 	return reconstructed
 
 def baseline_dt(array, max_iter, level = None, first_stage = 'sym6', wavelet = 'qshift1', 
-				background_regions = [], mask = None, mode = 'constant', axis = -1,
-				nonnegative = True):
+				background_regions = [], mask = None, mode = 'constant', axis = -1):
 	"""
 	Iterative method of baseline-determination based on the dual-tree complex wavelet transform.
 	This function only works in 1D, along an axis. For baseline of 2D arrays, see :func:`baseline_dwt`.
