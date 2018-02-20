@@ -4,38 +4,43 @@ Image manipulation of powder diffraction
 ========================================
 """
 import numpy as np
+from functools import partial
 
 from .alignment import diff_register
 
+flip = partial(np.rot90, k = 2)
 
 def powder_center(image, mask = None):
-	"""
-	Finds the center of a powder diffraction pattern by comparing the
-	correlation between the input and its image.
+    """
+    Finds the center of a powder diffraction pattern by comparing the
+    correlation between the input and its image.
 
-	Parameters  
-	----------
-	image : `~numpy.ndarray`, ndim 2
-		Image of a powder pattern
-	mask : `~numpy.ndarray` or None, optional
-		Mask of `image`. The mask should evaluate to `True`
-		(or 1) on invalid pixels. If None (default), no mask
-		is used.
+    Parameters  
+    ----------
+    image : `~numpy.ndarray`, ndim 2
+        Image of a powder pattern
+    mask : `~numpy.ndarray` or None, optional
+        Mask of `image`. The mask should evaluate to `True`
+        (or 1) on invalid pixels. If None (default), no mask
+        is used.
 
-	Returns
-	-------
-	center : 2-tuple
-		Center of the powder pattern. The center is returned in the format
-		relevant for array manipulations (center = [row, column] instead of 
-		center = [x,y]).
-	"""
-	if mask is None:
-		mask = np.zeros_like(image, dtype = np.bool)
+    Returns
+    -------
+    center : 2-tuple
+        Center of the powder pattern. The center is returned in the format
+        relevant for array manipulations (center = [row, column] instead of 
+        center = [x,y]).
+    """
+    if mask is None:
+        mask = np.zeros_like(image, dtype = np.bool)
+    mask = np.asarray(mask, dtype = np.bool)
 
-	shift = diff_register(image, np.rot90(image, k = 2), mask = mask * np.rot90(mask, k = 2))
-	midpoints = np.array([int(axis_size / 2) for axis_size in image.shape])
-    
-	return tuple(shift[::-1]/2 + midpoints)
+    composite_mask = np.logical_or(mask, flip(mask))
+
+    shift = diff_register(image, flip(image), mask = composite_mask)
+    midpoints = np.array([int(axis_size / 2) for axis_size in image.shape])
+
+    return tuple(shift[::-1]/2 + midpoints)
 
 def _angle_bounds(bounds):
     b1, b2 = bounds
