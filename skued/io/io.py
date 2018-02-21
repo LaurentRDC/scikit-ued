@@ -15,8 +15,6 @@ else:
     os.environ['PYQTGRAPH_QT_LIB'] = 'PyQt5'
     from PyQt5.QtWidgets import QApplication
 
-    pg.setConfigOption('imageAxisOrder', 'row-major')
-
 def diffread(fname):
     """
     Load an image from a file. This function is a generalization
