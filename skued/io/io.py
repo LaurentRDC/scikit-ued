@@ -15,6 +15,8 @@ else:
     os.environ['PYQTGRAPH_QT_LIB'] = 'PyQt5'
     from PyQt5.QtWidgets import QApplication
 
+    pg.setConfigOption('imageAxisOrder', 'row-major')
+
 def diffread(fname):
     """
     Load an image from a file. This function is a generalization
@@ -49,18 +51,17 @@ def diffread(fname):
     else:
         return skread(fname, as_grey = True)
 
-def diffshow(fname, colormap = None):
+def diffshow(image):
     """ 
-    Display an image in an interactive window. This allows for better contrast management
-    than with Matplotlib. 
+    Display an image (from an array or from a file) in an interactive window.
 
     This function requires PyQtGraph and PyQt5 to be importable. These
     are optional dependencies.
 
     Parameters
     ----------
-    fname : str
-        Image file name, e.g. ``test.mib`` or ``test.jpg``.
+    image : str or array-like
+        Image file name or array-like. 
     
     Raises
     ------
@@ -73,10 +74,13 @@ def diffshow(fname, colormap = None):
     """
     if not WITH_PYQTGRAPH:
         raise ImportError('PyQtGraph is not installed')
-    
+
+    if isinstance(image, str):
+        image = diffread(image)
+
     app = QApplication([])
     viewer = pg.ImageView()
-    viewer.setImage(diffread(fname))
+    viewer.setImage(image)
     viewer.setWindowTitle('Scikit-UED Diffraction Viewer')
     viewer.show()
     app.exec_()
