@@ -54,7 +54,7 @@ def _angle_bounds(bounds):
         b2 -= 360
     return tuple(sorted((b1, b2)))
     
-def azimuthal_average(image, center, mask = None, angular_bounds = None):
+def azimuthal_average(image, center, mask = None, angular_bounds = None, trim = True):
     """
     This function returns an azimuthally-averaged pattern computed from an image, 
     e.g. polycrystalline diffraction.
@@ -72,11 +72,13 @@ def azimuthal_average(image, center, mask = None, angular_bounds = None):
         (inclusively) will be used for the average. Angle bounds are specified in degrees.
         0 degrees is defined as the positive x-axis. Angle bounds outside [0, 360) are mapped back
         to [0, 360).
+    trim : bool, optional
+        If True, leading and trailing zeros (possible due to the usage of masks) are trimmed.
 
     Returns
     -------
     radius : `~numpy.ndarray`, ndim 1
-        Radius of the average [px].
+        Radius of the average [px]. ``radius`` might not start at zero, depending on the ``trim`` parameter.
     average : `~numpy.ndarray`, ndim 1
         Angular-average of the array.
     """
@@ -102,8 +104,33 @@ def azimuthal_average(image, center, mask = None, angular_bounds = None):
     valid = np.logical_not(mask)[in_bounds]
     image = image[in_bounds]
     Rint = Rint[in_bounds]
-    
-    px_bin = np.bincount(Rint, weights = valid*image)[1:]
-    r_bin = np.bincount(Rint, weights = valid)[1:]
 
-    return np.arange(0, r_bin.size), px_bin/ np.maximum(1, r_bin)
+    px_bin = np.bincount(Rint, weights = valid*image)
+    r_bin = np.bincount(Rint, weights = valid)
+    radius = np.arange(0, r_bin.size)
+
+    # Make sure r_bin is never 0 since it it used for division anyway
+    np.maximum(r_bin, 1, out = r_bin)
+
+    # We ignore the leading and trailing zeroes, which could be due to
+    first, last = 0, -1
+    if trim:
+        first, last = _trim_bounds(px_bin)
+
+    return radius[first:last], px_bin[first:last]/r_bin[first:last]
+
+def _trim_bounds(arr):
+    """ Returns the bounds which would be used in numpy.trim_zeros """
+    first = 0
+    for i in arr:
+        if i != 0.:
+            break
+        else:
+            first = first + 1
+    last = len(arr)
+    for i in arr[::-1]:
+        if i != 0.:
+            break
+        else:
+            last = last - 1
+    return first, last
