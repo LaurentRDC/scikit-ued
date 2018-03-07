@@ -87,6 +87,7 @@ Polycrystalline diffraction
 
     azimuthal_average
     powder_center
+    calibrate_scattvector
 
 Image alignment
 ---------------

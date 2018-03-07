@@ -134,3 +134,50 @@ def _trim_bounds(arr):
         else:
             last = last - 1
     return first, last
+
+def hypot(*args):
+    """ Generalized np.hypot """
+    return np.sqrt(np.sum(np.square(args)))
+
+def calibrate_scattvector(I, crystal, peak_indices, miller_indices):
+    """
+    Determine the scattering vector q corresponding to a polycrystalline diffraction pattern
+    and a known crystal structure.
+
+    Parameters
+    ----------
+    I : `~numpy.ndarray`, ndim 1
+        Polycristalline diffraction pattern. It is assumed that the diffraction
+        pattern is defined on an equidistant grid.
+    crystal : skued.Crystal instance
+        Crystal that gave rise to the diffraction pattern ``I``.
+    peak_indices : 2-tuple of ints
+        Array index location of two diffraction peaks in the array ``I``. For best
+        results, peaks should be well-separated.
+    miller_indices : iterable of 3-tuples
+        Indices associated with the peaks of ``peak_indices``.
+        E.g. ``indices = [(2,2,0), (-3,0,2)]
+
+    Returns
+    -------
+    q : `~numpy.ndarray`, ndim 1
+        Scattering vectors associated with the intensity profile ``I``.
+    
+    Raises
+    ------
+    ValueError : if ``I`` is not a 1D diffraction pattern.
+    """
+    I = np.asarray(I)
+
+    if I.ndim > 1:
+        raise ValueError('Expected 1D diffraction intensity, but received shape {}'.format(I.shape))
+
+    hkl1, hkl2 = miller_indices
+    q1 = hypot(*crystal.scattering_vector(*hkl1))
+    q2 = hypot(*crystal.scattering_vector(*hkl2))
+
+    # calibration is done by fitting a line
+    # Expecting that I is defined on an 
+    # equally-spaced grid [0, 1, ..., I.size]
+    slope, intercept = np.polyfit(np.asarray(peak_indices), np.asarray([q1, q2]), deg = 1)
+    return slope * np.arange(0, I.size) + intercept
