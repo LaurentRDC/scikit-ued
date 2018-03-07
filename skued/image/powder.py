@@ -156,7 +156,7 @@ def calibrate_scattvector(I, crystal, peak_indices, miller_indices):
         results, peaks should be well-separated.
     miller_indices : iterable of 3-tuples
         Indices associated with the peaks of ``peak_indices``.
-        E.g. ``indices = [(2,2,0), (-3,0,2)]
+        E.g. ``indices = [(2,2,0), (-3,0,2)]``
 
     Returns
     -------
