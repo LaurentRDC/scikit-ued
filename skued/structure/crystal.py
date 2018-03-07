@@ -85,7 +85,17 @@ class Crystal(AtomicStructure, Lattice):
         return hash((self.source,)) | super().__hash__()
     
     def __repr__(self):
-        return '< Crystal object with unit cell of {} atoms. Source: {} >'.format(len(self), self.source or 'N/A')
+        """ Verbose string representation of this Crystal. """
+        rep = '< Crystal object with following unit cell: \n'
+
+        # Sort atoms by their chemical symbol
+        # Note that repr(Atom(...)) includes these '< ... >'
+        # We remove those for cleaner string representation
+        sorted_atoms = sorted(iter(self), key = lambda atm : atm.element)
+        for atm in sorted_atoms:
+            rep += '    ' + repr(atm).replace('<', '').replace('>', '').strip() + '\n'
+
+        return rep + 'Source: \n    {} >'.format(self.source or 'N/A')
 
     @classmethod
     @lru_cache(maxsize = len(builtins), typed = True) # saves a lot of time in tests

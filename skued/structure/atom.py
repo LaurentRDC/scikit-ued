@@ -81,8 +81,7 @@ class Atom(object):
         self.magmom = magmom
         
     def __repr__(self):
-        name = ELEM_TO_NAME[self.element]
-        return "< {} atom at coordinates ({:.3f}, {:.3f}, {:.3f}) >".format(ELEM_TO_NAME[self.element], *tuple(self.coords))
+        return "< Atom {:<2} @ ({:.2f}, {:.2f}, {:.2f}) >".format(self.element, *tuple(self.coords))
     
     # TODO: add `distance_from` function for atoms on a lattice
     def __sub__(self, other):
