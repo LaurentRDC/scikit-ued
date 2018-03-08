@@ -30,7 +30,6 @@ with open(os.path.join(base_path, BASE_PACKAGE, '__init__.py')) as f:
     VERSION = re.compile(r'.*__version__ = \'(.*?)\'', re.S).match(module_content).group(1)
     LICENSE = re.compile(r'.*__license__ = \'(.*?)\'', re.S).match(module_content).group(1)
 
-
 with open('README.rst') as f:
     README = f.read()
 
@@ -59,21 +58,30 @@ if __name__ == '__main__':
         maintainer = AUTHOR,
         maintainer_email = AUTHOR_EMAIL,
         install_requires = REQUIREMENTS,
-        keywords = ['skued'],
+        keywords = 'ultrafast electron diffraction',
+        project_urls = {
+            'Documentation' : 'http://scikit-ued.readthedocs.io/en/master/',
+            'Source'        : 'https://github.com/LaurentRDC/scikit-ued',
+        },
+        python_requires = '>=3.5',
         packages = PACKAGES,
         data_files = [('skued\\baseline\\data', WAVELET_FILES),
                       ('skued\\structure\\cifs', CIF_FILES)],
         include_package_data = True,
         zip_safe = False,
         test_suite = 'setup.skued_test_suite', 
+
+        # list of possible classifiers:
+        #  https://pypi.python.org/pypi?%3Aaction=list_classifiers
         classifiers = ['Environment :: Console',
+                       'Development Status :: 4 - Beta',
                        'Intended Audience :: Science/Research',
-                       'Topic :: Scientific/Engineering',
-                       'Topic :: Scientific/Engineering :: Physics',
                        'License :: OSI Approved :: MIT License',
                        'Natural Language :: English',
                        'Operating System :: OS Independent',
                        'Programming Language :: Python',
                        'Programming Language :: Python :: 3.5',
-                       'Programming Language :: Python :: 3.6']
+                       'Programming Language :: Python :: 3.6',
+                       'Topic :: Scientific/Engineering',
+                       'Topic :: Scientific/Engineering :: Physics',]
     )
