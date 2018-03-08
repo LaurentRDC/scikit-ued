@@ -60,8 +60,6 @@ class TestBaselineDWT(unittest.TestCase):
 		baseline_axis = baseline_dwt(block, max_iter = 50, axis = 1)
 
 		self.assertTrue(np.allclose(baseline_axis, baseline_iterated))
-	
-
 
 class TestbaselineDT(unittest.TestCase):
 	def setUp(self):
@@ -139,6 +137,24 @@ class TestbaselineDT(unittest.TestCase):
 		baseline_axis = baseline_dt(block, max_iter = 50, axis = 1)
 
 		self.assertTrue(np.allclose(baseline_axis, baseline_iterated))
+	
+	def test_background_regions(self):
+		""" Test that background_regions is used correctly along certain axes """
+		block = np.random.random(size = (21, 51))
+
+		baseline_params = {'max_iter': 50,
+						   'background_regions': [(..., range(0, 3))]}
+
+		# Iterate over rows
+		baseline_iterated = np.empty_like(block)
+		for index, row in enumerate(block):
+			baseline_iterated[index, :] = baseline_dt(row, **baseline_params)
+
+		# along axis
+		baseline_axis = baseline_dt(block, axis = 1, **baseline_params)
+
+		self.assertTrue(np.allclose(baseline_axis, baseline_iterated))
+
 
 if __name__ == '__main__':
     unittest.main()
