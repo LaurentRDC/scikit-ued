@@ -208,7 +208,7 @@ class Crystal(AtomicStructure, Lattice):
                    lattice_vectors = lattice_vectors)
     
     # TODO: test against known XYZ file
-    def write_xyz(self, fname, comment = ''):
+    def write_xyz(self, fname, comment = None):
         """
         Generate an atomic coordinates .xyz file from a crystal structure.
 
@@ -222,6 +222,7 @@ class Crystal(AtomicStructure, Lattice):
         """
         # Format is specified here:
         #   http://openbabel.org/wiki/XYZ_%28format%29
+        comment = comment or ''
         atom_format_str = '  {:<2}       {:10.5f}       {:10.5f}       {:10.5f}'
 
         with open(fname, 'wt', encoding = 'ascii') as file:
@@ -353,18 +354,19 @@ class Crystal(AtomicStructure, Lattice):
                                        angle_tolerance = angle_tolerance)
 
         if dataset: 
-            info = dict()
-            info.update( {'international_symbol': dataset['international'],
-                          'hall_symbol': dataset['hall'],
-                          'international_number': dataset['number'],
-                          'hall_number': dataset['hall_number']} )
-            
-            spg_type = get_spacegroup_type(info['hall_number'])
-            info.update( {'international_full': spg_type['international_full'],
-                          'pointgroup': spg_type['pointgroup_international']} )
+            spg_type = get_spacegroup_type(dataset['hall_number'])
 
-        err_msg = get_error_message()
-        if (err_msg != 'no error'):
-            raise RuntimeError('Symmetry-determination has returned the following error: {}'.format(err_msg))
-        else:
+            info = {'international_symbol': dataset['international'],
+                    'hall_symbol'         : dataset['hall'],
+                    'international_number': dataset['number'],
+                    'hall_number'         : dataset['hall_number'],
+                    'international_full'  : spg_type['international_full'],
+                    'pointgroup'          : spg_type['pointgroup_international']} 
+
+            err_msg = get_error_message()
+            if (err_msg != 'no error'):
+                raise RuntimeError('Symmetry-determination has returned the following error: {}'.format(err_msg))
+            
             return info
+        
+        return None

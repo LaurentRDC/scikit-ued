@@ -58,7 +58,7 @@ class AtomicStructure(Base):
         Parameters
         ----------
         key : callable or None, optional 
-            Function or one argument that is used to extract a comparison key for an :class:`Atom` instance.
+            Function of one argument that is used to extract a comparison key for an :class:`Atom` instance.
         reverse : bool, optional
             If True, elements are yielded in reverse order.
         
