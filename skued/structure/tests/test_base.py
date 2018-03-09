@@ -21,6 +21,13 @@ class TestAtomicStructure(unittest.TestCase):
         elements = [atm.element for atm in self.structure]
         self.assertTrue(len(elements), 3)
     
+    def test_itersorted(self):
+        """ Test that AtomicStructure.itersorted() works as expected """
+        sorted_from_structure = list(self.structure.itersorted())
+        sorted_from_list      = list(sorted(self.structure, key = lambda a: a.element))
+
+        self.assertListEqual(sorted_from_structure, sorted_from_list)
+    
     def test_length(self):
         """ Test the __len__ methods """
         self.assertTrue(len(self.structure), 3)

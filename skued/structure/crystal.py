@@ -91,8 +91,7 @@ class Crystal(AtomicStructure, Lattice):
         # Sort atoms by their chemical symbol
         # Note that repr(Atom(...)) includes these '< ... >'
         # We remove those for cleaner string representation
-        sorted_atoms = sorted(iter(self), key = lambda atm : atm.element)
-        for atm in sorted_atoms:
+        for atm in self.itersorted():
             rep += '    ' + repr(atm).replace('<', '').replace('>', '').strip() + '\n'
 
         return rep + 'Source: \n    {} >'.format(self.source or 'N/A')
@@ -235,7 +234,7 @@ class Crystal(AtomicStructure, Lattice):
             # Write atomic data row-by-row
             # For easier human readability, atoms are sorted
             # by element
-            for atom in sorted(self, key = lambda a: a.element):
+            for atom in self.itersorted():
                 row = atom_format_str.format(atom.element, *atom.xyz(self))
                 file.write(row + '\n')
 

@@ -16,4 +16,3 @@ from .pdb_parser import PDBParser
 from .spg_data import Hall2Number
 from .cif_parser import CIFParser
 from .crystal import Crystal, symmetry_expansion
-from .xyz_writer import write_xyz

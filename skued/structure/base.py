@@ -50,6 +50,25 @@ class AtomicStructure(Base):
         recursively. Order is not guaranteed. """
         yield from iter(self.atoms)
         yield from chain(*self.substructures)
+    
+    def itersorted(self, *, key = None, reverse = False):
+        """ 
+        Yields :class:`Atom` in sorted order. By default, atoms are sorted by element. 
+
+        Parameters
+        ----------
+        key : callable or None, optional 
+            Function or one argument that is used to extract a comparison key for an :class:`Atom` instance.
+        reverse : bool, optional
+            If True, elements are yielded in reverse order.
+        
+        Yields
+        ------
+        atm : skued.Atom 
+        """
+        if key is None:
+            key = lambda atm: atm.element
+        yield from sorted(iter(self), key = key, reverse = reverse)
 
     def __contains__(self, item):
         """ Check containership of :class:`Atom` instances or :class:`AtomicStructure` substructures recursively."""
