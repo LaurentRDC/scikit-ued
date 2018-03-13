@@ -96,9 +96,23 @@ class AtomicStructure(Base):
                     set(self.substructures) == set(other.substructures) and
                     super().__eq__(other))
         return NotImplemented
-    
+
     def __repr__(self):
-        return '<AtomicStructure instance with {} orphan atoms and {} substructures>'.format(len(self.atoms), len(self.substructures))
+        """ Verbose string representation of this AtomicStructure. """
+        rep = '< AtomicStructure object with following orphan atoms:'
+
+        # Sort atoms by their chemical symbol
+        # Note that repr(Atom(...)) includes these '< ... >'
+        # We remove those for cleaner string representation
+        for atm in self.atoms:
+            rep += '\n    ' + repr(atm).replace('<', '').replace('>', '').strip()
+
+        if self.substructures:
+            rep += 'and the following substructures:'
+            for struct in self.substructures:
+                rep += '\n' + repr(struct)
+        
+        return rep + ' >'
 
     def __array__(self, *args, **kwargs):
         """ Returns an array in which each row represents an :class:`Atom` instance. Order is not guaranteed. """

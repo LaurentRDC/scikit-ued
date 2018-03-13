@@ -81,20 +81,17 @@ class Crystal(AtomicStructure, Lattice):
         super().__init__(atoms = unitcell, lattice_vectors = lattice_vectors, **kwargs)
         self.source = source
     
-    def __hash__(self):
-        return hash((self.source,)) | super().__hash__()
-    
     def __repr__(self):
         """ Verbose string representation of this Crystal. """
-        rep = '< Crystal object with following unit cell: \n'
+        rep = '< Crystal object with following unit cell:'
 
         # Sort atoms by their chemical symbol
         # Note that repr(Atom(...)) includes these '< ... >'
         # We remove those for cleaner string representation
         for atm in self.itersorted():
-            rep += '    ' + repr(atm).replace('<', '').replace('>', '').strip() + '\n'
+            rep += '\n    ' + repr(atm).replace('<', '').replace('>', '').strip()
 
-        return rep + 'Source: \n    {} >'.format(self.source or 'N/A')
+        return rep + '\nSource: \n    {} >'.format(self.source or 'N/A')
 
     @classmethod
     @lru_cache(maxsize = len(builtins), typed = True) # saves a lot of time in tests
