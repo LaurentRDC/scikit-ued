@@ -50,7 +50,7 @@ After plot formatting:
 	plt.figure()
 	plt.plot(s, diff/diff.max())
 	plt.xlim([s.min(), s.max()])
-	plt.xlabel('$s = \sin{\theta}/\lambda$')
+	plt.xlabel('$s = \sin{\\theta}/\lambda$')
 	plt.ylabel('Diffracted intensity (A.u.)')
 	plt.title('Polycrystalline graphite diffraction')
 
@@ -80,7 +80,7 @@ x-y plane, but finite in z-direction, using :func:`pelectrostatic` (p for projec
 
     extent = np.linspace(-5, 5, 256)
     xx, yy= np.meshgrid(extent, extent)
-    potential = electrostatic(graphite, xx, yy)
+    potential = pelectrostatic(graphite, xx, yy)
 
 After plot formatting:
 
