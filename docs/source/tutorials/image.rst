@@ -44,11 +44,11 @@ All of this is taken care of in scikit-ued's :func:`diff_register` function. Let
 
 .. plot::
 
-	from skimage.io import imread
+	from skued import diffread
 	import matplotlib.pyplot as plt
 
-	ref = imread('Cr_1.tif')
-	im = imread('Cr_2.tif')
+	ref = diffread('Cr_1.tif')
+	im = diffread('Cr_2.tif')
 
 	fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize = (9,3))
 	ax1.imshow(ref, vmin = 0, vmax = 200)
@@ -69,11 +69,11 @@ All of this is taken care of in scikit-ued's :func:`diff_register` function. Let
 From the difference pattern, we can see that the 'Data' pattern is shifted from 'Reference' quite a bit.
 To determine the exact shift, we need to use a mask that obscures the beam-block and main beam::
 
-	from skued import diff_register, shift_image
+	from skued import diff_register, shift_image, diffread
 	import numpy as np
 
-	ref = imread('Cr_1.tif')
-	im = imread('Cr_2.tif')
+	ref = diffread('Cr_1.tif')
+	im = diffread('Cr_2.tif')
 
 	mask = np.zeros_like(ref, dtype = np.bool)
 	mask[0:1250, 950:1250] = True
@@ -85,13 +85,12 @@ Let's look at the difference:
 
 .. plot::
 
-	from skimage.io import imread
 	import matplotlib.pyplot as plt
 	import numpy as np
-	from skued import diff_register, shift_image
+	from skued import diff_register, shift_image, diffread
 
-	ref = imread('Cr_1.tif')
-	im = imread('Cr_2.tif')
+	ref = diffread('Cr_1.tif')
+	im = diffread('Cr_2.tif')
 
 	mask = np.zeros_like(ref, dtype = np.bool)
 	mask[0:1250, 950:1250] = True
@@ -136,8 +135,7 @@ rotational symmetry.
 .. plot::
 
     import matplotlib.pyplot as plt
-    from skimage.io import imread
-    from skued import nfold
+    from skued import nfold, diffread
     import numpy as np
 
     center = (1010, 1111)
@@ -146,7 +144,7 @@ rotational symmetry.
     mask[1100::, 442:480] = True # Artifact line
     mask[0:1260, 900:1140] = True # beamblock
 
-    image = imread('graphite.tif')
+    image = diffread('graphite.tif')
     av = nfold(image, mod = 6, center = center, mask = mask)
 
     fig , (ax1, ax2, ax3) = plt.subplots(1,3, figsize = (9,3))
@@ -167,10 +165,9 @@ rotational symmetry.
 
 To use :func:`nfold`, all you need to know is the center of the diffraction pattern::
 
-    from skued import nfold
-    from skimage.io import imread
+    from skued import nfold, diffread
 
-    im = imread('graphite.tif')
+    im = diffread('graphite.tif')
     av = nfold(im, mod = 6, center = center)    # mask is optional
 
 
@@ -193,10 +190,9 @@ before photoexcitation (i.e. dark runs) form a set of images that should be iden
 Let's imaging a set of such images with filenames `dark_run_*.tif`. We can create a pixel mask with the :func:`mask_from_collection`::
 
     from glob import iglob
-    from skimage.io import imread
-    from skued import mask_from_collection
+    from skued import mask_from_collection, diffread
 
-    dark_runs = map(imread, iglob('dark_run_*.tif'))    # Can be a huge stack of images
+    dark_runs = map(diffread, iglob('dark_run_*.tif'))    # Can be a huge stack of images
     mask = mask_from_collection(dark_runs)
 
 In the above example, pixel values outside opf the [0, 30000] range will be marked as invalid (default behaviour). Moreover,
@@ -217,11 +213,11 @@ the center of those concentric rings is important. Let's load a test image:
 
 .. plot::
 
-    from skimage.io import imread
+	from skued import diffread
     import matplotlib.pyplot as plt
     path = 'Cr_1.tif'
 
-    im = imread(path, plugin = 'tifffile')
+    im = diffread(path)
     mask = np.zeros_like(im, dtype = np.bool)
     mask[0:1250, 950:1250] = True
 
@@ -253,12 +249,11 @@ Finding the center of such a symmetry pattern can be done with the
 
 .. plot::
 
-    from skimage.io import imread
+    from skued import powder_center, diffread
     import numpy as np
     import matplotlib.pyplot as plt
     path = 'Cr_1.tif'
-    im = imread(path, plugin = 'tifffile')
-    from skued import powder_center
+    im = diffread(path)
     mask = np.zeros_like(im, dtype = np.bool)
     mask[0:1250, 950:1250] = True
     ic, jc = powder_center(im, mask = mask)
