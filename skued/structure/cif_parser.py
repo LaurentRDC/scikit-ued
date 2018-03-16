@@ -91,15 +91,23 @@ class CIFParser:
 
     def __exit__(self, *args, **kwargs):
         self._handle.close()
-
+    
     @property
-    def _first_block(self):
-        return self.file[self.file.keys()[0]]
+    def structure_block(self):
+        """ Retrieve which CIF block has the appropriate structural information """
+        blocks = (self.file[key] for key in self.file.keys())
+        for block in blocks:
+            try:
+                a, _ = get_number_with_esd(block["_cell_length_a"])
+            except:
+                continue
+            else:
+                return block
     
     @lru_cache(maxsize = 1)
     def hall_symbol(self):
         """ Returns the Hall symbol """
-        block = self._first_block
+        block = self.structure_block
 
         hall_symbol = block.get('_symmetry_space_group_name_Hall') or block.get('_space_group_name_Hall')
 
@@ -143,7 +151,7 @@ class CIFParser:
         alpha, beta, gamma : float
             Angles of lattice vectors [degrees]. 
         """
-        block = self._first_block
+        block = self.structure_block
 
         try:
             a, _ = get_number_with_esd(block["_cell_length_a"])
@@ -154,8 +162,8 @@ class CIFParser:
             gamma, _ = get_number_with_esd(block["_cell_angle_gamma"])
         except:
             raise ParseError('Lattice vectors could not be determined.')
-
-        return a, b, c, alpha, beta, gamma
+        else:
+            return a, b, c, alpha, beta, gamma
 
     @lru_cache(maxsize = 1)
     def lattice_vectors(self):
@@ -179,7 +187,7 @@ class CIFParser:
             Transformation matrices. Since translations and rotation are combined,
             the transformation matrices are 4x4.
         """
-        block = self._first_block
+        block = self.structure_block
 
         equivalent_sites_str = None
         for tag in ['_symmetry_equiv_pos_as_xyz','_space_group_symop_operation_xyz']:
@@ -206,7 +214,7 @@ class CIFParser:
         ------
         atoms : skued.Atom instance
         """
-        block = self._first_block
+        block = self.structure_block
 
         try:
             tmpdata = block.GetLoop('_atom_site_fract_x')
