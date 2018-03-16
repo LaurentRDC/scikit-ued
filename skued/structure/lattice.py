@@ -347,7 +347,7 @@ def lattice_system(a, b, c, alpha, beta, gamma, atol = 1e-2):
 
     # At this point, all lengths are unequal
     elif angles_equal and angleclose(alpha, 90):
-        return LatticeSystem['orthorombic']
+        return LatticeSystem['orthorhombic']
 
     else:
         return LatticeSystem['triclinic']
