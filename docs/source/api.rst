@@ -87,7 +87,16 @@ Polycrystalline diffraction
 
     azimuthal_average
     powder_center
-    calibrate_scattvector
+
+Calibrations
+------------
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+
+    calq
+    powder_calq
 
 Image alignment
 ---------------
