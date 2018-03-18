@@ -94,8 +94,7 @@ Calibrations
 .. autosummary::
     :toctree: functions/
     :nosignatures:
-
-    calq
+    
     powder_calq
 
 Image alignment

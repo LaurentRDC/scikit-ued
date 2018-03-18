@@ -7,6 +7,8 @@ def hypot(*args):
     """ Generalized np.hypot """
     return np.sqrt(np.sum(np.square(args)))
 
+# TODO: test
+#       Not exporting this function until tests are written
 def calq(I, crystal, peak_indices, miller_indices):
     """
     Determine the scattering vector q corresponding to a diffraction pattern
@@ -28,12 +30,12 @@ def calq(I, crystal, peak_indices, miller_indices):
 
     Returns
     -------
-    q : `~numpy.ndarray`, ndim 1
-        Scattering vectors associated with the intensity profile ``I``.
+    qx, qy : `~numpy.ndarray`, ndim 2
+        Scattering vectors (x and y) associated with the intensity profile ``I``.
     
     Raises
     ------
-    ValueError : if ``I`` is not a 1D diffraction pattern.
+    ValueError : if ``I`` is not a 2D diffraction pattern.
     """
     I = np.asarray(I)
 
@@ -66,6 +68,9 @@ def powder_calq(I, crystal, peak_indices, miller_indices):
     Determine the scattering vector q corresponding to a polycrystalline diffraction pattern
     and a known crystal structure.
 
+    For best results, multiple peaks (and corresponding Miller indices) should be provided; the
+    absolute minimum is two.
+
     Parameters
     ----------
     I : `~numpy.ndarray`, ndim 1
@@ -89,8 +94,11 @@ def powder_calq(I, crystal, peak_indices, miller_indices):
     Raises
     ------
     ValueError : if ``I`` is not a 1D diffraction pattern.
-    ValueError : if the number of peak indices does not match the number of Miller indices
+    ValueError : if the number of peak indices does not match the number of Miller indices.
+    ValueError : if the number of peaks given is lower than two.
     """
+    # I is not strictly required at this time. Only the shape of I is important
+    # However, we might refine the peak positions in the future
     I = np.asarray(I)
 
     if I.ndim > 1:
@@ -100,6 +108,10 @@ def powder_calq(I, crystal, peak_indices, miller_indices):
         raise ValueError('Number of array indices {} does not match the \
                           number of Miller indices {}'.format(len(peak_indices), len(miller_indices)))
     
+    if len(peak_indices) < 2:
+        raise ValueError('Two peaks are required to calibrate, but received {}'.format(len(peak_indices)))
+    
+    # scattering vector length based on known structure
     qs = [hypot(*crystal.scattering_vector(*hkl)) for hkl in miller_indices]
 
     # calibration is done by fitting a line
