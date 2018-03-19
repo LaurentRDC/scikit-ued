@@ -98,13 +98,14 @@ class AtomicStructure(Base):
         return NotImplemented
 
     def __repr__(self):
-        """ Verbose string representation of this AtomicStructure. """
-        rep = '< AtomicStructure object with following orphan atoms:'
+        """ Verbose string representation of this instance. """
+        # AtomicStructure subclasses need not override this method
+        # since the class name is dynamically determined
+        rep = '< {clsname} object with following orphan atoms:'.format(clsname = self.__class__.__name__)
 
-        # Sort atoms by their chemical symbol
         # Note that repr(Atom(...)) includes these '< ... >'
         # We remove those for cleaner string representation
-        for atm in self.atoms:
+        for atm in self.itersorted():
             rep += '\n    ' + repr(atm).replace('<', '').replace('>', '').strip()
 
         if self.substructures:

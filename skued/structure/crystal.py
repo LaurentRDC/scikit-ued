@@ -82,10 +82,11 @@ class Crystal(AtomicStructure, Lattice):
         self.source = source
     
     def __repr__(self):
-        """ Verbose string representation of this Crystal. """
-        rep = '< Crystal object with following unit cell:'
+        """ Verbose string representation of this instance. """
+        # Note : Crystal subclasses need not override this method
+        # since the class name is dynamically determined
+        rep = '< {clsname} object with following unit cell:'.format(clsname = self.__class__.__name__)
 
-        # Sort atoms by their chemical symbol
         # Note that repr(Atom(...)) includes these '< ... >'
         # We remove those for cleaner string representation
         for atm in self.itersorted():
