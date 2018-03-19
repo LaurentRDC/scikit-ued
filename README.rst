@@ -37,14 +37,17 @@ Each version is tested against Python 3.5 and 3.6. If you are using a different 
 using the standard library's `unittest` module.
 
 Dependencies for scikit-ued (e.g. ``spglib``) require compilation. Windows users should 
-minimally have the `Visual Studio Build Tools <https://www.visualstudio.com/downloads/>`_ installed.
+minimally have the `Visual Studio Build Tools <https://www.visualstudio.com/downloads/>`_ installed. Don't
+forget to update setuptools to the latest version to avoid common problems involving C-extensions on Windows::
+
+    python -m pip install --upgrade setuptools
 
 After installing scikit-ued you can use it like any other Python module as ``skued``.
 
 Optional dependencies
 ---------------------
 
-While it is not strictly required, the fourier transform routines from ``pyfftw`` will be preferred If
+While it is not strictly required, the Fourier transform routines from ``pyfftw`` will be preferred If
 ``pyfftw`` is installed.
 
 For displaying diffraction images using the ``skued.diffshow`` function, PyQtGraph and PyQt5 are both required.
