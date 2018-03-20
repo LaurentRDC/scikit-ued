@@ -24,5 +24,6 @@ from .simulation    import (affe, bounded_reflections, electrostatic,
                             pelectrostatic, powdersim, structure_factor)
 from .structure     import (Atom, AtomicStructure, Crystal, Lattice, 
                             symmetry_expansion, lattice_system, LatticeSystem)
+from .thin_films    import film_optical_coefficients
 from .time_series   import time_shift, time_shifts, nfftfreq, nfft, mad
 from .voigt         import gaussian, lorentzian, pseudo_voigt

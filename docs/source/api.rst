@@ -223,6 +223,16 @@ Electron Properties
     interaction_parameter
     lorentz
 
+============================
+Thin Film Optical Properties
+============================
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+
+    film_optical_coefficients
+
 =============
 Voigt Profile
 =============
