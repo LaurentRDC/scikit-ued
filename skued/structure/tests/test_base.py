@@ -5,8 +5,9 @@ from copy import deepcopy
 import collections.abc as abc
 
 import numpy as np
+from itertools import islice
 
-from .. import Atom, AtomicStructure
+from .. import Atom, AtomicStructure, Crystal
 
 class TestAtomicStructure(unittest.TestCase):
 
@@ -28,6 +29,19 @@ class TestAtomicStructure(unittest.TestCase):
 
         self.assertListEqual(sorted_from_structure, sorted_from_list)
     
+    def test_chemical_composition_trivial(self):
+        """ Test that AtomicStructure.chemical_composition works as expected """
+        expected = {'U': 1/3, 'Ag':2/3}
+        self.assertDictEqual(self.structure.chemical_composition, expected)
+        
+    def test_chemical_composition_add_to_unity(self):
+        """ Test that AtomicStructure.chemical_composition always adds up to 1 """
+        # Faster to create a large atomic structure from a Crystal object
+        # Testing for 10 crystal structures only
+        for name in islice(Crystal.builtins, 10):
+            structure = AtomicStructure(atoms = Crystal.from_database(name))
+            self.assertAlmostEqual(sum(structure.chemical_composition.values()), 1)
+
     def test_length(self):
         """ Test the __len__ methods """
         self.assertTrue(len(self.structure), 3)
