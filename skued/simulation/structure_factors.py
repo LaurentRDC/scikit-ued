@@ -9,6 +9,7 @@ import numpy as np
 from numpy.linalg import norm
 
 from .. import change_basis_mesh
+from ..structure import ELEM_TO_NUM
 from .scattering_params import scattering_params
 
 def affe(atom, nG):
@@ -17,8 +18,9 @@ def affe(atom, nG):
 
     Parameters
     ----------
-    atom : Atom instance or int
-        If ``atom`` is an integer, it is assumed to be the atomic number.
+    atom : skued.Atom, int, or str
+        Atomic number, atomic symbol, or Atom instance.
+        Atomic symbols are expected to be properly capitalized, e.g. ``As`` or ``W``.
     nG : array_like
         Scattering vector norm, in units of Angstroms:math:`^{-1}`. (:math:`|G| = 4 \pi s`). 
     
@@ -33,6 +35,8 @@ def affe(atom, nG):
     """
     if isinstance(atom, int):
         atomic_number = atom
+    elif isinstance(atom, str):
+        atomic_number = ELEM_TO_NUM[atom]
     else:
         atomic_number = atom.atomic_number
 

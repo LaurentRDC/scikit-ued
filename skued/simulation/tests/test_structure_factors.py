@@ -28,6 +28,17 @@ class TestElectronFormFactor(unittest.TestCase):
 
         self.assertTrue(np.allclose(from_int, from_atom))
 
+    def test_str(self):
+        """ Test that affe(str, ...) also works """
+        # Try with Chlorine (Z = 17)
+        atomic_number = 17
+        nG = np.random.random(size = (16, 32))
+
+        from_int = affe(atomic_number, nG)
+        from_str = affe('Cl', nG)
+
+        self.assertTrue(np.allclose(from_int, from_str))
+
 class TestStructureFactor(unittest.TestCase):
 
     def setUp(self):
