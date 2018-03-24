@@ -48,7 +48,7 @@ class Lattice(Base):
         super().__init__(**kwargs)
 
     def __repr__(self):
-        return '< Lattice object \n a1 : {} \n, a2 : {} \n, a3 : {}>'.format(self.a1, self.a2, self.a3)
+        return '< Lattice object with parameters {:.3f}Å, {:.3f}Å, {:.3f}Å, {:.2f}°, {:.2f}°, {:.2f}° >'.format(*self.lattice_parameters)
 
     def __hash__(self):
         return hash(self.lattice_parameters) | super().__hash__()

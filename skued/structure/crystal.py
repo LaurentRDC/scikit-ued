@@ -92,7 +92,9 @@ class Crystal(AtomicStructure, Lattice):
         for atm in self.itersorted():
             rep += '\n    ' + repr(atm).replace('<', '').replace('>', '').strip()
 
-        return rep + '\nSource: \n    {} >'.format(self.source or 'N/A')
+        rep += '\nLattice parameters: \n    {:.3f}Å, {:.3f}Å, {:.3f}Å, {:.2f}°, {:.2f}°, {:.2f}°'.format(*self.lattice_parameters)
+        rep += '\nSource: \n    {} >'.format(self.source or 'N/A')
+        return rep
 
     @classmethod
     @lru_cache(maxsize = len(builtins), typed = True) # saves a lot of time in tests
