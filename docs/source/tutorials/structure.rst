@@ -132,7 +132,8 @@ from the :attr:`source` attribute:
 
 .. runblock:: pycon
 
-    >>> import numpy; from skued import Crystal # ignore
+    >>> import numpy
+	>>> from skued import Crystal # ignore
     >>> arr = numpy.array(Crystal.from_database('Si'))
 	>>> print(arr)
 
