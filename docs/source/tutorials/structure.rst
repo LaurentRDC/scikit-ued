@@ -58,13 +58,13 @@ To do this, you need:
 
 As an example, let's create the simplest crystal structure known: 
 `alpha-Polonium (simple cubic) <https://en.wikipedia.org/wiki/Polonium#Solid_state_form>`_::
-
+	
 	from skued import Crystal, Atom
 	import numpy as np
-	
+
 	lattice_vectors = 3.35 * np.eye(3)
 	unitcell = [Atom('Po', coords = [0,0,0])]
-	
+
 	polonium = Crystal(unitcell, lattice_vectors)
 
 In the case where atoms are given as an asymmetric unit cell and a set of symmetry operators, you can use the
@@ -73,15 +73,13 @@ The generated set of atoms can be passed to the constructor of :class:`Crystal`.
 
 Crystal attributes
 ------------------
-The :class:`Crystal` object provides some interfaces for easy structure manipulation. First, a :class:`Crystal` is an iterable:
+The :class:`Crystal` object provides some interfaces for easy structure manipulation. First, a :class:`Crystal` is an iterable::
 
-.. runblock:: pycon
+	from skued import Crystal
+	graphite = Crystal.from_database('C')
 
-	>>> from skued import Crystal
-	>>> graphite = Crystal.from_database('C')
-	>>> 
-	>>> for atm in graphite:	#Loops over atoms in the unit cell
-	...     print(atm)
+	for atm in graphite:	#Loops over atoms in the unit cell
+	    print(atm)
     
 The :func:`len` of a :class:`Crystal` is the unit cell size (in number of atoms)::
 
@@ -102,40 +100,22 @@ The :class:`Crystal` class is a set-like container; checking containership (with
 
     assert gold == silver # false
 
-You can inspect the fractional chemical composition of a :class:`Crystal` instance using the ``chemical_potential`` attribute:
-
-.. runblock:: pycon
-
-	>>> from skued import Crystal # ignore
-	>>> from pprint import pprint
-	>>> c = Crystal.from_pdb('1gzx')
-	>>> pprint(c.chemical_composition)
-
 If a :class:`Crystal` was generated from a file, the path to its file can be retrieved
-from the :attr:`source` attribute:
+from the :attr:`source` attribute::
 
-.. runblock:: pycon
-
-	>>> from skued import Crystal # ignore
-    >>> c = Crystal.from_pdb('1gzx')
-    >>> print(c.source)
+    c = Crystal.from_pdb('1gzx')
+    print(c.source)
 
 :class:`Crystal` instances have a nice string representation, ideal for quick information:
 
-.. runblock:: pycon
+	lsmo = Crystal.from_database('LSMO')
+	print(lsmo)
 
-	>>> from skued import Crystal # ignore
-	>>> lsmo = Crystal.from_database('LSMO')
-	>>> print(lsmo)
+:class:`Crystal` instances can be converted to NumPy arrays as well::
 
-:class:`Crystal` instances can be converted to NumPy arrays as well:
-
-.. runblock:: pycon
-
-    >>> import numpy
-	>>> from skued import Crystal # ignore
-    >>> arr = numpy.array(Crystal.from_database('Si'))
-	>>> print(arr)
+    import numpy
+    arr = numpy.array(Crystal.from_database('Si'))
+	print(arr)
 
 :data:`arr` will contain one row per unit cell atom:
 
@@ -186,16 +166,12 @@ The `lattice system <https://en.wikipedia.org/wiki/Bravais_lattice#Bravais_latti
 Better control on length tolerances is available via the :func:`lattice_system` function.
 
 Thanks to `spglib <http://atztogo.github.io/spglib/>`_, we can get space-group information 
-from a :class:`Crystal` instance:
+from a :class:`Crystal` instance::
 
-.. runblock:: pycon
-
-	>>> from skued import Crystal
-	>>> from pprint import pprint
-	>>> 
-	>>> gold = Crystal.from_database('Au')
-	>>> spg_info = gold.spacegroup_info()
-	>>> pprint(spg_info)
+	from skued import Crystal
+	
+	gold = Crystal.from_database('Au')
+	spg_info = gold.spacegroup_info()
 
 In the above example, :data:`spg_info` is a dictionary with the following keys:
 
