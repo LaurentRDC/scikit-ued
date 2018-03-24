@@ -92,7 +92,7 @@ class Crystal(AtomicStructure, Lattice):
         for atm in self.itersorted():
             rep += '\n    ' + repr(atm).replace('<', '').replace('>', '').strip()
 
-        rep += '\nLattice parameters: \n    {:.3f}A, {:.3f}A, {:.3f}A, {:.2f}d, {:.2f}d, {:.2f}d'.format(*self.lattice_parameters)
+        rep += '\nLattice parameters: \n    {:.3f}Å, {:.3f}Å, {:.3f}Å, {:.2f}°, {:.2f}°, {:.2f}°'.format(*self.lattice_parameters)
         rep += '\nSource: \n    {} >'.format(self.source or 'N/A')
         return rep
 
