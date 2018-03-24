@@ -35,6 +35,7 @@ year = datetime.now().year
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['alabaster',
+              'sphinx_autorun',
               'sphinx.ext.todo',
               'sphinx.ext.intersphinx',
               'sphinx.ext.autodoc',

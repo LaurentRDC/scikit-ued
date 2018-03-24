@@ -1,4 +1,5 @@
 numpy>=1.12
 Sphinx>=1.5.5
+sphinx_autorun>=1.1.0
 cython>=0.25
 ase
