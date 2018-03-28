@@ -76,15 +76,6 @@ def structure_factor(crystal, h, k, l, normalized = False):
     sf : ndarray, dtype complex
         Output is the same shape as input G[0]. Takes into account
         the Debye-Waller effect.
-    
-    See also
-    --------
-    structure_factor_miller 
-        For structure factors calculated from Miller indices.
-            
-    Notes
-    -----
-    By convention, scattering vectors :math:`G` are defined such that :math:`G = 4 \pi s`
     """
     # Distribute input
     # This works whether G is a list of 3 numbers, a ndarray shape(3,) or 
