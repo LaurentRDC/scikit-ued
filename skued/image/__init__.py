@@ -6,4 +6,4 @@ from .calibration import calibrate_scattvector, powder_calq
 from .correlation import mnxc2, xcorr
 from .metrics import snr_from_collection, isnr, mask_from_collection, combine_masks, mask_image, trimr, triml
 from .powder import azimuthal_average, powder_center
-from .symmetry import nfold
+from .symmetry import nfold, reflection

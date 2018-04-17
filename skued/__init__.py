@@ -16,7 +16,7 @@ from .eproperties   import (electron_velocity, electron_wavelength,
                             interaction_parameter, lorentz)
 from .image         import (align, azimuthal_average, combine_masks, diff_register,
                             ialign, isnr, mask_from_collection, mask_image, mnxc2,
-                            nfold, powder_center, shift_image, snr_from_collection,
+                            nfold, powder_center, reflection, shift_image, snr_from_collection,
                             triml, trimr, xcorr, itrack_peak, powder_calq)
 from .io            import diffread, diffshow, mibheader, mibread, imibread
 from .plot_utils    import rgb_sweep, spectrum_colors

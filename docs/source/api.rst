@@ -77,6 +77,7 @@ Symmetry
     :nosignatures:
 
     nfold
+    reflection
 
 Polycrystalline diffraction
 ---------------------------
