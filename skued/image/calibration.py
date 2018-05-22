@@ -21,9 +21,10 @@ def calq(I, crystal, peak_indices, miller_indices):
         pattern is defined on an equidistant grid.
     crystal : skued.Crystal instance
         Crystal that gave rise to the diffraction pattern ``I``.
-    peak_indices : 2-tuple of ints
+    peak_indices : iterable of 2-tuple
         Array index location of two diffraction peaks in the array ``I``. For best
         results, peaks should be well-separated.
+        E.g. ``peak_indices = [(1028, 123), (10, 891)]``
     miller_indices : iterable of 3-tuples
         Indices associated with the peaks of ``peak_indices``.
         E.g. ``indices = [(2,2,0), (-3,0,2)]``
@@ -78,12 +79,11 @@ def powder_calq(I, crystal, peak_indices, miller_indices):
         pattern is defined on an equidistant grid.
     crystal : skued.Crystal instance
         Crystal that gave rise to the diffraction pattern ``I``.
-    peak_indices : iterable of 2-tuple
-        Array index location of two diffraction peaks in the array ``I``. For best
-        results, peaks should be well-separated.
-        E.g. ``peak_indices = [(1028, 123), (10, 891)]``
+    peak_indices : n-tuple of ints
+        Array index location of diffraction peaks in the array ``I``. For best
+        results, peaks should be well-separated. More than two peaks can be used.
     miller_indices : iterable of 3-tuples
-        Indices associated with the peaks of ``peak_indices``.
+        Indices associated with the peaks of ``peak_indices``. More than two peaks can be used.
         E.g. ``indices = [(2,2,0), (-3,0,2)]``
 
     Returns
