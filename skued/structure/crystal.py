@@ -101,7 +101,10 @@ class Crystal(AtomicStructure, Lattice):
         if natoms is None:
             atoms = self.itersorted()
         else:
-            atoms = islice(self.itersorted(), natoms)
+            if natoms > len(self):
+                atoms = self.itersorted()
+            else:
+                atoms = islice(self.itersorted(), natoms)
 
         # Note that repr(Atom(...)) includes these '< ... >'
         # We remove those for cleaner string representation
