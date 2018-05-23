@@ -93,6 +93,10 @@ class Crystal(AtomicStructure, Lattice):
     def _to_string(self, natoms = None):
         """ Generate a string representation of this Crystal. Only include a maximum of `natoms` if
         provided. """
+        if natoms is not None:
+            if natoms >= len(self):
+                return self._to_string(natoms = None)
+
         # Note : Crystal subclasses need not override this method
         # since the class name is dynamically determined
         rep = '< {clsname} object with following unit cell:'.format(clsname = self.__class__.__name__)
@@ -101,10 +105,7 @@ class Crystal(AtomicStructure, Lattice):
         if natoms is None:
             atoms = self.itersorted()
         else:
-            if natoms > len(self):
-                atoms = self.itersorted()
-            else:
-                atoms = islice(self.itersorted(), natoms)
+            atoms = islice(self.itersorted(), natoms)
 
         # Note that repr(Atom(...)) includes these '< ... >'
         # We remove those for cleaner string representation

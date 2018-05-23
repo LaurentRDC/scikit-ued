@@ -77,6 +77,20 @@ class TestSpglibMethods(unittest.TestCase):
                 prim2 = prim.primitive(symprec = 0.1)
                 self.assertIs(prim, prim2)
 
+class TestCrystalSpecialMethods(unittest.TestCase):
+
+    def test_str_vs_repr(self):
+        """ Test that str and repr are workign as expected """
+        for name in Crystal.builtins:
+            with self.subTest(name):
+                c = Crystal.from_database(name)
+
+                # If small crystal, repr and str should be the same
+                if len(c) <= 10:
+                    self.assertEqual(repr(c), str(c))
+                else:
+                    self.assertNotEqual(repr(c), str(c))
+
 class TestCrystalRotations(unittest.TestCase):
 
     def setUp(self):
