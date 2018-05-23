@@ -15,11 +15,10 @@ class TestLorentz(unittest.TestCase):
         self.assertTrue(np.allclose(lorentz(kV), np.ones_like(kV)))
     
     def test_range(self):
-        """ Test that lorentz factor is always in the range (0, 1] """
+        """ Test that lorentz factor is always in the range [1, infty) """
         kv = np.linspace(0, 1e6, num = 256)
         factors = lorentz(kv)
-        self.assertTrue(np.all(factors <= 1))
-        self.assertTrue(np.all(factors > 0))
+        self.assertTrue(np.all(np.greater_equal(factors, 1)))
 
 class TestElectronWavelength(unittest.TestCase):
     
