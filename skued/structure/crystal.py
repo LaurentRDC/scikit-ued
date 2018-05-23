@@ -2,6 +2,7 @@
 from copy import deepcopy as copy
 from functools import lru_cache
 from glob import glob
+from itertools import islice
 from os import mkdir
 from os.path import basename, dirname, isdir, isfile, join
 from urllib.request import urlretrieve
@@ -80,22 +81,40 @@ class Crystal(AtomicStructure, Lattice):
     def __init__(self, unitcell, lattice_vectors, source = None, **kwargs):
         super().__init__(atoms = unitcell, lattice_vectors = lattice_vectors, **kwargs)
         self.source = source
+
+    def __str__(self):
+        """ String representation of this instance. Atoms may be omitted. """
+        return self._to_string(natoms = 10)
     
     def __repr__(self):
         """ Verbose string representation of this instance. """
+        return self._to_string(natoms = None)
+    
+    def _to_string(self, natoms = None):
+        """ Generate a string representation of this Crystal. Only include a maximum of `natoms` if
+        provided. """
         # Note : Crystal subclasses need not override this method
         # since the class name is dynamically determined
         rep = '< {clsname} object with following unit cell:'.format(clsname = self.__class__.__name__)
 
+        # For very large structures, listing all atoms is prohibitive
+        if natoms is None:
+            atoms = self.itersorted()
+        else:
+            atoms = islice(self.itersorted(), natoms)
+
         # Note that repr(Atom(...)) includes these '< ... >'
         # We remove those for cleaner string representation
-        for atm in self.itersorted():
+        for atm in atoms:
             rep += '\n    ' + repr(atm).replace('<', '').replace('>', '').strip()
+        
+        if natoms is not None:
+            rep += '\n      ... omitting {:d} atoms ...'.format(len(self) - natoms) 
 
         rep += '\nLattice parameters: \n    {:.3f}Å, {:.3f}Å, {:.3f}Å, {:.2f}°, {:.2f}°, {:.2f}°'.format(*self.lattice_parameters)
         rep += '\nSource: \n    {} >'.format(self.source or 'N/A')
         return rep
-
+    
     @classmethod
     @lru_cache(maxsize = len(builtins), typed = True) # saves a lot of time in tests
     def from_cif(cls, path):
