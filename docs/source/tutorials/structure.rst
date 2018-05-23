@@ -106,10 +106,11 @@ from the :attr:`source` attribute::
     c = Crystal.from_pdb('1gzx')
     print(c.source)
 
-:class:`Crystal` instances have a nice string representation, ideal for quick information:
+:class:`Crystal` instances have a nice string representation (with :func:`str`), and a complete string representation (with :func:`repr`):
 
 	lsmo = Crystal.from_database('LSMO')
-	print(lsmo)
+	print(str(lsmo))	# Short string representation
+	print(repr(lsmo))   # Complete string representation
 
 :class:`Crystal` instances can be converted to NumPy arrays as well::
 
