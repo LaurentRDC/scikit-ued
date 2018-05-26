@@ -21,5 +21,5 @@ def mad(arr):
         Median absolute difference. ``out`` will be the same shape as ``x``.
     """
     dev = np.array(arr, copy = True)
-    dev -= np.median(dev)
-    return np.abs(dev, out = dev)
+    med = np.median(dev, overwrite_input = True)
+    return np.abs(arr - med)

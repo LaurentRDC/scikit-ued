@@ -11,6 +11,16 @@ class TestMad(unittest.TestCase):
         arr = np.zeros((16,))
         self.assertTrue(np.allclose(mad(arr), 0))
     
+    def test_integers(self):
+        """ Test that mad of an integer array is working as intended """
+        arr_int = np.random.randint(-15, 15, size = (8,8))
+        arr_flo = np.array(arr_int, copy = True, dtype = np.float)
+
+        mad_int = mad(arr_int)
+        mad_flo = mad(arr_flo)
+
+        self.assertTrue(np.allclose(mad_int, mad_flo))
+    
     def test_correctness(self):
         """ Test that the mad() function works as expected """
         arr = np.random.random(size = (32,))
