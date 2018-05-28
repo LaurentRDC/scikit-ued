@@ -107,5 +107,11 @@ ENV/
 
 # PyCharm
 .idea/
+
+# File caches
+test_cache/
+cod_cache/
+pdb_cache/
+
+# Misc
 benchmark.py
-potential_map.py
