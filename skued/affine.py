@@ -89,7 +89,7 @@ def translation_matrix(direction):
     matrix[:3, 3] = np.asarray(direction)[:3]
     return matrix
 
-def change_of_basis(basis1, basis2 = [e1,e2,e3]):
+def change_of_basis(basis1, basis2 = (e1,e2,e3)):
 	"""
 	Returns the matrix that goes from one basis to the other.
     
@@ -156,7 +156,7 @@ def is_rotation_matrix(matrix):
     unit_determinant = np.allclose(abs(np.linalg.det(matrix)), 1)
     return is_orthogonal and unit_determinant
 
-def rotation_matrix(angle, axis = [0,0,1]):
+def rotation_matrix(angle, axis = (0,0,1)):
 	""" 
 	Return matrix to rotate about axis defined by direction around the origin [0,0,0].
 	To combine rotation and translations, see http://www.euclideanspace.com/maths/geometry/affine/matrix4x4/index.htm

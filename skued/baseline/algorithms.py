@@ -14,6 +14,9 @@ def _iterative_baseline(array, max_iter, mask, background_regions, axes, approx_
 	""" Base function for iterative baseline determination """
 	array = np.asarray(array, dtype = np.float)
 
+	if background_regions is None:
+		background_regions = []
+
 	if isinstance(axes, int):
 		axes = (axes,)
 
@@ -242,7 +245,7 @@ def _dwt_approx_rec2(array, level, wavelet, mode, axis):
 	return reconstructed
 
 def baseline_dt(array, max_iter, level = None, first_stage = 'sym6', wavelet = 'qshift1', 
-				background_regions = [], mask = None, mode = 'constant', axis = -1):
+				background_regions = None, mask = None, mode = 'constant', axis = -1):
 	"""
 	Iterative method of baseline-determination based on the dual-tree complex wavelet transform.
 	This function only works in 1D, along an axis. For baseline of 2D arrays, see :func:`baseline_dwt`.
@@ -262,7 +265,7 @@ def baseline_dt(array, max_iter, level = None, first_stage = 'sym6', wavelet = '
 	wavelet : str, optional
 		Wavelet to use in stages > 1. Must be appropriate for the dual-tree complex wavelet transform.
 		See :data:`skued.baseline.ALL_COMPLEX_WAV` for possible values.
-	background_regions : iterable, optional
+	background_regions : iterable or None, optional
 		Indices of the array values that are known to be purely background. Depending
 		on the dimensions of array, the format is different:
 
@@ -293,7 +296,7 @@ def baseline_dt(array, max_iter, level = None, first_stage = 'sym6', wavelet = '
 									func_kwargs = {'level': level, 'wavelet': wavelet, 'mode': mode,
 													'first_stage': first_stage, 'axis': axis})
 
-def baseline_dwt(array, max_iter, level = None, wavelet = 'sym6', background_regions = [], 
+def baseline_dwt(array, max_iter, level = None, wavelet = 'sym6', background_regions = None, 
 				 mask = None, mode = 'constant', axis = -1):
 	"""
 	Iterative method of baseline determination, based on the discrete wavelet transform. 
@@ -311,7 +314,7 @@ def baseline_dwt(array, max_iter, level = None, wavelet = 'sym6', background_reg
 	wavelet : PyWavelet.Wavelet object or str, optional
 		Wavelet with which to perform the algorithm. See PyWavelet documentation
 		for available values. Default is 'sym6'.
-	background_regions : iterable, optional
+	background_regions : iterable or None, optional
 		Indices of the array values that are known to be purely background. Depending
 		on the dimensions of array, the format is different:
 

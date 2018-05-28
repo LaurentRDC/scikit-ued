@@ -177,7 +177,7 @@ def cart2spherical(x, y, z):
     t = np.arccos(z/r)
     return r, p, t
 
-def plane_mesh(v1, v2, x1, x2 = None, origin = [0,0,0]):
+def plane_mesh(v1, v2, x1, x2 = None, origin = (0,0,0)):
     """
     Generate a spatial mesh for a plane defined by two vectors.
 
