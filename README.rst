@@ -8,8 +8,10 @@ scikit-ued
     :target: http://scikit-ued.readthedocs.io
     :alt: Documentation Build Status
 .. image:: https://img.shields.io/pypi/v/scikit-ued.svg
-    :target: https://pypi.python.org/pypi/scikit-ued
+    :target: https://pypi.org/project/scikit-ued/
     :alt: PyPI Version
+.. image:: https://img.shields.io/pypi/pyversions/scikit-ued.svg
+    :alt: Supported Python Versions
 
 Collection of algorithms and functions for ultrafast electron diffraction. It aims to be a fully-tested package
 taking advantage of Python's most recent features.
