@@ -8,7 +8,7 @@ References
                  Computer Physics Communications 182, 1183-1186 (2011) doi: 10.1016/j.cpc.2011.01.013
 """ 
 import warnings
-from contextlib import suppress
+from contextlib import suppress, AbstractContextManager
 from functools import lru_cache
 from re import sub
 from string import digits, punctuation
@@ -65,7 +65,7 @@ def sym_ops(equiv_site):
     symmetry_operation[:3,3] = translation
     return symmetry_operation
 
-class CIFParser:
+class CIFParser(AbstractContextManager):
     """
     Collection of methods that parses CIF files based on cif2cell. The preferred method
     of using this object is as a context manager.
@@ -85,9 +85,6 @@ class CIFParser:
         # Therefore, more clear to pass an open file
         self._handle = open(filename, mode = 'r')
         self.file = ReadCif(self._handle, **kwargs)
-    
-    def __enter__(self):
-        return self
 
     def __exit__(self, *args, **kwargs):
         self._handle.close()

@@ -63,7 +63,7 @@ if __name__ == '__main__':
             'Documentation' : 'http://scikit-ued.readthedocs.io/en/master/',
             'Source'        : 'https://github.com/LaurentRDC/scikit-ued',
         },
-        python_requires = '>=3.5',
+        python_requires = '>=3.6',
         packages = PACKAGES,
         data_files = [('skued\\baseline\\data', WAVELET_FILES),
                       ('skued\\structure\\cifs', CIF_FILES)],
@@ -80,7 +80,6 @@ if __name__ == '__main__':
                        'Natural Language :: English',
                        'Operating System :: OS Independent',
                        'Programming Language :: Python',
-                       'Programming Language :: Python :: 3.5',
                        'Programming Language :: Python :: 3.6',
                        'Topic :: Scientific/Engineering',
                        'Topic :: Scientific/Engineering :: Physics',]
