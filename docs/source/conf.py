@@ -121,10 +121,6 @@ intersphinx_mapping = {
 }
 
 # Autodoc settings
-# As per here:
-# https://stackoverflow.com/questions/45484077/sphinx-autodoc-on-readthedocs-importerror-no-module-named-tkinter
-# Need to mock the existence of _tkinter module for readthedocs
-autodoc_mock_imports = ['_tkinter']
 autodoc_default_flags = ['members']
 autoclass_content = 'both'
 autodoc_member_order = 'groupwise'
