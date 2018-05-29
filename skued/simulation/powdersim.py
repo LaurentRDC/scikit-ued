@@ -9,7 +9,7 @@ from ..voigt import pseudo_voigt
 from .structure_factors import bounded_reflections, structure_factor
 
 
-def powdersim(crystal, q, fwhm_g = 0.01, fwhm_l = 0.02, **kwargs):
+def powdersim(crystal, q, fwhm_g = 0.03, fwhm_l = 0.06, **kwargs):
     """
     Simulates polycrystalline diffraction pattern.
 
