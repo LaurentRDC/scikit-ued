@@ -30,11 +30,11 @@ scattering angles `s` as :math:`s = \sin{\theta}/\lambda`::
 	from skued import Crystal
 	graphite = Crystal.from_database('C')
 
-	s = np.linspace(0.1, 0.8, 1000)
-	diff = powdersim(crystal = graphite, scattering_length = s)
+	q = np.linspace(1, 10, 1024)
+	diff = powdersim(graphite, q)
 
 	plt.figure()
-	plt.plot(s, diff/diff.max())
+	plt.plot(q, diff/diff.max())
 
 After plot formatting:
 
@@ -45,12 +45,12 @@ After plot formatting:
 	from skued import Crystal
 	graphite = Crystal.from_database('C')
 	from skued import powdersim
-	s = np.linspace(0.1, 0.8, 1000)
-	diff = powdersim(crystal = graphite, scattering_length = s)
+	q = np.linspace(1, 10, 1024)
+	diff = powdersim(graphite, q)
 	plt.figure()
-	plt.plot(s, diff/diff.max())
-	plt.xlim([s.min(), s.max()])
-	plt.xlabel('$s = \sin{\\theta}/\lambda$')
+	plt.plot(q, diff/diff.max())
+	plt.xlim([q.min(), q.max()])
+	plt.xlabel('$q (1/\AA)$')
 	plt.ylabel('Diffracted intensity (A.u.)')
 	plt.title('Polycrystalline graphite diffraction')
 

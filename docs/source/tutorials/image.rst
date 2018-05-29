@@ -214,21 +214,21 @@ the center of those concentric rings is important. Let's load a test image:
 .. plot::
 
 	from skued import diffread
-    import matplotlib.pyplot as plt
-    path = 'Cr_1.tif'
+	import matplotlib.pyplot as plt
+	path = 'Cr_1.tif'
 
-    im = diffread(path)
-    mask = np.zeros_like(im, dtype = np.bool)
-    mask[0:1250, 950:1250] = True
+	im = diffread(path)
+	mask = np.zeros_like(im, dtype = np.bool)
+	mask[0:1250, 950:1250] = True
 
-    im[mask] = 0
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.imshow(im, vmin = 0, vmax = 200)
+	im[mask] = 0
+	fig = plt.figure()
+	ax = fig.add_subplot(111)
+	ax.imshow(im, vmin = 0, vmax = 200)
 
-    ax.xaxis.set_visible(False)
-    ax.yaxis.set_visible(False)
-    plt.show()
+	ax.xaxis.set_visible(False)
+	ax.yaxis.set_visible(False)
+	plt.show()
 
 This is a noisy diffraction pattern of polycrystalline vanadium dioxide. 
 Finding the center of such a symmetry pattern can be done with the 
