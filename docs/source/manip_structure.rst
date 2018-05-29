@@ -58,3 +58,21 @@ To help with fleshing out unit cell atoms from symmetry operators:
 
 .. autofunction:: symmetry_expansion
 .. autofunction:: lattice_system
+
+=======
+Parsers
+=======
+
+.. currentmodule:: skued.structure
+
+Structure parsers are used to build :class:`Crystal` instances, mostly through :class:`Crystal` class methods.
+
+.. autoclass:: CIFParser
+    :members:
+
+.. autoclass:: CODParser
+    :show-inheritance:
+    :members:
+
+.. autoclass:: PDBParser
+    :members:

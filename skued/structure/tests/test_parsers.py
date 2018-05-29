@@ -8,8 +8,7 @@ import numpy as np
 
 from .. import Crystal
 from ... import transform
-from ..cif_parser import CIFParser
-from ..pdb_parser import PDBParser
+from ..parsers import CIFParser, PDBParser
 from ..spg_data import Hall2Number
 
 filterwarnings('ignore', category = UserWarning)
@@ -92,7 +91,7 @@ class TestCIFParser(unittest.TestCase):
         self.assertEqual(len(vo2), 12)
         self.assertSequenceEqual(vo2.lattice_parameters, 
                                  (5.7430000000000003, 4.5170000000000003, 5.375, 90.0, 122.60000000000001, 90.0))
-        self.assertAlmostEqual(vo2.volume, 117.4661530) # from cif2cell
+        self.assertAlmostEqual(vo2.volume, 117.4661530) # from cif2cell   
 
 if __name__ == '__main__':
     unittest.main()

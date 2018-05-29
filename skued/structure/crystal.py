@@ -13,6 +13,7 @@ from spglib import (find_primitive, get_error_message, get_spacegroup_type,
 
 from . import Atom, AtomicStructure, CIFParser, Lattice, PDBParser
 from .. import affine_map
+from .parsers import CIFParser, PDBParser, CODParser
 
 CIF_ENTRIES = glob(join(dirname(__file__), 'cifs', '*.cif'))
 
@@ -174,25 +175,10 @@ class Crystal(AtomicStructure, Lattice):
             Whether or not to overwrite files in cache if they exist. If no revision 
             number is provided, files will always be overwritten. 
         """
-        if revision is None:
-            overwrite = True
-        
-        if not isdir(download_dir):
-            mkdir(download_dir)
-        
-        url = 'http://www.crystallography.net/cod/{}.cif'.format(num)
-
-        if revision is not None:
-            url = url + '@' + str(revision)
-            base = '{iden}-{rev}.cif'.format(iden = num, rev = revision)
-        else:
-            base = '{}.cif'.format(num)
-        path = join(download_dir, base)
-
-        if (not isfile(path)) or overwrite:
-            urlretrieve(url, path)
-        
-        return cls.from_cif(path)
+        with CODParser(num, revision, download_dir, overwrite) as parser:
+            return cls(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
+                       lattice_vectors = parser.lattice_vectors(),
+                       source = 'COD num:{n} rev:{r}'.format(n = num, r = revision))
 
     @classmethod
     def from_pdb(cls, ID, download_dir = 'pdb_cache', overwrite = False):
