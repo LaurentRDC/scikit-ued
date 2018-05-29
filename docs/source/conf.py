@@ -21,6 +21,11 @@ sys.path.insert(0, os.path.abspath('../..'))
 
 import skued
 
+# As per here:
+# https://stackoverflow.com/questions/45484077/sphinx-autodoc-on-readthedocs-importerror-no-module-named-tkinter
+# Need to mock the existence of _tkinter module
+autodoc_mock_imports = ['_tkinter']
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
