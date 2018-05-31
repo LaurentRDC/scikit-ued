@@ -39,7 +39,7 @@ with open('requirements.txt') as f:
     REQUIREMENTS = [line for line in f.read().split('\n') if len(line.strip())]
 
 exclude = {'exclude': ['external*', 'docs', '*cache']}
-PACKAGES = [BASE_PACKAGE + '.' + x for x in find_packages(base_path / BASE_PACKAGE, **exclude)]
+PACKAGES = [BASE_PACKAGE + '.' + x for x in find_packages(str(base_path / BASE_PACKAGE), **exclude)]
 if BASE_PACKAGE not in PACKAGES:
     PACKAGES.append(BASE_PACKAGE)
 
