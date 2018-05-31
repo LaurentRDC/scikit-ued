@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 import unittest
-from os.path import dirname, join
 from datetime import datetime
+from pathlib import Path
 
 import numpy as np
 
 from .. import imibread, mibheader, mibread
 
-TEST_FILENAME       = join(dirname(__file__), 'test.mib')
-TEST_MULTI_FILENAME = join(dirname(__file__), 'test_multi.mib')
+TEST_FILENAME       = Path(__file__).parent / 'test.mib'
+TEST_MULTI_FILENAME = Path(__file__).parent / 'test_multi.mib'
 
 class TestMIBHeader(unittest.TestCase):
 

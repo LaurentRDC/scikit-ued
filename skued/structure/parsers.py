@@ -8,11 +8,12 @@ References
                  Computer Physics Communications 182, 1183-1186 (2011) doi: 10.1016/j.cpc.2011.01.013
 """ 
 import gzip
-import os
 import warnings
 from abc import abstractmethod
 from contextlib import AbstractContextManager, suppress
 from functools import lru_cache
+from os import remove
+from pathlib import Path
 from re import sub
 from string import digits, punctuation
 from urllib.request import urlretrieve
@@ -126,23 +127,23 @@ class PDBParser(AbstractStructureParser):
         """
         # Get the compressed PDB structure
         code = pdb_code.lower()
-        archive_fn = "pdb{}.ent.gz".format(code)
+        archive_fn = Path("pdb{}.ent.gz".format(code))
         pdb_dir = "divided"
         url = (server + '/pub/pdb/data/structures/{}/pdb/{}/{}'.format(pdb_dir, code[1:3], archive_fn))
 
         # Where does the final PDB file get saved?
         if download_dir is None:
-            path = os.path.join(os.getcwd(), code[1:3])
+            path = Path.cwd() /code[1:3]
         else:
-            path = download_dir
-        if not os.access(path, os.F_OK):
-            os.makedirs(path)
+            path = Path(download_dir)
+        if not path.exists():
+            path.mkdir()
 
-        filename = os.path.join(path, archive_fn)
-        final_file = os.path.join(path, "pdb{}.ent".format(code))  # (decompressed)
+        filename = path / archive_fn
+        final_file = path / "pdb{}.ent".format(code)  # (decompressed)
 
         # Skip download if the file already exists
-        if (not overwrite) and (os.path.exists(final_file)):
+        if (not overwrite) and (final_file.exists()):
                 return final_file
 
         urlretrieve(url, filename)
@@ -152,7 +153,7 @@ class PDBParser(AbstractStructureParser):
         with gzip.open(filename, 'rb') as gz:
             with open(final_file, 'wb') as out:
                 out.writelines(gz)
-        os.remove(filename)
+        remove(filename)
 
         return final_file
     
@@ -508,9 +509,10 @@ class CODParser(CIFParser):
     def __init__(self, num, revision = None, download_dir = 'cod_cache', overwrite = False, **kwargs):
         if revision is None:
             overwrite = True
-        
-        if not os.path.isdir(download_dir):
-            os.mkdir(download_dir)
+
+        download_dir = Path(download_dir)
+        if not download_dir.exists():
+            download_dir.mkdir()
         
         url = 'http://www.crystallography.net/cod/{}.cif'.format(num)
 
@@ -519,9 +521,9 @@ class CODParser(CIFParser):
             base = '{iden}-{rev}.cif'.format(iden = num, rev = revision)
         else:
             base = '{}.cif'.format(num)
-        path = os.path.join(download_dir, base)
+        path = download_dir / base
 
-        if (not os.path.isfile(path)) or overwrite:
+        if (not path.is_file()) or overwrite:
             urlretrieve(url, path)
         
         return super().__init__(filename = path, **kwargs)

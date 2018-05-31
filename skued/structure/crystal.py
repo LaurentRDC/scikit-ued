@@ -4,7 +4,7 @@ from functools import lru_cache
 from glob import glob
 from itertools import islice
 from os import mkdir
-from os.path import basename, dirname, isdir, isfile, join
+from pathlib import Path
 from urllib.request import urlretrieve
 
 import numpy as np
@@ -13,9 +13,9 @@ from spglib import (find_primitive, get_error_message, get_spacegroup_type,
 
 from . import Atom, AtomicStructure, CIFParser, Lattice, PDBParser
 from .. import affine_map
-from .parsers import CIFParser, PDBParser, CODParser
+from .parsers import CIFParser, CODParser, PDBParser
 
-CIF_ENTRIES = glob(join(dirname(__file__), 'cifs', '*.cif'))
+CIF_ENTRIES = frozenset( (Path(__file__).parent / 'cifs').glob('*.cif') )
 
 def symmetry_expansion(atoms, symmetry_operators):
     """
@@ -77,7 +77,7 @@ class Crystal(AtomicStructure, Lattice):
         Provenance, e.g. filename.
     """
 
-    builtins = frozenset(map(lambda fn: basename(fn).split('.')[0], CIF_ENTRIES))
+    builtins = frozenset(map(lambda fn: fn.stem, CIF_ENTRIES))
 
     def __init__(self, unitcell, lattice_vectors, source = None, **kwargs):
         super().__init__(atoms = unitcell, lattice_vectors = lattice_vectors, **kwargs)
@@ -155,7 +155,7 @@ class Crystal(AtomicStructure, Lattice):
             raise ValueError('Entry {} is not available in the database. See \
                               Crystal.builtins for valid entries.'.format(name))
         
-        path = join(dirname(__file__), 'cifs', name + '.cif')
+        path = Path(__file__).parent / 'cifs' / (name + '.cif')
         return cls.from_cif(path)
     
     @classmethod

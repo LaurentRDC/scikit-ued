@@ -4,7 +4,7 @@ import unittest
 from copy import copy, deepcopy
 from itertools import permutations
 from math import radians
-from os.path import join, isdir
+from pathlib import Path
 from random import choice, seed
 from tempfile import TemporaryDirectory
 
@@ -171,10 +171,10 @@ class TestCrystalConstructors(unittest.TestCase):
     def test_from_cod_new_dir(self):     
         """ Test that a cache dir is created by Crystal.from_cod """
         with TemporaryDirectory() as temp_dir:
-            download_dir = join(temp_dir, 'test_cod')
-            self.assertFalse(isdir(download_dir))
+            download_dir = Path(temp_dir) / 'test_cod'
+            self.assertFalse(download_dir.exists())
             c = Crystal.from_cod(1521124, download_dir = download_dir)
-            self.assertTrue(isdir(download_dir))
+            self.assertTrue(download_dir.exists())
 
 if __name__ == '__main__':
     unittest.main()

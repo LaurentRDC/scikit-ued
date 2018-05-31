@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import os
 import unittest
-from spglib import get_symmetry_dataset
 from warnings import filterwarnings
 
 import numpy as np
+from spglib import get_symmetry_dataset
 
 from .. import Crystal
 from ... import transform

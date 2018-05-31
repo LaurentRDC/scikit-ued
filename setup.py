@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
+import re
 from glob import glob
 from itertools import chain
-import os
-import re
-from setuptools import setup, find_packages
+from pathlib import Path
 from unittest import TestLoader
+
+from setuptools import find_packages, setup
+
 #from Cython.Build import cythonize
 
 # To upload to pypi.org:
@@ -24,8 +26,8 @@ WAVELET_FILES   = chain.from_iterable([glob('skued\\baseline\\data\\*.npy'),
 
 CIF_FILES       = chain.from_iterable([glob('skued\\structure\\cifs\\*.cif')])
 
-base_path = os.path.dirname(__file__)
-with open(os.path.join(base_path, BASE_PACKAGE, '__init__.py')) as f:
+base_path = Path(__file__).parent
+with open(base_path / BASE_PACKAGE / '__init__.py') as f:
     module_content = f.read()
     VERSION = re.compile(r'.*__version__ = \'(.*?)\'', re.S).match(module_content).group(1)
     LICENSE = re.compile(r'.*__license__ = \'(.*?)\'', re.S).match(module_content).group(1)
@@ -37,7 +39,7 @@ with open('requirements.txt') as f:
     REQUIREMENTS = [line for line in f.read().split('\n') if len(line.strip())]
 
 exclude = {'exclude': ['external*', 'docs', '*cache']}
-PACKAGES = [BASE_PACKAGE + '.' + x for x in find_packages(os.path.join(base_path, BASE_PACKAGE), **exclude)]
+PACKAGES = [BASE_PACKAGE + '.' + x for x in find_packages(base_path / BASE_PACKAGE, **exclude)]
 if BASE_PACKAGE not in PACKAGES:
     PACKAGES.append(BASE_PACKAGE)
 
@@ -74,7 +76,7 @@ if __name__ == '__main__':
         # list of possible classifiers:
         #  https://pypi.python.org/pypi?%3Aaction=list_classifiers
         classifiers = ['Environment :: Console',
-                       'Development Status :: 4 - Beta',
+                       'Development Status :: 5 - Stable',
                        'Intended Audience :: Science/Research',
                        'License :: OSI Approved :: MIT License',
                        'Natural Language :: English',

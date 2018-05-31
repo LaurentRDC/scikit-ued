@@ -8,9 +8,9 @@ from itertools import cycle
 import numpy as np
 from pywt import dwt, idwt, dwt2, idwt2, dwt_max_level, wavelist, Wavelet
 from functools import lru_cache
-from os.path import join, dirname
+from pathlib import Path
 
-DATADIR = join(dirname(__file__), 'data')
+DATADIR = Path(__file__).parent / 'data'
 ALL_COMPLEX_WAV = ['qshift1', 'qshift2', 'qshift3', 'qshift4', 'qshift5', 'qshift6']
 ALL_FIRST_STAGE = list(filter(lambda name: name != 'dmey', wavelist(kind = 'discrete')))
 
@@ -273,7 +273,7 @@ def dualtree_wavelet(name):
     """
     filters = ('h0a', 'h0b', 'g0a', 'g0b', 'h1a', 'h1b', 'g1a', 'g1b')
     
-    filename = join(DATADIR, name + '.npz')
+    filename = DATADIR / (name + '.npz')
     with np.load(filename) as mat:
         try:
             (dec_real_low, dec_imag_low, rec_real_low, rec_imag_low, 
