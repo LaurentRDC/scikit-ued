@@ -11,8 +11,35 @@ from functools import lru_cache
 from pathlib import Path
 
 DATADIR = Path(__file__).parent / 'data'
-ALL_COMPLEX_WAV = ['qshift1', 'qshift2', 'qshift3', 'qshift4', 'qshift5', 'qshift6']
-ALL_FIRST_STAGE = list(filter(lambda name: name != 'dmey', wavelist(kind = 'discrete')))
+
+def available_dt_filters():
+    """
+    Iterable of available wavelet filters compatible with the dual-tree complex wavelet transform.
+
+    Returns
+    -------
+    wavelets : iterable
+        List of sorted string names. The wavelet numerical values can be 
+        retrieved from the :func:`dualtree_wavelet` function.
+    """
+    return sorted(['qshift1', 'qshift2', 'qshift3', 'qshift4', 'qshift5', 'qshift6'])
+
+def available_first_stage_filters():
+    """
+    Iterable of available wavelet filters compatible with the 
+    first stage of dual-tree complex wavelent transform.
+
+    Returns
+    -------
+    wavelets : iterable
+        List of sorted string names. The wavelet numerical values can be 
+        retrieved from the :func:`dt_first_stage` function.
+    """
+    return sorted(filter(lambda name: name != 'dmey', wavelist(kind = 'discrete')))
+
+# For backwards compatibility with iris
+ALL_COMPLEX_WAV = available_dt_filters()
+ALL_FIRST_STAGE = available_first_stage_filters()
 
 def dtcwt(data, first_stage, wavelet, mode = 'constant', level = None, axis = -1):
     """
@@ -24,10 +51,10 @@ def dtcwt(data, first_stage, wavelet, mode = 'constant', level = None, axis = -1
         Input data. Can be of any shape, but the transform can only be applied in 1D (i.e. along a single axis).
         The length along ``axis`` must be even.
     first_stage : str
-        Wavelet to use for the first stage. See :data:`skued.baseline.ALL_FIRST_STAGE` for a list of suitable arguments
+        Wavelet to use for the first stage. See :func:`skued.available_first_stage_filters` for a list of suitable arguments
     wavelet : str
         Wavelet to use in stages > 1. Must be appropriate for the dual-tree complex wavelet transform.
-        See :data:`skued.baseline.ALL_COMPLEX_WAV` for possible values.
+        See :func:`skued.available_dt_filters` for possible values.
     mode : str, optional
         Signal extension mode, see :data:`pywt.Modes`.
     level : int or None, optional
@@ -99,10 +126,10 @@ def idtcwt(coeffs, first_stage, wavelet, mode = 'constant', axis = -1):
     coeffs : array_like
         Coefficients list [cAn, cDn, cDn-1, ..., cD2, cD1]
     first_stage : str
-        Wavelet to use for the first stage. See :data:`skued.baseline.ALL_FIRST_STAGE` for a list of suitable arguments
+        Wavelet to use for the first stage. See :func:`skued.available_first_stage_filters` for a list of suitable arguments
     wavelet : str
         Wavelet to use in stages > 1. Must be appropriate for the dual-tree complex wavelet transform.
-        See :data:`skued.baseline.ALL_COMPLEX_WAV` for possible values.
+        See :func:`skued.available_dt_filters` for possible values.
     mode : str, optional
         Signal extension mode, see :data:`pywt.Modes`.
     axis : int, optional
@@ -149,10 +176,10 @@ def dt_max_level(data, first_stage, wavelet, axis = -1):
     data : ndarray
         Input data. Can be of any dimension.
     first_stage : str
-        Wavelet to use for the first stage. See :data:`skued.baseline.ALL_FIRST_STAGE` for a list of suitable arguments
+        Wavelet to use for the first stage. See :func:`skued.available_first_stage_filters` for a list of suitable arguments
     wavelet : str
         Wavelet to use in stages > 1. Must be appropriate for the dual-tree complex wavelet transform.
-        See :data:`skued.baseline.ALL_COMPLEX_WAV` for possible values.
+        See :func:`skued.available_dt_filters` for possible values.
     axis : int, optional
         Axis over which to compute the transform. Default is -1
         
@@ -254,7 +281,7 @@ def _single_tree_synthesis_1d(coeffs, first_stage, wavelet, mode, axis):
     approx = _normalize_size_axis(approx, first_stage_detail, axis = axis)
     return idwt(cA = approx, cD = first_stage_detail, wavelet = first_stage, mode = mode, axis = axis)
 
-@lru_cache(maxsize = len(ALL_COMPLEX_WAV))
+@lru_cache(maxsize = len(available_dt_filters()))
 def dualtree_wavelet(name):
     """
     Returns a complex wavelet suitable for dual-tree cwt from a name.
@@ -287,7 +314,7 @@ def dualtree_wavelet(name):
     return (Wavelet(name = 'real:' + name, filter_bank = real_filter_bank), 
             Wavelet(name = 'imag:' + name, filter_bank = imag_filter_bank))
 
-@lru_cache(maxsize = len(ALL_FIRST_STAGE))
+@lru_cache(maxsize = len(available_first_stage_filters()))
 def dt_first_stage(wavelet):
     """
     Returns two wavelets to be used in the dual-tree complex wavelet transform, at the first stage.
@@ -307,7 +334,7 @@ def dt_first_stage(wavelet):
     if not isinstance(wavelet, Wavelet):
         wavelet = Wavelet(wavelet)
     
-    if wavelet.name not in ALL_FIRST_STAGE:
+    if wavelet.name not in available_first_stage_filters():
         raise ValueError('{} is an invalid first stage wavelet.'.format(wavelet.name))
     
     # extend filter bank with zeros

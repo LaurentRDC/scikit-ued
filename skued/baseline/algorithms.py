@@ -5,7 +5,7 @@ Algorithms based on the dual-tree complex wavelet transform
 """
 from collections.abc import Iterable
 import pywt
-from . import dtcwt, idtcwt
+from .dtcwt import dtcwt, idtcwt
 import numpy as np
 from functools import partial
 from warnings import warn
@@ -261,10 +261,10 @@ def baseline_dt(array, max_iter, level = None, first_stage = 'sym6', wavelet = '
 		the input signal (read: a lower frequency baseline). If None (default), the maximum level
 		possible is used.
 	first_stage : str, optional
-		Wavelet to use for the first stage. See :data:`skued.baseline.ALL_FIRST_STAGE` for a list of suitable arguments
+		Wavelet to use for the first stage. See :func:`skued.available_first_stage_filters` for a list of suitable arguments
 	wavelet : str, optional
 		Wavelet to use in stages > 1. Must be appropriate for the dual-tree complex wavelet transform.
-		See :data:`skued.baseline.ALL_COMPLEX_WAV` for possible values.
+		See :func:`skued.available_dt_filters` for possible values.
 	background_regions : iterable or None, optional
 		Indices of the array values that are known to be purely background. Depending
 		on the dimensions of array, the format is different:

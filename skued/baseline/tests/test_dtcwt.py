@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from ..dtcwt import (dtcwt, idtcwt, dt_max_level, dualtree_wavelet, 
-						dt_first_stage, ALL_FIRST_STAGE, ALL_COMPLEX_WAV)
+						dt_first_stage, available_first_stage_filters, available_dt_filters)
 
 import numpy as np
 import pywt
@@ -20,7 +20,7 @@ class TestComplexWavelets(unittest.TestCase):
     
     def test_first_stage(self):
         """ Test of perfect reconstruction of first stage wavelets. """
-        for wavelet in ALL_FIRST_STAGE:
+        for wavelet in available_first_stage_filters():
             for wav in dt_first_stage(wavelet):
                 # Using waverec and wavedec instead of dwt and idwt because parameters
                 # don't need as much parsing.
@@ -41,15 +41,15 @@ class TestDtcwt(object):
     
     def test_perfect_reconstruction_level_1(self):
         """ Test perfect reconstruction for a single decomposition level """
-        for first_stage in ALL_FIRST_STAGE:
+        for first_stage in available_first_stage_filters():
             coeffs = dtcwt(data = self.array, level = 1, first_stage = first_stage, wavelet = 'qshift1')
             reconstructed = idtcwt(coeffs = coeffs, first_stage = first_stage, wavelet = 'qshift1')
             self.assertTrue(np.allclose(self.array, reconstructed))
     
     def test_perfect_reconstruction_multilevel(self):
         """ Test perfect reconstruction for all levels, for all first_stage wavelets, for all DT wavelets """
-        for first_stage in ALL_FIRST_STAGE:
-            for wavelet in ALL_COMPLEX_WAV:
+        for first_stage in available_first_stage_filters():
+            for wavelet in available_dt_filters():
                 for level in range(1, dt_max_level(data = self.array, first_stage = first_stage, wavelet = wavelet)):
                     coeffs = dtcwt(data = self.array, level = level, first_stage = first_stage, wavelet = wavelet)
                     reconstructed = idtcwt(coeffs = coeffs, first_stage = first_stage, wavelet = wavelet)

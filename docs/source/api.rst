@@ -22,6 +22,8 @@ Please refer to the :ref:`tutorial on baseline-determination <baseline_tutorial>
     baseline_dwt
     dtcwt
     idtcwt
+    available_dt_filters
+    available_first_stage_filters
 
 ====================
 Time-series Analysis

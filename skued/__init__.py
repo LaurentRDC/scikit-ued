@@ -11,7 +11,8 @@ from .affine        import (affine_map, change_basis_mesh, change_of_basis, is_b
 from .array_utils   import (cart2polar, cart2spherical, mirror, plane_mesh,
                             polar2cart, repeated_array, spherical2cart,
                             complex_array)
-from .baseline      import baseline_dt, baseline_dwt, dtcwt, idtcwt, dt_max_level
+from .baseline      import (baseline_dt, baseline_dwt, dtcwt, idtcwt, dt_max_level, available_dt_filters,
+                            available_first_stage_filters)
 from .eproperties   import (electron_velocity, electron_wavelength,
                             interaction_parameter, lorentz)
 from .image         import (align, azimuthal_average, combine_masks, diff_register,
