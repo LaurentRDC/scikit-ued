@@ -43,7 +43,7 @@ def electron_wavelength(keV):
     Returns
     -------
     out : array_like or float
-        Electron wavelength [:math:`1/\AA`]
+        Electron wavelength [:math:`Å^{-1}`]
 
     References
     ----------
@@ -69,7 +69,7 @@ def electron_velocity(keV):
     Returns
     -------
     out : array_like or float
-        Electron velocity [:math:`\AA / s`]
+        Electron velocity [:math:`Å / s`]
 
     References
     ----------
@@ -92,7 +92,7 @@ def interaction_parameter(keV):
     Returns
     -------
     out : array_like or float
-        Interaction parameter [rad/(V*Angs)]
+        Interaction parameter [:math:`rad/(V Å)`]
 
     References
     ----------

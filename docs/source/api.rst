@@ -159,6 +159,16 @@ Simulation
     pelectrostatic
     bounded_reflections
 
+=============
+Visualization
+=============
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+
+    potential_map
+
 ============
 Input/Output
 ============

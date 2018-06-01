@@ -1,47 +1,48 @@
 # -*- coding: utf-8 -*-
 """
-3D Reconstruction of scattering potential
+2D/3D Reconstruction of scattering potential
 =========================================
 """
 
 import numpy as np
 
-from . import bounded_reflections, powdersim, structure_factor
+from .simulation import bounded_reflections, powdersim, structure_factor
 
-# TODO: test
-#       Not exporting this function until tests are written
+# TODO: add tutorial
+# TODO: add references
 def potential_map(q, I, crystal, mesh):
     """ 
     Compute the electrostatic potential from powder diffraction data.
     
     Parameters
     ----------
-    q, I : ndarray, shapes (N,)
-        Scattering vector norm and intensity data
-    crystal : Crystal instance
-
+    q : ndarray, shape (N,)
+        Scattering vector norm (:math:`Å^{-1}`).
+    I : ndarray, shape (N,)
+        Experimental diffracted intensity.
+    crystal : skued.Crystal
+        Crystal that gave rise to diffraction pattern `I`.
     mesh : 3-tuple ndarrays, ndim 2 or ndim 3
         Real-space mesh over which to calculate the scattering map.
         Format should be similar to the output of numpy.meshgrid. 
 
     Returns
     -------
-    out : ndarray, ndim 2
+    out : ndarray, ndim 2 or ndim 3
+        Electrostatic potential computed over the mesh.
 
     Raises
     ------
-    ValueError
-        If intensity data is not strictly positive.
+    ValueError: if intensity data is not strictly positive.
 
     Notes
     -----
     To compute the scattering map from a difference of intensities, note that scattering 
-    maps are linear in structure factor norm. Thus, to get the map of difference data I1 - I2:
-        I = np.square(np.sqrt(I1) - np.sqrt(I2))
-    
-    References
-    ----------
-    TODO
+    maps are linear in *structure factor* norm. Thus, to get the map of difference data :code:`I1 - I2`:
+
+    .. math::
+
+        I = (\sqrt{I_1} - \sqrt{I_2})^2
     """
     if np.any(I < 0):
         raise ValueError('Diffracted intensity cannot physically be negative.')
@@ -66,7 +67,7 @@ def potential_map(q, I, crystal, mesh):
     q_theo = np.squeeze(np.sqrt(qx**2 + qy**2 + qz**2))
     theo_I = powdersim(crystal, q_theo)
     peak_mult_corr = np.abs(SF)**2/theo_I
-    exp_SF = np.sqrt(np.interp(q_theo, s, I)) * peak_mult_corr
+    exp_SF = np.sqrt(np.interp(q_theo, q, I)) * peak_mult_corr
 
     # Squeeze out extra dimensions (e.g. if mesh was 2D)
     potential_map = np.sum(exp_SF * np.real(np.exp(1j * np.angle(SF))) * np.cos(xx*qx + yy*qy + zz*qz), axis = 3)
