@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
-from skimage.io import imread as skread
-from tifffile import imread as tiffread
+import skimage
+import tifffile
 
 from .merlin import mibread
 
@@ -41,11 +41,11 @@ def diffread(fname):
     fname = str(fname)  # In case of pathlib.Path
 
     if fname.endswith(('tiff', 'tif')):
-        return tiffread(fname)
+        return tiffile.imread(fname)
     elif fname.endswith('.mib'):
         return mibread(fname)
     else:
-        return skread(fname, as_grey = True)
+        return skimage.io.imread(fname, as_grey = True)
 
 def diffshow(image):
     """ 
