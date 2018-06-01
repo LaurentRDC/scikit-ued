@@ -41,7 +41,7 @@ def diffread(fname):
     fname = str(fname)  # In case of pathlib.Path
 
     if fname.endswith(('tiff', 'tif')):
-        return tiffile.imread(fname)
+        return tifffile.imread(fname)
     elif fname.endswith('.mib'):
         return mibread(fname)
     else:
