@@ -28,8 +28,7 @@ def affine_map(array):
 
 	Raises
 	------
-	ValueError
-		If the transformation matrix is neither 3x3 or 4x4
+	ValueError : If the transformation matrix is neither 3x3 or 4x4
     """
     if array.shape == (4,4):        #Already the right shape
         return array
@@ -60,8 +59,7 @@ def transform(matrix, array):
 
 	Raises
 	------
-	ValueError
-		If the transformation matrix is neither 3x3 or 4x4
+	ValueError : If the transformation matrix is neither 3x3 or 4x4
     """
 	if matrix.shape not in [(3,3), (4,4)]:
 		raise ValueError('Input matrix is neither a 3x3 or 4x4 matrix, but \
@@ -84,6 +82,11 @@ def translation_matrix(direction):
 	Parameters
 	----------
 	direction : array_like, shape (3,)
+
+	Returns
+	-------
+	translation : `~numpy.ndarray`, shape (4,4)
+		4x4 translation matrix.
     """
     matrix = np.eye(4)
     matrix[:3, 3] = np.asarray(direction)[:3]
@@ -102,7 +105,7 @@ def change_of_basis(basis1, basis2 = (e1,e2,e3)):
 
 	Returns
 	-------
-	cob : ndarray, shape (3,3)
+	cob : `~numpy.ndarray`, shape (3,3)
 		Change-of-basis matrix that, applied to `basis`, will
 		return `basis2`.
 	"""
@@ -128,6 +131,7 @@ def is_basis(basis):
 	Returns
 	-------
 	out : bool
+		Whether or not the basis is valid.
 	"""
 	return (0 not in np.linalg.eigvals(np.asarray(basis)))
 
@@ -170,7 +174,7 @@ def rotation_matrix(angle, axis = (0,0,1)):
     
 	Returns
 	-------
-	matrix : ndarray, shape (3,3)
+	matrix : `~numpy.ndarray`, shape (3,3)
 		Rotation matrix.
 
 	See also
@@ -208,7 +212,7 @@ def translation_rotation_matrix(angle, axis, translation):
 
 	Returns
 	-------
-	matrix : ndarray, shape (4,4)
+	matrix : `~numpy.ndarray`, shape (4,4)
 		Affine transform matrix.
 	"""
 	rmat = affine_map(rotation_matrix(angle = angle, axis = axis))
@@ -230,7 +234,7 @@ def change_basis_mesh(xx, yy, zz, basis1, basis2):
     
     Returns
     -------
-    XX, YY, ZZ : ndarrays
+    XX, YY, ZZ : `~numpy.ndarray`
     """
     # Build coordinate array row-wise
     changed = np.empty(shape = (3, xx.size), dtype = np.float)
@@ -259,7 +263,7 @@ def minimum_image_distance(xx, yy, zz, lattice):
     
 	Returns
 	-------
-	r : ndarray
+	r : `~numpy.ndarray`
 		Minimum image distance over the lattice
 	"""
 	COB = change_of_basis(np.eye(3), lattice)

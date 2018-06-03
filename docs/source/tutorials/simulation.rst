@@ -2,9 +2,9 @@
 
 .. _simulation_tutorial:
 
-*******************
-Simulation Tutorial
-*******************
+***********
+Simulations
+***********
 
 Simulating diffraction patterns
 

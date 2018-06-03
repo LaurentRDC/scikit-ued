@@ -30,9 +30,12 @@ General Documentation
     :maxdepth: 2
 
     installation
-    manip_structure
+    tutorials/baseline
+    tutorials/structure
+    tutorials/image
+    tutorials/plotting
+    tutorials/simulation
     api
-    tutorials/index
 
 Related Projects
 ================

@@ -2,9 +2,9 @@
 
 .. _plotting_tutorial:
 
-*****************
-Plotting Tutorial
-*****************
+********
+Plotting
+********
 
 Time-resolved diffraction measurements can benefit from careful plotting, especially
 for time-series of data. This tutorial will go over some of the functions that make this easier

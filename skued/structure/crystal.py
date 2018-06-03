@@ -48,8 +48,7 @@ def symmetry_expansion(atoms, symmetry_operators):
 
 class Crystal(AtomicStructure, Lattice):
     """
-    :class:`Crystal` instances represent crystalline matter. They are set-like objects
-    that can be iterated over. 
+    The :class:`Crystal` class is a set-like container that represent crystalline structures. 
 
     In addition to constructing the ``Crystal`` object yourself, other constructors
     are also available (and preferred):
@@ -64,8 +63,6 @@ class Crystal(AtomicStructure, Lattice):
 
     * ``Crystal.from_ase``: create an instance from an ``ase.Atoms`` instance.
 
-    :class:`Crystal` instances are picklable as well.
-
     Parameters
     ----------
     unitcell : iterable of ``Atom``
@@ -74,7 +71,7 @@ class Crystal(AtomicStructure, Lattice):
         Lattice vectors. If ``lattice_vectors`` is provided as a 3x3 array, it 
         is assumed that each lattice vector is a row.
     source : str or None, optional
-        Provenance, e.g. filename.
+        Provenance, e.g. filename. Only used for bookkeeping.
     """
 
     builtins = frozenset(map(lambda fn: fn.stem, CIF_ENTRIES))
@@ -82,43 +79,6 @@ class Crystal(AtomicStructure, Lattice):
     def __init__(self, unitcell, lattice_vectors, source = None, **kwargs):
         super().__init__(atoms = unitcell, lattice_vectors = lattice_vectors, **kwargs)
         self.source = source
-
-    def __str__(self):
-        """ String representation of this instance. Atoms may be omitted. """
-        return self._to_string(natoms = 10)
-    
-    def __repr__(self):
-        """ Verbose string representation of this instance. """
-        return self._to_string(natoms = None)
-    
-    def _to_string(self, natoms = None):
-        """ Generate a string representation of this Crystal. Only include a maximum of `natoms` if
-        provided. """
-        if natoms is not None:
-            if natoms >= len(self):
-                return self._to_string(natoms = None)
-
-        # Note : Crystal subclasses need not override this method
-        # since the class name is dynamically determined
-        rep = '< {clsname} object with following unit cell:'.format(clsname = self.__class__.__name__)
-
-        # For very large structures, listing all atoms is prohibitive
-        if natoms is None:
-            atoms = self.itersorted()
-        else:
-            atoms = islice(self.itersorted(), natoms)
-
-        # Note that repr(Atom(...)) includes these '< ... >'
-        # We remove those for cleaner string representation
-        for atm in atoms:
-            rep += '\n    ' + repr(atm).replace('<', '').replace('>', '').strip()
-        
-        if natoms is not None:
-            rep += '\n      ... omitting {:d} atoms ...'.format(len(self) - natoms) 
-
-        rep += '\nLattice parameters: \n    {:.3f}Å, {:.3f}Å, {:.3f}Å, {:.2f}°, {:.2f}°, {:.2f}°'.format(*self.lattice_parameters)
-        rep += '\nSource: \n    {} >'.format(self.source or 'N/A')
-        return rep
     
     @classmethod
     @lru_cache(maxsize = len(builtins), typed = True) # saves a lot of time in tests
@@ -128,7 +88,7 @@ class Crystal(AtomicStructure, Lattice):
 
         Parameters
         ----------
-        path : str
+        path : path-like
             File path
         
         References
@@ -148,7 +108,7 @@ class Crystal(AtomicStructure, Lattice):
 
         Parameters
         ----------
-        name : str
+        name : path-like
             Name of tne databse entry. Available items can be retrieved from `Crystal.builtins`
         """
         if name not in cls.builtins:
@@ -270,8 +230,7 @@ class Crystal(AtomicStructure, Lattice):
 
         Raises
         ------
-        RuntimeError
-            If primitive cell could not be found.
+        RuntimeError : If primitive cell could not be found.
         
         Notes
         -----
@@ -308,8 +267,7 @@ class Crystal(AtomicStructure, Lattice):
         
         Raises
         ------
-        ImportError
-            If ASE is not installed
+        ImportError : If ASE is not installed
         """
         from ase import Atoms
         
@@ -350,8 +308,7 @@ class Crystal(AtomicStructure, Lattice):
         
         Raises
         ------
-        RuntimeError
-            If symmetry-determination has yielded an error.
+        RuntimeError : If symmetry-determination has yielded an error.
         
         Notes
         -----
@@ -379,3 +336,39 @@ class Crystal(AtomicStructure, Lattice):
             return info
         
         return None
+
+    def __str__(self):
+        """ String representation of this instance. Atoms may be omitted. """
+        return self._to_string(natoms = 10)
+    
+    def __repr__(self):
+        """ Verbose string representation of this instance. """
+        return self._to_string(natoms = None)
+    
+    def _to_string(self, natoms = None):
+        """ Generate a string representation of this Crystal. Only include a maximum of `natoms` if provided. """
+        if natoms is not None:
+            if natoms >= len(self):
+                return self._to_string(natoms = None)
+
+        # Note : Crystal subclasses need not override this method
+        # since the class name is dynamically determined
+        rep = '< {clsname} object with following unit cell:'.format(clsname = self.__class__.__name__)
+
+        # For very large structures, listing all atoms is prohibitive
+        if natoms is None:
+            atoms = self.itersorted()
+        else:
+            atoms = islice(self.itersorted(), natoms)
+
+        # Note that repr(Atom(...)) includes these '< ... >'
+        # We remove those for cleaner string representation
+        for atm in atoms:
+            rep += '\n    ' + repr(atm).replace('<', '').replace('>', '').strip()
+        
+        if natoms is not None:
+            rep += '\n      ... omitting {:d} atoms ...'.format(len(self) - natoms) 
+
+        rep += '\nLattice parameters: \n    {:.3f}Å, {:.3f}Å, {:.3f}Å, {:.2f}°, {:.2f}°, {:.2f}°'.format(*self.lattice_parameters)
+        rep += '\nSource: \n    {} >'.format(self.source or 'N/A')
+        return rep

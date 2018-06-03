@@ -25,6 +25,62 @@ Please refer to the :ref:`tutorial on baseline-determination <baseline_tutorial>
     available_dt_filters
     available_first_stage_filters
 
+======================
+Structure manipulation
+======================
+
+Structure manipulation is done through the following classes:
+
+.. autosummary::
+    :toctree: classes/
+    :nosignatures:
+
+    Crystal
+    Atom
+
+Bases classes
+-------------
+
+The :class:`Lattice` class allows for manipulating lattice information separately from
+atomic information.
+
+.. autosummary::
+    :toctree: classes/
+    :nosignatures:
+
+    Lattice
+    LatticeSystem
+    AtomicStructure
+
+Utilities
+---------
+
+To help with fleshing out unit cell atoms from symmetry operators:
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+
+    symmetry_expansion
+    lattice_system
+
+Parsers
+-------
+
+Structure parsers are used to build :class:`Crystal` instances, mostly through :class:`Crystal` class methods.
+
+.. currentmodule:: skued.structure
+
+.. autosummary::
+    :toctree: classes/
+    :nosignatures
+
+    CIFParser
+    CODParser
+    PDBParser
+
+.. currentmodule:: skued
+
 ====================
 Time-series Analysis
 ====================

@@ -135,8 +135,7 @@ def _dwt_approx_rec(array, level, wavelet, mode, axis):
     
 	Raises
 	------    
-	ValueError
-		If input array has dimension > 2 
+	ValueError : If input array has dimension > 2 
 	"""
 	if isinstance(axis, Iterable):
 		axis = axis[0]
@@ -204,8 +203,7 @@ def _dwt_approx_rec2(array, level, wavelet, mode, axis):
     
 	Raises
 	------    
-	ValueError
-		If input array has dimension > 2 
+	ValueError : If input array has dimension > 2 
 	"""
 	array = np.asarray(array, dtype = np.float)
 	for ax in axis:

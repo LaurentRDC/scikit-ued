@@ -142,8 +142,7 @@ class Atom(object):
 
         Raises
         ------
-        ImportError
-            If ASE is not installed
+        Import : If ASE is not installed
         """
         from ase import Atom
 

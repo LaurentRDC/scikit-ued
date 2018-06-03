@@ -2,9 +2,9 @@
 
 .. _image_analysis_tutorial:
 
-**********************************
-Image Analysis/Processing Tutorial
-**********************************
+*************************
+Image Analysis/Processing
+*************************
 
 Diffraction patterns analysis is essentially specialized image processing. This tutorial
 will show some of the image processing and analysis techniques that are part of the :mod:`skued.image` module.

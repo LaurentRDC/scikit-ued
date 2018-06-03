@@ -67,7 +67,7 @@ class AtomicStructure(Base):
         
         Yields
         ------
-        atm : skued.Atom 
+        atm : `skued.Atom` 
         """
         if key is None:
             key = lambda atm: atm.element

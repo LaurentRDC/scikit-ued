@@ -51,17 +51,17 @@ def diffshow(image):
     """ 
     Display an image (from an array or from a file) in an interactive window.
 
-    This function requires PyQtGraph to be importable. These
+    This function requires `PyQtGraph` to be importable. These
     are optional dependencies.
 
     Parameters
     ----------
-    image : str or array-like
+    image : path-like or array-like
         Image file name or array-like. 
     
     Raises
     ------
-    ImportError : if PyQtGraph is not available.
+    ImportError : if `PyQtGraph` is not available.
 
     Notes
     -----

@@ -2,9 +2,9 @@
 
 .. _baseline_tutorial:
 
-************************
-Baseline Tutorials
-************************
+**********************
+Baseline-determination
+**********************
 
 Contents
 ========
