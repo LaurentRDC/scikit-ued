@@ -4,9 +4,6 @@ from .. import nfold, reflection
 import unittest
 from warnings import catch_warnings, simplefilter
 
-import matplotlib.pyplot as plt
-plt.switch_backend('Qt5Agg')
-
 np.random.seed(23)
 
 class TestNFoldSymmetry(unittest.TestCase):
