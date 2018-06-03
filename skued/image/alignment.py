@@ -25,7 +25,8 @@ def shift_image(arr, shift, fill_value = 0):
     arr : `~numpy.ndarray`
         Array to be shifted.
     shift : array_like, shape (2,)
-        Shifts in the x and y directions, respectively. S
+        Shifts in the x and y directions, respectively. Shifts can be of sub-pixel value,
+        in which case interpolation is used.
     fill_value : numerical, optional
         Edges will be filled with `fill_value` after shifting. 
 
@@ -164,7 +165,7 @@ def ialign(images, reference = None, mask = None, fill_value = 0.0, fast = True)
 
     See Also
     --------
-    skued.image.align : align a single diffraction pattern onto a reference.
+    skued.align : align a single diffraction pattern onto a reference.
     """
     images = iter(images)
     
