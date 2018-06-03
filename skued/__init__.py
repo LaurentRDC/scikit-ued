@@ -2,7 +2,7 @@
 __author__ = 'Laurent P. René de Cotret'
 __email__ = 'laurent.renedecotret@mail.mcgill.ca'
 __license__ = 'MIT'
-__version__ = '1.0.0a1' # TODO: automatic versioning?
+__version__ = '1.0.0.0'
 
 from .affine        import (affine_map, change_basis_mesh, change_of_basis, is_basis,
                             is_rotation_matrix, minimum_image_distance,
