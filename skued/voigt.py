@@ -31,8 +31,7 @@ def gaussian(coordinates, center, fwhm = None, std = None):
 
 	Raises
 	------
-	ValueError
-		If fwhm and std are not provided.
+	ValueError : If fwhm and std are not provided.
 
 	Notes
 	-----
