@@ -35,7 +35,7 @@ To install the latest development version from `Github <https://github.com/Laure
 
     python -m pip install git+git://github.com/LaurentRDC/scikit-ued.git
 
-Each version is tested against Python 3.5 and 3.6. If you are using a different version, tests can be run
+Each version is tested against **Python 3.6**. If you are using a different version, tests can be run
 using the standard library's `unittest` module.
 
 Dependencies for scikit-ued (e.g. ``spglib``) require compilation. Windows users should 
@@ -52,15 +52,17 @@ Optional dependencies
 While it is not strictly required, the Fourier transform routines from ``pyfftw`` will be preferred If
 ``pyfftw`` is installed.
 
-For displaying diffraction images using the ``skued.diffshow`` function, PyQtGraph and PyQt5 are both required.
+For displaying diffraction images with interactive contrast using the ``skued.diffshow`` function, PyQtGraph is required.
 
 Related projects
 ----------------
 
-A graphical user interface for the dual-tree complex wavelet transform baseline-removal routine is available as a 
-`separate package <https://pypi.python.org/pypi/dtgui>`_.
+Streaming operations on NumPy arrays are available in the `npstreams package <https://pypi.org/pypi/npstreams>`_.
 
-Streaming operations on NumPy arrays are available in the `npstreams package <https://pypi.python.org/pypi/npstreams>`_.
+Interactive exploration of ultrafast electron diffraction data with the `iris-ued package <https://pypi.org/project/iris-ued/>`_.
+
+A graphical user interface for the dual-tree complex wavelet transform baseline-removal routine is available as a 
+`separate package <https://pypi.org/pypi/dtgui>`_.
 
 Citations
 ---------
