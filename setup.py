@@ -76,7 +76,7 @@ if __name__ == '__main__':
         # list of possible classifiers:
         #  https://pypi.python.org/pypi?%3Aaction=list_classifiers
         classifiers = ['Environment :: Console',
-                       'Development Status :: 5 - Stable',
+                       'Development Status :: 5 - Production/Stable',
                        'Intended Audience :: Science/Research',
                        'License :: OSI Approved :: MIT License',
                        'Natural Language :: English',
