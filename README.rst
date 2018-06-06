@@ -45,18 +45,18 @@ Installation on Windows
 
 Some of scikit-ued's dependencies require compilation. If you are experiencing problems installing scikit-ued on Windows, here are some potential solutions:
 
-    * Install a C/C++ compiler. The easiest way to do so is to install the `Visual Studio Build Tools <https://www.visualstudio.com/downloads/?q=build+tools>`_. More information is available on the `Python Wiki <https://wiki.python.org/moin/WindowsCompilers>`_. Don't forget to upgrade setuptools to the latest version as well to avoid common problems::
+* Install a C/C++ compiler. The easiest way to do so is to install the `Visual Studio Build Tools <https://www.visualstudio.com/downloads/?q=build+tools>`_. More information is available on the `Python Wiki <https://wiki.python.org/moin/WindowsCompilers>`_. Don't forget to upgrade setuptools to the latest version as well to avoid common problems::
 
-        pip install --upgrade setuptools
+    pip install --upgrade setuptools
 
-    * Download the wheels from scikit-ued's `wheelhouse <https://github.com/LaurentRDC/scikit-ued/tree/master/wheelhouse>`_. These are pre-compiled dependencies that will only work on Windows. To install a wheel, you can use pip::
+* Download the wheels from scikit-ued's `wheelhouse <https://github.com/LaurentRDC/scikit-ued/tree/master/wheelhouse>`_. These are pre-compiled dependencies that will only work on Windows. To install a wheel, you can use pip::
 
-        pip install some-pkg.whl
+    pip install some-pkg.whl
 
-    * Install the dependencies using the `conda package manager <https://conda.io/docs/>`_. Most notably, spglib and pycifrw are both available in the conda-forge channel::
+* Install the dependencies using the `conda package manager <https://conda.io/docs/>`_. Most notably, spglib and pycifrw are both available in the conda-forge channel::
 
-        conda config --add channels conda-forge
-        conda install spglib pycifrw numpy scipy ...
+    conda config --add channels conda-forge
+    conda install spglib pycifrw numpy scipy ...
 
 Optional dependencies
 ---------------------
