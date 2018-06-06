@@ -35,16 +35,28 @@ To install the latest development version from `Github <https://github.com/Laure
 
     python -m pip install git+git://github.com/LaurentRDC/scikit-ued.git
 
+After installing scikit-ued you can use it like any other Python module as ``skued``.
+
 Each version is tested against **Python 3.6**. If you are using a different version, tests can be run
 using the standard library's `unittest` module.
 
-Dependencies for scikit-ued (e.g. ``spglib``) require compilation. Windows users should 
-minimally have the `Visual Studio Build Tools <https://www.visualstudio.com/downloads/>`_ installed. Don't
-forget to update setuptools to the latest version to avoid common problems involving C-extensions on Windows::
+Installation on Windows
+-----------------------
 
-    python -m pip install --upgrade setuptools
+Some of scikit-ued's dependencies require compilation. If you are experiencing problems installing scikit-ued on Windows, here are some potential solutions:
 
-After installing scikit-ued you can use it like any other Python module as ``skued``.
+    * Install a C/C++ compiler. The easiest way to do so is to install the `Visual Studio Build Tools <https://www.visualstudio.com/downloads/?q=build+tools>`_. More information is available on the `Python Wiki <https://wiki.python.org/moin/WindowsCompilers>`_. Don't forget to upgrade setuptools to the latest version as well to avoid common problems::
+
+        pip install --upgrade setuptools
+
+    * Download the wheels from scikit-ued's `wheelhouse <https://github.com/LaurentRDC/scikit-ued/tree/master/wheelhouse>`_. These are pre-compiled dependencies that will only work on Windows. To install a wheel, you can use pip::
+
+        pip install some-pkg.whl
+
+    * Install the dependencies using the `conda package manager <https://conda.io/docs/>`_. Most notably, spglib and pycifrw are both available in the conda-forge channel::
+
+        conda config --add channels conda-forge
+        conda install spglib pycifrw numpy scipy ...
 
 Optional dependencies
 ---------------------
