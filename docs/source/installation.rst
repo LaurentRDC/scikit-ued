@@ -9,7 +9,7 @@ Installation
 Requirements
 ============
 
-Scikit-ued works on Linux, Mac OS X and Windows. It requires Python 3.6+. 
+Scikit-ued works on Linux, Mac OS X and Windows. It requires Python 3.6+. Packages requirements are `listed here <https://github.com/LaurentRDC/scikit-ued/blob/master/requirements.txt>`_.
 
 Install scikit-ued
 ==================
@@ -27,7 +27,6 @@ repository::
 
     cd scikit-ued
     python setup.py install
-
 
 Testing
 =======
