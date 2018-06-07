@@ -44,8 +44,6 @@ from contextlib import closing
 
 VERSION = '1.5dev'
 
-debugLevel = 0   # 0=none, 1-3=basic, 4-5=simple, 6-10 verbose
-
 def dmread(filepath):
     """ 
     Read a DM3/DM4 (Digital Micrograph) file into a NumPy array. 
@@ -269,8 +267,6 @@ class DM3(object):
         # set number of current tag to -1
         # --- readTagEntry() pre-increments => first gets 0
         self._curTagAtLevelX[self._curGroupLevel] = -1
-        if ( debugLevel > 5):
-            print("rTG: Current Group Level:", self._curGroupLevel)
         # is the group sorted?
         sorted_ = readByte(self._f)
         isSorted = (sorted_ == 1)
@@ -279,8 +275,6 @@ class DM3(object):
         isOpen = (opened == 1)
         # number of Tags
         nTags = self._readIntValue()
-        if ( debugLevel > 5):
-            print("rTG: Iterating over the", nTags, "tag entries in this group")
         # read Tags
         for i in range( nTags ):
             self._readTagEntry()
@@ -299,17 +293,9 @@ class DM3(object):
             tagLabel = readString(self._f, lenTagLabel).decode('latin-1')
         else:
             tagLabel = str( self._curTagAtLevelX[self._curGroupLevel] )
-        if ( debugLevel > 5):
-            print("{}|{}:".format(self._curGroupLevel, self._makeGroupString()),
-                  end=' ')
-            print("Tag label = "+tagLabel)
-        elif ( debugLevel > 1 ):
-            print(str(self._curGroupLevel)+": Tag label = "+tagLabel)
         # if DM4 file, get tag data size
         if (self._fileVersion == 4):
             lenTagData = readLongLong(self._f)
-            if ( debugLevel > 1 ):
-                print(str(self._curGroupLevel)+": Tag data size = "+str(lenTagData)+" bytes")
         if isData:
             # give it a name
             self._curTagName = self._makeGroupNameString()+"."+tagLabel
@@ -354,10 +340,6 @@ class DM3(object):
         encodedType = self._readIntValue()
         # - calc size of encodedType
         etSize = self._encodedTypeSize(encodedType)
-        if ( debugLevel > 5):
-            print("rAnD, " + hex( self._f.tell() ) + ":", end=' ')
-            print("Tag Type = " + str(encodedType) + ",", end=' ')
-            print("Tag Size = " + str(etSize))
         if ( etSize > 0 ):
             self._storeTag( self._curTagName,
                             self._readNativeData(encodedType, etSize) )
@@ -385,10 +367,6 @@ class DM3(object):
         else:
             raise Exception("rND, " + hex(self._f.tell())
                             + ": Unknown data type " + str(encodedType))
-        if ( debugLevel > 3 ):
-            print("rND, " + hex(self._f.tell()) + ": " + str(val))
-        elif ( debugLevel > 1 ):
-            print(val)
         return val
 
     def _readStringData(self, stringSize):
@@ -396,15 +374,9 @@ class DM3(object):
         if ( stringSize <= 0 ):
             rString = ""
         else:
-            if ( debugLevel > 3 ):
-                print("rSD @ " + str(self._f.tell()) + "/" + hex(self._f.tell()) +" :", end=' ')
             rString = readString(self._f, stringSize)
             # /!\ UTF-16 unicode string => convert to Python unicode str
             rString = rString.decode('utf-16-le')
-            if ( debugLevel > 3 ):
-                print(rString + "   <"  + repr( rString ) + ">")
-        if ( debugLevel > 1 ):
-            print("StringVal:", rString)
         self._storeTag( self._curTagName, rString )
         return rString
 
@@ -423,10 +395,6 @@ class DM3(object):
     def _readArrayData(self, arrayTypes):
         # reads array data
         arraySize = self._readIntValue()
-        
-        if ( debugLevel > 3 ):
-            print("rArD, " + hex( self._f.tell() ) + ":", end=' ')
-            print("Reading array of size = " + str(arraySize))
 
         itemSize = 0
         encodedType = 0
@@ -435,13 +403,7 @@ class DM3(object):
             encodedType = int( arrayTypes[i] )
             etSize = self._encodedTypeSize(encodedType)
             itemSize += etSize
-            if ( debugLevel > 5 ):
-                print("rArD: Tag Type = " + str(encodedType) + ",", end=' ')
-                print("Tag Size = " + str(etSize))
             ##! readNativeData( encodedType, etSize ) !##
-
-        if ( debugLevel > 5 ):
-            print("rArD: Array Item Size = " + str(itemSize))
 
         bufSize = arraySize * itemSize
 
@@ -463,15 +425,9 @@ class DM3(object):
 
     def _readStructTypes(self):
         # analyses data types in a struct
-
-        if ( debugLevel > 3 ):
-            print("Reading Struct Types at Pos = " + hex(self._f.tell()))
         
         structNameLength = self._readIntValue()
         nFields = self._readIntValue()
-
-        if ( debugLevel > 5 ):
-            print("nFields = ", nFields)
 
         if ( nFields > 100 ):
             raise Exception(hex(self._f.tell())+": Too many fields")
@@ -480,8 +436,6 @@ class DM3(object):
         nameLength = 0
         for i in range( nFields ):
             nameLength = self._readIntValue()
-            if ( debugLevel > 9 ):
-                print("{}th nameLength = {}".format(i, nameLength))
             fieldType = self._readIntValue()
             fieldTypes.append( fieldType )
 
@@ -493,10 +447,6 @@ class DM3(object):
             encodedType = structTypes[i]
             etSize = self._encodedTypeSize(encodedType)
 
-            if ( debugLevel > 5 ):
-                print("Tag Type = " + str(encodedType) + ",", end=' ')
-                print("Tag Size = " + str(etSize))
-
             # get data
             self._readNativeData(encodedType, etSize)
 
@@ -506,21 +456,16 @@ class DM3(object):
         # store Tags as list and dict
         # NB: all tag values (and names) stored as unicode objects;
         #     => can then be easily converted to any encoding
-        if ( debugLevel == 1 ):
-            print(" - storing Tag:")
-            print("  -- name:  ", tagName)
-            print("  -- value: ", tagValue, type(tagValue))
         # - convert tag value to unicode if not already unicode object
         self._storedTags.append( tagName + " = " + str(tagValue) )
         self._tagDict[tagName] = str(tagValue)
 
     ### END utility functions ###
 
-    def __init__(self, filename, debug=0):
+    def __init__(self, filename):
         """DM3 object: parses DM3 file."""
 
         ## initialize variables ##
-        self._debug = debug
         self._outputcharset = DEFAULTCHARSET
         self._filename = filename
         self._chosenImage = 1
@@ -566,18 +511,6 @@ class DM3(object):
         if not (isDM3 or isDM4):
             raise Exception("'%s' does not appear to be a DM3/DM4 file."
                             % os.path.split(self._filename)[1])
-        elif self._debug > 0:
-            print("'%s' appears to be a DM%s file" % (self._filename, fileVersion))
-
-        if ( debugLevel > 5 or self._debug > 1):
-            print("Header info. found:")
-            print("- file version:", fileVersion)
-            print("- byte order:", lE)
-            print("- root tag dir. size:", rootLen, "bytes")
-            print("- file size:", fileSize, "bytes")
-            if not sizeOK:
-                msg = "Warning: file size and root tag dir. size inconsistent"
-                print("+ %s"%msg)
         
         self._fileVersion = fileVersion
         
@@ -585,8 +518,6 @@ class DM3(object):
         self._curGroupNameAtLevelX[0] = "root"
         # ... then read it
         self._readTagGroup()
-        if self._debug > 0:
-            print("-- %s Tags read --" % len(self._storedTags))
 
         # fetch image characteristics
         tag_root = 'root.ImageList.1'
@@ -597,11 +528,6 @@ class DM3(object):
             self._im_depth = int( self.tags['root.ImageList.1.ImageData.Dimensions.2'] )
         except KeyError:
             self._im_depth = 1        
-
-        if self._debug > 0:
-            print("Notice: image size: %sx%s px" % (self._im_width, self._im_height))
-            if self._im_depth>1:
-                print("Notice: %s image stack" % (self._im_depth))
 
     def close(self):
         self._f.close()
@@ -726,18 +652,9 @@ class DM3(object):
         im_height = self._im_height
         im_depth = self._im_depth
 
-        if self._debug > 0:
-            print("Notice: image data in %s starts at %s" % (
-                os.path.split(self._filename)[1], hex(data_offset)
-                ))
-
         # check if image DataType is implemented, then read
         if data_type in dT_str:
             np_dt = numpy.dtype( dT_str[data_type] )
-            if self._debug > 0:
-                print("Notice: image data type: %s ('%s'), read as %s" % (
-                    data_type, dataTypes[data_type], np_dt
-                    ))
             self._f.seek( data_offset )
             # - fetch image data
             rawdata = self._f.read(data_size)
@@ -787,6 +704,4 @@ class DM3(object):
             unit = 'micron'
         else:
             unit = unit.encode('ascii')
-        if self._debug > 0:
-            print("pixel size = %s %s" % (pixel_size, unit))
         return (pixel_size, unit)
