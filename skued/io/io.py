@@ -5,6 +5,7 @@ import skimage
 import tifffile
 
 from .merlin import mibread
+from .dm import dmread
 
 try:
     import pyqtgraph as pg
@@ -36,7 +37,8 @@ def diffread(fname):
     Notes
     -----
     Supported file formats are the same as Scikit-image, with
-    the inclusion of Merlin Image Binary (.mib).
+    the inclusion of Merlin Image Binary (.mib) and Digital
+    Micrograph DM3/DM4.
     """
     fname = str(fname)  # In case of pathlib.Path
 
@@ -44,8 +46,10 @@ def diffread(fname):
         return tifffile.imread(fname)
     elif fname.endswith('.mib'):
         return mibread(fname)
-    else:
-        return skimage.io.imread(fname, as_grey = True)
+    elif fname.endswith(('.dm3', '.dm4')):
+        return dmread(fname)
+    
+    return skimage.io.imread(fname, as_grey = True)
 
 def diffshow(image):
     """ 

@@ -242,6 +242,19 @@ installed.
     diffread
     diffshow
 
+.. note::
+    
+    You should prefer to use :func:`diffread` to the specific format 
+    functions like :func:`mibread` and :func:`dmread`
+
+Digital Micrograph DM3/DM4:
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures
+
+    dmread
+
 Merlin Image Binary (.mib) files:
 
 .. autosummary::

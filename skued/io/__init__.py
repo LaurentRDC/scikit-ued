@@ -6,3 +6,4 @@ This package provdes utility functions for interfacing with less common file for
 """
 from .io import diffread, diffshow
 from .merlin import mibheader, mibread, imibread
+from .dm import dmread

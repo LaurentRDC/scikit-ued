@@ -2,7 +2,7 @@
 __author__ = 'Laurent P. René de Cotret'
 __email__ = 'laurent.renedecotret@mail.mcgill.ca'
 __license__ = 'MIT'
-__version__ = '1.0.0.1'
+__version__ = '1.0.1.0'
 
 from .affine        import (affine_map, change_basis_mesh, change_of_basis, is_basis,
                             is_rotation_matrix, minimum_image_distance,
@@ -19,7 +19,7 @@ from .image         import (align, azimuthal_average, combine_masks, diff_regist
                             ialign, isnr, mask_from_collection, mask_image, mnxc2,
                             nfold, powder_center, reflection, shift_image, snr_from_collection,
                             triml, trimr, xcorr, itrack_peak, powder_calq)
-from .io            import diffread, diffshow, mibheader, mibread, imibread
+from .io            import diffread, diffshow, dmread, mibheader, mibread, imibread
 from .plot_utils    import rgb_sweep, spectrum_colors
 from .potential_map import potential_map
 from .simulation    import (affe, bounded_reflections, electrostatic,
