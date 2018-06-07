@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import pickle
+import tempfile
 import unittest
 from copy import copy, deepcopy
 from itertools import permutations
 from math import radians
 from pathlib import Path
 from random import choice, seed
-from tempfile import TemporaryDirectory
 
 import numpy as np
 
@@ -156,21 +156,23 @@ class TestCrystalConstructors(unittest.TestCase):
     
     def test_from_pdb(self):
         """ Test Crystal.from_pdb constructor """
-        # the tests on PDBParser are also using the test_cache folder
-        c = Crystal.from_pdb('1fbb', download_dir = 'test_cache')
-        self.assertIn('1fbb', c.source)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # the tests on PDBParser are also using the test_cache folder
+            c = Crystal.from_pdb('1fbb', download_dir = temp_dir)
+            self.assertIn('1fbb', c.source)
     
     def test_from_cod(self):
         """ Test building a Crystal object from the COD """
-        # revision = None and latest revision should give the same Crystal
-        c = Crystal.from_cod(1521124, download_dir = 'test_cache')
-        c2 = Crystal.from_cod(1521124, revision = 176429, download_dir = 'test_cache')
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # revision = None and latest revision should give the same Crystal
+            c = Crystal.from_cod(1521124, download_dir = temp_dir)
+            c2 = Crystal.from_cod(1521124, revision = 176429, download_dir = temp_dir)
 
         self.assertEqual(c, c2)     
 
     def test_from_cod_new_dir(self):     
         """ Test that a cache dir is created by Crystal.from_cod """
-        with TemporaryDirectory() as temp_dir:
+        with tempfile.TemporaryDirectory() as temp_dir:
             download_dir = Path(temp_dir) / 'test_cod'
             self.assertFalse(download_dir.exists())
             c = Crystal.from_cod(1521124, download_dir = download_dir)
