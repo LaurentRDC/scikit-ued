@@ -73,7 +73,7 @@ Structure parsers are used to build :class:`Crystal` instances, mostly through :
 
 .. autosummary::
     :toctree: classes/
-    :nosignatures
+    :nosignatures:
 
     CIFParser
     CODParser
