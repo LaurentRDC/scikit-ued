@@ -3,6 +3,7 @@ import unittest
 
 import numpy as np
 from .. import Crystal, plane_mesh, potential_map, powdersim
+from ..utils import suppress_warnings
 
 class TestPotentialMap(unittest.TestCase):
 
@@ -15,7 +16,9 @@ class TestPotentialMap(unittest.TestCase):
         """ Test that potential_map returns a map with the same shape as the mesh """
         aR1, aR2, aR3 = self.crystal.lattice_vectors
         extent = np.arange(0, 5, 0.1)
-        plane = plane_mesh(aR3, aR1 + aR2, x1 = extent)
+
+        with suppress_warnings():
+            plane = plane_mesh(aR3, aR1 + aR2, x1 = extent)
         
         potmap = potential_map(self.q, self.I, self.crystal, plane)
 
@@ -27,7 +30,8 @@ class TestPotentialMap(unittest.TestCase):
         """ Test that potential_map raises an error if diffraction intensity is not positive """
         aR1, aR2, aR3 = self.crystal.lattice_vectors
         extent = np.arange(0, 5, 0.1)
-        plane = plane_mesh(aR3, aR1 + aR2, x1 = extent)
+        with suppress_warnings():
+            plane = plane_mesh(aR3, aR1 + aR2, x1 = extent)
         
         self.I[0] = -1
         with self.assertRaises(ValueError):
@@ -37,7 +41,9 @@ class TestPotentialMap(unittest.TestCase):
         """ Test that potential_map calculated from zero intensity is zero everywhere """
         aR1, aR2, aR3 = self.crystal.lattice_vectors
         extent = np.arange(0, 10, 0.1)
-        plane = plane_mesh(aR3, aR1 + aR2, x1 = extent)
+        
+        with suppress_warnings():
+            plane = plane_mesh(aR3, aR1 + aR2, x1 = extent)
         
         potmap = potential_map(self.q, np.zeros_like(self.I), self.crystal, plane)
 

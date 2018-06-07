@@ -6,6 +6,7 @@ import os
 import numpy as np
 
 from .. import diffread
+from ...utils import suppress_warnings
 
 TEST_MIB = Path(__file__).parent / 'test.mib'
 
@@ -21,7 +22,10 @@ class TestDiffRead(unittest.TestCase):
         """ Test diffread() on tiff files """
         im = np.random.randint(0, 127, size = (512, 512))
         path = Path('.\\test_tif.tif')
-        imsave(str(path), im)
+
+        # Annoying low contrast warning
+        with suppress_warnings():
+            imsave(str(path), im)
 
         from_skued = diffread(path)
         self.assertTrue(np.allclose(im, from_skued))

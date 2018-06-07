@@ -7,6 +7,7 @@
 import numpy as np
 
 from .simulation import bounded_reflections, powdersim, structure_factor
+from .utils import suppress_warnings
 
 # TODO: add tutorial
 # TODO: add references
@@ -50,9 +51,12 @@ def potential_map(q, I, crystal, mesh):
     # We want to support 2D and 3D meshes, therefore 
     # expand mesh until 4D (last dim is for loop over reflections)
     # Extra dimensions will be squeezed out later
-    xx, yy, zz = mesh
-    while xx.ndim < 4:
-        xx, yy, zz = np.expand_dims(xx, 3), np.expand_dims(yy, 3), np.expand_dims(zz, 3)
+    # Note: np.expand_dims raises a deprecation warning
+    # TODO: fix it
+    with suppress_warnings():
+        xx, yy, zz = mesh
+        while xx.ndim < 4:
+            xx, yy, zz = np.expand_dims(xx, 3), np.expand_dims(yy, 3), np.expand_dims(zz, 3)
 
     # Prepare reflections
     # G is reshaped so that it is perpendicular to xx, yy, zz to enables broadcasting
