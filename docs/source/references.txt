@@ -2,6 +2,7 @@
 .. _scikit-image: http://scikit-image.org/docs/stable/
 .. _Scipy: https://www.scipy.org
 .. _Cython: http://cython.org
-.. _Pywavelets: https://pywavelets.readthedocs.io/en/latest/
+.. _Pywavelets: https://pywavelets.readthedocs.io/
 .. _PyCifRW: http://www.iucr.org/resources/cif/software/pycifrw
-.. _npstreams: https://npstreams.readthedocs.io/en/release/
+.. _npstreams: https://npstreams.readthedocs.io/
+.. _iris: https://iris-ued.readthedocs.io/

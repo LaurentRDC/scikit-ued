@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 """
-Python module for parsing GATAN DM3 and DM4 files
+Python module for parsing GATAN DM3 and DM4 files. See http://www.er-c.org/cbb/info/dmformat/ 
+for information on the DM3 and DM4 formats.
 
-Based on the work by:
+This module is a modification of the work by:
 
 Author:
 Pierre-Ivan Raynal http://microscopies.med.univ-tours.fr/
@@ -41,8 +42,6 @@ import os.path
 import struct
 import numpy
 from contextlib import closing
-
-VERSION = '1.5dev'
 
 def dmread(filepath):
     """ 

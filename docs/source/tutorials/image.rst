@@ -7,20 +7,34 @@ Image Analysis/Processing
 *************************
 
 Diffraction patterns analysis is essentially specialized image processing. This tutorial
-will show some of the image processing and analysis techniques that are part of the :mod:`skued.image` module.
+will show some of the image processing and analysis techniques that are part of the scikit-ued.
 
 .. note::
-    A lot of functionality has been moved to the package `npstreams`_. Use scikit-ued in combination
-    with `npstreams`_ to process electron diffraction data in parallel.
+    Use scikit-ued in combination with `npstreams`_ to process electron diffraction data in parallel.
 
 Contents
 ========
 
+* :ref:`io`
 * :ref:`alignment`
 * :ref:`symmetry`
 * :ref:`pixel_masks`
 * :ref:`powder`
 * :ref:`denoising`
+
+.. _io:
+
+Reading Images 
+==============
+
+Diffraction patterns can come in a variety of exotic file formats. Scikit-ued has built-in support for the following file formats:
+
+* Gatan's closed source DM3 and DM4 (`*.dm3`, `*.dm4`);
+* Merlin Image Binary (`*.mib`);
+* TIFF images (`*.tif`, `*.tiff`);
+* All other file formats supported by `scikit-image`_.
+
+The :func:`skued.diffread` function will transparently distinguish between those formats and dispatch to the right functions. 
 
 .. _alignment:
 
