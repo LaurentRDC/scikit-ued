@@ -16,14 +16,13 @@ else:
 
 def diffread(fname):
     """
-    Load an image from a file. This function is a generalization
-    of scikit-image's ``imread`` function. ``pathlib.Path`` objects are also supported.
-
-    Supported file formats are:
+    Load an image from a file. Supported file formats are:
 
         * Merlin Image Binary (`*.mib`)
 
-        * Digital Micrograph (`*.dm3`, `*.dm4`)
+        * Digital Micrograph (`*.dm3`, `*.dm4`) 
+        
+            .. versionadded:: 1.0.1.0
 
         * TIFF (`*.tif`, `*.tiff`)
 
