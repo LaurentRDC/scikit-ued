@@ -30,11 +30,11 @@ well as tutorials.
 Installation
 ------------
 
-scikit-ued is available on PyPI; it can be installed with `pip <https://pip.pypa.io>`_.::
+scikit-ued is available on PyPI; it can be installed with `pip <https://pip.pypa.io>`_::
 
     python -m pip install scikit-ued
 
-scikit-ued is also available on the conda-forge channel for the conda package manager.
+scikit-ued is also available on the conda-forge channel for the `conda package manager <https://conda.io/docs/>`_::
 
     conda config --add channels conda-forge
     conda install scikit-ued
