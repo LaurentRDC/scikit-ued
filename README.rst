@@ -10,6 +10,9 @@ scikit-ued
 .. image:: https://img.shields.io/pypi/v/scikit-ued.svg
     :target: https://pypi.org/project/scikit-ued/
     :alt: PyPI Version
+.. image:: https://img.shields.io/conda/vn/conda-forge/scikit-ued.svg
+    :target: https://anaconda.org/conda-forge/scikit-ued
+    :alt: Conda-forge Version
 .. image:: https://img.shields.io/pypi/pyversions/scikit-ued.svg
     :alt: Supported Python Versions
 
@@ -30,6 +33,11 @@ Installation
 scikit-ued is available on PyPI; it can be installed with `pip <https://pip.pypa.io>`_.::
 
     python -m pip install scikit-ued
+
+scikit-ued is also available on the conda-forge channel for the conda package manager.
+
+    conda config --add channels conda-forge
+    conda install scikit-ued
 
 To install the latest development version from `Github <https://github.com/LaurentRDC/scikit-ued>`_::
 

@@ -18,6 +18,11 @@ You can install the latest stable version from PyPI::
 
     pip install scikit-ued
 
+scikit-ued is also available on the conda-forge channel for the `conda package manager <https://conda.io/docs/>`_::
+
+    conda config --add channels conda-forge
+    conda install scikit-ued
+
 You can install the latest **developer** version of scikit-ued by cloning the git
 repository::
 
@@ -31,7 +36,10 @@ repository::
 Installation on Windows
 -----------------------
 
-Some of scikit-ued's dependencies require compilation. If you are experiencing problems installing scikit-ued on Windows, here are some potential solutions:
+Some of scikit-ued's dependencies require compilation. 
+
+If you are experiencing problems installing scikit-ued on Windows, you should consider installing scikit-ued from the conda package manager.
+If you are unable to do this, here are some options:
 
     * Install a C/C++ compiler. The easiest way to do so is to install the `Visual Studio Build Tools <https://www.visualstudio.com/downloads/?q=build+tools>`_. More information is available on the `Python Wiki <https://wiki.python.org/moin/WindowsCompilers>`_. Don't forget to upgrade setuptools to the latest version as well to avoid common problems::
 
@@ -40,12 +48,6 @@ Some of scikit-ued's dependencies require compilation. If you are experiencing p
     * Download the wheels from scikit-ued's `wheelhouse <https://github.com/LaurentRDC/scikit-ued/tree/master/wheelhouse>`_. These are pre-compiled dependencies that will only work on Windows. To install a wheel, you can use pip::
 
         pip install some-pkg.whl
-
-    * Install the dependencies using the `conda package manager <https://conda.io/docs/>`_. Most notably, spglib and pycifrw are both available in the conda-forge channel::
-
-        conda config --add channels conda-forge
-        conda install spglib pycifrw numpy scipy ...
-
 
 Testing
 =======
