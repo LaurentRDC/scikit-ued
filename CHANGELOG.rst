@@ -1,7 +1,7 @@
 Changelog
 =========
 
-Release 1.0.0 (Development)
+Release 1.0.1.0 (Development)
 ---------------------------
 
-* (Add summary of changes here, along with author.)
+* Added support for Gatan Digital Micrograph image formats DM3 and DM4
