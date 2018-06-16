@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3d55fae833513797a7e34f7ea14f3acd6e013d6eff18b3ca4b4b162dc4083a7d
-size 515
+# -*- coding: utf-8 -*-
+from .. import powdersim
+from ... import Crystal
+from copy import deepcopy
+import numpy as np
+import unittest
+
+class TestPowdersim(unittest.TestCase):
+
+	def setUp(self):
+		self.q = np.linspace(2, 10, 200)
+		self.crystal = Crystal.from_database('C')
+
+	def test_return_shape(self):
+		""" Test that the return shape of powdersim() is as expected """
+		pattern = powdersim(self.crystal, self.q)
+		self.assertSequenceEqual(pattern.shape, self.q.shape)
+
+if __name__ == '__main__':
+	unittest.main()

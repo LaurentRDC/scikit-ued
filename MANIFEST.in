@@ -1,3 +1,3 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3f548458912a22bfadb1906672f1ab56230acb2eec917720b35a378c553c636f
-size 151
+include README.rst CHANGELOG.rst LICENSE.txt CONTRIBUTORS.txt requirements.txt dev-requirements.txt
+recursive-include tests *
+recursive-exclude docs *

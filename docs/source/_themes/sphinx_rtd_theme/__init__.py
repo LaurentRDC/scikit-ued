@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:eecb71c851748757ddc8e55032ad32ae20ed469c912763922068924c0575daa3
-size 520
+"""Sphinx ReadTheDocs theme.
+
+From https://github.com/ryan-roemer/sphinx-bootstrap-theme.
+
+"""
+from os import path
+
+__version__ = '0.3.1'
+__version_full__ = __version__
+
+
+def get_html_theme_path():
+    """Return list of HTML theme paths."""
+    cur_dir = path.abspath(path.dirname(path.dirname(__file__)))
+    return cur_dir
+
+# See http://www.sphinx-doc.org/en/stable/theming.html#distribute-your-theme-as-a-python-package
+def setup(app):
+    app.add_html_theme('sphinx_rtd_theme', path.abspath(path.dirname(__file__)))

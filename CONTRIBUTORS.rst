@@ -1,3 +1,15 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:0d89b42c19dc577e683f3c8c8d85135f9afa010ba72a38f7fadc276d3f78c4fd
-size 271
+Contributors
+------------
+
+Author & Maintainer
+-------------------
+
+* Laurent P. René de Cotret <laurent.renedecotret@mail.mcgill.ca>
+
+Contributors
+------------
+
+In chronological order:
+
+* [Your name or handle] <[email or website]>
+    * [Brief summary of your changes]

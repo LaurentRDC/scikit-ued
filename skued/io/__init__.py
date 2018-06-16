@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:663bbe6a430428edacb547c228ecf633f4caecacdb12f1192648a28812680dcb
-size 248
+# -*- coding: utf-8 -*-
+"""
+I/O package
+-----------
+This package provdes utility functions for interfacing with less common file formats.
+"""
+from .io import diffread, diffshow
+from .merlin import mibheader, mibread, imibread
+from .dm import dmread

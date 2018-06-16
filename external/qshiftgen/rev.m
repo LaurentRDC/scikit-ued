@@ -1,3 +1,7 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1ee20fe2562c8f9fc5fada314fea5aa6f873fef8b8d6d31aa59764609e6af68a
-size 138
+function y = rev(x)
+% function y = rev(x)
+% Reverse the order of the rows of x (ie invert each column).
+
+y = x(size(x,1):-1:1,:);
+return
+

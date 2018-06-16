@@ -1,3 +1,50 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f7ec47bfc4580a3d7474f1368cf73c52e4ff34b2fc067ccac45adf3cc7590caf
-size 1408
+.. include:: references.txt
+
+.. _scikit-ued:
+
+****************************************************
+`scikit-ued`: (ultrafast) electron diffraction tools
+****************************************************
+
+Scikit-ued is an open-source Python package for data analysis and
+modeling in (ultrafast) electron diffraction. The goal is to provide
+tested, efficients algorithms and routines to students and researchers 
+in electron diffraction and related fields.
+
+Links
+=====
+
+* `Source code <https://github.com/LaurentRDC/scikit-ued>`_
+* `Issues <https://github.com/LaurentRDC/scikit-ued/issues>`_
+* `Docs <http://scikit-ued.readthedocs.org/>`_
+
+.. _scikit-ued_docs:
+
+General Documentation
+=====================
+
+.. toctree::
+    :maxdepth: 2
+
+    installation
+    tutorials/baseline
+    tutorials/structure
+    tutorials/image
+    tutorials/plotting
+    tutorials/simulation
+    api
+
+Related Projects
+================
+
+Streaming operations on NumPy arrays are available in the `npstreams package <https://pypi.python.org/pypi/npstreams>`_.
+
+Interactive exploration of ultrafast electron diffraction data is possible using the `iris package <https://pypi.python.org/pypi/iris-ued>`_.
+
+A graphical user interface for the dual-tree complex wavelet transform baseline-removal routine is available as a 
+`separate package <https://pypi.python.org/pypi/dtgui>`_.
+
+Authors
+=======
+
+* Laurent P. René de Cotret (McGill)

@@ -1,3 +1,57 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8f0fc5f35ee434ac65c77931193aba5127788ee5bad410734e2ff9a6a6637f3f
-size 1472
+# AppVeyor.com is a Continuous Integration service to build and run tests under
+# Windows
+# This file is based on Astropy's CI-helpers:
+# https://github.com/astropy/ci-helpers
+
+environment:
+
+  global:
+      PYTHON: "C:\\conda"
+      MINICONDA_VERSION: "latest"
+      CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\.appveyor\\windows_sdk.cmd"
+      PYTHON_ARCH: "64" # needs to be set for CMD_IN_ENV to succeed. If a mix
+                        # of 32 bit and 64 bit builds are needed, move this
+                        # to the matrix section.
+      TEST_CMD: "python -m unittest discover --verbose"
+
+      CONDA_DEPENDENCIES: "numpy scipy cython scikit-image"
+      PIP_DEPENDENCIES: "pywavelets spglib pycifrw ase npstreams tifffile"
+
+  matrix:
+
+      - PYTHON_VERSION: "3.6"
+
+matrix:
+   fast_finish: true
+
+platform:
+    -x64
+
+# Skipping commits affecting specific files (GitHub only). More details here: /docs/appveyor-yml
+skip_commits:
+  files:
+    - docs/*
+    - external/*
+    - '**/*.rst'
+
+install:
+
+    # Install Miniconda
+    - "git clone . ci-helpers"
+    - "powershell .appveyor/install-miniconda.ps1"
+
+    # Set path again, need to find a way to avoid doing this again
+    - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+    - "activate test"
+
+    # Test that PATH is set correctly
+    - "conda --version"
+    - "python --version"
+
+# Not a .NET project, we build ci-helpers in the install step instead
+build: false
+
+test_script:
+  - "%CMD_IN_ENV% %TEST_CMD%"
+
+on_success:

@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8b37a7ce47936554d6e90b456e5cab65c518a494d53289ca1e13f58c03b2e63e
-size 365
+{%- if builder != 'singlehtml' %}
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="{{ pathto('search') }}" method="get">
+    <input type="text" name="q" placeholder="{{ _('Search docs') }}" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+{%- endif %}

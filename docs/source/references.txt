@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1a05f007676324d8f336736d2987d20f0714410781f12af9bcb61bf28e03c0a2
-size 356
+.. _Numpy: http://www.numpy.org
+.. _scikit-image: http://scikit-image.org/docs/stable/
+.. _Scipy: https://www.scipy.org
+.. _Cython: http://cython.org
+.. _Pywavelets: https://pywavelets.readthedocs.io/
+.. _PyCifRW: http://www.iucr.org/resources/cif/software/pycifrw
+.. _npstreams: https://npstreams.readthedocs.io/
+.. _iris: https://iris-ued.readthedocs.io/

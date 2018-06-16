@@ -1,3 +1,4 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:2842961a37c4cd032954d8b3b6e0bc630d9532eac70966f5b55fe6f4668f9638
-size 49
+numpy  >= 1.12
+Sphinx >= 1.5.5
+cython >= 0.25
+ase

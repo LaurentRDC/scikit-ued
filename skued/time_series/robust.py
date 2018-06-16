@@ -1,3 +1,25 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4d0477ce99f853a31f31ecd2adfc61f6cfd9b22de62d798b95717e23178d657d
-size 534
+# -*- coding: utf-8 -*-
+
+import numpy as np
+
+def mad(arr):
+    """ 
+    Element-wise median absolute deviation (MAD) of a signal.
+
+    .. math::
+
+        \\text{MAD}_i = | X_i - \\text{median}(X) |
+
+    Parameters
+    ----------
+    arr : array-like
+        Array. 
+    
+    Returns
+    -------
+    out : `~numpy.ndarray`, dtype float
+        Median absolute difference. ``out`` will be the same shape as ``x``.
+    """
+    dev = np.array(arr, copy = True)
+    med = np.median(dev, overwrite_input = True)
+    return np.abs(arr - med)

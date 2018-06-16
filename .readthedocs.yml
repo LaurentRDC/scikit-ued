@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9b2260659967bf5adce70602e7b9c6ded5d0abe8fecfb95966d68c03c10f0c2c
-size 179
+# Documentation available here:
+#     https://docs.readthedocs.io/en/latest/yaml-config.html
+
+build:
+  image: latest # required for Python 3.6 at this time
+
+python:
+  version: 3.6

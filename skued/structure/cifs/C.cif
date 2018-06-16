@@ -1,3 +1,89 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:95dc1ebfcf8d60b8a52cae3c8946b568bb0e20029bd74185af5091a3a9fb975b
-size 2353
+#------------------------------------------------------------------------------
+#$Date: 2014-07-12 11:06:43 +0300 (Sat, 12 Jul 2014) $
+#$Revision: 120115 $
+#$URL: svn://www.crystallography.net/cod/cif/9/01/15/9011577.cif $
+#------------------------------------------------------------------------------
+#
+# This file is available in the Crystallography Open Database (COD),
+# http://www.crystallography.net/. The original data for this entry
+# were provided the American Mineralogist Crystal Structure Database,
+# http://rruff.geo.arizona.edu/AMS/amcsd.php
+#
+# The file may be used within the scientific community so long as
+# proper attribution is given to the journal article from which the
+# data were obtained.
+#
+data_9011577
+loop_
+_publ_author_name
+'Trucano, P.'
+'Chen, R.'
+_publ_section_title
+;
+ Structure of graphite by neutron diffraction
+ Locality: undefined
+ Note: natural crystals
+;
+_journal_name_full               Nature
+_journal_page_first              136
+_journal_page_last               137
+_journal_volume                  258
+_journal_year                    1975
+_chemical_formula_sum            C
+_chemical_name_mineral           Graphite
+_space_group_IT_number           194
+_symmetry_space_group_name_Hall  '-P 6c 2c'
+_symmetry_space_group_name_H-M   'P 63/m m c'
+_cell_angle_alpha                90
+_cell_angle_beta                 90
+_cell_angle_gamma                120
+_cell_length_a                   2.464
+_cell_length_b                   2.464
+_cell_length_c                   6.711
+_cell_volume                     35.286
+_exptl_crystal_density_diffrn    2.261
+_cod_database_code               9011577
+loop_
+_symmetry_equiv_pos_as_xyz
+x,y,z
+-x,-x+y,1/2+z
+x,x-y,1/2-z
+-x+y,-x,1/2-z
+x-y,x,1/2+z
+-y,-x,z
+y,x,-z
+y,-x+y,-z
+-y,x-y,z
+x-y,-y,1/2+z
+-x+y,y,1/2-z
+x,y,1/2-z
+-x,-y,1/2+z
+x,x-y,z
+-x,-x+y,-z
+x-y,x,-z
+-x+y,-x,z
+y,x,1/2+z
+-y,-x,1/2-z
+-y,x-y,1/2-z
+y,-x+y,1/2+z
+-x+y,y,z
+x-y,-y,-z
+-x,-y,-z
+loop_
+_atom_site_aniso_label
+_atom_site_aniso_U_11
+_atom_site_aniso_U_22
+_atom_site_aniso_U_33
+_atom_site_aniso_U_12
+_atom_site_aniso_U_13
+_atom_site_aniso_U_23
+C1 0.00310 0.00310 0.01600 0.00155 0.00000 0.00000
+C2 0.00310 0.00310 0.01700 0.00155 0.00000 0.00000
+loop_
+_atom_site_label
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+C1 0.00000 0.00000 0.25000
+C2 0.33333 0.66667 0.25000
+_journal_paper_doi 10.1038/258136a0

@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e8fd44cefe890cb51e9e4788cd2b948decd0dca25b6514c36c5badaec509a97b
-size 167
+numpy        >= 1.12
+scipy        >= 1.0.0
+scikit-image >= 0.13
+tifffile     >= 0.13
+pywavelets   >= 0.5.2
+npstreams    >= 1.5.2
+spglib       >= 1.10
+pycifrw      >= 4

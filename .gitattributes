@@ -1,6 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
-
 # Custom for Visual Studio
 *.cs     diff=csharp
 # Standard to msysgit
@@ -10,47 +9,6 @@
 *.DOCX diff=astextplain
 *.dot  diff=astextplain
 *.DOT  diff=astextplain
-*.pdf  diff=astextplain
 *.PDF	 diff=astextplain
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
-*.gitignore filter=lfs diff=lfs merge=lfs -text
-*.git-id filter=lfs diff=lfs merge=lfs -text
-*.cmd filter=lfs diff=lfs merge=lfs -text
-*.yml filter=lfs diff=lfs merge=lfs -text
-*.coveragerc filter=lfs diff=lfs merge=lfs -text
-*.md filter=lfs diff=lfs merge=lfs -text
-*.mention-bot filter=lfs diff=lfs merge=lfs -text
-*.sh filter=lfs diff=lfs merge=lfs -text
-*.rst filter=lfs diff=lfs merge=lfs -text
-*.txt filter=lfs diff=lfs merge=lfs -text
-*.in filter=lfs diff=lfs merge=lfs -text
-*.bat filter=lfs diff=lfs merge=lfs -text
-*.html filter=lfs diff=lfs merge=lfs -text
-*.py filter=lfs diff=lfs merge=lfs -text
-*.cfg filter=lfs diff=lfs merge=lfs -text
-*.ini filter=lfs diff=lfs merge=lfs -text
-*.npz filter=lfs diff=lfs merge=lfs -text
-*.css filter=lfs diff=lfs merge=lfs -text
-*.map filter=lfs diff=lfs merge=lfs -text
-*.conf filter=lfs diff=lfs merge=lfs -text
-*.cif filter=lfs diff=lfs merge=lfs -text
-*.m filter=lfs diff=lfs merge=lfs -text
-*.M filter=lfs diff=lfs merge=lfs -text
-*.mat filter=lfs diff=lfs merge=lfs -text
-*.js filter=lfs diff=lfs merge=lfs -text
-*.ps1 filter=lfs diff=lfs merge=lfs -text
-*.otf filter=lfs diff=lfs merge=lfs -text
-*.ttf filter=lfs diff=lfs merge=lfs -text
-*.eot filter=lfs diff=lfs merge=lfs -text
-*.svg filter=lfs diff=lfs merge=lfs -text
-*.woff filter=lfs diff=lfs merge=lfs -text
-*.woff2 filter=lfs diff=lfs merge=lfs -text
-*.tif filter=lfs diff=lfs merge=lfs -text
-*.npy filter=lfs diff=lfs merge=lfs -text
-*.png filter=lfs diff=lfs merge=lfs -text
-*.gz filter=lfs diff=lfs merge=lfs -text
-*.pdf filter=lfs diff=lfs merge=lfs -text
-*.dm3 filter=lfs diff=lfs merge=lfs -text
-*.dm4 filter=lfs diff=lfs merge=lfs -text
-*.mib filter=lfs diff=lfs merge=lfs -text

@@ -1,3 +1,11 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:06c1ca2de56afa261fb70e373f31185c38b7089f1718a2b6349e393961217bae
-size 339
+# -*- coding: utf-8 -*-
+"""
+Time-series analysis
+--------------------
+This package allows for exploration of time-series data, especially
+in the context of ultrafast diffraction.
+"""
+
+from .robust import mad
+from .nfft_routines import nfft, nfftfreq
+from .time_zero import time_shift, time_shifts, register_time_shift, register_time_shifts
