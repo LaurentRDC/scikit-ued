@@ -127,9 +127,10 @@ class AtomicStructure(Base):
         return rep + ' >'
 
     def __array__(self, *args, **kwargs):
-        """ Returns an array in which each row represents an :class:`Atom` instance. Order is not guaranteed. """
+        """ Returns an array in which each row represents an :class:`Atom` instance. Atoms are ordered by atomic number """
         arr = np.empty(shape = (len(self), 4), *args, **kwargs)
-        for row, atm in enumerate(self):
+        atoms = self.itersorted(key = lambda atm: atm.atomic_number)
+        for row, atm in enumerate(atoms):
             arr[row, 0] = atm.atomic_number
             arr[row, 1:] = atm.coords
         return arr
