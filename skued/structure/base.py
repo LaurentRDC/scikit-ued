@@ -52,7 +52,7 @@ class AtomicStructure(Base):
         """ Yields :class:`Atom` instances from the structure and substructures 
         recursively. Order is not guaranteed. """
         yield from iter(self.atoms)
-        yield from chain(*self.substructures)
+        yield from chain.from_iterable(self.substructures)
     
     def itersorted(self, *, key = None, reverse = False):
         """ 
