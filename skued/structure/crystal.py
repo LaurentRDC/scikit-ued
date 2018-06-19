@@ -5,6 +5,7 @@ from glob import glob
 from itertools import islice
 from os import mkdir
 from pathlib import Path
+from tempfile import gettempdir
 from urllib.request import urlretrieve
 
 import numpy as np
@@ -16,6 +17,7 @@ from .. import affine_map
 from .parsers import CIFParser, CODParser, PDBParser
 
 CIF_ENTRIES = frozenset( (Path(__file__).parent / 'cifs').glob('*.cif') )
+SKUED_STRUCTURE_CACHE = Path(gettempdir()) / 'skued_cache'
 
 def symmetry_expansion(atoms, symmetry_operators):
     """
@@ -119,7 +121,7 @@ class Crystal(AtomicStructure, Lattice):
         return cls.from_cif(path)
     
     @classmethod
-    def from_cod(cls, num, revision = None, download_dir = 'cod_cache', overwrite = False):
+    def from_cod(cls, num, revision = None, download_dir = None, overwrite = False):
         """ 
         Returns a Crystal object built from the Crystallography Open Database. 
 
@@ -135,13 +137,16 @@ class Crystal(AtomicStructure, Lattice):
             Whether or not to overwrite files in cache if they exist. If no revision 
             number is provided, files will always be overwritten. 
         """
+        if download_dir is None:
+            download_dir = SKUED_STRUCTURE_CACHE
+
         with CODParser(num, revision, download_dir, overwrite) as parser:
             return cls(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
                        lattice_vectors = parser.lattice_vectors(),
                        source = 'COD num:{n} rev:{r}'.format(n = num, r = revision))
 
     @classmethod
-    def from_pdb(cls, ID, download_dir = 'pdb_cache', overwrite = False):
+    def from_pdb(cls, ID, download_dir = None, overwrite = False):
         """
         Returns a Crystal object created from a Protein DataBank entry.
 
@@ -151,11 +156,14 @@ class Crystal(AtomicStructure, Lattice):
             Protein DataBank identification. The correct .pdb file will be downloaded,
             cached and parsed.
         download_dir : path-like object, optional
-            Directory where to save the PDB file. Default is a local folder in the current directory
+            Directory where to save the PDB file.
         overwrite : bool, optional
             Whether or not to overwrite files in cache if they exist. If no revision 
             number is provided, files will always be overwritten. 
         """
+        if download_dir is None:
+            download_dir = SKUED_STRUCTURE_CACHE
+
         with PDBParser(ID = ID, download_dir = download_dir) as parser:
             return cls(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
                        lattice_vectors = parser.lattice_vectors(),
