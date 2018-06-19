@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 import os
+import socket
 import tempfile
 import unittest
+from contextlib import suppress
+from pathlib import Path
 from warnings import filterwarnings
 
 import numpy as np
@@ -9,11 +12,23 @@ from spglib import get_symmetry_dataset
 
 from .. import Crystal
 from ... import transform
-from ..parsers import CIFParser, PDBParser
+from ..parsers import SKUED_STRUCTURE_CACHE, CIFParser, PDBParser
 from ..spg_data import Hall2Number
 
 filterwarnings('ignore', category = UserWarning)
 
+def connection_available():
+    """ Returns whether or not an internet connection is available """
+    with suppress(OSError):
+        try:
+            socket.create_connection(("www.google.com", 80))
+        except:
+            return False
+        else:
+            return True
+    return False
+
+@unittest.skipUnless(connection_available(), "Internet connection is required.")
 class TestPDBParser(unittest.TestCase):
 
     def test_fractional_atoms(self):
@@ -32,6 +47,13 @@ class TestPDBParser(unittest.TestCase):
                 for sym_op in parser.symmetry_operators():
                     t = sym_op[:3,:3]
                     self.assertAlmostEqual(abs(np.linalg.det(t)), 1, places = 5)
+    
+    def test_default_download_dir(self):
+        """ Test that the file is saved in the correct temporary directory by default """
+        filename = PDBParser.retrieve_pdb_file('1fbb')
+        
+        self.assertTrue(filename.exists())
+        self.assertEqual(filename.parent, SKUED_STRUCTURE_CACHE)
 
 class TestCIFParser(unittest.TestCase):
     """ Test the CIFParser on all CIF files stored herein """

@@ -5,7 +5,6 @@ from glob import glob
 from itertools import islice
 from os import mkdir
 from pathlib import Path
-from tempfile import gettempdir
 from urllib.request import urlretrieve
 
 import numpy as np
@@ -17,7 +16,6 @@ from .. import affine_map
 from .parsers import CIFParser, CODParser, PDBParser
 
 CIF_ENTRIES = frozenset( (Path(__file__).parent / 'cifs').glob('*.cif') )
-SKUED_STRUCTURE_CACHE = Path(gettempdir()) / 'skued_cache'
 
 def symmetry_expansion(atoms, symmetry_operators):
     """
@@ -137,9 +135,6 @@ class Crystal(AtomicStructure, Lattice):
             Whether or not to overwrite files in cache if they exist. If no revision 
             number is provided, files will always be overwritten. 
         """
-        if download_dir is None:
-            download_dir = SKUED_STRUCTURE_CACHE
-
         with CODParser(num, revision, download_dir, overwrite) as parser:
             return cls(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
                        lattice_vectors = parser.lattice_vectors(),
@@ -161,9 +156,6 @@ class Crystal(AtomicStructure, Lattice):
             Whether or not to overwrite files in cache if they exist. If no revision 
             number is provided, files will always be overwritten. 
         """
-        if download_dir is None:
-            download_dir = SKUED_STRUCTURE_CACHE
-
         with PDBParser(ID = ID, download_dir = download_dir) as parser:
             return cls(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
                        lattice_vectors = parser.lattice_vectors(),

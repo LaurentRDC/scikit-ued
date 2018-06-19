@@ -16,6 +16,7 @@ from os import remove
 from pathlib import Path
 from re import sub
 from string import digits, punctuation
+from tempfile import gettempdir
 from urllib.request import urlretrieve
 
 import numpy as np
@@ -26,6 +27,7 @@ from . import Atom, Lattice, ParseError, frac_coords
 from .. import affine_map, transform
 from .spg_data import HM2Hall, Number2Hall, SymOpsHall
 
+SKUED_STRUCTURE_CACHE = Path(gettempdir()) / 'skued_cache'
 
 class AbstractStructureParser(AbstractContextManager):
     """
@@ -87,14 +89,16 @@ class PDBParser(AbstractStructureParser):
     ID : str
         Protein DataBank identification. The correct .pdb file will be downloaded,
         cached and parsed.
-    download_dir : path-like object
-        Directory where to save the PDB file. Default is a local folder in the current directory
+    download_dir : path-like object or None, optional
+        Directory where to save the PDB file.
     overwrite : bool, optional
         Whether or not to overwrite files in cache if they exist. If no revision 
         number is provided, files will always be overwritten. 
     """
+    def __init__(self, ID, download_dir = None, overwrite = False):
+        if download_dir is None:
+            download_dir = SKUED_STRUCTURE_CACHE
 
-    def __init__(self, ID, download_dir = 'pdb_cache', overwrite = False):
         filename = self.retrieve_pdb_file(pdb_code = ID, 
                                           download_dir = download_dir, 
                                           overwrite = overwrite)
@@ -122,7 +126,7 @@ class PDBParser(AbstractStructureParser):
 
         Returns
         -------
-        file : str 
+        file : pathlib.Path
             Pointer to the downloaded file
         """
         # Get the compressed PDB structure
@@ -133,9 +137,10 @@ class PDBParser(AbstractStructureParser):
 
         # Where does the final PDB file get saved?
         if download_dir is None:
-            path = Path.cwd() /code[1:3]
+            path = SKUED_STRUCTURE_CACHE
         else:
             path = Path(download_dir)
+        
         if not path.exists():
             path.mkdir()
 
@@ -155,7 +160,7 @@ class PDBParser(AbstractStructureParser):
                 out.writelines(gz)
         remove(filename)
 
-        return final_file
+        return Path(final_file)
     
     @property
     def filename(self):
@@ -500,17 +505,20 @@ class CODParser(CIFParser):
         COD identification number.
     revision : int or None, optional
         Revision number. If None (default), the latest revision is used.
-    download_dir : path-like object, optional
-        Directory where to save the CIF file. Default is a local folder in the current directory
+    download_dir : path-like object or None, optional
+        Directory where to save the CIF file.
     overwrite : bool, optional
         Whether or not to overwrite files in cache if they exist. If no revision 
         number is provided, files will always be overwritten. 
     """
-    def __init__(self, num, revision = None, download_dir = 'cod_cache', overwrite = False, **kwargs):
+    def __init__(self, num, revision = None, download_dir = None, overwrite = False, **kwargs):
         if revision is None:
             overwrite = True
 
+        if download_dir is None:
+            download_dir = SKUED_STRUCTURE_CACHE
         download_dir = Path(download_dir)
+
         if not download_dir.exists():
             download_dir.mkdir()
         

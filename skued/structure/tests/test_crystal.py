@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import pickle
+import socket
 import tempfile
 import unittest
+from contextlib import suppress
 from copy import copy, deepcopy
 from itertools import permutations
 from math import radians
@@ -21,6 +23,17 @@ except ImportError:
     ASE = False
 else:
     ASE = True
+
+def connection_available():
+    """ Returns whether or not an internet connection is available """
+    with suppress(OSError):
+        try:
+            socket.create_connection(("www.google.com", 80))
+        except:
+            return False
+        else:
+            return True
+    return False
 
 @unittest.skipIf(not ASE, 'ASE not importable')
 class TestAseAtoms(unittest.TestCase):
@@ -153,23 +166,23 @@ class TestCrystalConstructors(unittest.TestCase):
         """ Test that a name not in Crystal.builtins will raise a ValueError """
         with self.assertRaises(ValueError):
             c = Crystal.from_database('___')
-    
+        
+    @unittest.skipUnless(connection_available(), "Internet connection is required.")
     def test_from_pdb(self):
         """ Test Crystal.from_pdb constructor """
-        with tempfile.TemporaryDirectory() as temp_dir:
-            # the tests on PDBParser are also using the test_cache folder
-            c = Crystal.from_pdb('1fbb', download_dir = temp_dir)
-            self.assertIn('1fbb', c.source)
+        c = Crystal.from_pdb('1fbb')
+        self.assertIn('1fbb', c.source)
     
+    @unittest.skipUnless(connection_available(), "Internet connection is required.")
     def test_from_cod(self):
         """ Test building a Crystal object from the COD """
-        with tempfile.TemporaryDirectory() as temp_dir:
-            # revision = None and latest revision should give the same Crystal
-            c = Crystal.from_cod(1521124, download_dir = temp_dir)
-            c2 = Crystal.from_cod(1521124, revision = 176429, download_dir = temp_dir)
+        # revision = None and latest revision should give the same Crystal
+        c = Crystal.from_cod(1521124)
+        c2 = Crystal.from_cod(1521124, revision = 176429)
 
         self.assertEqual(c, c2)     
 
+    @unittest.skipUnless(connection_available(), "Internet connection is required.")
     def test_from_cod_new_dir(self):     
         """ Test that a cache dir is created by Crystal.from_cod """
         with tempfile.TemporaryDirectory() as temp_dir:
