@@ -33,8 +33,6 @@ def powdersim(crystal, q, fwhm_g = 0.03, fwhm_l = 0.06, **kwargs):
     qs = np.sqrt(Gx**2 + Gy**2 + Gz**2)
     intensities = np.absolute(structure_factor(crystal, h, k, l))**2
 
-    psf = pseudo_voigt(q, center = np.mean(q), fwhm_g = fwhm_g, fwhm_l = fwhm_l)
-
     pattern = np.zeros_like(q)
     for qi, i in zip(qs, intensities):
         pattern += i * pseudo_voigt(q, qi, fwhm_g, fwhm_l)
