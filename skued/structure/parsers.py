@@ -511,6 +511,13 @@ class CODParser(CIFParser):
         Whether or not to overwrite files in cache if they exist. If no revision 
         number is provided, files will always be overwritten. 
     """
+    # Database mirrors are made available
+    # see http://wiki.crystallography.net/codmirrors/
+    # TODO: add mechanism to check all three databases
+    mirrors = ('http://www.crystallography.net/cod/',
+               'http://cod.ibt.lt/cod',
+               'http://qiserver.ugr.es/cod/')
+
     def __init__(self, num, revision = None, download_dir = None, overwrite = False, **kwargs):
         if revision is None:
             overwrite = True
