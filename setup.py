@@ -4,6 +4,8 @@ from glob import glob
 from itertools import chain
 from pathlib import Path
 from unittest import TestLoader
+#import numpy
+# from Cython.Build import cythonize
 
 from setuptools import find_packages, setup
 
@@ -62,7 +64,7 @@ if __name__ == '__main__':
         install_requires = REQUIREMENTS,
         keywords = 'ultrafast electron diffraction',
         project_urls = {
-            'Documentation' : 'http://scikit-ued.readthedocs.io/en/master/',
+            'Documentation' : 'https://scikit-ued.readthedocs.io/',
             'Source'        : 'https://github.com/LaurentRDC/scikit-ued',
         },
         python_requires = '>=3.6',
@@ -72,7 +74,10 @@ if __name__ == '__main__':
         include_package_data = True,
         zip_safe = False,
         test_suite = 'setup.skued_test_suite', 
-
+#        include_dirs = [numpy.get_include()],
+#        ext_modules = cythonize("skued/*/**.pyx",
+#                                 compiler_directives = {'language_level':3,
+#                                                        'boundscheck': False}),
         # list of possible classifiers:
         #  https://pypi.python.org/pypi?%3Aaction=list_classifiers
         classifiers = ['Environment :: Console',
