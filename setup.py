@@ -4,16 +4,10 @@ from glob import glob
 from itertools import chain
 from pathlib import Path
 from unittest import TestLoader
+
 #import numpy
-# from Cython.Build import cythonize
-
-from setuptools import find_packages, setup
-
 #from Cython.Build import cythonize
-
-# To upload to pypi.org:
-#   >>> python setup.py sdist
-#   >>> twine upload dist/scikit-ued-x.x.x.tar.gz
+from setuptools import find_packages, setup
 
 PACKAGE_NAME    = 'scikit-ued'
 DESCRIPTION     = 'Collection of algorithms and functions for ultrafast electron diffraction'
