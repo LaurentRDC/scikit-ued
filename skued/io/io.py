@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
-import skimage
+
 import tifffile
 
-from .merlin import mibread
 from .dm import dmread
+from .merlin import mibread
 
 try:
     import pyqtgraph as pg
@@ -53,7 +53,11 @@ def diffread(fname):
     elif fname.endswith(('.dm3', '.dm4')):
         return dmread(fname)
     
-    return skimage.io.imread(fname, as_grey = True)
+    # Worst-case scenario, we need skimage.io
+    # since this is a slow import, we import it here
+    import skimage.io
+
+    return skimage.io.imread(fname, as_gray = True)
 
 def diffshow(image):
     """ 

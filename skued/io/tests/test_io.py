@@ -16,6 +16,8 @@ TEST_MIB_MULTI = Path(__file__).parent / 'test_multi.mib'
 TEST_DM3 = Path(__file__).parent / 'bismuth.dm3'
 TEST_DM4 = Path(__file__).parent / 'bismuth.dm4'
 
+TEST_PNG = Path(__file__).parent / 'png_test.png'
+
 class TestDiffRead(unittest.TestCase):
 
     def test_on_merlin_image_binary(self):
@@ -52,6 +54,13 @@ class TestDiffRead(unittest.TestCase):
         from_skued = diffread(path)
         self.assertTrue(np.allclose(im, from_skued))
         os.remove(path)
+    
+    def test_on_skimage_png(self):
+        """ Test the last resort of using skimage.io for pngs """
+        from_skimage = diffread(TEST_PNG)
+
+        self.assertTupleEqual(from_skimage.shape, (256,256))
+        self.assertTrue(np.allclose(from_skimage, np.ones_like(from_skimage)))
 
 class TestMIBHeader(unittest.TestCase):
 

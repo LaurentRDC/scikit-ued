@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Robust statistics and estimators
+"""
 
 import numpy as np
 
