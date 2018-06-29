@@ -108,6 +108,15 @@ Robust statistics
 
     mad
 
+Fitting
+-------
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+
+    exponential_decay
+
 Non-uniform Fast Fourier Transform
 ----------------------------------
 
