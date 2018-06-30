@@ -14,8 +14,9 @@ environment:
                         # to the matrix section.
       TEST_CMD: "python -m unittest discover --verbose"
 
-      CONDA_DEPENDENCIES: "numpy scipy cython scikit-image"
-      PIP_DEPENDENCIES: "pywavelets spglib pycifrw ase npstreams tifffile"
+      # Technically all dependencies can be found on conda-forge channel
+      CONDA_DEPENDENCIES: "numpy scipy cython scikit-image spglib pycifrw ase pywavelets tifffile"
+      PIP_DEPENDENCIES: "npstreams"
 
   matrix:
 
@@ -47,6 +48,10 @@ install:
     # Test that PATH is set correctly
     - "conda --version"
     - "python --version"
+
+    # Add conda-forge channel since scikit-ued will ultimately use them
+    # when it is installed through conda-forge
+    - "conda config --add channels conda-forge"
 
 # Not a .NET project, we build ci-helpers in the install step instead
 build: false
