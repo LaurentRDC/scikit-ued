@@ -51,9 +51,6 @@ using the standard library's `unittest` module.
 Optional dependencies
 ---------------------
 
-While it is not strictly required, the Fourier transform routines from ``pyfftw`` will be preferred If
-``pyfftw`` is installed.
-
 For displaying diffraction images with interactive contrast using the ``skued.diffshow`` function, PyQtGraph is required.
 
 Related projects
