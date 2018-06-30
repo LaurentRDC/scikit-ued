@@ -52,6 +52,10 @@ def xcorr(arr1, arr2, mode = 'full', axes = None):
         Cross-correlation. If ``arr1`` or ``arr2`` is complex, then
         ``out`` will be complex as well; otherwise, ``out`` will be
         of float type.
+
+    Notes
+    -----
+    If ``pyfftw`` is installed, its routines will be preferred.
     
     Raises
     ------
