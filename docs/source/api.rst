@@ -116,6 +116,7 @@ Fitting
     :nosignatures:
 
     exponential_decay
+    biexponential_decay
 
 Non-uniform Fast Fourier Transform
 ----------------------------------
