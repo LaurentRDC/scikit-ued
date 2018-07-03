@@ -88,7 +88,15 @@ class TestBiExponentialDecay(unittest.TestCase):
                                 tconst1 = self.tconst1, tconst2 = self.tconst2, offset = offset)
 
         self.assertTrue(np.all(np.greater_equal(I, offset)))
+    
+    def test_against_exponential(self):
+        """ Test that ``biexponential_decay`` reduces to ``exponential_decay`` for appropriate parameters """
+        t = np.arange(-10, 50, step = 0.3)
+        offset = 2
+        exp = exponential_decay(t, self.tzero, self.amp1, self.tconst1, offset = offset)
+        biexp=biexponential_decay(t,self.tzero,self.amp1, 0, self.tconst1, 1, offset = offset)
 
+        self.assertTrue(np.allclose(exp, biexp))
 
 
 if __name__ == '__main__':
