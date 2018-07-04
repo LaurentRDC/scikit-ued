@@ -25,7 +25,7 @@ def exponential(time, tzero, amp, tconst, offset = 0):
     time : `~numpy.ndarray`, shape(N,)
         Time values array [ps].
     tzero : float
-        Time-zero :math:`t_0` [ps]. Exponential decay happens for :math:`t > t_0`.
+        Time-zero :math:`t_0` [ps]. Exponential behavior happens for :math:`t > t_0`.
     amp : float
         Initial amplitude :math:`I_0`.
     tconst : float
@@ -36,7 +36,7 @@ def exponential(time, tzero, amp, tconst, offset = 0):
     Returns
     -------
     exp_decay : `~numpy.ndarray`, shape (N,)
-        Exponential decay curve.
+        Exponential curve.
     
     See also
     --------
@@ -66,7 +66,7 @@ def biexponential(time, tzero, amp1, amp2, tconst1, tconst2, offset = 0):
     time : `~numpy.ndarray`, shape(N,)
         Time values array [ps].
     tzero : float
-        Time-zero :math:`t_0` [ps]. Exponential decay happens for :math:`t > t_0`.
+        Time-zero :math:`t_0` [ps]. Exponential behavior happens for :math:`t > t_0`.
     amp1 : float
         Initial amplitude :math:`I_1`.
     amp2 : float
@@ -81,12 +81,13 @@ def biexponential(time, tzero, amp1, amp2, tconst1, tconst2, offset = 0):
     Returns
     -------
     biexp_decay : `~numpy.ndarray`, shape (N,)
-        Biexponential decay curve.
+        Biexponential curve.
     
     See also
     --------
     exponential : single-exponential curve with onset
     """
-    exp1 = exponential(time, tzero, amp1, tconst1, offset = offset/2)
-    exp2 = exponential(time, tzero, amp2, tconst2, offset = offset/2)
-    return exp1 + exp2
+    arr = np.full_like(time, offset, dtype = np.float)
+    arr += exponential(time, tzero, amp1, tconst1)
+    arr += exponential(time, tzero, amp2, tconst2)
+    return arr
