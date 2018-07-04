@@ -5,10 +5,6 @@ Convenience functions for fitting time-series.
 
 import numpy as np
 
-# TODO: triexponential
-#       oscillation after onset
-#       Test against negative amplitudes or time-constants?
-
 def exponential(time, tzero, amp, tconst, offset = 0):
     """
     Exponential curve with onset. Equivalent to the following function:
