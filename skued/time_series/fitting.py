@@ -9,9 +9,9 @@ import numpy as np
 #       oscillation after onset
 #       Test against negative amplitudes or time-constants?
 
-def exponential_decay(time, tzero, amp, tconst, offset = 0):
+def exponential(time, tzero, amp, tconst, offset = 0):
     """
-    Exponential decay curve with onset. Equivalent to the following function:
+    Exponential curve with onset. Equivalent to the following function:
 
     .. math::
 
@@ -44,15 +44,15 @@ def exponential_decay(time, tzero, amp, tconst, offset = 0):
     
     See also
     --------
-    biexponential_decay : bi-exponential decay
+    biexponential : bi-exponential curve with onset
     """
     arr = np.full_like(time, amp + offset, dtype = np.float)
     arr[time > tzero] = amp * np.exp(-(time[time > tzero] - tzero)/tconst) + offset
     return arr
 
-def biexponential_decay(time, tzero, amp1, amp2, tconst1, tconst2, offset = 0):
+def biexponential(time, tzero, amp1, amp2, tconst1, tconst2, offset = 0):
     """
-    Bi-exponential decay curve with onset. Equivalent to the following function:
+    Bi-exponential curve with onset. Equivalent to the following function:
 
     .. math::
 
@@ -89,10 +89,8 @@ def biexponential_decay(time, tzero, amp1, amp2, tconst1, tconst2, offset = 0):
     
     See also
     --------
-    exponential_decay : single-exponential decay
+    exponential : single-exponential curve with onset
     """
-    arr = np.full_like(time, amp1 + amp2, dtype = np.float)
-    after_tzero = time > tzero
-    arr[after_tzero] = amp1 * np.exp(-(time[time > tzero] - tzero)/tconst1)
-    arr[after_tzero] += amp2 * np.exp(-(time[time > tzero] - tzero)/tconst2)
-    return arr + offset
+    exp1 = exponential(time, tzero, amp1, tconst1, offset = offset/2)
+    exp2 = exponential(time, tzero, amp2, tconst2, offset = offset/2)
+    return exp1 + exp2

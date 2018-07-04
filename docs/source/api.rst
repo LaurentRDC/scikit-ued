@@ -115,8 +115,8 @@ Fitting
     :toctree: functions/
     :nosignatures:
 
-    exponential_decay
-    biexponential_decay
+    exponential
+    biexponential
 
 Non-uniform Fast Fourier Transform
 ----------------------------------
