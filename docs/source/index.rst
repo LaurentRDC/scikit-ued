@@ -31,6 +31,7 @@ General Documentation
     tutorials/structure
     tutorials/image
     tutorials/plotting
+    tutorials/time_series
     tutorials/simulation
     api
 

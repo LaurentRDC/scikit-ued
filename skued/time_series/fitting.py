@@ -35,7 +35,7 @@ def exponential(time, tzero, amp, tconst, offset = 0):
 
     Returns
     -------
-    exp_decay : `~numpy.ndarray`, shape (N,)
+    exp : `~numpy.ndarray`, shape (N,)
         Exponential curve.
     
     See also
@@ -80,7 +80,7 @@ def biexponential(time, tzero, amp1, amp2, tconst1, tconst2, offset = 0):
 
     Returns
     -------
-    biexp_decay : `~numpy.ndarray`, shape (N,)
+    biexp : `~numpy.ndarray`, shape (N,)
         Biexponential curve.
     
     See also
