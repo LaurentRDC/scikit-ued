@@ -76,3 +76,55 @@ def potential_map(q, I, crystal, mesh):
     # Squeeze out extra dimensions (e.g. if mesh was 2D)
     potential_map = np.sum(exp_SF * np.real(np.exp(1j * np.angle(SF))) * np.cos(xx*qx + yy*qy + zz*qz), axis = 3)
     return np.squeeze(potential_map)
+
+def potential_synthesis(reflections, intensities, crystal, mesh):
+    """
+    Synthesize the electrostatic potential from a list of experimental 
+    reflections and associated diffracted intensities. Diffraction phases are 
+    taken from a known structure
+    
+    Parameters
+    ----------
+    reflections : iterable of tuples
+        Iterable of Miller indices as tuples (e.g. `[(0,1,0), (0, -1, 2)]`)
+    intensities : Iterable of floats
+        Experimental diffracted intensity for corresponding reflections.
+    crystal : skued.Crystal
+        Crystal that gave rise to the diffracted intensities.
+    mesh : 3-tuple ndarrays, ndim 2 or ndim 3
+        Real-space mesh over which to calculate the scattering map.
+        Format should be similar to the output of numpy.meshgrid. 
+
+    Returns
+    -------
+    out : ndarray, ndim 2 or ndim 3
+        Electrostatic potential computed over the mesh.
+    """
+    intensities = np.array(intensities)
+    if np.any(intensities < 0):
+        raise ValueError('Diffracted intensity cannot physically be negative.')
+    
+    # We want to support 2D and 3D meshes, therefore 
+    # expand mesh until 4D (last dim is for loop over reflections)
+    # Extra dimensions will be squeezed out later
+    # Note: np.expand_dims raises a deprecation warning
+    # TODO: fix it
+    with suppress_warnings():
+        xx, yy, zz = mesh
+        while xx.ndim < 4:
+            xx, yy, zz = np.expand_dims(xx, 3), np.expand_dims(yy, 3), np.expand_dims(zz, 3)
+    
+    # Reconstruct the structure factors from experimental data
+    # We need to compute the theoretical phases from the crystal structure
+    # To do this, we need to change 'reflections' into three iterables:
+    # h, k, and l arrays
+    hs, ks, ls = np.hsplit(np.array(reflections), 3)
+    theoretical_SF = structure_factor(crystal, hs, ks, ls)
+    phases = np.angle(theoretical_SF)
+    experimental_SF = np.sqrt(intensities) * np.exp(1j * phases)
+    experimental_SF = experimental_SF.reshape((1,1,1,-1))
+    
+    qx, qy, qz = crystal.scattering_vector(hs, ks, ls)
+    qx, qy, qz = qx.reshape((1,1,1,-1)), qy.reshape((1,1,1,-1)), qz.reshape((1,1,1,-1))
+    p = np.sum(experimental_SF * np.cos(xx*qx + yy*qy + zz*qz), axis = 3)
+    return np.squeeze(p)

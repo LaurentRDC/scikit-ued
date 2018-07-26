@@ -236,6 +236,7 @@ Visualization
     :nosignatures:
 
     potential_map
+    potential_synthesis
 
 ============
 Input/Output
