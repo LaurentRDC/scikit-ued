@@ -11,6 +11,7 @@ from .utils import suppress_warnings
 
 # TODO: add tutorial
 # TODO: add references
+# TODO: use potential_synthesis inside potential_map
 def potential_map(q, I, crystal, mesh):
     """ 
     Compute the electrostatic potential from powder diffraction data.
@@ -100,6 +101,8 @@ def potential_synthesis(reflections, intensities, crystal, mesh):
     out : ndarray, ndim 2 or ndim 3
         Electrostatic potential computed over the mesh.
     """
+    assert len(intensities) == len(reflections)
+    
     intensities = np.array(intensities)
     if np.any(intensities < 0):
         raise ValueError('Diffracted intensity cannot physically be negative.')
@@ -113,7 +116,7 @@ def potential_synthesis(reflections, intensities, crystal, mesh):
         xx, yy, zz = mesh
         while xx.ndim < 4:
             xx, yy, zz = np.expand_dims(xx, 3), np.expand_dims(yy, 3), np.expand_dims(zz, 3)
-    
+
     # Reconstruct the structure factors from experimental data
     # We need to compute the theoretical phases from the crystal structure
     # To do this, we need to change 'reflections' into three iterables:
@@ -127,4 +130,4 @@ def potential_synthesis(reflections, intensities, crystal, mesh):
     qx, qy, qz = crystal.scattering_vector(hs, ks, ls)
     qx, qy, qz = qx.reshape((1,1,1,-1)), qy.reshape((1,1,1,-1)), qz.reshape((1,1,1,-1))
     p = np.sum(experimental_SF * np.cos(xx*qx + yy*qy + zz*qz), axis = 3)
-    return np.squeeze(p)
+    return np.squeeze(np.real(p))
