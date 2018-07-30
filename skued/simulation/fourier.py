@@ -5,6 +5,8 @@ These functions are not meant to be used outside of the simulation subpackage.
 """
 
 import numpy as np
+from scipy.fftpack import next_fast_len
+from collections.abc import Iterable
 
 def fft2freq(x, y, indexing = 'xy'):
     """ 
@@ -41,6 +43,15 @@ def fft2freq(x, y, indexing = 'xy'):
     freqs_y = np.fft.fftfreq(len(extent_y), d = spacing_y)
 
     return np.meshgrid(freqs_x, freqs_y, indexing = indexing)
+
+def next_fast_shape(a):
+    """
+    Calculate the next fast Fourier transform shape. This is a generalization of ``scipy.fftpack.next_fast_len``
+    that works on array shapes as well.
+    """
+    if not isinstance(a, Iterable):
+        return next_fast_len(a)
+    return tuple(map(next_fast_len, a))
 
 def limit_bandwidth(image, K, limit):
     """
