@@ -45,7 +45,7 @@ To install the latest development version from `Github <https://github.com/Laure
 
 After installing scikit-ued you can use it like any other Python module as ``skued``.
 
-Each version is tested against **Python 3.6**. If you are using a different version, tests can be run
+Each version is tested against **Python 3.6+**. If you are using a different version, tests can be run
 using the standard library's `unittest` module.
 
 Optional dependencies
