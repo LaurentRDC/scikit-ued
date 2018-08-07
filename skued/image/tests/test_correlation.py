@@ -4,7 +4,7 @@ import unittest
 import numpy as np
 from scipy.signal import correlate
 
-from .. import mnxc2, xcorr
+from .. import mnxc2, xcorr, normxcorr2_masked
 
 np.random.seed(23)
 
@@ -102,6 +102,43 @@ class TestMNXC2(unittest.TestCase):
 		ret = mnxc2(im1, im2)
 		self.assertTupleEqual(ret.shape, (63,63,5))
 
+class TestNormxcorr2Masked(unittest.TestCase):
+
+	def test_side_effects(self):
+		""" Test that normxcorr2_masked does not modify the input in-place """
+		im1 = np.random.random(size = (32,32,5))
+		im2 = np.random.random(size = (32,32,5))
+
+		m1 = np.random.choice([True, False], size = im1.shape)
+		m2 = np.random.choice([True, False], size = im2.shape)
+
+		# If arrays are written to, ValueError is raised
+		for arr in (im1, im2, m1, m2):
+			arr.setflags(write = False)
+		
+		xcorr = normxcorr2_masked(im1, im2, m1, m2)
+	
+	def test_data_bounds(self):
+		""" Test that the outputs of normxcorr2_masked have the expected bounds ,i.e. correlation in [-1, 1] """
+		im1 = np.random.random(size = (32,32))
+		im2 = np.random.random(size = (31,67))
+		m1 = np.random.choice([True, False], size = im1.shape)
+		m2 = np.random.choice([True, False], size = im2.shape)
+		ret, overlap = normxcorr2_masked(im1, im2, m1, m2)
+
+		self.assertTrue(np.all(ret >= -1))
+		self.assertTrue(np.all(ret <= 1))
+
+		self.assertTrue(np.all(overlap >= 0))
+
+	def test_final_shape(self):
+		""" Test that the normxcorr2_masked has shape s1 + s2  - 1 """
+		im1 = np.random.random(size = (32,32))
+		im2 = np.random.random(size = (31,67))
+		m1 = np.random.choice([True, False], size = im1.shape)
+		m2 = np.random.choice([True, False], size = im2.shape)
+		ret, _ = normxcorr2_masked(im1, im2, m1, m2)
+		self.assertTupleEqual(ret.shape, (62,98))
 
 if __name__ == '__main__':
 	unittest.main()
