@@ -3,8 +3,9 @@ import unittest
 
 import numpy as np
 from scipy.signal import correlate
+from skimage import data
 
-from .. import mnxc2, xcorr, normxcorr2_masked
+from .. import mnxc2, normxcorr2_masked, xcorr
 
 np.random.seed(23)
 
@@ -106,8 +107,8 @@ class TestNormxcorr2Masked(unittest.TestCase):
 
 	def test_side_effects(self):
 		""" Test that normxcorr2_masked does not modify the input in-place """
-		im1 = np.random.random(size = (32,32,5))
-		im2 = np.random.random(size = (32,32,5))
+		im1 = np.random.random(size = (32,32))
+		im2 = np.random.random(size = (32,32))
 
 		m1 = np.random.choice([True, False], size = im1.shape)
 		m2 = np.random.choice([True, False], size = im2.shape)
@@ -139,6 +140,7 @@ class TestNormxcorr2Masked(unittest.TestCase):
 		m2 = np.random.choice([True, False], size = im2.shape)
 		ret, _ = normxcorr2_masked(im1, im2, m1, m2)
 		self.assertTupleEqual(ret.shape, (62,98))
+
 
 if __name__ == '__main__':
 	unittest.main()

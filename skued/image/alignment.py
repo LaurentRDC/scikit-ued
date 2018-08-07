@@ -12,7 +12,7 @@ from skimage.filters import gaussian
 
 from npstreams import array_stream, peek
 
-from .correlation import mnxc2
+from .correlation import mnxc2, normxcorr2_masked
 
 non = lambda s: s if s < 0 else None
 mom = lambda s: max(0, s)
@@ -241,3 +241,51 @@ def diff_register(image, reference, mask = None, crop = True, sigma = 5):
     # 		of mnxc2?
     shift_row_col = center - np.array(xcorr.shape)/2 + 1
     return -shift_row_col[::-1]	# Reversing to be compatible with shift_image
+
+def masked_register_translation(fixed_image, moving_image, fixed_mask, moving_mask = None, overlap_ratio = 3/10):
+    """
+    Masked image translation registration.
+
+    Parameters
+    ----------
+    fixed_image : `~numpy.ndarray`, shape (M,N)
+        Reference, or 'fixed-image' in the language of _[PADF]. This array can also
+        be a stack of images; in this case, the cross-correlation
+        is computed along the two axes passed to ``axes``.
+    moving_image : `~numpy.ndarray`, shape (M,N)
+        Moving image. This array can also be a stack of images; 
+        in this case, the cross-correlation is computed along the 
+        two axes passed to ``axes``.
+    fixed_mask : `~numpy.ndarray`, shape (M,N)
+        Mask of `fixed_image`. The mask should evaluate to `True`
+        (or 1) on valid pixels. 
+    moving_mask : `~numpy.ndarray`, shape (M,N) or None, optional
+        Mask of `moving_image`. The mask should evaluate to `True`
+        (or 1) on valid pixels. If `None`, `fixed_mask` will be used in 
+        place of `moving_mask`.
+    overlap_ratio : float, optional
+        TODO
+        
+    Returns
+    -------
+    shift : `~numpy.ndarray`, shape (2,), dtype float
+        Shift in rows and columns. The ordering is compatible with :func:`shift_image`
+        
+    References
+    ----------
+    .. [PADF] Dirk Padfield. Masked Object Registration in the Fourier Domain. 
+        IEEE Transactions on Image Processing, vol.21(5), pp. 2706-2718 (2012). 
+    """
+    if moving_mask is None:
+        moving_mask = np.array(fixed_mask)
+
+    corr, overlap = normxcorr2_masked(fixed_image, moving_image, fixed_mask, moving_mask)
+
+    number_px_threshold = overlap_ratio * np.max(overlap)
+    corr[overlap < number_px_threshold] = 0.0
+
+    # Generalize to the average of multiple maxima
+    maxima = np.transpose(np.nonzero(corr == corr.max()))
+    center = np.mean(maxima, axis = 0)
+    shift = center - np.array(moving_image.shape) + 1
+    return -shift
