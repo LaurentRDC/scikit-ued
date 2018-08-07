@@ -46,10 +46,11 @@ def shift_image(arr, shift, fill_value = 0):
     output = np.full_like(arr, fill_value = fill_value, dtype = final_type)
 
     # Floating point shifts are much slower
-
     j, i = tuple(shift)
     if (int(i) != i) or (int(j) != j):	# shift is float
-        subpixel_shift(arr, (i, j), output = output, cval = fill_value)
+        # Image must not be float16
+        # because subpixel shifting involves interpolation
+        subpixel_shift(arr.astype(np.float), (i, j), output = output, cval = fill_value)
         return output
     
     i, j = int(i), int(j)

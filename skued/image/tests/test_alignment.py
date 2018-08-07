@@ -146,6 +146,13 @@ class TestShiftImage(unittest.TestCase):
 		shifted = shift_image(arr, (0,0))
 		self.assertTrue(np.allclose(arr, shifted))
 	
+	def test_shift_float16(self):
+		""" Interpolation requires float32 or more bits. """
+		arr = np.random.random( size = (64, 64) ).astype(np.float16)
+		shifted1 = shift_image(arr, (5, -3))
+		shifted2 = shift_image(shifted1, (-5, 3))
+		self.assertTrue(np.allclose(arr[5:-5, 5:-5], shifted2[5:-5, 5:-5]))
+	
 	def test_back_and_forth(self):
 		""" Test shift_image in two directions """
 		arr = np.random.random( size = (64, 64) )
