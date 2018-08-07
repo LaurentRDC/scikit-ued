@@ -17,43 +17,27 @@ np.random.seed(23)
 
 class TestDiffRegister(unittest.TestCase):
 
-	def test_trivial_skimage_data_cropped(self):
+	def test_trivial_skimage_data(self):
 		""" Test that the translation between two identical images is (0,0), even
-		with added random noise and random masks, with diff_register(..., crop = True) """
+		with added random noise and random masks """
 
 		im = np.asfarray(data.camera())
 
 		with self.subTest('No noise'):
-			shift = diff_register(im, im, crop = True)
+			shift = diff_register(im, im)
 			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
 		
 		with self.subTest('With 5% noise'):
 			noise1 = 0.05 * im.max() * np.random.random(size = im.shape)
 			noise2 = 0.05 * im.max() * np.random.random(size = im.shape)
 
-			shift = diff_register(im + noise1, im + noise2, crop = True)
-			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
-
-	def test_trivial_skimage_data_no_crop(self):
-		""" Test that the translation between two identical images is (0,0), even
-		with added random noise and random masks, with diff_register(..., crop = False) """
-
-		im = np.asfarray(data.camera())
-
-		with self.subTest('No noise'):
-			shift = diff_register(im, im, crop = False)
-			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
-		
-		with self.subTest('With 5% noise'):
-			noise1 = 0.05 * im.max() * np.random.random(size = im.shape)
-			noise2 = 0.05 * im.max() * np.random.random(size = im.shape)
-
-			shift = diff_register(im + noise1, im + noise2, crop = False)
+			shift = diff_register(im + noise1, im + noise2)
 			self.assertTrue(np.allclose(shift, (0,0), atol = 1))
 	
 	def test_shifted_skimage_data(self):
 		""" Test that translation is registered for data from scikit-image """
-		random_shift = np.random.randint(low = 0, high = 10, size = (2,))
+		np.random.seed(23)
+		random_shift = np.random.randint(low = 0, high = 4, size = (2,))
 
 		im = np.asfarray(data.camera())
 		im2 = np.asfarray(data.camera())
@@ -65,22 +49,21 @@ class TestDiffRegister(unittest.TestCase):
 
 		with self.subTest('No noise'):
 			shift = diff_register(im, im2, edge_mask)
-
-			self.assertTrue(np.allclose(shift, -random_shift, atol = 1))
+			self.assertTrue(np.allclose(shift, random_shift, atol = 1))
 		
 		with self.subTest('With 5% noise'):
 			noise1 = 0.05 * im.max() * np.random.random(size = im.shape)
 			noise2 = 0.05 * im.max() * np.random.random(size = im.shape)
 
 			shift = diff_register(im + noise1, im2 + noise2, edge_mask)
-			self.assertTrue(np.allclose(shift, -random_shift, atol = 1))
+			self.assertTrue(np.allclose(shift, random_shift, atol = 1))
 		
-		with self.subTest('No crop with 10% noise'):
+		with self.subTest('With 10% noise'):
 			noise1 = 0.1 * im.max() * np.random.random(size = im.shape)
 			noise2 = 0.1 * im.max() * np.random.random(size = im.shape)
 
-			shift = diff_register(im + noise1, im2 + noise2, edge_mask, crop = False)
-			self.assertTrue(np.allclose(shift, -random_shift, atol = 1))
+			shift = diff_register(im + noise1, im2 + noise2, edge_mask)
+			self.assertTrue(np.allclose(shift, random_shift, atol = 1))
 	
 	def test_side_effects(self):
 		""" Test that arrays registered by diff_register are not modified """
@@ -92,10 +75,8 @@ class TestDiffRegister(unittest.TestCase):
 		for arr in (im1, im2, mask):
 			arr.setflags(write = False)
 		
-		shift = diff_register(im1, im2, mask, crop = True, sigma = 5)
-		shift = diff_register(im1, im2, mask, crop = False, sigma = 5)
-		shift = diff_register(im1, im2, mask, crop = True, sigma = None)
-		shift = diff_register(im1, im2, mask, crop = False, sigma = None)
+		shift = diff_register(im1, im2, mask)
+		shift = diff_register(im1, im2)
 
 class TestIAlign(unittest.TestCase):
 
@@ -105,33 +86,15 @@ class TestIAlign(unittest.TestCase):
 		
 		self.assertEqual(len(aligned), 5)
 		self.assertSequenceEqual(data.camera().shape, aligned[0].shape)
-		
-	def test_misaligned_canned_images_fast(self):
+
+	def test_misaligned_canned_images(self):
 		""" shift images from skimage.data by entire pixels.
 	   We don't expect perfect alignment."""
 		original = data.camera()
 		misaligned = [shift_image(original, (randint(-4, 4), randint(-4, 4))) 
 					  for _ in range(5)]
 
-		aligned = ialign(misaligned, reference = original, fast = True)
-
-		# TODO: find a better figure-of-merit for alignment
-		for im in aligned:
-			# edge will be filled with zeros, we ignore
-			diff = np.abs(original[5:-5, 5:-5] - im[5:-5, 5:-5])
-
-			# Want less than 1% difference
-			percent_diff = np.sum(diff) / (diff.size * (original.max() - original.min()))
-			self.assertLess(percent_diff, 1)
-
-	def test_misaligned_canned_images_notfast(self):
-		""" shift images from skimage.data by entire pixels.
-	   We don't expect perfect alignment."""
-		original = data.camera()
-		misaligned = [shift_image(original, (randint(-4, 4), randint(-4, 4))) 
-					  for _ in range(5)]
-
-		aligned = ialign(misaligned, reference = original, fast = False)
+		aligned = ialign(misaligned, reference = original)
 
 		# TODO: find a better figure-of-merit for alignment
 		for im in aligned:
@@ -192,28 +155,13 @@ class TestAlign(unittest.TestCase):
 		aligned = align(im, reference = im, fill_value = np.nan)
 		self.assertEqual(im.dtype, data.camera().dtype)
 
-	def test_misaligned_canned_images_fast(self):
+	def test_misaligned_canned_images(self):
 		""" shift images from skimage.data by entire pixels.
 	   	We don't expect perfect alignment."""
 		original = data.camera()
 		misaligned = shift_image(original, (randint(-4, 4), randint(-4, 4))) 
 
-		aligned = align(misaligned, reference = original, fast = True)
-
-		# edge will be filled with zeros, we ignore
-		diff = np.abs(original[5:-5, 5:-5] - aligned[5:-5, 5:-5])
-
-		# Want less than 1% difference
-		percent_diff = np.sum(diff) / (diff.size * (original.max() - original.min()))
-		self.assertLess(percent_diff, 1)
-
-	def test_misaligned_canned_images_notfast(self):
-		""" shift images from skimage.data by entire pixels.
-	   	We don't expect perfect alignment."""
-		original = data.camera()
-		misaligned = shift_image(original, (randint(-4, 4), randint(-4, 4))) 
-
-		aligned = align(misaligned, reference = original, fast = False)
+		aligned = align(misaligned, reference = original)
 
 		# edge will be filled with zeros, we ignore
 		diff = np.abs(original[5:-5, 5:-5] - aligned[5:-5, 5:-5])
@@ -271,7 +219,6 @@ class TestMaskedRegisterTranslation(unittest.TestCase):
 				# NOTE: by looking at the test code from Padfield's MaskedFFTRegistrationCode repository,
 				#		the shifts were not xi and yi, but xi and -yi
 				self.assertTupleEqual((xi, -yi), (shift_x, shift_y))
-
 
 if __name__ == '__main__':
 	unittest.main()

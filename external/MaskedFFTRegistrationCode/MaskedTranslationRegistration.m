@@ -31,7 +31,7 @@ if( nargin < 5 )
     overlapRatio = 3/10;
 end
 
-[C,numberOfOverlapMaskedPixels] = normxcorr2_masked(fixedImage,movingImage,fixedMask,movingMask);
+[C,numberOfOverlapMaskedPixels] = mxcorr(fixedImage,movingImage,fixedMask,movingMask);
 
 imageSize = size(movingImage);
 

@@ -109,8 +109,8 @@ Let's look at the difference:
 	mask = np.zeros_like(ref, dtype = np.bool)
 	mask[0:1250, 950:1250] = True
 
-	shift = diff_register(im, ref, mask)
-	shifted = shift_image(im, -shift)
+	shift = diff_register(im, ref, mask, overlap_ratio = 1/10)
+	shifted = shift_image(im, shift)
 
 	fig, ((ax1, ax2, ax3), (ax4, ax5, ax6)) = plt.subplots(nrows = 2, ncols = 3, figsize = (9,6))
 	ax1.imshow(ref, vmin = 0, vmax = 200)
@@ -219,70 +219,6 @@ mask can be huge.
 
 Image analysis on polycrystalline diffraction patterns
 ======================================================
-
-Center-finding
---------------
-Polycrystalline diffraction patterns display concentric rings, and finding
-the center of those concentric rings is important. Let's load a test image:
-
-.. plot::
-
-	from skued import diffread
-	import matplotlib.pyplot as plt
-	path = 'Cr_1.tif'
-
-	im = diffread(path)
-	mask = np.zeros_like(im, dtype = np.bool)
-	mask[0:1250, 950:1250] = True
-
-	im[mask] = 0
-	fig = plt.figure()
-	ax = fig.add_subplot(111)
-	ax.imshow(im, vmin = 0, vmax = 200)
-
-	ax.xaxis.set_visible(False)
-	ax.yaxis.set_visible(False)
-	plt.show()
-
-This is a noisy diffraction pattern of polycrystalline vanadium dioxide. 
-Finding the center of such a symmetry pattern can be done with the 
-:func:`powder_center` routine::
-	
-	from skued import powder_center
-	ic, jc = powder_center(im, mask = mask)
-	
-	# Plotting the center as a black disk
-	import numpy as np
-	ii, jj = np.meshgrid(np.arange(im.shape[0]), np.arange(im.shape[1]),
-	                     indexing = 'ij')
-	rr = np.sqrt((ii - ic)**2 + (jj - jc)**2)
-	im[rr < 100] = 0
-
-	plt.imshow(im, vmax = 200)
-	plt.show()
-
-.. plot::
-
-    from skued import powder_center, diffread
-    import numpy as np
-    import matplotlib.pyplot as plt
-    path = 'Cr_1.tif'
-    im = diffread(path)
-    mask = np.zeros_like(im, dtype = np.bool)
-    mask[0:1250, 950:1250] = True
-    ic, jc = powder_center(im, mask = mask)
-    ii, jj = np.meshgrid(np.arange(im.shape[0]), np.arange(im.shape[1]),indexing = 'ij')
-    rr = np.sqrt((ii - ic)**2 + (jj - jc)**2)
-    im[rr < 100] = 1e6
-
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.imshow(im, vmin = 0, vmax = 200)
-
-    ax.xaxis.set_visible(False)
-    ax.yaxis.set_visible(False)
-
-    plt.show()
 
 Angular average
 ---------------
