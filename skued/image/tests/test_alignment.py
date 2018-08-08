@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
-import numpy as np
-from random import randint
 import unittest
+from pathlib import Path
+from random import randint
+
+import numpy as np
 from skimage import data
 from skimage.filters import gaussian
+from skimage.io import imread
+from skimage.feature import register_translation
 from skimage.transform import rotate
+from scipy.ndimage import fourier_shift
 
-from .. import shift_image, align, diff_register, ialign, itrack_peak
+from .. import (align, diff_register, ialign, itrack_peak,
+                masked_register_translation, shift_image)
 from .test_powder import circle_image
 
 np.random.seed(23)
@@ -61,15 +67,14 @@ class TestDiffRegister(unittest.TestCase):
 
 		with self.subTest('No noise'):
 			shift = diff_register(im, im2, edge_mask)
-
-			self.assertTrue(np.allclose(shift, -random_shift, atol = 1))
+			self.assertTrue(np.allclose(shift, random_shift, atol = 1))
 		
 		with self.subTest('With 5% noise'):
 			noise1 = 0.05 * im.max() * np.random.random(size = im.shape)
 			noise2 = 0.05 * im.max() * np.random.random(size = im.shape)
 
 			shift = diff_register(im + noise1, im2 + noise2, edge_mask)
-			self.assertTrue(np.allclose(shift, -random_shift, atol = 1))
+			self.assertTrue(np.allclose(shift, random_shift, atol = 1))
 	
 	def test_side_effects(self):
 		""" Test that arrays registered by diff_register are not modified """
@@ -231,6 +236,73 @@ class TestItrackPeak(unittest.TestCase):
         shifts = list(itrack_peak(images, row_slice = np.s_[:], col_slice = np.s_[:]))
 
         self.assertEqual(len(shifts), len(images))
+
+class TestMaskedRegisterTranslation(unittest.TestCase):
+
+	def test_padfield_data_full_mode(self):
+		""" Test translation registration for data included in Padfield 2010 in `full` convolution mode"""
+		# Test translated from MATLABimplementation `MaskedFFTRegistrationTest` file. You can find the source code here: 
+		# http://www.dirkpadfield.com/Home/MaskedFFTRegistrationCode.zip
+		IMAGES_DIR = Path(__file__).parent / 'images'
+
+		shifts = [(75, 75), (-130, 130), (130, 130)]
+		for xi, yi in shifts:
+			with self.subTest('X = {:d}, Y = {:d}'.format(xi, yi)):
+				fixed_image = imread(IMAGES_DIR / 'OriginalX{:d}Y{:d}.png'.format(xi, yi))
+				moving_image = imread(IMAGES_DIR/ 'TransformedX{:d}Y{:d}.png'.format(xi, yi))
+
+				# Our definition for masks is inverted from Padfields
+				# Invalid pixels are 1
+				fixed_mask = (fixed_image == 0)
+				moving_mask = (moving_image == 0)
+
+				# Note that shifts in x and y and shifts in cols and rows
+				shift_y, shift_x = masked_register_translation(fixed_image, moving_image, fixed_mask, moving_mask, mode = 'full', overlap_ratio = 1/10)
+				# NOTE: by looking at the test code from Padfield's MaskedFFTRegistrationCode repository,
+				#		the shifts were not xi and yi, but xi and -yi
+				self.assertTupleEqual((-xi, yi), (shift_x, shift_y))
+
+	def test_padfield_data_same_mode(self):
+		""" Test translation registration for data included in Padfield 2010 in `same` convolution mode"""
+		# Test translated from MATLABimplementation `MaskedFFTRegistrationTest` file. You can find the source code here: 
+		# http://www.dirkpadfield.com/Home/MaskedFFTRegistrationCode.zip
+		IMAGES_DIR = Path(__file__).parent / 'images'
+
+		shifts = [(75, 75), (-130, 130), (130, 130)]
+		for xi, yi in shifts:
+			with self.subTest('X = {:d}, Y = {:d}'.format(xi, yi)):
+				fixed_image = imread(IMAGES_DIR / 'OriginalX{:d}Y{:d}.png'.format(xi, yi))
+				moving_image = imread(IMAGES_DIR/ 'TransformedX{:d}Y{:d}.png'.format(xi, yi))
+
+				# Our definition for masks is inverted from Padfields
+				# Invalid pixels are 1
+				fixed_mask = (fixed_image == 0)
+				moving_mask = (moving_image == 0)
+
+				# Note that shifts in x and y and shifts in cols and rows
+				shift_y, shift_x = masked_register_translation(fixed_image, moving_image, fixed_mask, moving_mask, 
+															   mode = 'same', overlap_ratio = 1/10)
+				# NOTE: by looking at the test code from Padfield's MaskedFFTRegistrationCode repository,
+				#		the shifts were not xi and yi, but xi and -yi
+				self.assertTupleEqual((-xi, yi), (shift_x, shift_y))
+	
+	def test_against_skimage_register_translation(self):
+		""" Test masked_register_translation against scikit-image's register_translation for trivial masks """
+
+		# Generate shifted image like scikit-image' test suite
+		# Most importantly, image shifting is done the same way, using a Fourier shift filter.
+		# https://github.com/scikit-image/scikit-image/blob/master/skimage/feature/tests/test_register_translation.py
+		reference_image = data.camera()
+		shift = (-7, 12)
+		shifted = np.real(np.fft.ifft2(fourier_shift(np.fft.fft2(reference_image), shift)))
+
+		skimage_result, *_ = register_translation(reference_image, shifted)
+		masked_result = masked_register_translation(reference_image, shifted, np.zeros_like(reference_image), 
+													mode = 'full', overlap_ratio = 1/10)
+
+		self.assertTrue(np.allclose(skimage_result, masked_result))
+
+
 
 if __name__ == '__main__':
 	unittest.main()

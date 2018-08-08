@@ -228,16 +228,56 @@ def diff_register(image, reference, mask = None, crop = True, sigma = 5):
         image = gaussian(image, sigma, preserve_range = True)
         reference = gaussian(reference, sigma, preserve_range = True)
 
-    # Contrary to Padfield, we do not have to crop out the edge
-    # since we are using the 'valid' correlation mode.
-    xcorr = mnxc2(reference, image, mask, mode = 'same')
+    # Note the reverse order between the image and reference
+    # This is to mirror functionality from scikit-image's register_translation
+    return masked_register_translation(reference, image, mask, mode = 'full')[::-1]
+
+def masked_register_translation(src_image, target_image, src_mask, target_mask = None, 
+                                mode = 'same', overlap_ratio = 3/10):
+    """
+    Efficient image translation registration by masked normalized cross-correlation.
+
+    Parameters
+    ----------
+    src_image : `~numpy.ndarray`
+        Reference image.
+    target_image : `~numpy.ndarray`
+        Image to register.  Must be same dimensionality as ``src_image``.
+    src_mask : `~numpy.ndarray`, dtype bool
+        Mask that evaluates to True on invalid pixels of `src_image`.
+    target_mask : `~numpy.ndarray`, dtype bool or None, optional
+        Mask that evaluates to True on invalid pixels of `target_image`. If None,
+        `src_mask` is used instead.
+    mode : {'full', 'same'}, optional
+        Convolution mode. See `skued.mnxc2` for a detailed description. In general,
+        `'same'` mode has less edge effects, and therefore should be preferred.
+    overlap_ratio : float, optional
+        Maximum allowed overlap ratio between masks. The correlation at pixels with overlap ratio higher
+        than this threshold will be zeroed.
+
+    Returns
+    -------
+    shifts : ndarray
+        Shift vector (in pixels) required to register ``target_image`` with
+        ``src_image``.  Axis ordering is consistent with numpy (e.g. Z, Y, X)
+
+    References
+    ----------
+    .. [1] Manuel Guizar-Sicairos, Samuel T. Thurman, and James R. Fienup,
+           "Efficient subpixel image registration algorithms,"
+           Optics Letters 33, 156-158 (2008). DOI:10.1364/OL.33.000156
+    .. [2] James R. Fienup, "Invariant error metrics for image reconstruction"
+           Optics Letters 36, 8352-8357 (1997). DOI:10.1364/AO.36.008352
+    """
+    if target_mask is None:
+        target_mask = np.array(src_mask, dtype = np.bool)
+
+    xcorr = mnxc2(target_image, src_image, target_mask, src_mask, mode = mode, overlap_ratio = overlap_ratio)
 
     # Generalize to the average of multiple maxima
     maxima = np.transpose(np.nonzero(xcorr == xcorr.max()))
     center = np.mean(maxima, axis = 0)
-    
-    # Due to centering of mnxc2, +1 is required
-    # TODO: was this due to wrong output shape
-    # 		of mnxc2?
-    shift_row_col = center - np.array(xcorr.shape)/2 + 1
-    return -shift_row_col[::-1]	# Reversing to be compatible with shift_image
+
+    if mode == 'same':
+        return -1*(center - np.array(xcorr.shape)/2 + 0.5)
+    return -1*(center - np.array(src_image.shape) + 1)
