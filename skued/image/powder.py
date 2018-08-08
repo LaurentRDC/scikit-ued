@@ -7,11 +7,9 @@ import numpy as np
 from functools import partial
 
 from .alignment import diff_register
-from ..utils import deprecated
 
 flip = partial(np.rot90, k = 2)
 
-@deprecated('Performance was lackluster. ')
 def powder_center(image, mask = None):
     """
     Finds the center of a powder diffraction pattern by comparing the
@@ -28,7 +26,7 @@ def powder_center(image, mask = None):
 
     Returns
     -------
-    center : 2-tuple of ints
+    center : 2-tuple
         Center of the powder pattern. The center is returned in the format
         relevant for array manipulations (center = [row, column] instead of 
         center = [x,y]).
@@ -41,8 +39,8 @@ def powder_center(image, mask = None):
 
     shift = diff_register(image, flip(image), mask = composite_mask)
     midpoints = np.array([int(axis_size / 2) for axis_size in image.shape])
-    center = np.round(shift[::-1]/2 + midpoints)
-    return tuple(center.astype(np.int))
+
+    return tuple(shift[::-1]/2 + midpoints)
 
 def _angle_bounds(bounds):
     b1, b2 = bounds

@@ -155,6 +155,7 @@ Polycrystalline diffraction
     :nosignatures:
 
     azimuthal_average
+    powder_center
 
 Calibrations
 ------------
@@ -186,7 +187,7 @@ Correlations
     :nosignatures:
     
     xcorr
-    mxcorr
+    mnxc2
 
 Image masking
 -------------

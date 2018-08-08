@@ -1,7 +1,7 @@
-function [C,numberOfOverlapMaskedPixels] = mxcorr(varargin)
+function [C,numberOfOverlapMaskedPixels] = normxcorr2_masked(varargin)
 
 % [C,numberOfOverlapMaskedPixels] =
-% mxcorr(fixedImage, movingImage, fixedMask, movingMask)
+% normxcorr2_masked(fixedImage, movingImage, fixedMask, movingMask)
 %   Masked normalized two-dimensional cross-correlation.
 %   This function calculates the Masked NCC using FFTs
 %   instead of spatial correlation.  It is therefore much faster for

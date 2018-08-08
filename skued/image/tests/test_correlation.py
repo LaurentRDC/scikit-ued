@@ -5,7 +5,7 @@ import numpy as np
 from scipy.signal import correlate
 from skimage import data
 
-from .. import mnxc2, mxcorr, xcorr
+from .. import mnxc2, normxcorr2_masked, xcorr
 
 np.random.seed(23)
 
@@ -51,8 +51,7 @@ class TestXcorr(unittest.TestCase):
 			from_scipy = correlate(im1, im2, mode = 'same')
 			
 			self.assertTrue(np.allclose(from_scipy, from_skued))
-
-@unittest.skip('Deprecated function')
+    
 class TestMNXC2(unittest.TestCase):
 	
 	def test_side_effects(self):
@@ -104,10 +103,10 @@ class TestMNXC2(unittest.TestCase):
 		ret = mnxc2(im1, im2)
 		self.assertTupleEqual(ret.shape, (63,63,5))
 
-class TestMXCorr(unittest.TestCase):
+class TestNormxcorr2Masked(unittest.TestCase):
 
 	def test_side_effects(self):
-		""" Test that mxcorr does not modify the input in-place """
+		""" Test that normxcorr2_masked does not modify the input in-place """
 		im1 = np.random.random(size = (32,32))
 		im2 = np.random.random(size = (32,32))
 
@@ -118,15 +117,15 @@ class TestMXCorr(unittest.TestCase):
 		for arr in (im1, im2, m1, m2):
 			arr.setflags(write = False)
 		
-		xcorr = mxcorr(im1, im2, m1, m2)
+		xcorr = normxcorr2_masked(im1, im2, m1, m2)
 	
 	def test_data_bounds(self):
-		""" Test that the outputs of mxcorr have the expected bounds ,i.e. correlation in [-1, 1] """
+		""" Test that the outputs of normxcorr2_masked have the expected bounds ,i.e. correlation in [-1, 1] """
 		im1 = np.random.random(size = (32,32))
 		im2 = np.random.random(size = (31,67))
 		m1 = np.random.choice([True, False], size = im1.shape)
 		m2 = np.random.choice([True, False], size = im2.shape)
-		ret, overlap = mxcorr(im1, im2, m1, m2)
+		ret, overlap = normxcorr2_masked(im1, im2, m1, m2)
 
 		self.assertTrue(np.all(ret >= -1))
 		self.assertTrue(np.all(ret <= 1))
@@ -134,12 +133,12 @@ class TestMXCorr(unittest.TestCase):
 		self.assertTrue(np.all(overlap >= 0))
 
 	def test_final_shape(self):
-		""" Test that the mxcorr has shape s1 + s2  - 1 """
+		""" Test that the normxcorr2_masked has shape s1 + s2  - 1 """
 		im1 = np.random.random(size = (32,32))
 		im2 = np.random.random(size = (31,67))
 		m1 = np.random.choice([True, False], size = im1.shape)
 		m2 = np.random.choice([True, False], size = im2.shape)
-		ret, _ = mxcorr(im1, im2, m1, m2)
+		ret, _ = normxcorr2_masked(im1, im2, m1, m2)
 		self.assertTupleEqual(ret.shape, (62,98))
 
 
