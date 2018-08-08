@@ -136,7 +136,7 @@ def align(image, reference, mask = None, fill_value = 0.0, fast = True):
     ialign : generator of aligned images
     """
     shift = diff_register(image, reference = reference, mask = mask, crop = fast)
-    return shift_image(image, -shift, fill_value = fill_value)
+    return shift_image(image, shift, fill_value = fill_value)
 
 @array_stream
 def ialign(images, reference = None, mask = None, fill_value = 0.0, fast = True):
