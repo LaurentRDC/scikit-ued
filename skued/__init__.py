@@ -29,6 +29,5 @@ from .structure import (Atom, AtomicStructure, Crystal, Lattice, LatticeSystem,
                         lattice_system, symmetry_expansion)
 from .thin_films import film_optical_coefficients
 from .time_series import (biexponential, exponential, mad, nfft,
-                          nfftfreq, register_time_shift, register_time_shifts,
-                          time_shift, time_shifts)
+                          nfftfreq, register_time_shift, register_time_shifts)
 from .voigt import gaussian, lorentzian, pseudo_voigt
