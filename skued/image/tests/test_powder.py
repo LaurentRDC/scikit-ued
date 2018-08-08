@@ -21,6 +21,7 @@ def circle_image(shape, center, radii, intensities):
     im[:] = gaussian(im, 5)
     return im
 
+@unittest.skip('deprecated')
 class TestPowderCenter(unittest.TestCase):
     
     def test_trivial(self):

@@ -6,6 +6,8 @@ Release 1.0.2.0 (Development)
 
 * Added control for mask overlap in `mnxc2`. `mnxc2` now passes the same tests as reference implementation.
 * Added an analog of scikit-image's `register_translation`, `masked_register_translation`. It will eventually replace `diff_register`.
+* Deprecated `powder_center` due to unpredictable performance. Warnings will be issued on every function call. 
+  It will be removed in an upcoming release
 
 Release 1.0.1.0
 ---------------

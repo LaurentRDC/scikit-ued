@@ -3,13 +3,16 @@
 Image manipulation of powder diffraction
 ========================================
 """
-import numpy as np
 from functools import partial
 
+import numpy as np
+
+from ..utils import deprecated
 from .alignment import diff_register
 
 flip = partial(np.rot90, k = 2)
 
+@deprecated('Unpredictable performance.')
 def powder_center(image, mask = None):
     """
     Finds the center of a powder diffraction pattern by comparing the
