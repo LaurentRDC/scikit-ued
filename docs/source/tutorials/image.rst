@@ -110,7 +110,7 @@ Let's look at the difference:
 	mask[0:1250, 950:1250] = True
 
 	shift = diff_register(im, ref, mask)
-	shifted = shift_image(im, -shift)
+	shifted = shift_image(im, shift)
 
 	fig, ((ax1, ax2, ax3), (ax4, ax5, ax6)) = plt.subplots(nrows = 2, ncols = 3, figsize = (9,6))
 	ax1.imshow(ref, vmin = 0, vmax = 200)
