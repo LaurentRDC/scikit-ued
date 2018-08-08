@@ -203,7 +203,7 @@ def mnxc2(arr1, arr2, m1 = None, m2 = None, mode = 'full', axes = (0, 1), out = 
     number_overlap_masked_px[:] = np.round(number_overlap_masked_px)
     number_overlap_masked_px[:] = np.fmax(number_overlap_masked_px, eps)
     masked_correlated_fixed_fft = ifft(rotated_moving_mask_fft * fixed_fft)
-    masked_correlated_rotated_moving_fft = np.real(ifft(fixed_mask_fft * rotated_moving_fft))
+    masked_correlated_rotated_moving_fft = ifft(fixed_mask_fft * rotated_moving_fft)
 
     numerator = ifft(rotated_moving_fft * fixed_fft)
     numerator -= masked_correlated_fixed_fft * masked_correlated_rotated_moving_fft / number_overlap_masked_px

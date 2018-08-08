@@ -262,14 +262,15 @@ def masked_register_translation(src_image, target_image, src_mask, target_mask =
     shifts : ndarray
         Shift vector (in pixels) required to register ``target_image`` with
         ``src_image``.  Axis ordering is consistent with numpy (e.g. Z, Y, X)
+    
+    See Also
+    --------
+    skimage.feature.register_translation : efficient sub-pixel image translation registration
 
     References
     ----------
-    .. [1] Manuel Guizar-Sicairos, Samuel T. Thurman, and James R. Fienup,
-           "Efficient subpixel image registration algorithms,"
-           Optics Letters 33, 156-158 (2008). DOI:10.1364/OL.33.000156
-    .. [2] James R. Fienup, "Invariant error metrics for image reconstruction"
-           Optics Letters 36, 8352-8357 (1997). DOI:10.1364/AO.36.008352
+    .. [1] Dirk Padfield. Masked Object Registration in the Fourier Domain. 
+        IEEE Transactions on Image Processing, vol.21(5), pp. 2706-2718, 2012. 
     """
     if target_mask is None:
         target_mask = np.array(src_mask, dtype = np.bool)
