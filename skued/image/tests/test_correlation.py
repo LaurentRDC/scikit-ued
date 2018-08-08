@@ -1,12 +1,22 @@
 # -*- coding: utf-8 -*-
 import unittest
+from pathlib import Path
 
 import numpy as np
 from scipy.signal import correlate
+from skimage.io import imread
 
 from .. import mnxc2, xcorr
 
 np.random.seed(23)
+
+def _masked_register_translation(im1, im2, m1, m2, overlap_ratio):
+	xcorr = mnxc2(im1, im2, m1, m2, mode = 'full', overlap_ratio = overlap_ratio)
+	# Generalize to the average of multiple maxima
+	maxima = np.transpose(np.nonzero(xcorr == xcorr.max()))
+	center = np.mean(maxima, axis = 0)
+	shift = center - np.array(im2.shape) + 1
+	return -shift
 
 class TestXcorr(unittest.TestCase):
 
@@ -102,6 +112,28 @@ class TestMNXC2(unittest.TestCase):
 		ret = mnxc2(im1, im2)
 		self.assertTupleEqual(ret.shape, (63,63,5))
 
+	def test_padfield_data(self):
+		""" Test translation registration for data included in Padfield 2010 """
+		# Test translated from MATLABimplementation `MaskedFFTRegistrationTest` file. You can find the source code here: 
+		# http://www.dirkpadfield.com/Home/MaskedFFTRegistrationCode.zip
+		IMAGES_DIR = Path(__file__).parent / 'images'
+
+		shifts = [(75, 75), (-130, 130), (130, 130)]
+		for xi, yi in shifts:
+			with self.subTest('X = {:d}, Y = {:d}'.format(xi, yi)):
+				fixed_image = imread(IMAGES_DIR / 'OriginalX{:d}Y{:d}.png'.format(xi, yi))
+				moving_image = imread(IMAGES_DIR/ 'TransformedX{:d}Y{:d}.png'.format(xi, yi))
+
+				# Our definition for masks is inverted from Padfields
+				# Invalid pixels are 1
+				fixed_mask = (fixed_image == 0)
+				moving_mask = (moving_image == 0)
+
+				# Note that shifts in x and y and shifts in cols and rows
+				shift_y, shift_x = _masked_register_translation(fixed_image, moving_image, fixed_mask, moving_mask, overlap_ratio = 1/10)
+				# NOTE: by looking at the test code from Padfield's MaskedFFTRegistrationCode repository,
+				#		the shifts were not xi and yi, but xi and -yi
+				self.assertTupleEqual((xi, -yi), (shift_x, shift_y))
 
 if __name__ == '__main__':
 	unittest.main()

@@ -70,13 +70,6 @@ class TestDiffRegister(unittest.TestCase):
 
 			shift = diff_register(im + noise1, im2 + noise2, edge_mask)
 			self.assertTrue(np.allclose(shift, -random_shift, atol = 1))
-		
-		with self.subTest('No crop with 10% noise'):
-			noise1 = 0.1 * im.max() * np.random.random(size = im.shape)
-			noise2 = 0.1 * im.max() * np.random.random(size = im.shape)
-
-			shift = diff_register(im + noise1, im2 + noise2, edge_mask, crop = False)
-			self.assertTrue(np.allclose(shift, -random_shift, atol = 1))
 	
 	def test_side_effects(self):
 		""" Test that arrays registered by diff_register are not modified """

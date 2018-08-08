@@ -92,7 +92,7 @@ def xcorr(arr1, arr2, mode = 'full', axes = None):
     else:
         return xc
 
-def mnxc2(arr1, arr2, m1 = None, m2 = None, mode = 'full', axes = (0, 1), out = None):
+def mnxc2(arr1, arr2, m1 = None, m2 = None, mode = 'full', axes = (0, 1), out = None, overlap_ratio = 3/10):
     """
     Masked normalized cross-correlation (MNXC) between two images or stacks of images.
 
@@ -128,6 +128,9 @@ def mnxc2(arr1, arr2, m1 = None, m2 = None, mode = 'full', axes = (0, 1), out = 
     out : `~numpy.ndarray` or None, optional
         If not None, the results will be stored in `out`. If None, a new array
         is returned.
+    overlap_ratio : float, optional
+        Maximum allowed overlap ratio between masks. The correlation at pixels with overlap ratio higher
+        than this threshold will be zeroed.
         
     Returns
     -------
@@ -144,6 +147,12 @@ def mnxc2(arr1, arr2, m1 = None, m2 = None, mode = 'full', axes = (0, 1), out = 
     .. [PADF] Dirk Padfield. Masked Object Registration in the Fourier Domain. 
         IEEE Transactions on Image Processing, vol.21(5), pp. 2706-2718 (2012). 
     """
+    # This function is as close as possible to a direct translation of Dirk Padfield's
+    # MATLAB implementation `normxcorr2_masked` function. You can find the source code here: 
+    # http://www.dirkpadfield.com/Home/MaskedFFTRegistrationCode.zip
+    # For backwards-compatibility reasons, zeroing of pixels based on mask overlap is done at the
+    # end of this function, and not inside the translation_registration function.
+
     # TODO: implement for complex arrays
     # TODO: implement multidims
 
@@ -153,11 +162,21 @@ def mnxc2(arr1, arr2, m1 = None, m2 = None, mode = 'full', axes = (0, 1), out = 
     if len(axes) != 2:
         raise ValueError('`axes` parameter must be 2-tuple, not `{}`'.format(axes))
 
-    arr1, arr2 = np.array(arr1, dtype = np.float), np.array(arr2, dtype = np.float)
+    fixed_image = np.array(arr1, dtype = np.float)
+    fixed_mask = np.zeros_like(fixed_image, dtype = np.bool) if (m1 is None) else np.array(m1, dtype = np.bool)
+    moving_image = np.array(arr2, dtype = np.float)
+    moving_mask = np.zeros_like(moving_image, dtype = np.bool) if (m2 is None) else np.array(m2, dtype = np.bool)
+    eps = np.finfo(np.float).eps
+
+    # Note that by Padfield's implementation, we require that masks be 1 where pixels are
+    # valid. Therefore, we must invert the bits.
+    np.logical_not(fixed_mask, out = fixed_mask)
+    np.logical_not(moving_mask, out = moving_mask)
 
     # Determine final size along transformation axes
-    # TODO: compare with using next_fast_len and without
-    s1, s2 = tuple(arr1.shape[ax] for ax in axes), tuple(arr2.shape[ax] for ax in axes)
+    # Note that it might be faster to conmpute Fourier transform in a slightly larger shape (`fast_shape`)
+    # Then, after all fourier transforms are done, we slice back to `final_shape` using `final_slice`.
+    s1, s2 = tuple(fixed_image.shape[ax] for ax in axes), tuple(moving_image.shape[ax] for ax in axes)
     final_shape = tuple( ax1 + ax2 - 1 for ax1, ax2 in zip(s1, s2))
     fast_shape = tuple( map(next_fast_len, final_shape) )
     final_slice = tuple([slice(0, int(sz)) for sz in final_shape])
@@ -165,62 +184,61 @@ def mnxc2(arr1, arr2, m1 = None, m2 = None, mode = 'full', axes = (0, 1), out = 
     fft = partial(rfft2, s = fast_shape, axes = axes, **FFTOPS)
     ifft = partial(irfft2, s = fast_shape, axes = axes, **FFTOPS)
 
-    if m1 is None:
-        m1 = np.zeros_like(arr1, dtype = np.bool)
-    else:
-        m1 = np.array(m1, dtype = np.bool)
+    fixed_image[np.logical_not(fixed_mask)] = 0.0
+    moving_image[np.logical_not(moving_mask)] = 0.0
 
-    if m2 is None:
-        m2 = np.array(m1, dtype = np.bool)
-    else:
-        m2 = np.array(m2, dtype = np.bool)
+    rotated_moving_image = np.rot90(moving_image, 2, axes = axes)
+    rotated_moving_mask = np.rot90(moving_mask, 2, axes = axes)
 
-    arr1[m1] = 0.0
-    arr2[m2] = 0.0
+    fixed_fft = fft(fixed_image)
+    rotated_moving_fft = fft(rotated_moving_image)
+    fixed_mask_fft = fft(fixed_mask)
+    rotated_moving_mask_fft = fft(rotated_moving_mask)
 
-    # Rotation in real-space instead of conjugation in fourier domain
-    # because we might be using rfft instead of complex fft
-    arr2[:] = np.rot90(arr2, k = 2)
-    m2[:] = np.rot90(m2, k = 2)
+    # Calculate overlap of masks at every point in the convolution
+    # Locations with high overlap should not be taken into account.
+    number_overlap_masked_px = ifft(rotated_moving_mask_fft * fixed_mask_fft)
+    number_overlap_masked_px[:] = np.round(number_overlap_masked_px)
+    number_overlap_masked_px[:] = np.fmax(number_overlap_masked_px, eps)
+    masked_correlated_fixed_fft = ifft(rotated_moving_mask_fft * fixed_fft)
+    masked_correlated_rotated_moving_fft = np.real(ifft(fixed_mask_fft * rotated_moving_fft))
 
-    F1 = fft(arr1)
-    F2s = fft(arr2)
+    numerator = ifft(rotated_moving_fft * fixed_fft)
+    numerator -= masked_correlated_fixed_fft * masked_correlated_rotated_moving_fft / number_overlap_masked_px
 
-    M1 = fft(np.logical_not(m1))
-    M2s = fft(np.logical_not(m2))
+    fixed_squared_fft = fft(np.square(fixed_image))
+    fixed_denom = ifft(rotated_moving_mask_fft * fixed_squared_fft)
+    fixed_denom -= np.square(masked_correlated_fixed_fft) / number_overlap_masked_px
+    fixed_denom[:] = np.fmax(fixed_denom, 0.0)
 
-    iM1M2s = ifft(M1 * M2s)
-    iM1M2s[:] = np.rint(iM1M2s)
-    iM1M2s[:] = np.maximum(iM1M2s, EPS)
+    rotated_moving_squared_fft = fft(np.square(rotated_moving_image))
+    moving_denom = ifft(fixed_mask_fft * rotated_moving_squared_fft)
+    moving_denom -= np.square(masked_correlated_rotated_moving_fft) / number_overlap_masked_px
+    moving_denom[:] = np.fmax(moving_denom, 0.0)
 
-    iF1M2s = ifft(F1 * M2s)
-    iM1F2s = ifft(M1 * F2s)
+    denom = np.sqrt(fixed_denom * moving_denom)
 
-    # I have noticed no clear performance boost by storing
-    # repeated calculation (e.g. ifft(M1 * M2s)); however, the following
-    # is already hard enough to read...
-    numerator = ifft(F1 * F2s)
-    numerator -= iF1M2s * iM1F2s / iM1M2s
-
-    denominator = ifft(fft(np.square(arr1)) * M2s) - iF1M2s**2/iM1M2s
-    denominator *= ifft(M1*fft(np.square(arr2))) - iM1F2s**2/iM1M2s
-    denominator[:] = np.clip(denominator, a_min = 0, a_max = None)
-    denominator[:] = np.sqrt(denominator)
-
-    # Slice back to convolution shape
+    # Slice back to expected convolution shape
     numerator = numerator[final_slice]
-    denominator = denominator[final_slice]
+    denom = denom[final_slice]
+    number_overlap_masked_px = number_overlap_masked_px[final_slice]
 
     if mode == 'same':
-        denominator = _centered(denominator, arr1.shape, axes = axes)
-        numerator = _centered(numerator, arr1.shape, axes = axes)
+        denom = _centered(denom, fixed_image.shape, axes = axes)
+        numerator = _centered(numerator, fixed_image.shape, axes = axes)
+        number_overlap_masked_px = _centered(number_overlap_masked_px, fixed_image.shape, axes = axes)
 
     if out is None:
-        out = np.zeros_like(denominator)
+        out = np.zeros_like(denom)
 
-    nonzero = np.nonzero(denominator)
-    out[nonzero] = numerator[nonzero] / denominator[nonzero]
-    out[np.logical_or(out > 1, out < -1)] = 0
+    tol = 1e3 * eps * np.max(np.abs(denom), axis = axes, keepdims = True)
+    nonzero_indices = denom > tol
+    out[nonzero_indices] = numerator[nonzero_indices] / denom[nonzero_indices]
+    np.clip(out, a_min = -1, a_max = 1, out = out)
+
+    # Apply overlap ratio threshold
+    number_px_threshold = overlap_ratio * np.max(number_overlap_masked_px, axis = axes, keepdims = True)
+    out[number_overlap_masked_px < number_px_threshold] = 0.0 
 
     return out
 
