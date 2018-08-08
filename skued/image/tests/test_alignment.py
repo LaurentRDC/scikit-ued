@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
-import unittest
-from pathlib import Path
-from random import randint
-
 import numpy as np
+from random import randint
+import unittest
 from skimage import data
 from skimage.filters import gaussian
 from skimage.transform import rotate
 
-from ...io import diffread
-from .. import (align, diff_register, ialign, itrack_peak,
-                masked_register_translation, shift_image)
+from .. import shift_image, align, diff_register, ialign, itrack_peak
 from .test_powder import circle_image
 
 np.random.seed(23)
@@ -242,36 +238,6 @@ class TestItrackPeak(unittest.TestCase):
         shifts = list(itrack_peak(images, row_slice = np.s_[:], col_slice = np.s_[:]))
 
         self.assertEqual(len(shifts), len(images))
-
-class TestMaskedRegisterTranslation(unittest.TestCase):
-
-	def test_trivial(self):
-		""" Test translation registration for a trivial mask and identical images """
-		im = data.camera()
-		mask = np.ones_like(im)
-
-		shift = masked_register_translation(im, im, mask)
-		self.assertTupleEqual(tuple(shift), (0,0))
-	
-	def test_padfield_data(self):
-		""" Test translation registration for data included in Padfield 2010 """
-		IMAGES_DIR = Path(__file__).parent / 'images'
-
-		shifts = [(75, 75), (-130, 130), (130, 130)]
-		for xi, yi in shifts:
-			with self.subTest('X = {:d}, Y = {:d}'.format(xi, yi)):
-				fixed_image = diffread(IMAGES_DIR / 'OriginalX{:d}Y{:d}.png'.format(xi, yi))
-				moving_image = diffread(IMAGES_DIR/ 'TransformedX{:d}Y{:d}.png'.format(xi, yi))
-
-				fixed_mask = fixed_image != 0
-				moving_mask = moving_image != 0
-
-				# Note that shifts in x and y and shifts in cols and rows
-				shift_y, shift_x = masked_register_translation(fixed_image, moving_image, fixed_mask, moving_mask, overlap_ratio = 1/10)
-				# NOTE: by looking at the test code from Padfield's MaskedFFTRegistrationCode repository,
-				#		the shifts were not xi and yi, but xi and -yi
-				self.assertTupleEqual((xi, -yi), (shift_x, shift_y))
-
 
 if __name__ == '__main__':
 	unittest.main()

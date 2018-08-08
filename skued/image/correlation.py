@@ -238,12 +238,6 @@ def _centered(arr, newshape, axes = (0, 1)):
 
 	return arr[tuple(slices)]
 
-def _fft2(*args, **kwargs):
-    return np.fft.fftshift(fft2(*args, **kwargs))
-
-def _ifft2(*args, **kwargs):
-    return np.fft.ifftshift(ifft2(*args, **kwargs))
-
 def normxcorr2_masked(fixed_image, moving_image, fixed_mask, moving_mask):
     """
     Masked normalized cross-correlation (MNXC) between two images or stacks of images.
@@ -272,7 +266,6 @@ def normxcorr2_masked(fixed_image, moving_image, fixed_mask, moving_mask):
         real-valued. For complex input, `out` will be complex as well.
     masked_overlap : `~numpy.ndarray`
         
-
     References
     ----------
     .. [PADF] Dirk Padfield. Masked Object Registration in the Fourier Domain. 
@@ -334,5 +327,6 @@ def normxcorr2_masked(fixed_image, moving_image, fixed_mask, moving_mask):
     nonzero_indices = denom > tol
     out[nonzero_indices] = numerator[nonzero_indices] / denom[nonzero_indices]
     np.clip(out, a_min = -1, a_max = 1, out = out)
-
-    return out[final_slice], number_overlap_masked_px[final_slice]
+    
+    return (np.resize(out, final_shape), 
+            np.resize(number_overlap_masked_px, final_shape))
