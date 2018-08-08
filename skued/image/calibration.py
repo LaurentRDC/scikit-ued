@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 
-from npstreams import deprecated
-
 def hypot(*args):
     """ Generalized np.hypot """
     return np.sqrt(np.sum(np.square(args)))
@@ -59,10 +57,6 @@ def calq(I, crystal, peak_indices, miller_indices):
     x_range = slope_x * np.arange(0, I.shape[0]) + intercept_x
     y_range = slope_y * np.arange(0, I.shape[1]) + intercept_y
     return np.meshgrid(x_range, y_range, indexing = 'xy')
-
-@deprecated('calibrate_scattvector has been renamed to powder_calq')
-def calibrate_scattvector(*args, **kwargs):
-    return powder_calq(*args, **kwargs)
 
 def powder_calq(I, crystal, peak_indices, miller_indices):
     """

@@ -7,8 +7,6 @@ from scipy.signal import correlate
 
 from npstreams import array_stream, peek
 
-from ..utils import deprecated
-
 
 # Save the normalization of correlations so that identical
 # autocorrelations are saved.
@@ -121,16 +119,3 @@ def register_time_shifts(traces, reference = None, method = 'auto'):
 
     shifts = map(partial(register_time_shift, **kwargs), traces)
     return np.fromiter(shifts, dtype = np.float, count = count)
-
-# TODO: Remove in an upcoming release
-@deprecated('time_shift function is deprecated in favor of `register_time_shift`')
-def time_shift(*args, **kwargs):
-    return register_time_shift(*args, **kwargs)
-
-time_shift.__doc__ = register_time_shift.__doc__
-
-@deprecated('time_shifts function is deprecated in favor or `register_time_shifts`')
-def time_shifts(*args, **kwargs):
-    return register_time_shifts(*args, **kwargs)
-
-time_shifts.__doc__ = register_time_shifts.__doc__
