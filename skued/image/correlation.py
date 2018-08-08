@@ -6,7 +6,7 @@ Image correlation and related functions
 from functools import partial
 
 import numpy as np
-from scipy.fftpack import next_fast_len, fftn, ifftn, fft2, ifft2
+from scipy.fftpack import next_fast_len, fftn, ifftn
 from scipy.signal import fftconvolve
 
 from ..array_utils import mirror
@@ -237,96 +237,3 @@ def _centered(arr, newshape, axes = (0, 1)):
 		slices[ax] = slice(startind, endind)
 
 	return arr[tuple(slices)]
-
-def normxcorr2_masked(fixed_image, moving_image, fixed_mask, moving_mask):
-    """
-    Masked normalized cross-correlation (MNXC) between two images or stacks of images.
-
-    Parameters
-    ----------
-    fixed_image : `~numpy.ndarray`, shape (M,N)
-        Reference, or 'fixed-image' in the language of _[PADF]. This array can also
-        be a stack of images; in this case, the cross-correlation
-        is computed along the two axes passed to ``axes``.
-    moving_image : `~numpy.ndarray`, shape (M,N)
-        Moving image. This array can also be a stack of images; 
-        in this case, the cross-correlation is computed along the 
-        two axes passed to ``axes``.
-    fixed_mask : `~numpy.ndarray`, shape (M,N)
-        Mask of `fixed_image`. The mask should evaluate to `True`
-        (or 1) on valid pixels. 
-    moving_mask : `~numpy.ndarray`, shape (M,N)
-        Mask of `moving_image`. The mask should evaluate to `True`
-        (or 1) on valid pixels. 
-        
-    Returns
-    -------
-    out : `~numpy.ndarray`
-        Masked, normalized cross-correlation. If images are real-valued, then `out` will be
-        real-valued. For complex input, `out` will be complex as well.
-    masked_overlap : `~numpy.ndarray`
-        
-    References
-    ----------
-    .. [PADF] Dirk Padfield. Masked Object Registration in the Fourier Domain. 
-        IEEE Transactions on Image Processing, vol.21(5), pp. 2706-2718 (2012). 
-    """
-    # TODO: support axes
-    #       problem is only the final resizing
-    axes = (0, 1)
-    eps = np.finfo(np.float).eps
-
-    fixed_image = np.array(fixed_image, dtype = np.float)
-    fixed_mask = np.array(fixed_mask, dtype = np.bool)
-    moving_image = np.array(moving_image, dtype = np.float)
-    moving_mask = np.array(moving_mask, dtype = np.bool)
-
-    # Determine final size along transformation axes
-    s1, s2 = tuple(fixed_image.shape[ax] for ax in axes), tuple(moving_image.shape[ax] for ax in axes)
-    final_shape = tuple( ax1 + ax2 - 1 for ax1, ax2 in zip(s1, s2))
-    fast_shape = tuple( map(next_fast_len, final_shape) )
-    final_slice = tuple([slice(0, int(sz)) for sz in final_shape])
-
-    fft = partial(fft2, shape = fast_shape, axes = axes)
-    ifft = partial(ifft2, shape = fast_shape, axes = axes)
-
-    fixed_image[np.logical_not(fixed_mask)] = 0.0
-    moving_image[np.logical_not(moving_mask)] = 0.0
-
-    rotated_moving_image = np.rot90(moving_image, 2)
-    rotated_moving_mask = np.rot90(moving_mask, 2)
-
-    fixed_fft = fft(fixed_image)
-    rotated_moving_fft = fft(rotated_moving_image)
-    fixed_mask_fft = fft(fixed_mask)
-    rotated_moving_mask_fft = fft(rotated_moving_mask)
-
-    number_overlap_masked_px = np.real(ifft(rotated_moving_mask_fft * fixed_mask_fft))
-    number_overlap_masked_px[:] = np.round(number_overlap_masked_px)
-    number_overlap_masked_px[:] = np.maximum(number_overlap_masked_px, eps)
-    masked_correlated_fixed_fft = np.real(ifft(rotated_moving_mask_fft * fixed_fft))
-    masked_correlated_rotated_moving_fft = np.real(ifft(fixed_mask_fft * rotated_moving_fft))
-
-    numerator = np.real(ifft(rotated_moving_fft * fixed_fft)) 
-    numerator -= masked_correlated_fixed_fft * masked_correlated_rotated_moving_fft / number_overlap_masked_px
-
-    fixed_squared_fft = fft(np.square(fixed_image))
-    fixed_denom = np.real(ifft(rotated_moving_mask_fft * fixed_squared_fft))
-    fixed_denom -= np.square(masked_correlated_fixed_fft) / number_overlap_masked_px
-    fixed_denom[:] = np.maximum(fixed_denom, 0.0)
-
-    rotated_moving_squared_fft = fft(np.square(rotated_moving_image))
-    moving_denom = np.real(ifft(fixed_mask_fft * rotated_moving_squared_fft))
-    moving_denom -= np.square(masked_correlated_rotated_moving_fft) / number_overlap_masked_px
-    moving_denom[:] = np.maximum(moving_denom, 0.0)
-
-    denom = np.sqrt(fixed_denom * moving_denom)
-
-    out = np.zeros_like(numerator)
-    tol = 1e3 * eps * np.max(np.abs(denom))
-    nonzero_indices = denom > tol
-    out[nonzero_indices] = numerator[nonzero_indices] / denom[nonzero_indices]
-    np.clip(out, a_min = -1, a_max = 1, out = out)
-    
-    return (np.resize(out, final_shape), 
-            np.resize(number_overlap_masked_px, final_shape))
