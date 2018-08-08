@@ -131,6 +131,8 @@ def mnxc2(arr1, arr2, m1 = None, m2 = None, mode = 'full', axes = (0, 1), out = 
     overlap_ratio : float, optional
         Maximum allowed overlap ratio between masks. The correlation at pixels with overlap ratio higher
         than this threshold will be zeroed.
+
+        .. versionadded:: 1.0.2
         
     Returns
     -------

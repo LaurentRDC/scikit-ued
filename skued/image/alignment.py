@@ -237,6 +237,8 @@ def masked_register_translation(src_image, target_image, src_mask, target_mask =
     """
     Efficient image translation registration by masked normalized cross-correlation.
 
+    .. versionadded:: 1.0.2
+
     Parameters
     ----------
     src_image : `~numpy.ndarray`
