@@ -12,7 +12,7 @@ from skimage.filters import gaussian
 
 from npstreams import array_stream, peek
 
-from .correlation import mnxc2
+from .correlation import mnxc2, mnxc
 
 non = lambda s: s if s < 0 else None
 mom = lambda s: max(0, s)
@@ -246,9 +246,9 @@ def masked_register_translation(src_image, target_image, src_mask, target_mask =
     target_image : `~numpy.ndarray`
         Image to register.  Must be same dimensionality as ``src_image``.
     src_mask : `~numpy.ndarray`, dtype bool
-        Mask that evaluates to True on invalid pixels of `src_image`.
+        Mask that evaluates to True on valid pixels of `src_image`.
     target_mask : `~numpy.ndarray`, dtype bool or None, optional
-        Mask that evaluates to True on invalid pixels of `target_image`. If None,
+        Mask that evaluates to True on valid pixels of `target_image`. If None,
         `src_mask` is used instead.
     mode : {'full', 'same'}, optional
         Convolution mode. See `skued.mnxc2` for a detailed description. In general,
@@ -273,14 +273,28 @@ def masked_register_translation(src_image, target_image, src_mask, target_mask =
         IEEE Transactions on Image Processing, vol.21(5), pp. 2706-2718, 2012. 
     """
     if target_mask is None:
-        target_mask = np.array(src_mask, dtype = np.bool)
+        target_mask = np.array(src_mask, dtype=np.bool, copy=True)
 
-    xcorr = mnxc2(target_image, src_image, target_mask, src_mask, mode = mode, overlap_ratio = overlap_ratio)
+    # We need masks to be of the same size as their respective images
+    for (im, mask) in [(src_image, src_mask), (target_image, target_mask)]:
+        if im.shape != mask.shape:
+            raise ValueError(
+                "Error: image sizes must match their respective mask sizes.")
 
-    # Generalize to the average of multiple maxima
+    # The mismatch in size will impact the center location of the
+    # cross-correlation
+    size_mismatch = np.array(target_image.shape) - np.array(src_image.shape)
+
+    xcorr = mnxc(target_image, src_image, target_mask, src_mask,
+                 axes=(0, 1), mode=mode, overlap_ratio=overlap_ratio).real
+
+    # Generalize to the average of multiple equal maxima
     maxima = np.transpose(np.nonzero(xcorr == xcorr.max()))
-    center = np.mean(maxima, axis = 0)
+    center = np.mean(maxima, axis=0)
 
     if mode == 'same':
-        return -1*(center - np.array(xcorr.shape)/2 + 0.5)
-    return -1*(center - np.array(src_image.shape) + 1)
+        shifts = (center - np.array(xcorr.shape)/2 + 0.5)
+    else:
+        shifts = center - np.array(src_image.shape) + 1
+
+    return -shifts + (size_mismatch / 2)

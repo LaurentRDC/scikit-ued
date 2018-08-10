@@ -251,10 +251,9 @@ class TestMaskedRegisterTranslation(unittest.TestCase):
 				fixed_image = imread(IMAGES_DIR / 'OriginalX{:d}Y{:d}.png'.format(xi, yi))
 				moving_image = imread(IMAGES_DIR/ 'TransformedX{:d}Y{:d}.png'.format(xi, yi))
 
-				# Our definition for masks is inverted from Padfields
-				# Invalid pixels are 1
-				fixed_mask = (fixed_image == 0)
-				moving_mask = (moving_image == 0)
+				# Valid pixels are 1
+				fixed_mask = (fixed_image != 0)
+				moving_mask = (moving_image != 0)
 
 				# Note that shifts in x and y and shifts in cols and rows
 				shift_y, shift_x = masked_register_translation(fixed_image, moving_image, fixed_mask, moving_mask, mode = 'full', overlap_ratio = 1/10)
@@ -274,10 +273,9 @@ class TestMaskedRegisterTranslation(unittest.TestCase):
 				fixed_image = imread(IMAGES_DIR / 'OriginalX{:d}Y{:d}.png'.format(xi, yi))
 				moving_image = imread(IMAGES_DIR/ 'TransformedX{:d}Y{:d}.png'.format(xi, yi))
 
-				# Our definition for masks is inverted from Padfields
-				# Invalid pixels are 1
-				fixed_mask = (fixed_image == 0)
-				moving_mask = (moving_image == 0)
+				# Valid pixels are 1
+				fixed_mask = (fixed_image != 0)
+				moving_mask = (moving_image != 0)
 
 				# Note that shifts in x and y and shifts in cols and rows
 				shift_y, shift_x = masked_register_translation(fixed_image, moving_image, fixed_mask, moving_mask, 
@@ -297,7 +295,7 @@ class TestMaskedRegisterTranslation(unittest.TestCase):
 		shifted = np.real(np.fft.ifft2(fourier_shift(np.fft.fft2(reference_image), shift)))
 
 		skimage_result, *_ = register_translation(reference_image, shifted)
-		masked_result = masked_register_translation(reference_image, shifted, np.zeros_like(reference_image), 
+		masked_result = masked_register_translation(reference_image, shifted, np.ones_like(reference_image), 
 													mode = 'full', overlap_ratio = 1/10)
 
 		self.assertTrue(np.allclose(skimage_result, masked_result))

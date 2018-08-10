@@ -5,18 +5,11 @@ from pathlib import Path
 import numpy as np
 from scipy.signal import correlate
 from skimage.io import imread
+from skimage.data import camera
 
-from .. import mnxc2, xcorr
+from .. import mnxc2, mnxc, xcorr
 
 np.random.seed(23)
-
-def _masked_register_translation(im1, im2, m1, m2, overlap_ratio):
-	xcorr = mnxc2(im1, im2, m1, m2, mode = 'full', overlap_ratio = overlap_ratio)
-	# Generalize to the average of multiple maxima
-	maxima = np.transpose(np.nonzero(xcorr == xcorr.max()))
-	center = np.mean(maxima, axis = 0)
-	shift = center - np.array(im2.shape) + 1
-	return -shift
 
 class TestXcorr(unittest.TestCase):
 
@@ -60,7 +53,8 @@ class TestXcorr(unittest.TestCase):
 			from_scipy = correlate(im1, im2, mode = 'same')
 			
 			self.assertTrue(np.allclose(from_scipy, from_skued))
-    
+
+@unittest.skip('Deprecated')
 class TestMNXC2(unittest.TestCase):
 	
 	def test_side_effects(self):
@@ -111,29 +105,133 @@ class TestMNXC2(unittest.TestCase):
 		im2 = np.random.random(size = (32,32,5))
 		ret = mnxc2(im1, im2)
 		self.assertTupleEqual(ret.shape, (63,63,5))
+	
+class TestMNXC(unittest.TestCase):
 
-	def test_padfield_data(self):
-		""" Test translation registration for data included in Padfield 2010 """
-		# Test translated from MATLABimplementation `MaskedFFTRegistrationTest` file. You can find the source code here: 
-		# http://www.dirkpadfield.com/Home/MaskedFFTRegistrationCode.zip
-		IMAGES_DIR = Path(__file__).parent / 'images'
+	def test_autocorrelation(self):
+		"""Masked normalized cross-correlation between identical arrays
+		should reduce to an autocorrelation even with random masks."""
+		# See random number generator for reproducible results
+		np.random.seed(23)
 
-		shifts = [(75, 75), (-130, 130), (130, 130)]
-		for xi, yi in shifts:
-			with self.subTest('X = {:d}, Y = {:d}'.format(xi, yi)):
-				fixed_image = imread(IMAGES_DIR / 'OriginalX{:d}Y{:d}.png'.format(xi, yi))
-				moving_image = imread(IMAGES_DIR/ 'TransformedX{:d}Y{:d}.png'.format(xi, yi))
+		arr1 = camera()
+		arr2 = camera()
 
-				# Our definition for masks is inverted from Padfields
-				# Invalid pixels are 1
-				fixed_mask = (fixed_image == 0)
-				moving_mask = (moving_image == 0)
+		# Random masks with 75% of pixels being valid
+		m1 = np.random.choice([True, False], arr1.shape, p=[3 / 4, 1 / 4])
+		m2 = np.random.choice([True, False], arr2.shape, p=[3 / 4, 1 / 4])
 
-				# Note that shifts in x and y and shifts in cols and rows
-				shift_y, shift_x = _masked_register_translation(fixed_image, moving_image, fixed_mask, moving_mask, overlap_ratio = 1/10)
-				# NOTE: by looking at the test code from Padfield's MaskedFFTRegistrationCode repository,
-				#		the shifts were not xi and yi, but xi and -yi
-				self.assertTupleEqual((xi, -yi), (shift_x, shift_y))
+		xcorr = mnxc(arr1, arr1, m1, m1, axes=(0, 1),
+					mode='same', overlap_ratio=0).real
+		max_index = np.unravel_index(np.argmax(xcorr), xcorr.shape)
+
+		# Autocorrelation should have maximum in center of array
+		self.assertAlmostEqual(xcorr.max(), 1)
+		self.assertTrue(np.allclose(max_index, np.array(arr1.shape) / 2))
+	
+	def test_over_axes(self):
+		"""Masked normalized cross-correlation over axes should be
+		equivalent to a loop over non-transform axes."""
+		# See random number generator for reproducible results
+		np.random.seed(23)
+
+		arr1 = np.random.random((8, 8, 5))
+		arr2 = np.random.random((8, 8, 5))
+
+		m1 = np.random.choice([True, False], arr1.shape)
+		m2 = np.random.choice([True, False], arr2.shape)
+
+		# Loop over last axis
+		with_loop = np.empty_like(arr1, dtype=np.complex)
+		for index in range(arr1.shape[-1]):
+			with_loop[:, :, index] = mnxc(arr1[:, :, index],
+										arr2[:, :, index],
+										m1[:, :, index],
+										m2[:, :, index],
+										axes=(0, 1), mode='same')
+
+		over_axes = mnxc(arr1, arr2, m1, m2, axes=(0, 1), mode='same')
+
+		self.assertTrue(np.allclose(with_loop, over_axes))
+	
+	def test_side_effects(self):
+		"""Masked normalized cross-correlation should not modify the inputs."""
+		shape1 = (2, 2, 2)
+		shape2 = (2, 2, 2)
+
+		arr1 = np.zeros(shape1)
+		arr2 = np.zeros(shape2)
+
+		# Trivial masks
+		m1 = np.ones_like(arr1)
+		m2 = np.ones_like(arr2)
+
+		for arr in (arr1, arr2, m1, m2):
+			arr.setflags(write=False)
+
+		# If arrays are written to, an exception will be raised.
+		mnxc(arr1, arr2, m1, m2)
+
+	def test_output_range(self):
+		"""Masked normalized cross-correlation should return between 1 and -1."""
+		# See random number generator for reproducible results
+		np.random.seed(23)
+
+		# Array dimensions must match along non-transformation axes, in
+		# this case
+		# axis 0
+		shape1 = (15, 4, 5)
+		shape2 = (15, 12, 7)
+
+		# Initial array ranges between -5 and 5
+		arr1 = 10 * np.random.random(shape1) - 5
+		arr2 = 10 * np.random.random(shape2) - 5
+
+		# random masks
+		m1 = np.random.choice([True, False], arr1.shape)
+		m2 = np.random.choice([True, False], arr2.shape)
+
+		xcorr = mnxc(arr1, arr2, m1, m2, axes=(1, 2))
+
+		self.assertLessEqual(xcorr.max(), 1)
+		self.assertGreaterEqual(xcorr.min(), -1)
+	
+	def test_mismatched_dimensions(self):
+		"""Masked normalized cross-correlation should raise an error if array
+		dimensions along non-transformation axes are mismatched."""
+		shape1 = (23, 1, 1)
+		shape2 = (6, 2, 2)
+
+		arr1 = np.zeros(shape1)
+		arr2 = np.zeros(shape2)
+
+		# Trivial masks
+		m1 = np.ones_like(arr1)
+		m2 = np.ones_like(arr2)
+
+		with self.assertRaises(ValueError):
+			mnxc(arr1, arr2, m1, m2, axes=(1, 2))
+	
+	def test_output_shape(self):
+		"""Masked normalized cross-correlation should return a shape
+		of N + M + 1 for each transform axis in 'full' mode, and unchanged dimensions 
+		in 'same' mode."""
+		shape1 = (15, 4, 5)
+		shape2 = (6, 12, 7)
+		expected_full_shape = tuple(np.array(shape1) + np.array(shape2) - 1)
+		expected_same_shape = shape1
+
+		arr1 = np.zeros(shape1)
+		arr2 = np.zeros(shape2)
+		# Trivial masks
+		m1 = np.ones_like(arr1)
+		m2 = np.ones_like(arr2)
+
+		full_xcorr = mnxc(arr1, arr2, m1, m2, axes=(0, 1, 2), mode='full')
+		self.assertTupleEqual(full_xcorr.shape, expected_full_shape)
+
+		same_xcorr = mnxc(arr1, arr2, m1, m2, axes=(0, 1, 2), mode='same')
+		self.assertTupleEqual(same_xcorr.shape, expected_same_shape)
 
 if __name__ == '__main__':
 	unittest.main()
