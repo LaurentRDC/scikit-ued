@@ -1,8 +1,9 @@
-numpy        >= 1.12
-scipy        >= 1.0.0
-scikit-image >= 0.13
-tifffile     >= 0.13
-pywavelets   >= 0.5.2
+crystals     >= 0.6.0
 npstreams    >= 1.5.2
-spglib       >= 1.10
+numpy        >= 1.12
 pycifrw      >= 4
+pywavelets   >= 0.5.2
+scikit-image >= 0.13
+scipy        >= 1.0.0
+spglib       >= 1.10
+tifffile     >= 0.13
