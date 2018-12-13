@@ -14,7 +14,7 @@ environment:
                         # to the matrix section.
       TEST_CMD: "python -m unittest discover --verbose"
 
-      CONDA_DEPENDENCIES: "numpy scipy cython scikit-image"
+      CONDA_DEPENDENCIES: "numpy scipy cython scikit-image crystals"
       PIP_DEPENDENCIES: "pywavelets spglib pycifrw ase npstreams tifffile"
 
   matrix:
