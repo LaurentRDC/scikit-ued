@@ -16,12 +16,10 @@
 #
 import os
 import sys
-import matplotlib
-matplotlib.use('agg')
 
 sys.path.insert(0, os.path.abspath('../..'))
 
-import skued
+from skued import __version__
 
 # -- General configuration ------------------------------------------------
 
@@ -76,7 +74,7 @@ author = 'Laurent P. René de Cotret'
 # built documents.
 #
 # The short X.Y version.
-version = skued.__version__
+version = __version__
 # The full version, including alpha/beta/rc tags.
 release = version
 
