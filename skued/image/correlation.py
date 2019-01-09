@@ -159,18 +159,17 @@ def mnxc2(arr1, arr2, m1 = None, m2 = None, mode = 'full', axes = (0, 1), out = 
 
     return np.real(mnxc(arr1, arr2, np.logical_not(m1), np.logical_not(m2), mode = mode, axes = axes, overlap_ratio = overlap_ratio))
 
-def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1), overlap_ratio=3 / 10):
+def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1), 
+                           overlap_ratio=3 / 10):
     """
-    N-dimensional masked normalized cross-correlation (MNXC) between arrays.
-
-    .. versionadded:: 1.0.2
+    Masked normalized cross-correlation between arrays.
 
     Parameters
     ----------
     arr1 : ndarray
         First array.
     arr2 : ndarray
-        Seconds array. The dimensions of `arr2` along axes that are not
+        Second array. The dimensions of `arr2` along axes that are not
         transformed should be equal to that of `arr1`.
     m1 : ndarray
         Mask of `arr1`. The mask should evaluate to `True`
@@ -189,8 +188,12 @@ def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1), overlap_ratio=3 / 10):
     axes : tuple of ints, optional
         Axes along which to compute the cross-correlation.
     overlap_ratio : float, optional
-        Maximum allowed overlap ratio between masks. The correlation at pixels
-        with overlap ratio higher than this threshold will be zeroed.
+        Minimum allowed overlap ratio between images. The correlation for
+        translations corresponding with an overlap ratio lower than this 
+        threshold will be ignored. A lower `overlap_ratio` leads to smaller 
+        maximum translation, while a higher `overlap_ratio` leads to greater 
+        robustness against spurious matches due to small overlap between 
+        masked images.
 
     Returns
     -------
@@ -205,7 +208,11 @@ def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1), overlap_ratio=3 / 10):
     References
     ----------
     .. [1] Dirk Padfield. Masked Object Registration in the Fourier Domain.
-        IEEE Transactions on Image Processing, vol.21(5), pp. 2706-2718 (2012).
+           IEEE Transactions on Image Processing, vol. 21(5), 
+           pp. 2706-2718 (2012). :DOI:`10.1109/TIP.2011.2181402`
+    .. [2] D. Padfield. "Masked FFT registration". In Proc. Computer Vision and 
+           Pattern Recognition, pp. 2918-2925 (2010).  
+           :DOI:`10.1109/CVPR.2010.5540032`
     """
     if mode not in {'full', 'same'}:
         raise ValueError("Correlation mode {} is not valid.".format(mode))
@@ -221,12 +228,12 @@ def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1), overlap_ratio=3 / 10):
     for axis in (all_axes - set(axes)):
         if fixed_image.shape[axis] != moving_image.shape[axis]:
             raise ValueError(
-                'Array shapes along non-transformation axes should be \
-                    equal, but dimensions along axis {a} not'.format(a=axis))
+                "Array shapes along non-transformation axes should be "
+                    "equal, but dimensions along axis {a} not".format(a=axis))
 
     # Determine final size along transformation axes
-    # Note that it might be faster to conmpute Fourier transform in a slightly
-    # larger shape (`fast_shape`) Then, after all fourier transforms are done,
+    # Note that it might be faster to compute Fourier transform in a slightly
+    # larger shape (`fast_shape`). Then, after all fourier transforms are done,
     # we slice back to`final_shape` using `final_slice`.
     final_shape = list(arr1.shape)
     for axis in axes:
@@ -235,10 +242,11 @@ def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1), overlap_ratio=3 / 10):
     final_shape = tuple(final_shape)
     final_slice = tuple([slice(0, int(sz)) for sz in final_shape])
 
-    # Extent transform axes to the next fast length (i.e. multiple of 3, 5, or 7)
+    # Extent transform axes to the next fast length (i.e. multiple of 3, 5, or
+    # 7)
     fast_shape = tuple([next_fast_len(final_shape[ax]) for ax in axes])
 
-    # We use numpy's fft because it allows to leave transform axes unchanged
+    # We use numpy's fft because it allows to leave transform axes unchanged,
     # which is not possible with SciPy's fftn/ifftn
     # E.g. arr shape (2,3,7), transform along axes (0, 1) with shape (4,4)
     # results in arr_fft shape (4,4, 7)
@@ -248,7 +256,7 @@ def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1), overlap_ratio=3 / 10):
     fixed_image[np.logical_not(fixed_mask)] = 0.0
     moving_image[np.logical_not(moving_mask)] = 0.0
 
-    # N-dimensional analog to rotation by 180deg is flip over all relevant axes
+    # N-dimensional analog to rotation by 180deg is flip over all relevant axes.
     # See [1] for discussion.
     rotated_moving_image = _flip(moving_image, axes=axes)
     rotated_moving_mask = _flip(moving_mask, axes=axes)
@@ -258,7 +266,7 @@ def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1), overlap_ratio=3 / 10):
     fixed_mask_fft = fft(fixed_mask)
     rotated_moving_mask_fft = fft(rotated_moving_mask)
 
-    # Calculate overlap of masks at every point in the convolution
+    # Calculate overlap of masks at every point in the convolution.
     # Locations with high overlap should not be taken into account.
     number_overlap_masked_px = np.real(
         ifft(rotated_moving_mask_fft * fixed_mask_fft))
@@ -286,7 +294,7 @@ def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1), overlap_ratio=3 / 10):
 
     denom = np.sqrt(fixed_denom * moving_denom)
 
-    # Slice back to expected convolution shape
+    # Slice back to expected convolution shape.
     numerator = numerator[final_slice]
     denom = denom[final_slice]
     number_overlap_masked_px = number_overlap_masked_px[final_slice]
@@ -299,7 +307,7 @@ def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1), overlap_ratio=3 / 10):
         number_overlap_masked_px = _centering(number_overlap_masked_px)
 
     # Pixels where `denom` is very small will introduce large
-    # numbers after division To get around this problem,
+    # numbers after division. To get around this problem,
     # we zero-out problematic pixels.
     tol = 1e3 * eps * np.max(np.abs(denom), axis=axes, keepdims=True)
     nonzero_indices = denom > tol
@@ -314,6 +322,7 @@ def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1), overlap_ratio=3 / 10):
     out[number_overlap_masked_px < number_px_threshold] = 0.0
 
     return out
+
 
 def _centered(arr, newshape, axes):
     """ Return the center `newshape` portion of `arr`, leaving axes not
@@ -330,14 +339,15 @@ def _centered(arr, newshape, axes):
 
     return arr[tuple(slices)]
 
+
 def _flip(arr, axes=None):
     """ Reverse array over many axes. Generalization of arr[::-1] for many
     dimensions. If `axes` is `None`, flip along all axes. """
     if axes is None:
-        axes = tuple(range(arr.ndim))
-    
-    # Note that np.flip requires numpy>1.12
-    for axis in axes:
-        arr = np.flip(arr, axis)
+        reverse = [slice(None, None, -1)] * arr.ndim
+    else:
+        reverse = [slice(None, None, None)] * arr.ndim
+        for axis in axes:
+            reverse[axis] = slice(None, None, -1)
 
-    return arr
+    return arr[reverse]

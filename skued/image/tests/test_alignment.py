@@ -292,13 +292,17 @@ class TestMaskedRegisterTranslation(unittest.TestCase):
 		# https://github.com/scikit-image/scikit-image/blob/master/skimage/feature/tests/test_register_translation.py
 		reference_image = data.camera()
 		shift = (-7, 12)
-		shifted = np.real(np.fft.ifft2(fourier_shift(np.fft.fft2(reference_image), shift)))
+		shifted = np.real(np.fft.ifft2(fourier_shift(
+				np.fft.fft2(reference_image), shift)))
+		trivial_mask = np.ones_like(reference_image, dtype = np.bool)
 
-		skimage_result, *_ = register_translation(reference_image, shifted)
-		masked_result = masked_register_translation(reference_image, shifted, np.ones_like(reference_image), 
-													mode = 'full', overlap_ratio = 1/10)
+		nonmasked_result, *_ = register_translation(reference_image, shifted)
+		masked_result = masked_register_translation(
+				reference_image, shifted, trivial_mask, overlap_ratio=1 / 10)
 
-		self.assertTrue(np.allclose(skimage_result, masked_result))
+		print('skimage: ', nonmasked_result)
+		print('mnxc:    ', masked_result)
+		self.assertTrue(np.allclose(nonmasked_result, masked_result))
 
 
 
