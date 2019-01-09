@@ -62,7 +62,7 @@ def shift_image(arr, shift, fill_value = 0):
         dst_slices[ax] = slice(mom(s), non(s))
         src_slices[ax] = slice(mom(-s), non(-s))
 
-    output[dst_slices] = arr[src_slices]
+    output[tuple(dst_slices)] = arr[tuple(src_slices)]
     return output
 
 @array_stream

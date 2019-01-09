@@ -95,7 +95,7 @@ def mirror(arr, axes = None):
         for axis in axes:
             reverse[axis] = slice(None, None, -1)
     
-    return arr[reverse]
+    return arr[tuple(reverse)]
 
 def cart2polar(x, y):
     """ 
