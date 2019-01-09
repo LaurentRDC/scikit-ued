@@ -285,16 +285,12 @@ def masked_register_translation(src_image, target_image, src_mask, target_mask =
     # cross-correlation
     size_mismatch = np.array(target_image.shape) - np.array(src_image.shape)
 
-    xcorr = mnxc(target_image, src_image, target_mask, src_mask,
-                 axes=(0, 1), mode=mode, overlap_ratio=overlap_ratio).real
+    xcorr = mnxc(target_image, src_image, 
+                 target_mask, src_mask, axes=(0, 1), mode='full', 
+                 overlap_ratio=overlap_ratio)
 
     # Generalize to the average of multiple equal maxima
     maxima = np.transpose(np.nonzero(xcorr == xcorr.max()))
     center = np.mean(maxima, axis=0)
-
-    if mode == 'same':
-        shifts = (center - np.array(xcorr.shape)/2 + 0.5)
-    else:
-        shifts = center - np.array(src_image.shape) + 1
-
+    shifts = center - np.array(src_image.shape) + 1
     return -shifts + (size_mismatch / 2)

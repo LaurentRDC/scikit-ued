@@ -300,8 +300,6 @@ class TestMaskedRegisterTranslation(unittest.TestCase):
 		masked_result = masked_register_translation(
 				reference_image, shifted, trivial_mask, overlap_ratio=1 / 10)
 
-		print('skimage: ', nonmasked_result)
-		print('mnxc:    ', masked_result)
 		self.assertTrue(np.allclose(nonmasked_result, masked_result))
 
 
