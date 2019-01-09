@@ -31,15 +31,15 @@ class TestTimeShift(unittest.TestCase):
         self.assertEqual(shift, -5)
 
     def test_shift_with_noise(self):
-        """ Test measuring the time-shift between traces shifted from one another, with added 10% gaussian noise """
+        """ Test measuring the time-shift between traces shifted from one another, with added 6% gaussian noise """
         trace1 = np.sin(2*np.pi*np.linspace(0, 10, 64))
         trace2 = scipy_shift(trace1, 5)
 
         trace1 = trace1[6:-6]
         trace2 = trace2[6:-6]
 
-        trace1 += 0.05*np.random.random(size = trace1.shape)
-        trace2 += 0.05*np.random.random(size = trace2.shape)
+        trace1 += 0.03*np.random.random(size = trace1.shape)
+        trace2 += 0.03*np.random.random(size = trace2.shape)
         shift = register_time_shift(trace1, trace2)
         self.assertEqual(shift, -5)
     
