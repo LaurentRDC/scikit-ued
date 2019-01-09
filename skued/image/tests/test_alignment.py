@@ -55,7 +55,7 @@ class TestDiffRegister(unittest.TestCase):
 	
 	def test_shifted_skimage_data(self):
 		""" Test that translation is registered for data from scikit-image """
-		random_shift = np.random.randint(low = 0, high = 10, size = (2,))
+		random_shift = np.random.randint(low = 0, high = 5, size = (2,))
 
 		im = np.asfarray(data.camera())
 		im2 = np.asfarray(data.camera())
@@ -66,14 +66,14 @@ class TestDiffRegister(unittest.TestCase):
 		edge_mask[6:-6, 6:-6] = False
 
 		with self.subTest('No noise'):
-			shift = diff_register(im, im2, edge_mask)
+			shift = diff_register(im, im2, edge_mask, sigma=None, crop=False)
 			self.assertTrue(np.allclose(shift, random_shift, atol = 1))
 		
 		with self.subTest('With 5% noise'):
 			noise1 = 0.05 * im.max() * np.random.random(size = im.shape)
 			noise2 = 0.05 * im.max() * np.random.random(size = im.shape)
 
-			shift = diff_register(im + noise1, im2 + noise2, edge_mask)
+			shift = diff_register(im + noise1, im2 + noise2, edge_mask, sigma=None, crop=False)
 			self.assertTrue(np.allclose(shift, random_shift, atol = 1))
 	
 	def test_side_effects(self):
