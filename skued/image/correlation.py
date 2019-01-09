@@ -141,10 +141,6 @@ def mnxc2(arr1, arr2, m1 = None, m2 = None, mode = 'full', axes = (0, 1), out = 
     out : `~numpy.ndarray`
         Masked, normalized cross-correlation. If images are real-valued, then `out` will be
         real-valued as well. For complex input, `out` will be complex as well.
-    
-    See Also
-    --------
-    xcorr : cross-correlation between two N-dimensional arrays.
         
     References
     ----------

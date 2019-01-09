@@ -13,9 +13,9 @@ environment:
                         # of 32 bit and 64 bit builds are needed, move this
                         # to the matrix section.
       TEST_CMD: "python -m unittest discover --verbose"
-
-      CONDA_DEPENDENCIES: "numpy scipy cython scikit-image crystals"
-      PIP_DEPENDENCIES: "pywavelets spglib pycifrw ase npstreams tifffile"
+      CONDA_CHANNELS: "default conda-forge"
+      CONDA_DEPENDENCIES: "numpy scipy cython scikit-image crystals tifffile pycifrw spglib pywavelets ase npstreams"
+      PIP_DEPENDENCIES: ""
 
   matrix:
 
