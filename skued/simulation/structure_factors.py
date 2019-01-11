@@ -3,54 +3,13 @@
 Structure Factor calculation
 """
 from collections import Iterable
-from itertools import takewhile, count, product
+from itertools import count, product, takewhile
 
 import numpy as np
 from numpy.linalg import norm
 
-from .. import change_basis_mesh
-from ..structure import ELEM_TO_NUM
-from .scattering_params import scattering_params
+from .form_factors import affe
 
-def affe(atom, nG):
-    """
-    Atomic form factors for electrons, for neutral atoms. 
-
-    Parameters
-    ----------
-    atom : skued.Atom, int, or str
-        Atomic number, atomic symbol, or Atom instance.
-        Atomic symbols are expected to be properly capitalized, e.g. ``As`` or ``W``.
-    nG : array_like
-        Scattering vector norm, in units of Angstroms:math:`^{-1}`. (:math:`|G| = 4 \pi s`). 
-    
-    Returns
-    -------
-    eff : `~numpy.ndarray`, dtype float
-        Atomic form factor for electron scattering.
-
-    Raises
-    ------
-    ValueError : scattering information is not available, for example if the atomic number is larger than 103
-    """
-    if isinstance(atom, int):
-        atomic_number = atom
-    elif isinstance(atom, str):
-        atomic_number = ELEM_TO_NUM[atom]
-    else:
-        atomic_number = atom.atomic_number
-
-    try:
-        _, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[atomic_number]
-    except KeyError:
-        raise ValueError('Scattering information for element Z={} is unavailable.'.format(atomic_number))
-    
-    # Parametrization of form factors is done in terms of q = 2 s = 2 pi |G|
-    q = nG / (2*np.pi)
-    q2 = np.square(q)
-    sum1 = a1/(q2 + b1) + a2/(q2 + b2) + a3/(q2 + b3)
-    sum2 = c1 * np.exp(-d1 * q2) + c2 * np.exp(-d2 * q2) + c3 * np.exp(-d3 * q2)
-    return sum1 + sum2
 
 def structure_factor(crystal, h, k, l, normalized = False):
     """

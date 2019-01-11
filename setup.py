@@ -22,6 +22,8 @@ WAVELET_FILES   = chain.from_iterable([glob('skued\\baseline\\data\\*.npy'),
 
 CIF_FILES       = chain.from_iterable([glob('skued\\structure\\cifs\\*.cif')])
 
+FF_FILES        = chain.from_iterable([glob('skued\\simulation\\data\\*.yaml')])
+
 base_path = Path(__file__).parent
 with open(base_path / BASE_PACKAGE / '__init__.py') as f:
     module_content = f.read()
@@ -64,7 +66,8 @@ if __name__ == '__main__':
         python_requires = '>=3.6',
         packages = PACKAGES,
         data_files = [('skued\\baseline\\data', WAVELET_FILES),
-                      ('skued\\structure\\cifs', CIF_FILES)],
+                      ('skued\\structure\\cifs', CIF_FILES)
+                      ('skued\\simulation\\data', FF_FILES)],
         include_package_data = True,
         zip_safe = False,
         test_suite = 'setup.skued_test_suite', 

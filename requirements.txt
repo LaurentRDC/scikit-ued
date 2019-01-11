@@ -7,3 +7,4 @@ scikit-image >= 0.13
 scipy        >= 1.0.0
 spglib       >= 1.10
 tifffile     >= 0.13
+pyyaml       >= 3.1

@@ -4,6 +4,7 @@ Changelog
 Release 1.0.2.0 (Development)
 -----------------------------
 
+* Added aspherical electron form factor parametrization from Zheng et al. 2009.
 * Added an analog of scikit-image's `register_translation`, `masked_register_translation`. It will eventually replace `diff_register`.
 
 * Deprecated `mnxc2` in favor of `mnxc`, the n-dimensional masked normalized cross-correlation.
