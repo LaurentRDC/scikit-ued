@@ -14,6 +14,7 @@ class Base:
 
     This allows for transparent multiple inheritance of subclasses.
     """
+
     def __eq__(self, other):
         if isinstance(other, self.__class__):
             return True
@@ -21,6 +22,7 @@ class Base:
 
     def __hash__(self):
         return 0
+
 
 class AtomicStructure(Base):
     """
@@ -43,18 +45,18 @@ class AtomicStructure(Base):
         a secondary structure in a protein.
     """
 
-    def __init__(self, atoms = tuple(), substructures = tuple(), **kwargs):
+    def __init__(self, atoms=tuple(), substructures=tuple(), **kwargs):
         self.atoms = frozenset(atoms)
         self.substructures = frozenset(substructures)
         super().__init__(**kwargs)
-    
+
     def __iter__(self):
         """ Yields :class:`Atom` instances from the structure and substructures 
         recursively. Order is not guaranteed. """
         yield from iter(self.atoms)
         yield from chain.from_iterable(self.substructures)
-    
-    def itersorted(self, *, key = None, reverse = False):
+
+    def itersorted(self, *, key=None, reverse=False):
         """ 
         Yields :class:`Atom` in sorted order. By default, atoms are sorted by element. 
 
@@ -71,65 +73,69 @@ class AtomicStructure(Base):
         """
         if key is None:
             key = lambda atm: atm.element
-        yield from sorted(iter(self), key = key, reverse = reverse)
-    
+        yield from sorted(iter(self), key=key, reverse=reverse)
+
     @property
     def chemical_composition(self):
         """ Chemical composition of this structure as a dictionary. Keys are elemental symbols. """
         # We can't use a Counter directly since Counter values are integer by default
         number_atoms = len(self)
         counter = Counter(atm.element for atm in self)
-        return {k:v/number_atoms for k,v in counter.items()}
+        return {k: v / number_atoms for k, v in counter.items()}
 
     def __contains__(self, item):
         """ Check containership of :class:`Atom` instances or :class:`AtomicStructure` substructures recursively."""
         if isinstance(item, AtomicStructure):
-            return (item in self.substructures)
-        
-        # Either the item is an orphan atom or 
+            return item in self.substructures
+
+        # Either the item is an orphan atom or
         # it is in one of the substructures
         # Checking containership of sets is faster than iterating
         if item in self.atoms:
             return True
         else:
             return any((item in struct) for struct in self.substructures)
-    
+
     def __len__(self):
         """ Number of :class:`Atom` instances present in the structure and substructures """
         return len(self.atoms) + sum(len(struct) for struct in self.substructures)
-    
+
     def __hash__(self):
         return hash((self.atoms, self.substructures)) | super().__hash__()
-    
+
     def __eq__(self, other):
         if isinstance(other, self.__class__):
-            return (set(self.atoms) == set(other.atoms) and 
-                    set(self.substructures) == set(other.substructures) and
-                    super().__eq__(other))
+            return (
+                set(self.atoms) == set(other.atoms)
+                and set(self.substructures) == set(other.substructures)
+                and super().__eq__(other)
+            )
         return NotImplemented
 
     def __repr__(self):
         """ Verbose string representation of this instance. """
         # AtomicStructure subclasses need not override this method
         # since the class name is dynamically determined
-        rep = '< {clsname} object with following orphan atoms:'.format(clsname = self.__class__.__name__)
+        rep = "< {clsname} object with following orphan atoms:".format(
+            clsname=self.__class__.__name__
+        )
 
         # Note that repr(Atom(...)) includes these '< ... >'
         # We remove those for cleaner string representation
         for atm in self.itersorted():
-            rep += '\n    ' + repr(atm).replace('<', '').replace('>', '').strip()
+            rep += "\n    " + repr(atm).replace("<", "").replace(">", "").strip()
 
         if self.substructures:
-            rep += 'and the following substructures:'
+            rep += "and the following substructures:"
             for struct in self.substructures:
-                rep += '\n' + repr(struct)
-        
-        return rep + ' >'
+                rep += "\n" + repr(struct)
+
+        return rep + " >"
 
     def __array__(self, *args, **kwargs):
         """ Returns an array in which each row represents an :class:`Atom` instance. Atoms are ordered by atomic number """
-        arr = np.empty(shape = (len(self), 4), *args, **kwargs)
-        atoms = self.itersorted(key = lambda atm: atm.atomic_number)
+        arr = np.empty(shape=(len(self), 4), *args, **kwargs)
+        atoms = self.itersorted(key=lambda atm: atm.atomic_number)
         for row, atm in enumerate(atoms):
             arr[row, 0] = atm.atomic_number
             arr[row, 1:] = atm.coords

@@ -14,6 +14,7 @@ except ImportError:
 else:
     WITH_PYQTGRAPH = True
 
+
 def diffread(fname):
     """
     Load an image from a file. Supported file formats are:
@@ -46,18 +47,19 @@ def diffread(fname):
     """
     fname = str(fname)  # In case of pathlib.Path
 
-    if fname.endswith(('tiff', 'tif')):
+    if fname.endswith(("tiff", "tif")):
         return tifffile.imread(fname)
-    elif fname.endswith('.mib'):
+    elif fname.endswith(".mib"):
         return mibread(fname)
-    elif fname.endswith(('.dm3', '.dm4')):
+    elif fname.endswith((".dm3", ".dm4")):
         return dmread(fname)
-    
+
     # Worst-case scenario, we need skimage.io
     # since this is a slow import, we import it here
     import skimage.io
 
-    return skimage.io.imread(fname, as_gray = True)
+    return skimage.io.imread(fname, as_gray=True)
+
 
 def diffshow(image):
     """ 
@@ -81,7 +83,7 @@ def diffshow(image):
     also supported by this function. 
     """
     if not WITH_PYQTGRAPH:
-        raise ImportError('PyQtGraph is not installed.')
+        raise ImportError("PyQtGraph is not installed.")
 
     if isinstance(image, (str, Path)):
         image = diffread(image)
@@ -89,6 +91,6 @@ def diffshow(image):
     app = pg.QtGui.QApplication([])
     viewer = pg.ImageView()
     viewer.setImage(image)
-    viewer.setWindowTitle('Scikit-UED Diffraction Viewer')
+    viewer.setWindowTitle("Scikit-UED Diffraction Viewer")
     viewer.show()
     app.exec_()

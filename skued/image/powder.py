@@ -10,7 +10,8 @@ import numpy as np
 from ..utils import deprecated
 from .alignment import diff_register
 
-flip = partial(np.rot90, k = 2)
+flip = partial(np.rot90, k=2)
+
 
 def _angle_bounds(bounds):
     b1, b2 = bounds
@@ -23,8 +24,9 @@ def _angle_bounds(bounds):
     while b2 > 360:
         b2 -= 360
     return tuple(sorted((b1, b2)))
-    
-def azimuthal_average(image, center, mask = None, angular_bounds = None, trim = True):
+
+
+def azimuthal_average(image, center, mask=None, angular_bounds=None, trim=True):
     """
     This function returns an azimuthally-averaged pattern computed from an image, 
     e.g. polycrystalline diffraction.
@@ -53,9 +55,9 @@ def azimuthal_average(image, center, mask = None, angular_bounds = None, trim = 
         Angular-average of the array.
     """
     if mask is None:
-        mask = np.zeros_like(image, dtype = np.bool)
+        mask = np.zeros_like(image, dtype=np.bool)
 
-    xc, yc = center  
+    xc, yc = center
 
     # Create meshgrid and compute radial positions of the data
     # The radial positions are rounded to the nearest integer
@@ -66,40 +68,43 @@ def azimuthal_average(image, center, mask = None, angular_bounds = None, trim = 
 
     if angular_bounds:
         mi, ma = _angle_bounds(angular_bounds)
-        angles = np.rad2deg(np.arctan2(Y - yc, X - xc)) + 180  # arctan2 is defined on [-pi, pi] but we want [0, pi]
+        angles = (
+            np.rad2deg(np.arctan2(Y - yc, X - xc)) + 180
+        )  # arctan2 is defined on [-pi, pi] but we want [0, pi]
         in_bounds = np.logical_and(mi <= angles, angles <= ma)
     else:
-        in_bounds = np.ones_like(image, dtype = np.bool)
+        in_bounds = np.ones_like(image, dtype=np.bool)
 
     valid = np.logical_not(mask)[in_bounds]
     image = image[in_bounds]
     Rint = Rint[in_bounds]
 
-    px_bin = np.bincount(Rint, weights = valid*image)
-    r_bin = np.bincount(Rint, weights = valid)
+    px_bin = np.bincount(Rint, weights=valid * image)
+    r_bin = np.bincount(Rint, weights=valid)
     radius = np.arange(0, r_bin.size)
 
     # Make sure r_bin is never 0 since it it used for division anyway
-    np.maximum(r_bin, 1, out = r_bin)
+    np.maximum(r_bin, 1, out=r_bin)
 
     # We ignore the leading and trailing zeroes, which could be due to
     first, last = 0, -1
     if trim:
         first, last = _trim_bounds(px_bin)
 
-    return radius[first:last], px_bin[first:last]/r_bin[first:last]
+    return radius[first:last], px_bin[first:last] / r_bin[first:last]
+
 
 def _trim_bounds(arr):
     """ Returns the bounds which would be used in numpy.trim_zeros """
     first = 0
     for i in arr:
-        if i != 0.:
+        if i != 0.0:
             break
         else:
             first = first + 1
     last = len(arr)
     for i in arr[::-1]:
-        if i != 0.:
+        if i != 0.0:
             break
         else:
             last = last - 1

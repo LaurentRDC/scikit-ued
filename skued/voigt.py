@@ -8,8 +8,8 @@ import numpy as np
 from numpy import pi
 
 
-def gaussian(coordinates, center, fwhm = None, std = None):
-	"""
+def gaussian(coordinates, center, fwhm=None, std=None):
+    """
 	Unit integral Gaussian function.
     
 	Parameters
@@ -49,24 +49,31 @@ def gaussian(coordinates, center, fwhm = None, std = None):
 	>>> g.shape == xx.shape		  #True
 	>>> np.sum(g)*0.1**2         #Integral should be unity (spacing = 0.1)
 	"""
-	if not any([fwhm, std]):
-		raise ValueError('Either fwhm or std has to be provided')
-	
-	if fwhm:
-		std = fwhm/(2*np.sqrt(2*np.log(2)))
+    if not any([fwhm, std]):
+        raise ValueError("Either fwhm or std has to be provided")
 
-	# 1D is a special case, as coordinates are not given as a list of arrays
-	if not isinstance(coordinates, (list, tuple)):	# iterable but not ndarray
-		return 1/(std * np.sqrt(2*pi)) * np.exp(- (coordinates - center)**2 / (2 * std * std))
-	
-	# Computation
-	dim = len(coordinates)
-	exponent = sum([ (x - c)**2 for x, c in zip(coordinates, center) ])/(2*std*std)
-	factor = 1/(std*np.sqrt(2*pi))**dim
-	return factor*np.exp(-exponent)
+    if fwhm:
+        std = fwhm / (2 * np.sqrt(2 * np.log(2)))
+
+        # 1D is a special case, as coordinates are not given as a list of arrays
+    if not isinstance(coordinates, (list, tuple)):  # iterable but not ndarray
+        return (
+            1
+            / (std * np.sqrt(2 * pi))
+            * np.exp(-(coordinates - center) ** 2 / (2 * std * std))
+        )
+
+        # Computation
+    dim = len(coordinates)
+    exponent = sum([(x - c) ** 2 for x, c in zip(coordinates, center)]) / (
+        2 * std * std
+    )
+    factor = 1 / (std * np.sqrt(2 * pi)) ** dim
+    return factor * np.exp(-exponent)
+
 
 def lorentzian(coordinates, center, fwhm):
-	"""
+    """
 	Unit integral Lorenzian function.
     
 	Parameters
@@ -113,20 +120,23 @@ def lorentzian(coordinates, center, fwhm):
 	>>> l.shape == xx.shape		  #True
 	>>> np.sum(l)*0.1**2          #Integral should be unity (spacing = 0.1)
 	"""
-	width = 0.5*fwhm
+    width = 0.5 * fwhm
 
-	# 1D is a special case, as coordinates are not given as a list of arrays
-	if not isinstance(coordinates, (list, tuple)): # iterable but not ndarray
-		return (width/pi) / ((coordinates - center)**2 + width**2)
-		
-	# Computation
-	#TODO: speedup by creating numpy array, sum over last axis?
-	dim = len(coordinates)
-	core = width/(( sum([(x - c)**2 for x,c in zip(coordinates, center)]) + width**2 ))**( (dim + 1)/2)
-	factor = 1/(dim*pi)
-	return factor*core
+    # 1D is a special case, as coordinates are not given as a list of arrays
+    if not isinstance(coordinates, (list, tuple)):  # iterable but not ndarray
+        return (width / pi) / ((coordinates - center) ** 2 + width ** 2)
 
-@lru_cache(maxsize = 16)
+        # Computation
+        # TODO: speedup by creating numpy array, sum over last axis?
+    dim = len(coordinates)
+    core = width / (
+        (sum([(x - c) ** 2 for x, c in zip(coordinates, center)]) + width ** 2)
+    ) ** ((dim + 1) / 2)
+    factor = 1 / (dim * pi)
+    return factor * core
+
+
+@lru_cache(maxsize=16)
 def _pseudo_voigt_mixing_factor(width_l, width_g):
     """
     Returns the proportion of Lorentzian for the computation of a pseudo-Voigt profile.
@@ -142,17 +152,27 @@ def _pseudo_voigt_mixing_factor(width_l, width_g):
     eta : numerical
         Proportion of Lorentzian. Between 0 and 1
     """
-    #Fast formula (see paper in pseudo_voigt docstrings)
-    #This assumes width_g and width_l are the Gaussian FWHM and Lorentzian FWHM
-    gamma = (width_g**5 + 2.69*width_l*(width_g**4) + 
-			 2.43*(width_g**3)*(width_l**2) + 4.47*(width_g**2)*(width_l**3) + 
-			 0.08*width_g*(width_l**4) + width_l**5)**(1/5)
-    
-    #Proportion of the Voigt that should be Lorentzian
-    return 1.37*(width_l/gamma) - 0.477*(width_l/gamma)**2 + 0.11*(width_l/gamma)**3
+    # Fast formula (see paper in pseudo_voigt docstrings)
+    # This assumes width_g and width_l are the Gaussian FWHM and Lorentzian FWHM
+    gamma = (
+        width_g ** 5
+        + 2.69 * width_l * (width_g ** 4)
+        + 2.43 * (width_g ** 3) * (width_l ** 2)
+        + 4.47 * (width_g ** 2) * (width_l ** 3)
+        + 0.08 * width_g * (width_l ** 4)
+        + width_l ** 5
+    ) ** (1 / 5)
+
+    # Proportion of the Voigt that should be Lorentzian
+    return (
+        1.37 * (width_l / gamma)
+        - 0.477 * (width_l / gamma) ** 2
+        + 0.11 * (width_l / gamma) ** 3
+    )
+
 
 def pseudo_voigt(coordinates, center, fwhm_g, fwhm_l):
-	"""
+    """
 	Unit integral pseudo-Voigt profile. Deviation from real Voigt 
 	by less than 1% [1]_.
     
@@ -186,5 +206,7 @@ def pseudo_voigt(coordinates, center, fwhm_g, fwhm_l):
 	.. [1] T. Ida et al., Extended pseudo-Voigt function for approximating the Voigt profile. 
 		J. of Appl. Cryst. (2000) vol. 33, pp. 1311-1316
 	"""
-	eta = _pseudo_voigt_mixing_factor(fwhm_g, fwhm_l)
-	return (1 - eta)*gaussian(coordinates, center, fwhm_g) + eta*lorentzian(coordinates, center, fwhm_l)
+    eta = _pseudo_voigt_mixing_factor(fwhm_g, fwhm_l)
+    return (1 - eta) * gaussian(coordinates, center, fwhm_g) + eta * lorentzian(
+        coordinates, center, fwhm_l
+    )

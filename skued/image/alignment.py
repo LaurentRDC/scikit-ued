@@ -16,7 +16,9 @@ from .correlation import mnxc
 
 non = lambda s: s if s < 0 else None
 mom = lambda s: max(0, s)
-def shift_image(arr, shift, fill_value = 0):
+
+
+def shift_image(arr, shift, fill_value=0):
     """ 
     Shift an image. Subpixel resolution shifts are also possible.
 
@@ -43,16 +45,16 @@ def shift_image(arr, shift, fill_value = 0):
     # Since the fill value is often NaN, but arrays may be integers
     # We need to promote the final type to smallest coherent type
     final_type = np.promote_types(arr.dtype, np.dtype(type(fill_value)))
-    output = np.full_like(arr, fill_value = fill_value, dtype = final_type)
+    output = np.full_like(arr, fill_value=fill_value, dtype=final_type)
 
     # Floating point shifts are much slower
     j, i = tuple(shift)
-    if (int(i) != i) or (int(j) != j):	# shift is float
+    if (int(i) != i) or (int(j) != j):  # shift is float
         # Image must not be float16
         # because subpixel shifting involves interpolation
-        subpixel_shift(arr.astype(np.float), (i, j), output = output, cval = fill_value)
+        subpixel_shift(arr.astype(np.float), (i, j), output=output, cval=fill_value)
         return output
-    
+
     i, j = int(i), int(j)
 
     dst_slices = [slice(None, None)] * arr.ndim
@@ -65,8 +67,9 @@ def shift_image(arr, shift, fill_value = 0):
     output[tuple(dst_slices)] = arr[tuple(src_slices)]
     return output
 
+
 @array_stream
-def itrack_peak(images, row_slice = None, col_slice = None, precision = 1/10):
+def itrack_peak(images, row_slice=None, col_slice=None, precision=1 / 10):
     """
     Generator function that tracks a diffraction peak in a stream of images.
     
@@ -90,25 +93,26 @@ def itrack_peak(images, row_slice = None, col_slice = None, precision = 1/10):
     """
     if row_slice is None:
         row_slice = np.s_[:]
-    
+
     if col_slice is None:
         col_slice = np.s_[:]
 
     first = next(images)
-    
+
     # The shift between the first image and itself needs not
     # be computed!
     yield np.array((0.0, 0.0))
 
-    ref = np.array(first[row_slice, col_slice], copy = True)
+    ref = np.array(first[row_slice, col_slice], copy=True)
     sub = np.empty_like(ref)
 
     for image in images:
         sub[:] = image[row_slice, col_slice]
-        shift, *_ = register_translation(ref, sub, upsample_factor = int(1/precision))
+        shift, *_ = register_translation(ref, sub, upsample_factor=int(1 / precision))
         yield np.asarray(shift)
 
-def align(image, reference, mask = None, fill_value = 0.0, fast = True):
+
+def align(image, reference, mask=None, fill_value=0.0, fast=True):
     """
     Align a diffraction image to a reference. Subpixel resolution available.
 
@@ -135,11 +139,12 @@ def align(image, reference, mask = None, fill_value = 0.0, fast = True):
     --------
     ialign : generator of aligned images
     """
-    shift = diff_register(image, reference = reference, mask = mask, crop = fast)
-    return shift_image(image, shift, fill_value = fill_value)
+    shift = diff_register(image, reference=reference, mask=mask, crop=fast)
+    return shift_image(image, shift, fill_value=fill_value)
+
 
 @array_stream
-def ialign(images, reference = None, mask = None, fill_value = 0.0, fast = True):
+def ialign(images, reference=None, mask=None, fill_value=0.0, fast=True):
     """
     Generator of aligned diffraction images.
 
@@ -169,22 +174,30 @@ def ialign(images, reference = None, mask = None, fill_value = 0.0, fast = True)
     skued.align : align a single diffraction pattern onto a reference.
     """
     images = iter(images)
-    
+
     if reference is None:
         reference = next(images)
         yield reference
 
-    yield from map(partial(align, reference = reference, mask = mask, fill_value =  fill_value, fast = fast), images)
+    yield from map(
+        partial(
+            align, reference=reference, mask=mask, fill_value=fill_value, fast=fast
+        ),
+        images,
+    )
 
 
-def _crop_to_half(image, copy = False):
-    nrows, ncols = np.array(image.shape)/4
-    return np.array(image[int(nrows):-int(nrows), int(ncols):-int(ncols)], copy = copy)
+def _crop_to_half(image, copy=False):
+    nrows, ncols = np.array(image.shape) / 4
+    return np.array(
+        image[int(nrows) : -int(nrows), int(ncols) : -int(ncols)], copy=copy
+    )
+
 
 # TODO: add option to upsample, akin to skimage.feature.register_translation
-#		Could this be done initially by zero-padding?
-#		See https://github.com/scikit-image/scikit-image/blob/master/skimage/feature/register_translation.py#L109
-def diff_register(image, reference, mask = None, crop = True, sigma = 5):
+# 		Could this be done initially by zero-padding?
+# 		See https://github.com/scikit-image/scikit-image/blob/master/skimage/feature/register_translation.py#L109
+def diff_register(image, reference, mask=None, crop=True, sigma=5):
     """
     Register translation of diffraction patterns by masked 
     normalized cross-correlation.
@@ -216,24 +229,31 @@ def diff_register(image, reference, mask = None, crop = True, sigma = 5):
         IEEE Transactions on Image Processing, vol.21(5), pp. 2706-2718, 2012. 
     """
     if mask is None:
-        mask = np.zeros_like(image, dtype = np.bool)
-    
+        mask = np.zeros_like(image, dtype=np.bool)
+
     if crop:
-        image = _crop_to_half(image, copy = True)
-        reference = _crop_to_half(reference, copy = True)
-        mask = _crop_to_half(mask, copy = True)
+        image = _crop_to_half(image, copy=True)
+        reference = _crop_to_half(reference, copy=True)
+        mask = _crop_to_half(mask, copy=True)
 
     # Diffraction images register better with some filtering
     if sigma:
-        image = gaussian(image, sigma, preserve_range = True)
-        reference = gaussian(reference, sigma, preserve_range = True)
+        image = gaussian(image, sigma, preserve_range=True)
+        reference = gaussian(reference, sigma, preserve_range=True)
 
     # Note the reverse order between the image and reference
     # This is to mirror functionality from scikit-image's register_translation
-    return masked_register_translation(reference, image, mask, mode = 'full')[::-1]
+    return masked_register_translation(reference, image, mask, mode="full")[::-1]
 
-def masked_register_translation(src_image, target_image, src_mask, target_mask = None, 
-                                mode = 'same', overlap_ratio = 3/10):
+
+def masked_register_translation(
+    src_image,
+    target_image,
+    src_mask,
+    target_mask=None,
+    mode="same",
+    overlap_ratio=3 / 10,
+):
     """
     Efficient image translation registration by masked normalized cross-correlation.
 
@@ -279,15 +299,22 @@ def masked_register_translation(src_image, target_image, src_mask, target_mask =
     for (im, mask) in [(src_image, src_mask), (target_image, target_mask)]:
         if im.shape != mask.shape:
             raise ValueError(
-                "Error: image sizes must match their respective mask sizes.")
+                "Error: image sizes must match their respective mask sizes."
+            )
 
     # The mismatch in size will impact the center location of the
     # cross-correlation
     size_mismatch = np.array(target_image.shape) - np.array(src_image.shape)
 
-    xcorr = mnxc(target_image, src_image, 
-                 target_mask, src_mask, axes=(0, 1), mode='full', 
-                 overlap_ratio=overlap_ratio)
+    xcorr = mnxc(
+        target_image,
+        src_image,
+        target_mask,
+        src_mask,
+        axes=(0, 1),
+        mode="full",
+        overlap_ratio=overlap_ratio,
+    )
 
     # Generalize to the average of multiple equal maxima
     maxima = np.transpose(np.nonzero(xcorr == xcorr.max()))

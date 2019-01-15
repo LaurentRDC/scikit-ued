@@ -15,14 +15,16 @@ from ..utils import deprecated
 FFTOPS = {}
 try:
     from pyfftw.interfaces.numpy_fft import rfft2, irfft2
-    FFTOPS['threads'] = 2
+
+    FFTOPS["threads"] = 2
 except ImportError:
     from numpy.fft import rfft2, irfft2
 
 
 EPS = np.finfo(np.float).eps
 
-def xcorr(arr1, arr2, mode = 'full', axes = None):
+
+def xcorr(arr1, arr2, mode="full", axes=None):
     """ 
     Cross-correlation between two N-dimensional arrays.
     Support for cross-correlation along specific axes as well.
@@ -67,9 +69,9 @@ def xcorr(arr1, arr2, mode = 'full', axes = None):
     --------
     mnxc : masked normalized cross-correlation between images.
     """
-    if mode not in {'full', 'same'}:
-        raise ValueError('Unexpected cross-correlation mode {}'.format(mode))
-    
+    if mode not in {"full", "same"}:
+        raise ValueError("Unexpected cross-correlation mode {}".format(mode))
+
     if axes is None:
         axes = tuple(range(arr1.ndim))
 
@@ -80,23 +82,23 @@ def xcorr(arr1, arr2, mode = 'full', axes = None):
     # then slice back before returning
     s1 = tuple(arr1.shape[ax] for ax in axes)
     s2 = tuple(arr2.shape[ax] for ax in axes)
-    final_shape = tuple( ax1 + ax2 - 1 for ax1, ax2 in zip(s1, s2))
+    final_shape = tuple(ax1 + ax2 - 1 for ax1, ax2 in zip(s1, s2))
     fast_shape = tuple(map(next_fast_len, final_shape))
     final_slice = tuple([slice(0, int(sz)) for sz in final_shape])
 
-    F1 = fftn(arr1, shape = fast_shape, axes = axes)
-    F2 = fftn(np.conj(mirror(arr2, axes = axes)), shape = fast_shape, axes = axes)
+    F1 = fftn(arr1, shape=fast_shape, axes=axes)
+    F2 = fftn(np.conj(mirror(arr2, axes=axes)), shape=fast_shape, axes=axes)
     xc = ifftn(F1 * F2)[final_slice]
 
-    if mode == 'same':
-        return _centered(xc, arr1.shape, axes = axes)
+    if mode == "same":
+        return _centered(xc, arr1.shape, axes=axes)
     else:
         return xc
 
+
 # This is forward-ported from scikit-image 0.15
 # Once scikit-image 0.15+ is available, we can remove this.
-def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1), 
-                           overlap_ratio=3 / 10):
+def mnxc(arr1, arr2, m1, m2, mode="full", axes=(-2, -1), overlap_ratio=3 / 10):
     """
     Masked normalized cross-correlation between arrays.
 
@@ -150,7 +152,7 @@ def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1),
            Pattern Recognition, pp. 2918-2925 (2010).  
            :DOI:`10.1109/CVPR.2010.5540032`
     """
-    if mode not in {'full', 'same'}:
+    if mode not in {"full", "same"}:
         raise ValueError("Correlation mode {} is not valid.".format(mode))
 
     fixed_image = np.array(arr1, dtype=np.float)
@@ -161,11 +163,12 @@ def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1),
 
     # Array dimensions along non-transformation axes should be equal.
     all_axes = set(range(fixed_image.ndim))
-    for axis in (all_axes - set(axes)):
+    for axis in all_axes - set(axes):
         if fixed_image.shape[axis] != moving_image.shape[axis]:
             raise ValueError(
                 "Array shapes along non-transformation axes should be "
-                    "equal, but dimensions along axis {a} not".format(a=axis))
+                "equal, but dimensions along axis {a} not".format(a=axis)
+            )
 
     # Determine final size along transformation axes
     # Note that it might be faster to compute Fourier transform in a slightly
@@ -173,8 +176,7 @@ def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1),
     # we slice back to`final_shape` using `final_slice`.
     final_shape = list(arr1.shape)
     for axis in axes:
-        final_shape[axis] = fixed_image.shape[axis] + \
-            moving_image.shape[axis] - 1
+        final_shape[axis] = fixed_image.shape[axis] + moving_image.shape[axis] - 1
     final_shape = tuple(final_shape)
     final_slice = tuple([slice(0, int(sz)) for sz in final_shape])
 
@@ -204,28 +206,29 @@ def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1),
 
     # Calculate overlap of masks at every point in the convolution.
     # Locations with high overlap should not be taken into account.
-    number_overlap_masked_px = np.real(
-        ifft(rotated_moving_mask_fft * fixed_mask_fft))
+    number_overlap_masked_px = np.real(ifft(rotated_moving_mask_fft * fixed_mask_fft))
     number_overlap_masked_px[:] = np.round(number_overlap_masked_px)
     number_overlap_masked_px[:] = np.fmax(number_overlap_masked_px, eps)
     masked_correlated_fixed_fft = ifft(rotated_moving_mask_fft * fixed_fft)
-    masked_correlated_rotated_moving_fft = ifft(
-        fixed_mask_fft * rotated_moving_fft)
+    masked_correlated_rotated_moving_fft = ifft(fixed_mask_fft * rotated_moving_fft)
 
     numerator = ifft(rotated_moving_fft * fixed_fft)
-    numerator -= masked_correlated_fixed_fft * \
-        masked_correlated_rotated_moving_fft / number_overlap_masked_px
+    numerator -= (
+        masked_correlated_fixed_fft
+        * masked_correlated_rotated_moving_fft
+        / number_overlap_masked_px
+    )
 
     fixed_squared_fft = fft(np.square(fixed_image))
     fixed_denom = ifft(rotated_moving_mask_fft * fixed_squared_fft)
-    fixed_denom -= np.square(masked_correlated_fixed_fft) / \
-        number_overlap_masked_px
+    fixed_denom -= np.square(masked_correlated_fixed_fft) / number_overlap_masked_px
     fixed_denom[:] = np.fmax(fixed_denom, 0.0)
 
     rotated_moving_squared_fft = fft(np.square(rotated_moving_image))
     moving_denom = ifft(fixed_mask_fft * rotated_moving_squared_fft)
-    moving_denom -= np.square(masked_correlated_rotated_moving_fft) / \
-        number_overlap_masked_px
+    moving_denom -= (
+        np.square(masked_correlated_rotated_moving_fft) / number_overlap_masked_px
+    )
     moving_denom[:] = np.fmax(moving_denom, 0.0)
 
     denom = np.sqrt(fixed_denom * moving_denom)
@@ -235,9 +238,8 @@ def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1),
     denom = denom[final_slice]
     number_overlap_masked_px = number_overlap_masked_px[final_slice]
 
-    if mode == 'same':
-        _centering = partial(_centered,
-                             newshape=fixed_image.shape, axes=axes)
+    if mode == "same":
+        _centering = partial(_centered, newshape=fixed_image.shape, axes=axes)
         denom = _centering(denom)
         numerator = _centering(numerator)
         number_overlap_masked_px = _centering(number_overlap_masked_px)
@@ -253,8 +255,9 @@ def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1),
     np.clip(out, a_min=-1, a_max=1, out=out)
 
     # Apply overlap ratio threshold
-    number_px_threshold = overlap_ratio * np.max(number_overlap_masked_px,
-                                                 axis=axes, keepdims=True)
+    number_px_threshold = overlap_ratio * np.max(
+        number_overlap_masked_px, axis=axes, keepdims=True
+    )
     out[number_overlap_masked_px < number_px_threshold] = 0.0
 
     return out

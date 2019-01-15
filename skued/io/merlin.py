@@ -3,7 +3,8 @@
 import numpy as np
 from datetime import datetime
 
-def mibheader(filepath, hoffset = 0):
+
+def mibheader(filepath, hoffset=0):
     """ 
     Get an image header from a Merlin Image Binary file. 
     
@@ -34,34 +35,48 @@ def mibheader(filepath, hoffset = 0):
     """
     # First step : read small part of the header
     # to get the offset
-    with open(filepath, 'r+b') as img_file:
+    with open(filepath, "r+b") as img_file:
         pre_header = img_file.read(20)
-        _, _, offset, *_ = pre_header.decode('ascii').split(',')
+        _, _, offset, *_ = pre_header.decode("ascii").split(",")
         img_file.seek(hoffset)
         header = img_file.read(int(offset))
-    
-    header_items = header.decode('ascii').split(',')
+
+    header_items = header.decode("ascii").split(",")
 
     # TODO: more header items
-    (header_ID, seq_num, data_offset, nchips, 
-     size_x, size_y, dtype_str, _, _, timestamp, *_) = header_items
+    (
+        header_ID,
+        seq_num,
+        data_offset,
+        nchips,
+        size_x,
+        size_y,
+        dtype_str,
+        _,
+        _,
+        timestamp,
+        *_,
+    ) = header_items
 
     # Parse the date
-    timestamp = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S.%f').timestamp()
+    timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f").timestamp()
 
     # Special case : dtype
     # For NumPy, U16 is unicode; unsigned 16-bit (2 bytes) integers is u2
     # Also, must be big-endian ('>')
-    nbytes = int(dtype_str[1::])//8
-    dtype = np.dtype('>u' + str(nbytes) )
+    nbytes = int(dtype_str[1::]) // 8
+    dtype = np.dtype(">u" + str(nbytes))
 
-    return {'ID'       : header_ID,
-            'seq_num'  : int(seq_num),
-            'offset'   : int(data_offset),
-            'nchips'   : int(nchips),
-            'shape'    : ( int(size_x), int(size_y) ),
-            'dtype'    : dtype,
-            'timestamp': timestamp}
+    return {
+        "ID": header_ID,
+        "seq_num": int(seq_num),
+        "offset": int(data_offset),
+        "nchips": int(nchips),
+        "shape": (int(size_x), int(size_y)),
+        "dtype": dtype,
+        "timestamp": timestamp,
+    }
+
 
 def imibread(filepath):
     """
@@ -81,9 +96,9 @@ def imibread(filepath):
     --------
     mibread : Extract images from a MIB file as a dense NumPy array
     """
-    coffset = 0         # current image offset (header + data)
+    coffset = 0  # current image offset (header + data)
 
-    with open(filepath, 'r+b') as binary:
+    with open(filepath, "r+b") as binary:
 
         # Move to end of first image and check if there is another one
         # by reading one more byte after the image data
@@ -93,15 +108,16 @@ def imibread(filepath):
 
             # Information for the current image's header
             # these should not change from image to image
-            header = mibheader(filepath, hoffset = coffset)
-            size_x, size_y = header['shape']    
-            im_dtype = header['dtype']
+            header = mibheader(filepath, hoffset=coffset)
+            size_x, size_y = header["shape"]
+            im_dtype = header["dtype"]
 
-            binary.seek(coffset + header['offset'])
-            arr = np.fromfile(binary, dtype = im_dtype, count = size_x * size_y)
-            yield np.reshape(arr, newshape = (size_x, size_y) )
+            binary.seek(coffset + header["offset"])
+            arr = np.fromfile(binary, dtype=im_dtype, count=size_x * size_y)
+            yield np.reshape(arr, newshape=(size_x, size_y))
 
-            coffset += header['offset'] + arr.nbytes
+            coffset += header["offset"] + arr.nbytes
+
 
 def mibread(filepath):
     """ 

@@ -17,10 +17,11 @@ try:
 except ImportError:
     from yaml import Loader
 
-DATADIR = Path(__file__).parent / 'data'
+DATADIR = Path(__file__).parent / "data"
 
 with open(DATADIR / "aspherical.yaml") as f:
-    aspherical_ff = load(f, Loader=Loader) 
+    aspherical_ff = load(f, Loader=Loader)
+
 
 def aspherical_affe(atom, s):
     """ 
@@ -56,8 +57,8 @@ def aspherical_affe(atom, s):
     else:
         element = atom.element
 
-    params_a = aspherical_ff[element]['total']['a']
-    params_b = aspherical_ff[element]['total']['b']
+    params_a = aspherical_ff[element]["total"]["a"]
+    params_b = aspherical_ff[element]["total"]["b"]
 
     s2 = np.square(np.asfarray(s))
 
@@ -65,7 +66,8 @@ def aspherical_affe(atom, s):
     for a, b in zip(params_a, params_b):
         result += a * np.exp(-b * s2)
     return result
-    
+
+
 def affe(atom, nG):
     """
     Atomic form factors for electrons, for neutral atoms. 
@@ -95,13 +97,19 @@ def affe(atom, nG):
         atomic_number = atom.atomic_number
 
     try:
-        _, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[atomic_number]
+        _, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[
+            atomic_number
+        ]
     except KeyError:
-        raise ValueError('Scattering information for element Z={} is unavailable.'.format(atomic_number))
-    
+        raise ValueError(
+            "Scattering information for element Z={} is unavailable.".format(
+                atomic_number
+            )
+        )
+
     # Parametrization of form factors is done in terms of q = 2 s = 2 pi |G|
-    q = nG / (2*np.pi)
+    q = nG / (2 * np.pi)
     q2 = np.square(q)
-    sum1 = a1/(q2 + b1) + a2/(q2 + b2) + a3/(q2 + b3)
+    sum1 = a1 / (q2 + b1) + a2 / (q2 + b2) + a3 / (q2 + b3)
     sum2 = c1 * np.exp(-d1 * q2) + c2 * np.exp(-d2 * q2) + c3 * np.exp(-d3 * q2)
     return sum1 + sum2

@@ -10,12 +10,13 @@ from npstreams import array_stream, peek
 
 # Save the normalization of correlations so that identical
 # autocorrelations are saved.
-@lru_cache(maxsize = 128)
+@lru_cache(maxsize=128)
 def __xcorr_normalization(size, dtype):
-    arr = np.ones(shape = (size,), dtype = dtype)
-    return correlate(arr, arr, mode = 'full')
+    arr = np.ones(shape=(size,), dtype=dtype)
+    return correlate(arr, arr, mode="full")
 
-def register_time_shift(trace, reference, method = 'auto'):
+
+def register_time_shift(trace, reference, method="auto"):
     """ 
     Measure the time shift between a time trace and a reference trace
     by normalized cross correlation.
@@ -49,11 +50,19 @@ def register_time_shift(trace, reference, method = 'auto'):
     """
     trace, reference = np.atleast_1d(trace, reference)
     if trace.shape != reference.shape:
-        raise ValueError('Time trace and reference trace are expected to have the same shape, be received \
-                         a time-trace of shape {} and a reference trace of shape {}'.format(trace.shape, reference.shape))
-    
+        raise ValueError(
+            "Time trace and reference trace are expected to have the same shape, be received \
+                         a time-trace of shape {} and a reference trace of shape {}".format(
+                trace.shape, reference.shape
+            )
+        )
+
     if trace.ndim > 1:
-        raise ValueError('Expected 1D time traces, but received traces of shape {}'.format(trace.shape))
+        raise ValueError(
+            "Expected 1D time traces, but received traces of shape {}".format(
+                trace.shape
+            )
+        )
 
     trace = trace - trace.mean()
     reference = reference - reference.mean()
@@ -61,14 +70,17 @@ def register_time_shift(trace, reference, method = 'auto'):
     # Normalized cross-correlation
     # Note : we use an external function to calculate normalization
     #        so that it can be efficiently cached
-    xcorr = correlate(trace, reference, mode = 'full', method = 'auto') / __xcorr_normalization(trace.size, trace.dtype)
+    xcorr = correlate(
+        trace, reference, mode="full", method="auto"
+    ) / __xcorr_normalization(trace.size, trace.dtype)
 
     # Generalize to the average of multiple maxima
-    maxima = np.transpose(np.nonzero(xcorr == xcorr.max())) 
-    return np.mean(maxima) - int(xcorr.shape[0]/2)
+    maxima = np.transpose(np.nonzero(xcorr == xcorr.max()))
+    return np.mean(maxima) - int(xcorr.shape[0] / 2)
+
 
 @array_stream
-def register_time_shifts(traces, reference = None, method = 'auto'):
+def register_time_shifts(traces, reference=None, method="auto"):
     """
     Measure the time shifts between time traces and a reference by cross-correlation.
 
@@ -115,7 +127,7 @@ def register_time_shifts(traces, reference = None, method = 'auto'):
         reference, traces = peek(traces)
     reference = np.atleast_1d(reference)
 
-    kwargs = {'reference': reference, 'method': method}
+    kwargs = {"reference": reference, "method": method}
 
     shifts = map(partial(register_time_shift, **kwargs), traces)
-    return np.fromiter(shifts, dtype = np.float, count = count)
+    return np.fromiter(shifts, dtype=np.float, count=count)

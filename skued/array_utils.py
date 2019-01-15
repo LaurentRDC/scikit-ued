@@ -9,7 +9,7 @@ import numpy as np
 from numpy.linalg import norm
 
 
-def repeated_array(arr, num, axes = -1):
+def repeated_array(arr, num, axes=-1):
     """
     Create a composite array from repeated copies of an array
     
@@ -34,20 +34,23 @@ def repeated_array(arr, num, axes = -1):
     """
     if not num:
         return arr
-    
-    if isinstance(num, int): num = (num,) 
-    if isinstance(axes, int): axes = (axes,)
-    
+
+    if isinstance(num, int):
+        num = (num,)
+    if isinstance(axes, int):
+        axes = (axes,)
+
     if len(num) != len(axes):
-        raise ValueError('num and axes must have the same length')
-    
-    composite = np.concatenate(tuple(repeat(arr, times = num[0])), axis = axes[0])
+        raise ValueError("num and axes must have the same length")
+
+    composite = np.concatenate(tuple(repeat(arr, times=num[0])), axis=axes[0])
 
     if len(num) > 1:
         for n, ax in zip(num[1:], axes[1:]):
-            composite = np.concatenate(tuple(repeat(composite, times = n)), axis = ax)
-    
+            composite = np.concatenate(tuple(repeat(composite, times=n)), axis=ax)
+
     return composite
+
 
 def complex_array(real, imag):
     """
@@ -65,10 +68,11 @@ def complex_array(real, imag):
     """
     real, imag = np.asfarray(real), np.asfarray(imag)
     comp = real.astype(np.complex)
-    comp += 1j*imag
+    comp += 1j * imag
     return comp
 
-def mirror(arr, axes = None):
+
+def mirror(arr, axes=None):
     """ 
     Reverse array over many axes. Generalization of arr[::-1] for many dimensions.
 
@@ -91,11 +95,12 @@ def mirror(arr, axes = None):
 
         if isinstance(axes, int):
             axes = (axes,)
-            
+
         for axis in axes:
             reverse[axis] = slice(None, None, -1)
-    
+
     return arr[tuple(reverse)]
+
 
 def cart2polar(x, y):
     """ 
@@ -112,7 +117,8 @@ def cart2polar(x, y):
         Radius and polar angle coordinates. Polar angle coordinates
         are in radians.
     """
-    return np.hypot(x,y), np.arctan2(y, x)
+    return np.hypot(x, y), np.arctan2(y, x)
+
 
 def polar2cart(r, t):
     """
@@ -130,6 +136,7 @@ def polar2cart(r, t):
         Cartesian coordinates
     """
     return r * np.cos(t), r * np.sin(t)
+
 
 def spherical2cart(r, p, t):
     """
@@ -154,6 +161,7 @@ def spherical2cart(r, p, t):
     z = r * np.cos(t)
     return x, y, z
 
+
 def cart2spherical(x, y, z):
     """
     Transform cartesian coordinates into spherical coordinates .
@@ -172,12 +180,13 @@ def cart2spherical(x, y, z):
     t : `~numpy.ndarray`
         Azimuthal coordinate in radians.
     """
-    r = np.sqrt(x**2 + y**2 + z**2)
+    r = np.sqrt(x ** 2 + y ** 2 + z ** 2)
     p = np.arctan2(y, x)
-    t = np.arccos(z/r)
+    t = np.arccos(z / r)
     return r, p, t
 
-def plane_mesh(v1, v2, x1, x2 = None, origin = (0,0,0)):
+
+def plane_mesh(v1, v2, x1, x2=None, origin=(0, 0, 0)):
     """
     Generate a spatial mesh for a plane defined by two vectors.
 
@@ -198,15 +207,15 @@ def plane_mesh(v1, v2, x1, x2 = None, origin = (0,0,0)):
     x, y, z : `~numpy.ndarray`, ndim 2
         Mesh arrays for the coordinate of the plane.
     """
-    v1, v2 = v1/norm(v1), v2/norm(v2)
+    v1, v2 = v1 / norm(v1), v2 / norm(v2)
 
     if x2 is None:
         x2 = np.array(x1)
 
     if np.dot(v1, v2) != 0:
-        warn('Plane basis vectors are not orthogonal', RuntimeWarning)
-    
-    along_v1, along_v2 = np.meshgrid(x1, x2, indexing = 'ij')
+        warn("Plane basis vectors are not orthogonal", RuntimeWarning)
+
+    along_v1, along_v2 = np.meshgrid(x1, x2, indexing="ij")
     xx, yy, zz = tuple(along_v1 * v1[i] + along_v2 * v2[i] for i in range(3))
 
     ox, oy, oz = tuple(origin)
