@@ -143,7 +143,7 @@ def align(image, reference, mask=None, fill_value=0.0, fast=True):
         mask = np.ones_like(image, dtype=np.bool)
     
     shift = masked_register_translation(src_image=image, target_image=reference, src_mask=mask)
-    return shift_image(image, shift, fill_value=fill_value)
+    return shift_image(image, -1*shift, fill_value=fill_value)
 
 
 @array_stream
@@ -207,8 +207,6 @@ def masked_register_translation(
 ):
     """
     Efficient image translation registration by masked normalized cross-correlation.
-
-    .. versionadded:: 1.0.2
 
     Parameters
     ----------

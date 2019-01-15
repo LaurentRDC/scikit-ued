@@ -54,7 +54,7 @@ in each diffraction pattern must be ignored in the computation of the cross-corr
 Setting the 'invalid pixels' to 0 will not work, at those will correlate with the invalid pixels from the reference. One must use
 the **masked normalized cross-correlation** through scikit-ued's :func:`mnxc`.
 
-All of this is taken care of in scikit-ued's :func:`diff_register` function. Let's look at some polycrystalline Chromium:
+All of this is taken care of in scikit-ued's :func:`masked_register_translation` function. Let's look at some polycrystalline Chromium:
 
 .. plot::
 
@@ -83,17 +83,18 @@ All of this is taken care of in scikit-ued's :func:`diff_register` function. Let
 From the difference pattern, we can see that the 'Data' pattern is shifted from 'Reference' quite a bit.
 To determine the exact shift, we need to use a mask that obscures the beam-block and main beam::
 
-	from skued import diff_register, shift_image, diffread
+	from skued import masked_register_translation, shift_image, diffread
 	import numpy as np
 
 	ref = diffread('Cr_1.tif')
 	im = diffread('Cr_2.tif')
 
-	mask = np.zeros_like(ref, dtype = np.bool)
-	mask[0:1250, 950:1250] = True
+	# Invalid pixels are masked with a False
+	mask = np.ones(ref, dtype = np.bool)
+	mask[0:1250, 950:1250] = False
 
-	shift = diff_register(im, reference = ref, mask = mask)
-	im = shift_image(im, shift)
+	shift = masked_register_translation(im, target_image = ref, src_mask = mask)
+	im = shift_image(im, -1*shift)
 
 Let's look at the difference:
 
@@ -101,16 +102,16 @@ Let's look at the difference:
 
 	import matplotlib.pyplot as plt
 	import numpy as np
-	from skued import diff_register, shift_image, diffread
+	from skued import masked_register_translation, shift_image, diffread
 
 	ref = diffread('Cr_1.tif')
 	im = diffread('Cr_2.tif')
 
-	mask = np.zeros_like(ref, dtype = np.bool)
-	mask[0:1250, 950:1250] = True
+	mask = np.ones_like(ref, dtype = np.bool)
+	mask[0:1250, 950:1250] = False
 
-	shift = diff_register(im, ref, mask)
-	shifted = shift_image(im, shift)
+	shift = masked_register_translation(im, ref, mask)
+	shifted = shift_image(im, -1*shift)
 
 	fig, ((ax1, ax2, ax3), (ax4, ax5, ax6)) = plt.subplots(nrows = 2, ncols = 3, figsize = (9,6))
 	ax1.imshow(ref, vmin = 0, vmax = 200)
@@ -154,9 +155,9 @@ rotational symmetry.
 
     center = (1010, 1111)
 
-    mask = np.zeros((2048, 2048), dtype = np.bool)
-    mask[1100::, 442:480] = True # Artifact line
-    mask[0:1260, 900:1140] = True # beamblock
+    mask = np.ones((2048, 2048), dtype = np.bool)
+    mask[1100::, 442:480] = False # Artifact line
+    mask[0:1260, 900:1140] = False # beamblock
 
     image = diffread('graphite.tif')
     av = nfold(image, mod = 6, center = center, mask = mask)
@@ -191,7 +192,7 @@ Pixel Masks
 ===========
 
 Image data can be rejected on a per-pixel basis by using pixel masks. These masks are represented
-by boolean arrays that evaluate to ``True`` on invalid pixels.
+by boolean arrays that evaluate to ``Falose`` on invalid pixels, and ``True`` otherwise
 
 :mod:`scikit-ued` offers some functions related to creation and manipulation of pixel masks.
 
