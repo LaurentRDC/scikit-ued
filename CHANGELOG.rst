@@ -4,6 +4,8 @@ Changelog
 Release 2.0.0 (Development)
 ---------------------------
 
+* Broke off the ``skued.structure`` package into its own library, ``crystals``. The API is still provided under ``skued.structure`` for now.
+
 * Added aspherical electron form factor parametrization from Zheng et al. 2009.
 * Added an analog of scikit-image's `register_translation`, `masked_register_translation`. It will eventually replace `diff_register`.
 
