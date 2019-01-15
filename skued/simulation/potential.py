@@ -68,7 +68,7 @@ def electrostatic(crystal, x, y, z):
     potential = np.zeros_like(x, dtype=np.float)
     r = np.zeros_like(x, dtype=np.float)
     for atom in crystal:
-        ax, ay, az = atom.xyz(crystal)
+        ax, ay, az = atom.coords_cartesian
         r[:] = minimum_image_distance(
             x - ax, y - ay, z - az, lattice=crystal.lattice_vectors
         )
@@ -132,17 +132,18 @@ def pelectrostatic(crystal, x, y, bounds=None):
     if bounds:
         min_z, max_z = min(bounds), max(bounds)
         atoms = (
-            atom for atom in iter(crystal) if min_z <= atom.xyz(crystal)[2] < max_z
+            atom for atom in iter(crystal) if min_z <= atom.coords_cartesian[2] < max_z
         )
     else:
         atoms = iter(crystal)
 
     potential = np.zeros_like(x, dtype=np.float)
     z = np.zeros_like(x)
+    lattice = np.array(crystal.lattice_vectors)
     for atom in atoms:
-        xa, ya, _ = atom.xyz(crystal)
+        xa, ya, _ = atom.coords_cartesian
         r = minimum_image_distance(
-            x - xa, y - ya, z, lattice=np.array(crystal.lattice_vectors)
+            x - xa, y - ya, z, lattice=lattice
         )
         potential += _pelectrostatic_atom(atom, r)
 

@@ -50,19 +50,18 @@ def structure_factor(crystal, h, k, l, normalized=False):
     )
 
     # Pre-allocation of form factors gives huge speedups
-    dwf = np.empty_like(SFsin)  # debye-waller factor
     atomff_dict = dict()
     for atom in crystal:  # TODO: implement in parallel?
 
         if atom.element not in atomff_dict:
             atomff_dict[atom.element] = affe(atom, nG)
 
-        x, y, z = atom.xyz(crystal)
+        x, y, z = atom.coords_cartesian
         arg = x * Gx + y * Gy + z * Gz
-        atom.debye_waller_factor((Gx, Gy, Gz), out=dwf)
+        # TODO: debye waller factor based on displacement
         atomff = atomff_dict[atom.element]
-        SFsin += atomff * dwf * np.sin(arg)
-        SFcos += atomff * dwf * np.cos(arg)
+        SFsin += atomff * np.sin(arg)
+        SFcos += atomff * np.cos(arg)
 
     SF = SFcos + 1j * SFsin
 

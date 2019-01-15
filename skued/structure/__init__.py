@@ -7,19 +7,21 @@ in crystalline form.
 """
 
 
-class ParseError(IOError):
-    pass
+from crystals import (
+    Atom,
+    AtomicStructure,
+    Base,
+    Crystal,
+    Lattice,
+    LatticeSystem,
+    lattice_system,
+    CIFParser,
+    PDBParser,
+    CODParser,
+    symmetry_expansion,
 
-
-from .atom import Atom, real_coords, frac_coords
-from .atom_data import (
-    ELEM_TO_MAGMOM,
-    ELEM_TO_MASS,
-    ELEM_TO_NAME,
-    ELEM_TO_NUM,
     NUM_TO_ELEM,
+    ELEM_TO_NUM,
+    ELEM_TO_NAME
+
 )
-from .base import AtomicStructure, Base
-from .lattice import Lattice, LatticeSystem, lattice_system
-from .parsers import CIFParser, PDBParser, CODParser
-from .crystal import Crystal, symmetry_expansion
