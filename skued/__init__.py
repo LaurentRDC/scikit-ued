@@ -45,7 +45,7 @@ from .image import (
     align,
     azimuthal_average,
     combine_masks,
-    diff_register,
+    masked_register_translation,
     ialign,
     isnr,
     itrack_peak,

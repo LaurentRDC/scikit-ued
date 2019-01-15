@@ -13,7 +13,6 @@ from scipy.ndimage import fourier_shift
 
 from .. import (
     align,
-    diff_register,
     ialign,
     itrack_peak,
     masked_register_translation,
@@ -22,82 +21,6 @@ from .. import (
 from .test_powder import circle_image
 
 np.random.seed(23)
-
-
-class TestDiffRegister(unittest.TestCase):
-    def test_trivial_skimage_data_cropped(self):
-        """ Test that the translation between two identical images is (0,0), even
-		with added random noise and random masks, with diff_register(..., crop = True) """
-
-        im = np.asfarray(data.camera())
-
-        with self.subTest("No noise"):
-            shift = diff_register(im, im, crop=True)
-            self.assertTrue(np.allclose(shift, (0, 0), atol=1))
-
-        with self.subTest("With 5% noise"):
-            noise1 = 0.05 * im.max() * np.random.random(size=im.shape)
-            noise2 = 0.05 * im.max() * np.random.random(size=im.shape)
-
-            shift = diff_register(im + noise1, im + noise2, crop=True)
-            self.assertTrue(np.allclose(shift, (0, 0), atol=1))
-
-    def test_trivial_skimage_data_no_crop(self):
-        """ Test that the translation between two identical images is (0,0), even
-		with added random noise and random masks, with diff_register(..., crop = False) """
-
-        im = np.asfarray(data.camera())
-
-        with self.subTest("No noise"):
-            shift = diff_register(im, im, crop=False)
-            self.assertTrue(np.allclose(shift, (0, 0), atol=1))
-
-        with self.subTest("With 5% noise"):
-            noise1 = 0.05 * im.max() * np.random.random(size=im.shape)
-            noise2 = 0.05 * im.max() * np.random.random(size=im.shape)
-
-            shift = diff_register(im + noise1, im + noise2, crop=False)
-            self.assertTrue(np.allclose(shift, (0, 0), atol=1))
-
-    def test_shifted_skimage_data(self):
-        """ Test that translation is registered for data from scikit-image """
-        random_shift = np.random.randint(low=0, high=5, size=(2,))
-
-        im = np.asfarray(data.camera())
-        im2 = np.asfarray(data.camera())
-        im2[:] = shift_image(im2, shift=random_shift, fill_value=0)
-
-        # Masking the edges due to shifting
-        edge_mask = np.ones_like(im, dtype=np.bool)
-        edge_mask[6:-6, 6:-6] = False
-
-        with self.subTest("No noise"):
-            shift = diff_register(im, im2, edge_mask, sigma=None, crop=False)
-            self.assertTrue(np.allclose(shift, random_shift, atol=1))
-
-        with self.subTest("With 5% noise"):
-            noise1 = 0.05 * im.max() * np.random.random(size=im.shape)
-            noise2 = 0.05 * im.max() * np.random.random(size=im.shape)
-
-            shift = diff_register(
-                im + noise1, im2 + noise2, edge_mask, sigma=None, crop=False
-            )
-            self.assertTrue(np.allclose(shift, random_shift, atol=1))
-
-    def test_side_effects(self):
-        """ Test that arrays registered by diff_register are not modified """
-        im1 = np.random.random(size=(32, 32))
-        im2 = np.random.random(size=(32, 32))
-        mask = np.random.choice([True, False], size=im1.shape)
-
-        # If arrays are written to, ValueError is raised
-        for arr in (im1, im2, mask):
-            arr.setflags(write=False)
-
-        shift = diff_register(im1, im2, mask, crop=True, sigma=5)
-        shift = diff_register(im1, im2, mask, crop=False, sigma=5)
-        shift = diff_register(im1, im2, mask, crop=True, sigma=None)
-        shift = diff_register(im1, im2, mask, crop=False, sigma=None)
 
 
 class TestIAlign(unittest.TestCase):

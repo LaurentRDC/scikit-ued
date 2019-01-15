@@ -23,12 +23,12 @@ class TestNFoldSymmetry(unittest.TestCase):
     def test_mask(self):
         """ Test that nfold_symmetry() works correctly with a mask """
         im = np.zeros((128, 128), dtype=np.int)
-        mask = np.zeros_like(im, dtype=np.bool)
+        mask = np.ones_like(im, dtype=np.bool)
 
         with catch_warnings():
             simplefilter("ignore")
             im[0:20] = 1
-            mask[0:20] = True
+            mask[0:20] = False
 
             rot = nfold(im, mod=2, mask=mask)
             self.assertTrue(np.allclose(rot, np.zeros_like(rot)))

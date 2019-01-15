@@ -62,7 +62,7 @@ class TestMaskFromCollection(unittest.TestCase):
 
     def test_intensity_threshold_no_lower_bound(self):
         """ Test that intensity threshold is respected """
-        images = [np.zeros((64, 64)) for _ in range(5)]
+        images = [np.ones((64, 64)) for _ in range(5)]
         images[2][32, 4] = 10
         mask = mask_from_collection(images, px_thresh=9)
 
@@ -71,7 +71,7 @@ class TestMaskFromCollection(unittest.TestCase):
 
     def test_intensity_threshold_with_lower_bound(self):
         """ Test that intensity threshold is respected """
-        images = [np.zeros((64, 64)) for _ in range(5)]
+        images = [np.ones((64, 64)) for _ in range(5)]
         images[2][32, 4] = -10
         mask = mask_from_collection(images, px_thresh=(0, np.inf))
 
@@ -80,7 +80,7 @@ class TestMaskFromCollection(unittest.TestCase):
 
     def test_std_threshold(self):
         """ Test that std threshold is respected """
-        images = [np.zeros((64, 64)) for _ in range(5)]
+        images = [np.ones((64, 64)) for _ in range(5)]
         images[0][5, 12] = 1000
         mask = mask_from_collection(images, px_thresh=10000, std_thresh=1)
 
@@ -104,17 +104,17 @@ class TestCombineMasks(unittest.TestCase):
         self.assertFalse(np.any(combined))
 
     def test_single_element(self):
-        masks = tuple([np.zeros((64, 64)) for _ in range(5)])
-        masks[0][4, 6] = True
+        masks = tuple([np.ones((64, 64)) for _ in range(5)])
+        masks[0][4, 6] = False
         combined = combine_masks(*masks)
 
-        self.assertEqual(np.sum(combined), 1)
-        self.assertTrue(combined[4, 6])
+        self.assertEqual(np.sum(np.logical_not(combined)), 1)
+        self.assertFalse(combined[4, 6])
 
 
 class TestMaskImage(unittest.TestCase):
     def test_trivial(self):
-        mask = np.zeros((64, 64), dtype=np.bool)
+        mask = np.ones((64, 64), dtype=np.bool)
         image = np.random.random((64, 64))
         masked = mask_image(image, mask)
 

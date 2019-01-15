@@ -95,10 +95,11 @@ def xcorr(arr1, arr2, mode="full", axes=None):
     else:
         return xc
 
-
 # This is forward-ported from scikit-image 0.15
 # Once scikit-image 0.15+ is available, we can remove this.
-def mnxc(arr1, arr2, m1, m2, mode="full", axes=(-2, -1), overlap_ratio=3 / 10):
+# TODO: name cross_correlate_masked to match scikit-image
+def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1), 
+                           overlap_ratio=3 / 10):
     """
     Masked normalized cross-correlation between arrays.
 
@@ -107,7 +108,7 @@ def mnxc(arr1, arr2, m1, m2, mode="full", axes=(-2, -1), overlap_ratio=3 / 10):
     arr1 : ndarray
         First array.
     arr2 : ndarray
-        Second array. The dimensions of `arr2` along axes that are not
+        Seconds array. The dimensions of `arr2` along axes that are not
         transformed should be equal to that of `arr1`.
     m1 : ndarray
         Mask of `arr1`. The mask should evaluate to `True`
@@ -152,7 +153,7 @@ def mnxc(arr1, arr2, m1, m2, mode="full", axes=(-2, -1), overlap_ratio=3 / 10):
            Pattern Recognition, pp. 2918-2925 (2010).  
            :DOI:`10.1109/CVPR.2010.5540032`
     """
-    if mode not in {"full", "same"}:
+    if mode not in {'full', 'same'}:
         raise ValueError("Correlation mode {} is not valid.".format(mode))
 
     fixed_image = np.array(arr1, dtype=np.float)
@@ -163,12 +164,11 @@ def mnxc(arr1, arr2, m1, m2, mode="full", axes=(-2, -1), overlap_ratio=3 / 10):
 
     # Array dimensions along non-transformation axes should be equal.
     all_axes = set(range(fixed_image.ndim))
-    for axis in all_axes - set(axes):
+    for axis in (all_axes - set(axes)):
         if fixed_image.shape[axis] != moving_image.shape[axis]:
             raise ValueError(
                 "Array shapes along non-transformation axes should be "
-                "equal, but dimensions along axis {a} not".format(a=axis)
-            )
+                    "equal, but dimensions along axis {a} not".format(a=axis))
 
     # Determine final size along transformation axes
     # Note that it might be faster to compute Fourier transform in a slightly
@@ -176,7 +176,8 @@ def mnxc(arr1, arr2, m1, m2, mode="full", axes=(-2, -1), overlap_ratio=3 / 10):
     # we slice back to`final_shape` using `final_slice`.
     final_shape = list(arr1.shape)
     for axis in axes:
-        final_shape[axis] = fixed_image.shape[axis] + moving_image.shape[axis] - 1
+        final_shape[axis] = fixed_image.shape[axis] + \
+            moving_image.shape[axis] - 1
     final_shape = tuple(final_shape)
     final_slice = tuple([slice(0, int(sz)) for sz in final_shape])
 
@@ -206,29 +207,28 @@ def mnxc(arr1, arr2, m1, m2, mode="full", axes=(-2, -1), overlap_ratio=3 / 10):
 
     # Calculate overlap of masks at every point in the convolution.
     # Locations with high overlap should not be taken into account.
-    number_overlap_masked_px = np.real(ifft(rotated_moving_mask_fft * fixed_mask_fft))
+    number_overlap_masked_px = np.real(
+        ifft(rotated_moving_mask_fft * fixed_mask_fft))
     number_overlap_masked_px[:] = np.round(number_overlap_masked_px)
     number_overlap_masked_px[:] = np.fmax(number_overlap_masked_px, eps)
     masked_correlated_fixed_fft = ifft(rotated_moving_mask_fft * fixed_fft)
-    masked_correlated_rotated_moving_fft = ifft(fixed_mask_fft * rotated_moving_fft)
+    masked_correlated_rotated_moving_fft = ifft(
+        fixed_mask_fft * rotated_moving_fft)
 
     numerator = ifft(rotated_moving_fft * fixed_fft)
-    numerator -= (
-        masked_correlated_fixed_fft
-        * masked_correlated_rotated_moving_fft
-        / number_overlap_masked_px
-    )
+    numerator -= masked_correlated_fixed_fft * \
+        masked_correlated_rotated_moving_fft / number_overlap_masked_px
 
     fixed_squared_fft = fft(np.square(fixed_image))
     fixed_denom = ifft(rotated_moving_mask_fft * fixed_squared_fft)
-    fixed_denom -= np.square(masked_correlated_fixed_fft) / number_overlap_masked_px
+    fixed_denom -= np.square(masked_correlated_fixed_fft) / \
+        number_overlap_masked_px
     fixed_denom[:] = np.fmax(fixed_denom, 0.0)
 
     rotated_moving_squared_fft = fft(np.square(rotated_moving_image))
     moving_denom = ifft(fixed_mask_fft * rotated_moving_squared_fft)
-    moving_denom -= (
-        np.square(masked_correlated_rotated_moving_fft) / number_overlap_masked_px
-    )
+    moving_denom -= np.square(masked_correlated_rotated_moving_fft) / \
+        number_overlap_masked_px
     moving_denom[:] = np.fmax(moving_denom, 0.0)
 
     denom = np.sqrt(fixed_denom * moving_denom)
@@ -238,8 +238,9 @@ def mnxc(arr1, arr2, m1, m2, mode="full", axes=(-2, -1), overlap_ratio=3 / 10):
     denom = denom[final_slice]
     number_overlap_masked_px = number_overlap_masked_px[final_slice]
 
-    if mode == "same":
-        _centering = partial(_centered, newshape=fixed_image.shape, axes=axes)
+    if mode == 'same':
+        _centering = partial(_centered,
+                             newshape=fixed_image.shape, axes=axes)
         denom = _centering(denom)
         numerator = _centering(numerator)
         number_overlap_masked_px = _centering(number_overlap_masked_px)
@@ -255,9 +256,8 @@ def mnxc(arr1, arr2, m1, m2, mode="full", axes=(-2, -1), overlap_ratio=3 / 10):
     np.clip(out, a_min=-1, a_max=1, out=out)
 
     # Apply overlap ratio threshold
-    number_px_threshold = overlap_ratio * np.max(
-        number_overlap_masked_px, axis=axes, keepdims=True
-    )
+    number_px_threshold = overlap_ratio * np.max(number_overlap_masked_px,
+                                                 axis=axes, keepdims=True)
     out[number_overlap_masked_px < number_px_threshold] = 0.0
 
     return out
@@ -289,4 +289,4 @@ def _flip(arr, axes=None):
         for axis in axes:
             reverse[axis] = slice(None, None, -1)
 
-    return arr[tuple(reverse)]
+    return arr[reverse]

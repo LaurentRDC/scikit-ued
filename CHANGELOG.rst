@@ -7,7 +7,7 @@ Release 2.0.0 (Development)
 * Broke off the ``skued.structure`` package into its own library, ``crystals``. The API is still provided under ``skued.structure`` for now.
 
 * Added aspherical electron form factor parametrization from Zheng et al. 2009.
-* Added an analog of scikit-image's `register_translation`, `masked_register_translation`. It will eventually replace `diff_register`.
+* Removed ``diff_register`` in favor of an analog of scikit-image's `register_translation`, `masked_register_translation`. 
 
 * Removed `mnxc2` in favor of `mnxc`, the n-dimensional masked normalized cross-correlation.
 * Removed `powder_center` due to unpredictable performance. Warnings will be issued on every function call. It will be removed in an upcoming release

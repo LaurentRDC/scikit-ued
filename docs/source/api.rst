@@ -175,7 +175,7 @@ Image alignment
 
     align
     ialign
-    diff_register
+    masked_register_translation
     shift_image
     itrack_peak
 

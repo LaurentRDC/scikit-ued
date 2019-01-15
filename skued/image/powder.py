@@ -7,9 +7,6 @@ from functools import partial
 
 import numpy as np
 
-from ..utils import deprecated
-from .alignment import diff_register
-
 flip = partial(np.rot90, k=2)
 
 
@@ -38,7 +35,7 @@ def azimuthal_average(image, center, mask=None, angular_bounds=None, trim=True):
     center : array_like, shape (2,)
         coordinates of the center (in pixels).
     mask : `~numpy.ndarray` or None, optional
-        Evaluates to True on invalid elements of array.
+        Evaluates to True on valid elements of array.
     angular_bounds : 2-tuple or None, optional
         If not None, the angles between first and second elements of `angular_bounds`
         (inclusively) will be used for the average. Angle bounds are specified in degrees.
@@ -55,7 +52,7 @@ def azimuthal_average(image, center, mask=None, angular_bounds=None, trim=True):
         Angular-average of the array.
     """
     if mask is None:
-        mask = np.zeros_like(image, dtype=np.bool)
+        mask = np.ones_like(image, dtype=np.bool)
 
     xc, yc = center
 
@@ -75,7 +72,7 @@ def azimuthal_average(image, center, mask=None, angular_bounds=None, trim=True):
     else:
         in_bounds = np.ones_like(image, dtype=np.bool)
 
-    valid = np.logical_not(mask)[in_bounds]
+    valid = mask[in_bounds]
     image = image[in_bounds]
     Rint = Rint[in_bounds]
 

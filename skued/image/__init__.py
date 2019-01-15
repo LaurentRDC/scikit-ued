@@ -3,7 +3,6 @@
 
 from .alignment import (
     align,
-    diff_register,
     ialign,
     shift_image,
     itrack_peak,

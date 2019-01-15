@@ -27,7 +27,7 @@ def nfold(im, mod, center=None, mask=None, fill_value=0.0):
     mod : int
         Fold symmetry number. Valid numbers must be a divisor of 360.
     mask : `~numpy.ndarray` or None, optional
-        Mask of `image`. The mask should evaluate to `True` (or 1) on invalid pixels. 
+        Mask of `image`. The mask should evaluate to `True` (or 1) on valid pixels. 
         If None (default), no mask is used.
     fill_value : float, optional
         In the case of a mask that overlaps with itself when rotationally averaged,
@@ -54,7 +54,7 @@ def nfold(im, mod, center=None, mask=None, fill_value=0.0):
     im = np.array(im, dtype=np.float, copy=True)
 
     if mask is not None:
-        im[mask] = np.nan
+        im[np.logical_not(mask)] = np.nan
 
     kwargs = {"center": center, "mode": "constant", "cval": 0, "preserve_range": True}
 
@@ -85,7 +85,7 @@ def reflection(im, angle, center=None, mask=None, fill_value=0.0):
         Coordinates of the center (in pixels). If ``center=None``, the image is rotated around
         its center, i.e. ``center=(rows / 2 - 0.5, cols / 2 - 0.5)``.
     mask : `~numpy.ndarray` or None, optional
-        Mask of `image`. The mask should evaluate to `True` (or 1) on invalid pixels. 
+        Mask of `image`. The mask should evaluate to `True` (or 1) on valid pixels. 
         If None (default), no mask is used.
     fill_value : float, optional
         In the case of a mask that overlaps with itself when rotationally averaged,
@@ -103,8 +103,9 @@ def reflection(im, angle, center=None, mask=None, fill_value=0.0):
     reflected = np.array(im, copy=True)  # reflected image
 
     if mask is not None:
-        im[mask] = np.nan
-        reflected[mask] = np.nan
+        invalid_pixels = np.logical_not(mask)
+        im[invalid_pixels] = np.nan
+        reflected[invalid_pixels] = np.nan
 
     kwargs = {"center": center, "mode": "constant", "cval": 0, "preserve_range": True}
 

@@ -96,8 +96,8 @@ class TestAzimuthalAverage(unittest.TestCase):
         center = (image.shape[0] / 2, image.shape[1] / 2)
         xc, yc = center
 
-        mask = np.zeros_like(image, dtype=np.bool)
-        mask[120:140, 0:140] = True
+        mask = np.ones_like(image, dtype=np.bool)
+        mask[120:140, 0:140] = False
 
         # Create an image with a wide ring
         extent = np.arange(0, image.shape[0])
@@ -122,8 +122,8 @@ class TestAzimuthalAverage(unittest.TestCase):
         xx, yy = np.meshgrid(extent, extent)
         rr = np.hypot(xx - xc, yy - yc)
 
-        mask = np.zeros_like(image, dtype=np.bool)
-        mask[rr < 20] = True
+        mask = np.ones_like(image, dtype=np.bool)
+        mask[rr < 20] = False
         # image[rr < 20] = 0
 
         radius, intensity = azimuthal_average(image, center, mask=mask, trim=False)

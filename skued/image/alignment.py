@@ -123,7 +123,7 @@ def align(image, reference, mask=None, fill_value=0.0, fast=True):
     reference : `~numpy.ndarray`, shape (M,N)
         `image` will be align onto the `reference` image.
     mask : `~numpy.ndarray` or None, optional
-        Mask that evaluates to True on invalid pixels of the array `image`.
+        Mask that evaluates to True on valid pixels of the array `image`.
     fill_value : float, optional
         Edges will be filled with `fill_value` after alignment.
     fast : bool, optional
@@ -139,7 +139,10 @@ def align(image, reference, mask=None, fill_value=0.0, fast=True):
     --------
     ialign : generator of aligned images
     """
-    shift = diff_register(image, reference=reference, mask=mask, crop=fast)
+    if mask is None:
+        mask = np.ones_like(image, dtype=np.bool)
+    
+    shift = masked_register_translation(src_image=image, target_image=reference, src_mask=mask)
     return shift_image(image, shift, fill_value=fill_value)
 
 
@@ -157,7 +160,7 @@ def ialign(images, reference=None, mask=None, fill_value=0.0, fast=True):
         'reference' is None (default), the first image in the 'images' stream
         is used as a reference
     mask : `~numpy.ndarray` or None, optional
-        Mask that evaluates to True on invalid pixels.
+        Mask that evaluates to True on valid pixels.
     fill_value : float, optional
         Edges will be filled with `fill_value` after alignment.
     fast : bool, optional
@@ -192,58 +195,6 @@ def _crop_to_half(image, copy=False):
     return np.array(
         image[int(nrows) : -int(nrows), int(ncols) : -int(ncols)], copy=copy
     )
-
-
-# TODO: add option to upsample, akin to skimage.feature.register_translation
-# 		Could this be done initially by zero-padding?
-# 		See https://github.com/scikit-image/scikit-image/blob/master/skimage/feature/register_translation.py#L109
-def diff_register(image, reference, mask=None, crop=True, sigma=5):
-    """
-    Register translation of diffraction patterns by masked 
-    normalized cross-correlation.
-    
-    Parameters
-    ----------
-    image : iterable
-        Iterable of ndarrays of shape (N,M)
-    reference : `~numpy.ndarray`
-        This is the reference image to which `image` will be aligned. 
-    mask : `~numpy.ndarray` or None, optional
-        Mask that evaluates to True on invalid pixels of the array `image`.
-    crop : bool, optional
-        If True (default), ``image`` and ``reference`` are cropped to one
-        quarter of their areas; this results in faster execution at the expense of 
-        precision. Disable for small images.
-    sigma : float or None, optional
-        Standard deviation for Gaussian kernel with which to smooth 
-        ``image`` and ``reference``. If None, no smoothing is performed.
-    
-    Returns
-    -------
-    shift : `~numpy.ndarray`, shape (2,), dtype float
-        Shift in rows and columns. The ordering is compatible with :func:`shift_image`
-    
-    References
-    ----------
-    .. [PADF] Dirk Padfield. Masked Object Registration in the Fourier Domain. 
-        IEEE Transactions on Image Processing, vol.21(5), pp. 2706-2718, 2012. 
-    """
-    if mask is None:
-        mask = np.zeros_like(image, dtype=np.bool)
-
-    if crop:
-        image = _crop_to_half(image, copy=True)
-        reference = _crop_to_half(reference, copy=True)
-        mask = _crop_to_half(mask, copy=True)
-
-    # Diffraction images register better with some filtering
-    if sigma:
-        image = gaussian(image, sigma, preserve_range=True)
-        reference = gaussian(reference, sigma, preserve_range=True)
-
-    # Note the reverse order between the image and reference
-    # This is to mirror functionality from scikit-image's register_translation
-    return masked_register_translation(reference, image, mask, mode="full")[::-1]
 
 
 def masked_register_translation(

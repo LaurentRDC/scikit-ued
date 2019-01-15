@@ -9,7 +9,7 @@ from itertools import repeat
 import numpy as np
 
 # array_stream decorator ensures that input images are cast to ndarrays
-from npstreams import array_stream, imean, iprod, istd, itercopy, last, peek
+from npstreams import array_stream, imean, prod, istd, itercopy, last, peek
 
 
 @array_stream
@@ -139,17 +139,14 @@ def mask_from_collection(images, px_thresh=(0, 3e4), std_thresh=None):
 def combine_masks(*masks):
     """ 
     Combine multiple pixel masks into one. This assumes that pixel masks evaluate
-    to ``True`` on invalid pixels.
+    to ``True`` on valid pixels and ``False`` on invalid pixels.
 
     Returns
     -------
     combined : `~numpy.ndarray`, dtype bool 
     """
     # By multiplying boolean arrays, values of False propagate
-    # Hence, much easier to do if invalue pixels are False instead of True
-    valids = map(np.logical_not, masks)
-    combined_valid = last(iprod(valids, dtype=np.bool))
-    return np.logical_not(combined_valid)
+    return prod(masks, dtype=np.bool)
 
 
 def mask_image(image, mask, fill_value=0, copy=True):
@@ -163,7 +160,7 @@ def mask_image(image, mask, fill_value=0, copy=True):
     image : `~numpy.ndarray`
     
     mask : `~numpy.ndarray`
-        Boolean array. ``mask`` should evaluate to ``True`` on invalid pixels.
+        Boolean array. ``mask`` should evaluate to ``True`` on valid pixels.
     fill_value : float, optional
         Invalid pixels fill value.
     copy : bool, optional
@@ -177,7 +174,7 @@ def mask_image(image, mask, fill_value=0, copy=True):
     image = np.array(image, copy=copy)
     mask = np.asarray(mask, dtype=np.bool)
 
-    image[mask] = fill_value
+    image[np.logical_not(mask)] = fill_value
     return image
 
 
