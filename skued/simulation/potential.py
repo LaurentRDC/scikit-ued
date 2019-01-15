@@ -48,7 +48,7 @@ def electrostatic(crystal, x, y, z):
 
     Parameters
     ----------
-    crystal : skued.Crystal
+    crystal : crystals.Crystal
         
     x, y, z : `~numpy.ndarray`
         Real space coordinates mesh. 
@@ -108,7 +108,7 @@ def pelectrostatic(crystal, x, y, bounds=None):
 
     Parameters
     ----------
-    crystal : skued.Crystal
+    crystal : crystals.Crystal
         
     x, y:  `~numpy.ndarray`
         Real-space coordinates. 

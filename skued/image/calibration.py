@@ -19,7 +19,7 @@ def calq(I, crystal, peak_indices, miller_indices):
     I : `~numpy.ndarray`, ndim 2
         Diffraction pattern. It is assumed that the diffraction
         pattern is defined on an equidistant grid.
-    crystal : skued.Crystal instance
+    crystal : crystals.Crystal instance
         Crystal that gave rise to the diffraction pattern ``I``.
     peak_indices : iterable of 2-tuple
         Array index location of two diffraction peaks in the array ``I``. For best
@@ -80,7 +80,7 @@ def powder_calq(I, crystal, peak_indices, miller_indices):
     I : `~numpy.ndarray`, ndim 1
         Polycristalline diffraction pattern. It is assumed that the diffraction
         pattern is defined on an equidistant grid.
-    crystal : skued.Crystal instance
+    crystal : crystals.Crystal instance
         Crystal that gave rise to the diffraction pattern ``I``.
     peak_indices : n-tuple of ints
         Array index location of diffraction peaks in the array ``I``. For best

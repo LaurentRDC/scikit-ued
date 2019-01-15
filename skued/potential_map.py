@@ -22,7 +22,7 @@ def potential_map(q, I, crystal, mesh):
         Scattering vector norm (:math:`Å^{-1}`).
     I : ndarray, shape (N,)
         Experimental diffracted intensity.
-    crystal : skued.Crystal
+    crystal : crystals.Crystal
         Crystal that gave rise to diffraction pattern `I`.
     mesh : 3-tuple ndarrays, ndim 2 or ndim 3
         Real-space mesh over which to calculate the scattering map.
@@ -104,7 +104,7 @@ def potential_synthesis(reflections, intensities, crystal, mesh):
         Iterable of Miller indices as tuples (e.g. `[(0,1,0), (0, -1, 2)]`)
     intensities : Iterable of floats
         Experimental diffracted intensity for corresponding reflections.
-    crystal : skued.Crystal
+    crystal : crystals.Crystal
         Crystal that gave rise to the diffracted intensities.
     mesh : 3-tuple ndarrays, ndim 2 or ndim 3
         Real-space mesh over which to calculate the scattering map.
