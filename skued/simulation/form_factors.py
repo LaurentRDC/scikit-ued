@@ -8,7 +8,8 @@ from pathlib import Path
 import numpy as np
 from yaml import load
 
-from ..structure import NUM_TO_ELEM, ELEM_TO_NUM
+from crystals import Element
+from ..structure import Atom
 from .scattering_params import scattering_params
 
 # For aspherical e form factors
@@ -50,12 +51,9 @@ def aspherical_affe(atom, s):
     .. [#] Jin-Cheng Zheng, Lijun Wu and Yimei Zhu. "Aspherical electron scattering factors and their 
            parameterizations for elements from H to Xe" (2009). J. Appl. Cryst. vol 42, pp. 1043 - 1053.
     """
-    if isinstance(atom, int):
-        element = NUM_TO_ELEM[atom]
-    elif isinstance(atom, str):
-        element = atom
-    else:
-        element = atom.element
+    if isinstance(atom, (int, str)):
+        atom = Element(atom)
+    element = atom.element
 
     params_a = aspherical_ff[element]["total"]["a"]
     params_b = aspherical_ff[element]["total"]["b"]
@@ -89,12 +87,9 @@ def affe(atom, nG):
     ------
     ValueError : scattering information is not available, for example if the atomic number is larger than 103
     """
-    if isinstance(atom, int):
-        atomic_number = atom
-    elif isinstance(atom, str):
-        atomic_number = ELEM_TO_NUM[atom]
-    else:
-        atomic_number = atom.atomic_number
+    if isinstance(atom, (int, str)):
+        atom = Element(atom)
+    atomic_number = atom.atomic_number
 
     try:
         _, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[

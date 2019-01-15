@@ -18,10 +18,5 @@ from crystals import (
     CIFParser,
     PDBParser,
     CODParser,
-    symmetry_expansion,
-
-    NUM_TO_ELEM,
-    ELEM_TO_NUM,
-    ELEM_TO_NAME
-
+    symmetry_expansion
 )
