@@ -65,7 +65,7 @@ def xcorr(arr1, arr2, mode = 'full', axes = None):
 
     See Also
     --------
-    mnxc2 : masked normalized cross-correlation between images.
+    mnxc : masked normalized cross-correlation between images.
     """
     if mode not in {'full', 'same'}:
         raise ValueError('Unexpected cross-correlation mode {}'.format(mode))
@@ -93,68 +93,8 @@ def xcorr(arr1, arr2, mode = 'full', axes = None):
     else:
         return xc
 
-@deprecated('Use mnxc instead.')
-def mnxc2(arr1, arr2, m1 = None, m2 = None, mode = 'full', axes = (0, 1), out = None, overlap_ratio = 3/10):
-    """
-    [DEPRECATED] Masked normalized cross-correlation (MNXC) between two images or stacks of images.
-
-    Parameters
-    ----------
-    arr1 : `~numpy.ndarray`, shape (M,N)
-        Reference, or 'fixed-image' in the language of _[PADF]. This array can also
-        be a stack of images; in this case, the cross-correlation
-        is computed along the two axes passed to ``axes``.
-    arr2 : `~numpy.ndarray`, shape (M,N)
-        Moving image. This array can also be a stack of images; 
-        in this case, the cross-correlation is computed along the 
-        two axes passed to ``axes``.
-    m1 : `~numpy.ndarray`, shape (M,N) or None, optional
-        Mask of `arr1`. The mask should evaluate to `True`
-        (or 1) on invalid pixels. If None (default), no mask
-        is used.
-    m2 : `~numpy.ndarray`, shape (M,N) or None, optional
-        Mask of `arr2`. The mask should evaluate to `True`
-        (or 1) on invalid pixels. If None (default), `m2` is 
-        taken to be the same as `m1`.	
-    mode : {'full', 'same'}, optional
-        'full':
-            By default, mode is 'full'.  This returns the convolution
-            at each point of overlap, with an output shape of (N+M-1,M+N-1). At
-            the end-points of the convolution, the signals do not overlap
-            completely, and boundary effects may be seen.
-        'same':
-            Mode 'same' returns output of length ``max(M, N)``. Boundary
-            effects are still visible.
-    axes : 2-tuple of ints, optional
-        Axes along which to compute the cross-correlation.
-    out : `~numpy.ndarray` or None, optional
-        If not None, the results will be stored in `out`. If None, a new array
-        is returned.
-    overlap_ratio : float, optional
-        Maximum allowed overlap ratio between masks. The correlation at pixels with overlap ratio higher
-        than this threshold will be zeroed.
-
-        .. versionadded:: 1.0.2
-        
-    Returns
-    -------
-    out : `~numpy.ndarray`
-        Masked, normalized cross-correlation. If images are real-valued, then `out` will be
-        real-valued as well. For complex input, `out` will be complex as well.
-        
-    References
-    ----------
-    .. [PADF] Dirk Padfield. Masked Object Registration in the Fourier Domain. 
-        IEEE Transactions on Image Processing, vol.21(5), pp. 2706-2718 (2012). 
-    """
-    if len(axes) != 2:
-        raise ValueError('`axes` parameter must be 2-tuple, not `{}`'.format(axes))
-
-    m1 = np.zeros_like(arr1, dtype = np.bool) if (m1 is None) else np.array(m1, dtype = np.bool)
-    m2 = np.zeros_like(arr2, dtype = np.bool) if (m2 is None) else np.array(m2, dtype = np.bool)
-
-    return np.real(mnxc(arr1, arr2, np.logical_not(m1), np.logical_not(m2), mode = mode, axes = axes, overlap_ratio = overlap_ratio))
-
+# This is forward-ported from scikit-image 0.15
+# Once scikit-image 0.15+ is available, we can remove this.
 def mnxc(arr1, arr2, m1, m2, mode='full', axes=(-2, -1), 
                            overlap_ratio=3 / 10):
     """

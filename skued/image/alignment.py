@@ -12,7 +12,7 @@ from skimage.filters import gaussian
 
 from npstreams import array_stream, peek
 
-from .correlation import mnxc2, mnxc
+from .correlation import mnxc
 
 non = lambda s: s if s < 0 else None
 mom = lambda s: max(0, s)
@@ -251,7 +251,7 @@ def masked_register_translation(src_image, target_image, src_mask, target_mask =
         Mask that evaluates to True on valid pixels of `target_image`. If None,
         `src_mask` is used instead.
     mode : {'full', 'same'}, optional
-        Convolution mode. See `skued.mnxc2` for a detailed description. In general,
+        Convolution mode. See `skued.mnxc` for a detailed description. In general,
         `'same'` mode has less edge effects, and therefore should be preferred.
     overlap_ratio : float, optional
         Maximum allowed overlap ratio between masks. The correlation at pixels with overlap ratio higher

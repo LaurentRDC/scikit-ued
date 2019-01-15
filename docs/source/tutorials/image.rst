@@ -52,7 +52,7 @@ However, diffraction patterns all have a fixed feature: the position of the beam
 in each diffraction pattern must be ignored in the computation of the cross-correlation. 
 
 Setting the 'invalid pixels' to 0 will not work, at those will correlate with the invalid pixels from the reference. One must use
-the **masked normalized cross-correlation** through scikit-ued's :func:`mnxc2`.
+the **masked normalized cross-correlation** through scikit-ued's :func:`mnxc`.
 
 All of this is taken care of in scikit-ued's :func:`diff_register` function. Let's look at some polycrystalline Chromium:
 

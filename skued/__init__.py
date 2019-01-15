@@ -17,9 +17,8 @@ from .eproperties import (electron_velocity, electron_wavelength,
                           interaction_parameter, lorentz)
 from .image import (align, azimuthal_average, combine_masks, diff_register,
                     ialign, isnr, itrack_peak, mask_from_collection,
-                    mask_image, mnxc2, nfold, powder_calq, powder_center,
-                    reflection, shift_image, snr_from_collection, triml, trimr,
-                    xcorr)
+                    mask_image, nfold, powder_calq, reflection, shift_image, 
+                    snr_from_collection, triml, trimr, xcorr)
 from .io import diffread, diffshow, dmread, imibread, mibheader, mibread
 from .plot_utils import rgb_sweep, spectrum_colors
 from .potential_map import potential_map, potential_synthesis

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from .. import azimuthal_average, powder_center
+from .. import azimuthal_average
 from ... import Crystal, powdersim
 import unittest
 
@@ -20,24 +20,6 @@ def circle_image(shape, center, radii, intensities):
     
     im[:] = gaussian(im, 5)
     return im
-
-@unittest.skip('deprecated')
-class TestPowderCenter(unittest.TestCase):
-    
-    def test_trivial(self):
-        """ Test center-finding without any noise """
-        center = (64, 64)
-        im = circle_image(shape = (128, 128), center = center, 
-                          radii = [16, 32], intensities = [2,1])
-        self.assertSequenceEqual(center, powder_center(im))
-
-    def test_with_noise(self):
-        """ Test center-finding with noise """
-        center = (58, 67)
-        im = circle_image(shape = (128, 128), center = center, 
-                          radii = [16, 32], intensities = [4,3])
-        im += (im.max() / 5) * np.random.random(size = im.shape)
-        self.assertTrue(np.allclose(center, powder_center(im), atol = 1))
 
 class TestAzimuthalAverage(unittest.TestCase):
     
