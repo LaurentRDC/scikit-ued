@@ -9,7 +9,6 @@ import numpy as np
 from yaml import load
 
 from crystals import Element
-from ..structure import Atom
 from .scattering_params import scattering_params
 
 # For aspherical e form factors
