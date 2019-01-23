@@ -126,8 +126,6 @@ def lorentzian(coordinates, center, fwhm):
     if not isinstance(coordinates, (list, tuple)):  # iterable but not ndarray
         return (width / pi) / ((coordinates - center) ** 2 + width ** 2)
 
-        # Computation
-        # TODO: speedup by creating numpy array, sum over last axis?
     dim = len(coordinates)
     core = width / (
         (sum([(x - c) ** 2 for x, c in zip(coordinates, center)]) + width ** 2)

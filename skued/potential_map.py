@@ -7,10 +7,8 @@
 import numpy as np
 
 from .simulation import bounded_reflections, powdersim, structure_factor
-from .utils import suppress_warnings
 
 # TODO: add tutorial
-# TODO: add references
 # TODO: use potential_synthesis inside potential_map
 def potential_map(q, I, crystal, mesh):
     """ 
@@ -45,6 +43,11 @@ def potential_map(q, I, crystal, mesh):
     .. math::
 
         I = (\sqrt{I_1} - \sqrt{I_2})^2
+    
+    References
+    ----------
+    .. [#] Otto et al., How optical excitation controls the structure and properties of vanadium dioxide.
+           PNAS, vol. 116 issue 2, pp. 450-455 (2018). :DOI:`10.1073/pnas.1808414115`
     """
     if np.any(I < 0):
         raise ValueError("Diffracted intensity cannot physically be negative.")
@@ -52,16 +55,13 @@ def potential_map(q, I, crystal, mesh):
     # We want to support 2D and 3D meshes, therefore
     # expand mesh until 4D (last dim is for loop over reflections)
     # Extra dimensions will be squeezed out later
-    # Note: np.expand_dims raises a deprecation warning
-    # TODO: fix it
-    with suppress_warnings():
-        xx, yy, zz = mesh
-        while xx.ndim < 4:
-            xx, yy, zz = (
-                np.expand_dims(xx, 3),
-                np.expand_dims(yy, 3),
-                np.expand_dims(zz, 3),
-            )
+    xx, yy, zz = mesh
+    while xx.ndim < 4:
+        xx, yy, zz = (
+            np.expand_dims(xx, xx.ndim),
+            np.expand_dims(yy, yy.ndim),
+            np.expand_dims(zz, zz.ndim),
+        )
 
     # Prepare reflections
     # G is reshaped so that it is perpendicular to xx, yy, zz to enables broadcasting
@@ -124,16 +124,13 @@ def potential_synthesis(reflections, intensities, crystal, mesh):
     # We want to support 2D and 3D meshes, therefore
     # expand mesh until 4D (last dim is for loop over reflections)
     # Extra dimensions will be squeezed out later
-    # Note: np.expand_dims raises a deprecation warning
-    # TODO: fix it
-    with suppress_warnings():
-        xx, yy, zz = mesh
-        while xx.ndim < 4:
-            xx, yy, zz = (
-                np.expand_dims(xx, 3),
-                np.expand_dims(yy, 3),
-                np.expand_dims(zz, 3),
-            )
+    xx, yy, zz = mesh
+    while xx.ndim < 4:
+        xx, yy, zz = (
+            np.expand_dims(xx, xx.ndim),
+            np.expand_dims(yy, yy.ndim),
+            np.expand_dims(zz, zz.ndim),
+        )
 
     # Reconstruct the structure factors from experimental data
     # We need to compute the theoretical phases from the crystal structure
