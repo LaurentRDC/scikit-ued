@@ -289,4 +289,4 @@ def _flip(arr, axes=None):
         for axis in axes:
             reverse[axis] = slice(None, None, -1)
 
-    return arr[reverse]
+    return arr[tuple(reverse)]

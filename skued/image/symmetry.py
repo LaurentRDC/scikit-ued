@@ -112,6 +112,7 @@ def reflection(im, angle, center=None, mask=None, fill_value=0.0):
     # Rotate the 'reflected' image so that the reflection line is the x-axis
     # Flip the image along the y-axis
     # Rotate back to original orientation
+    # FIXME: this will not work properly for images that are offcenter
     reflected = rotate(reflected, -angle, **kwargs)
     reflected = mirror(reflected, axes=0)
     reflected = rotate(reflected, angle, **kwargs)
