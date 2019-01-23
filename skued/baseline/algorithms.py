@@ -309,7 +309,7 @@ def _dwt_approx_rec(array, level, wavelet, mode, axis):
 	array : array_like
 		Array to be decomposed. Currently, only 1D and 2D arrays are supported.
 		Only even-lengths signals long the axis.
-	level : int or None (deprecated)
+	level : int or None
 		Decomposition level. A higher level will result in a coarser approximation of
 		the input array. If the level is higher than the maximum possible decomposition level,
 		the maximum level is used.
@@ -394,7 +394,7 @@ def _dwt_approx_rec2(array, level, wavelet, mode, axis):
 	array : array_like
 		Array to be decomposed. Currently, only 1D and 2D arrays are supported.
 		Only even-lengths signals long the axis.
-	level : int or 'max' or None (deprecated)
+	level : int or None
 		Decomposition level. A higher level will result in a coarser approximation of
 		the input array. If the level is higher than the maximum possible decomposition level,
 		the maximum level is used.

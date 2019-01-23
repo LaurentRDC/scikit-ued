@@ -10,7 +10,6 @@ from scipy.fftpack import next_fast_len, fftn, ifftn
 from scipy.signal import fftconvolve
 
 from ..array_utils import mirror
-from ..utils import deprecated
 
 FFTOPS = {}
 try:
