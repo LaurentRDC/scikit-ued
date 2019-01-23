@@ -7,7 +7,8 @@ from scipy.signal import correlate
 from skimage.io import imread
 from skimage.data import camera
 
-from .. import mnxc, xcorr
+from skued import xcorr
+from skued.image.correlation import mnxc
 
 np.random.seed(23)
 

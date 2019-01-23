@@ -50,10 +50,6 @@ if BASE_PACKAGE not in PACKAGES:
     PACKAGES.append(BASE_PACKAGE)
 
 
-def skued_test_suite():
-    return TestLoader().discover(".")
-
-
 if __name__ == "__main__":
     setup(
         name=PACKAGE_NAME,
@@ -81,7 +77,6 @@ if __name__ == "__main__":
         ],
         include_package_data=True,
         zip_safe=False,
-        test_suite="setup.skued_test_suite",
         #        include_dirs = [numpy.get_include()],
         #        ext_modules = cythonize("skued/*/**.pyx",
         #                                 compiler_directives = {'language_level':3,

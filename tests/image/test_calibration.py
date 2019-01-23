@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from .. import powder_calq
-from ... import Crystal, powdersim
+from skued import  powder_calq, powdersim
+from crystals import Crystal
 import unittest
 
 from skimage.filters import gaussian

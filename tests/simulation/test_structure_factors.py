@@ -3,8 +3,8 @@ import unittest
 import numpy as np
 from random import randint
 
-from .. import structure_factor, bounded_reflections, affe
-from ... import Crystal, Atom
+from skued import  structure_factor, bounded_reflections, affe
+from crystals import Crystal, Atom
 
 
 class TestElectronFormFactor(unittest.TestCase):

@@ -2,7 +2,7 @@
 
 import unittest
 from random import randint, random, seed
-from ..thin_films import film_optical_coefficients
+from skued import film_optical_coefficients
 from math import sqrt
 
 seed(23)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from .. import nfold, reflection
+from skued import  nfold, reflection
 import unittest
 from warnings import catch_warnings, simplefilter
 

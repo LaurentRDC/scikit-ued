@@ -11,7 +11,7 @@ from skimage.feature import register_translation
 from skimage.transform import rotate
 from scipy.ndimage import fourier_shift
 
-from .. import (
+from skued import  (
     align,
     ialign,
     itrack_peak,

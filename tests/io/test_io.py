@@ -7,8 +7,8 @@ from pathlib import Path
 import numpy as np
 from skimage.io import imsave
 
-from .. import diffread, dmread, imibread, mibheader, mibread
-from ...utils import suppress_warnings
+from skued import  diffread, dmread, imibread, mibheader, mibread
+from skued.utils import suppress_warnings
 
 TEST_MIB = Path(__file__).parent / "test.mib"
 TEST_MIB_MULTI = Path(__file__).parent / "test_multi.mib"

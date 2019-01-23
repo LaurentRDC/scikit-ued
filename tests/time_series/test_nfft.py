@@ -1,4 +1,4 @@
-from .. import nfft, nfftfreq
+from skued import  nfft, nfftfreq
 import unittest
 import numpy as np
 

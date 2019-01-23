@@ -1,4 +1,4 @@
-from .. import register_time_shift, register_time_shifts
+from skued import  register_time_shift, register_time_shifts
 import unittest
 import numpy as np
 

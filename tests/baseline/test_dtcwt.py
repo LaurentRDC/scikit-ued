@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-from ..dtcwt import (
+from skued.baseline import (
     dtcwt,
     idtcwt,
     dt_max_level,
-    dualtree_wavelet,
-    dt_first_stage,
     available_first_stage_filters,
     available_dt_filters,
 )
@@ -28,14 +26,13 @@ class TestComplexWavelets(unittest.TestCase):
     def test_first_stage(self):
         """ Test of perfect reconstruction of first stage wavelets. """
         for wavelet in available_first_stage_filters():
-            for wav in dt_first_stage(wavelet):
-                # Using waverec and wavedec instead of dwt and idwt because parameters
-                # don't need as much parsing.
-                self.assertTrue(
-                    np.allclose(
-                        self.array, pywt.waverec(pywt.wavedec(self.array, wav), wav)
-                    )
+            # Using waverec and wavedec instead of dwt and idwt because parameters
+            # don't need as much parsing.
+            self.assertTrue(
+                np.allclose(
+                    self.array, pywt.waverec(pywt.wavedec(self.array, wavelet), wavelet)
                 )
+            )
 
 
 ##############################################################################

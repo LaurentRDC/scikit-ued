@@ -3,7 +3,7 @@ from random import random, seed
 
 import numpy as np
 
-from ..fitting import biexponential, exponential
+from skued import biexponential, exponential
 
 seed(23)
 

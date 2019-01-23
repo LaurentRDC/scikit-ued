@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ..algorithms import (
+from skued.baseline.algorithms import (
     baseline_dt,
     baseline_dwt,
     _dwt_approx_rec,

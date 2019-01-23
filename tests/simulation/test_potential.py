@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from .. import electrostatic, pelectrostatic
-from ... import Crystal
+from skued import  electrostatic, pelectrostatic
+from crystals import Crystal
 from copy import deepcopy
 import numpy as np
 import unittest

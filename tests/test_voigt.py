@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import unittest
-from .. import gaussian, lorentzian, pseudo_voigt
+from skued import gaussian, lorentzian, pseudo_voigt
 
 
 class TestFunctionUnitIntegral(object):

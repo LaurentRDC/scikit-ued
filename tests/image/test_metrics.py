@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 from npstreams import last
-from .. import (
+from skued import  (
     snr_from_collection,
     isnr,
     mask_from_collection,
