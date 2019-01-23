@@ -1,10 +1,10 @@
 crystals     >= 0.6.0
 npstreams    >= 1.5.2
-numpy        >= 1.12
+numpy        >= 1.13
 pycifrw      >= 4
-pywavelets   >= 0.5.2
-scikit-image >= 0.13
+pywavelets   >= 1.0.0
+scikit-image >= 0.14
 scipy        >= 1.0.0
-spglib       >= 1.10
+spglib       >= 1.11
 tifffile     >= 0.13
 pyyaml       >= 3.1
