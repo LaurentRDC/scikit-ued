@@ -14,7 +14,7 @@ environment:
                         # to the matrix section.
       TEST_CMD: "python -m unittest discover --verbose"
       CONDA_CHANNELS: "default conda-forge"
-      CONDA_DEPENDENCIES: "numpy scipy cython scikit-image crystals tifffile pycifrw spglib pywavelets ase npstreams pyyaml"
+      CONDA_DEPENDENCIES: "numpy scipy cython scikit-image crystals tifffile pywavelets npstreams pyyaml"
       PIP_DEPENDENCIES: ""
 
   matrix:
