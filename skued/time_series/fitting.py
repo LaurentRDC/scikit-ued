@@ -5,7 +5,8 @@ Convenience functions for fitting time-series.
 
 import numpy as np
 
-def exponential(time, tzero, amp, tconst, offset = 0):
+
+def exponential(time, tzero, amp, tconst, offset=0):
     """
     Exponential curve with onset. Equivalent to the following function:
 
@@ -42,11 +43,12 @@ def exponential(time, tzero, amp, tconst, offset = 0):
     --------
     biexponential : bi-exponential curve with onset
     """
-    arr = np.full_like(time, amp + offset, dtype = np.float)
-    arr[time > tzero] = amp * np.exp(-(time[time > tzero] - tzero)/tconst) + offset
+    arr = np.full_like(time, amp + offset, dtype=np.float)
+    arr[time > tzero] = amp * np.exp(-(time[time > tzero] - tzero) / tconst) + offset
     return arr
 
-def biexponential(time, tzero, amp1, amp2, tconst1, tconst2, offset = 0):
+
+def biexponential(time, tzero, amp1, amp2, tconst1, tconst2, offset=0):
     """
     Bi-exponential curve with onset. Equivalent to the following function:
 
@@ -87,7 +89,7 @@ def biexponential(time, tzero, amp1, amp2, tconst1, tconst2, offset = 0):
     --------
     exponential : single-exponential curve with onset
     """
-    arr = np.full_like(time, offset, dtype = np.float)
+    arr = np.full_like(time, offset, dtype=np.float)
     arr += exponential(time, tzero, amp1, tconst1)
     arr += exponential(time, tzero, amp2, tconst2)
     return arr

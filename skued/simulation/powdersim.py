@@ -9,7 +9,7 @@ from ..voigt import pseudo_voigt
 from .structure_factors import bounded_reflections, structure_factor
 
 
-def powdersim(crystal, q, fwhm_g = 0.03, fwhm_l = 0.06, **kwargs):
+def powdersim(crystal, q, fwhm_g=0.03, fwhm_l=0.06, **kwargs):
     """
     Simulates polycrystalline diffraction pattern.
 
@@ -28,10 +28,10 @@ def powdersim(crystal, q, fwhm_g = 0.03, fwhm_l = 0.06, **kwargs):
     pattern : `~numpy.ndarray`, shape (N,)
         Diffraction pattern
     """
-    h, k, l = bounded_reflections(crystal, nG = q.max())
+    h, k, l = bounded_reflections(crystal, nG=q.max())
     Gx, Gy, Gz = crystal.scattering_vector(h, k, l)
-    qs = np.sqrt(Gx**2 + Gy**2 + Gz**2)
-    intensities = np.absolute(structure_factor(crystal, h, k, l))**2
+    qs = np.sqrt(Gx ** 2 + Gy ** 2 + Gz ** 2)
+    intensities = np.absolute(structure_factor(crystal, h, k, l)) ** 2
 
     pattern = np.zeros_like(q)
     for qi, i in zip(qs, intensities):

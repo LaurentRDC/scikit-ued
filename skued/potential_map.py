@@ -7,10 +7,8 @@
 import numpy as np
 
 from .simulation import bounded_reflections, powdersim, structure_factor
-from .utils import suppress_warnings
 
 # TODO: add tutorial
-# TODO: add references
 # TODO: use potential_synthesis inside potential_map
 def potential_map(q, I, crystal, mesh):
     """ 
@@ -22,7 +20,7 @@ def potential_map(q, I, crystal, mesh):
         Scattering vector norm (:math:`Å^{-1}`).
     I : ndarray, shape (N,)
         Experimental diffracted intensity.
-    crystal : skued.Crystal
+    crystal : crystals.Crystal
         Crystal that gave rise to diffraction pattern `I`.
     mesh : 3-tuple ndarrays, ndim 2 or ndim 3
         Real-space mesh over which to calculate the scattering map.
@@ -45,38 +43,54 @@ def potential_map(q, I, crystal, mesh):
     .. math::
 
         I = (\sqrt{I_1} - \sqrt{I_2})^2
+    
+    References
+    ----------
+    .. [#] Otto et al., How optical excitation controls the structure and properties of vanadium dioxide.
+           PNAS, vol. 116 issue 2, pp. 450-455 (2018). :DOI:`10.1073/pnas.1808414115`
     """
     if np.any(I < 0):
-        raise ValueError('Diffracted intensity cannot physically be negative.')
-    
-    # We want to support 2D and 3D meshes, therefore 
+        raise ValueError("Diffracted intensity cannot physically be negative.")
+
+    # We want to support 2D and 3D meshes, therefore
     # expand mesh until 4D (last dim is for loop over reflections)
     # Extra dimensions will be squeezed out later
-    # Note: np.expand_dims raises a deprecation warning
-    # TODO: fix it
-    with suppress_warnings():
-        xx, yy, zz = mesh
-        while xx.ndim < 4:
-            xx, yy, zz = np.expand_dims(xx, 3), np.expand_dims(yy, 3), np.expand_dims(zz, 3)
+    xx, yy, zz = mesh
+    while xx.ndim < 4:
+        xx, yy, zz = (
+            np.expand_dims(xx, xx.ndim),
+            np.expand_dims(yy, yy.ndim),
+            np.expand_dims(zz, zz.ndim),
+        )
 
     # Prepare reflections
     # G is reshaped so that it is perpendicular to xx, yy, zz to enables broadcasting
     hs, ks, ls = bounded_reflections(crystal, q.max())
-    SF = structure_factor(crystal, hs, ks, ls )
+    SF = structure_factor(crystal, hs, ks, ls)
 
     # Extract structure factor with correction factors
     # Diffracted intensities add up linearly (NOT structure factors)
     qx, qy, qz = crystal.scattering_vector(hs, ks, ls)
-    qx, qy, qz = qx.reshape((1,1,1,-1)), qy.reshape((1,1,1,-1)), qz.reshape((1,1,1,-1))
-    SF = SF.reshape((1,1,1,-1))
-    q_theo = np.squeeze(np.sqrt(qx**2 + qy**2 + qz**2))
+    qx, qy, qz = (
+        qx.reshape((1, 1, 1, -1)),
+        qy.reshape((1, 1, 1, -1)),
+        qz.reshape((1, 1, 1, -1)),
+    )
+    SF = SF.reshape((1, 1, 1, -1))
+    q_theo = np.squeeze(np.sqrt(qx ** 2 + qy ** 2 + qz ** 2))
     theo_I = powdersim(crystal, q_theo)
-    peak_mult_corr = np.abs(SF)**2/theo_I
+    peak_mult_corr = np.abs(SF) ** 2 / theo_I
     exp_SF = np.sqrt(np.interp(q_theo, q, I)) * peak_mult_corr
 
     # Squeeze out extra dimensions (e.g. if mesh was 2D)
-    potential_map = np.sum(exp_SF * np.real(np.exp(1j * np.angle(SF))) * np.cos(xx*qx + yy*qy + zz*qz), axis = 3)
+    potential_map = np.sum(
+        exp_SF
+        * np.real(np.exp(1j * np.angle(SF)))
+        * np.cos(xx * qx + yy * qy + zz * qz),
+        axis=3,
+    )
     return np.squeeze(potential_map)
+
 
 def potential_synthesis(reflections, intensities, crystal, mesh):
     """
@@ -90,7 +104,7 @@ def potential_synthesis(reflections, intensities, crystal, mesh):
         Iterable of Miller indices as tuples (e.g. `[(0,1,0), (0, -1, 2)]`)
     intensities : Iterable of floats
         Experimental diffracted intensity for corresponding reflections.
-    crystal : skued.Crystal
+    crystal : crystals.Crystal
         Crystal that gave rise to the diffracted intensities.
     mesh : 3-tuple ndarrays, ndim 2 or ndim 3
         Real-space mesh over which to calculate the scattering map.
@@ -102,20 +116,21 @@ def potential_synthesis(reflections, intensities, crystal, mesh):
         Electrostatic potential computed over the mesh.
     """
     assert len(intensities) == len(reflections)
-    
+
     intensities = np.array(intensities)
     if np.any(intensities < 0):
-        raise ValueError('Diffracted intensity cannot physically be negative.')
-    
-    # We want to support 2D and 3D meshes, therefore 
+        raise ValueError("Diffracted intensity cannot physically be negative.")
+
+    # We want to support 2D and 3D meshes, therefore
     # expand mesh until 4D (last dim is for loop over reflections)
     # Extra dimensions will be squeezed out later
-    # Note: np.expand_dims raises a deprecation warning
-    # TODO: fix it
-    with suppress_warnings():
-        xx, yy, zz = mesh
-        while xx.ndim < 4:
-            xx, yy, zz = np.expand_dims(xx, 3), np.expand_dims(yy, 3), np.expand_dims(zz, 3)
+    xx, yy, zz = mesh
+    while xx.ndim < 4:
+        xx, yy, zz = (
+            np.expand_dims(xx, xx.ndim),
+            np.expand_dims(yy, yy.ndim),
+            np.expand_dims(zz, zz.ndim),
+        )
 
     # Reconstruct the structure factors from experimental data
     # We need to compute the theoretical phases from the crystal structure
@@ -125,9 +140,13 @@ def potential_synthesis(reflections, intensities, crystal, mesh):
     theoretical_SF = structure_factor(crystal, hs, ks, ls)
     phases = np.angle(theoretical_SF)
     experimental_SF = np.sqrt(intensities) * np.exp(1j * phases)
-    experimental_SF = experimental_SF.reshape((1,1,1,-1))
-    
+    experimental_SF = experimental_SF.reshape((1, 1, 1, -1))
+
     qx, qy, qz = crystal.scattering_vector(hs, ks, ls)
-    qx, qy, qz = qx.reshape((1,1,1,-1)), qy.reshape((1,1,1,-1)), qz.reshape((1,1,1,-1))
-    p = np.sum(experimental_SF * np.cos(xx*qx + yy*qy + zz*qz), axis = 3)
+    qx, qy, qz = (
+        qx.reshape((1, 1, 1, -1)),
+        qy.reshape((1, 1, 1, -1)),
+        qz.reshape((1, 1, 1, -1)),
+    )
+    p = np.sum(experimental_SF * np.cos(xx * qx + yy * qy + zz * qz), axis=3)
     return np.squeeze(np.real(p))

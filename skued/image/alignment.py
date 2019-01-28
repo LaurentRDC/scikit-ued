@@ -12,11 +12,13 @@ from skimage.filters import gaussian
 
 from npstreams import array_stream, peek
 
-from .correlation import mnxc2
+from .correlation import mnxc
 
 non = lambda s: s if s < 0 else None
 mom = lambda s: max(0, s)
-def shift_image(arr, shift, fill_value = 0):
+
+
+def shift_image(arr, shift, fill_value=0):
     """ 
     Shift an image. Subpixel resolution shifts are also possible.
 
@@ -43,15 +45,16 @@ def shift_image(arr, shift, fill_value = 0):
     # Since the fill value is often NaN, but arrays may be integers
     # We need to promote the final type to smallest coherent type
     final_type = np.promote_types(arr.dtype, np.dtype(type(fill_value)))
-    output = np.full_like(arr, fill_value = fill_value, dtype = final_type)
+    output = np.full_like(arr, fill_value=fill_value, dtype=final_type)
 
     # Floating point shifts are much slower
-
     j, i = tuple(shift)
-    if (int(i) != i) or (int(j) != j):	# shift is float
-        subpixel_shift(arr, (i, j), output = output, cval = fill_value)
+    if (int(i) != i) or (int(j) != j):  # shift is float
+        # Image must not be float16
+        # because subpixel shifting involves interpolation
+        subpixel_shift(arr.astype(np.float), (i, j), output=output, cval=fill_value)
         return output
-    
+
     i, j = int(i), int(j)
 
     dst_slices = [slice(None, None)] * arr.ndim
@@ -61,11 +64,12 @@ def shift_image(arr, shift, fill_value = 0):
         dst_slices[ax] = slice(mom(s), non(s))
         src_slices[ax] = slice(mom(-s), non(-s))
 
-    output[dst_slices] = arr[src_slices]
+    output[tuple(dst_slices)] = arr[tuple(src_slices)]
     return output
 
+
 @array_stream
-def itrack_peak(images, row_slice = None, col_slice = None, precision = 1/10):
+def itrack_peak(images, row_slice=None, col_slice=None, precision=1 / 10):
     """
     Generator function that tracks a diffraction peak in a stream of images.
     
@@ -89,25 +93,26 @@ def itrack_peak(images, row_slice = None, col_slice = None, precision = 1/10):
     """
     if row_slice is None:
         row_slice = np.s_[:]
-    
+
     if col_slice is None:
         col_slice = np.s_[:]
 
     first = next(images)
-    
+
     # The shift between the first image and itself needs not
     # be computed!
     yield np.array((0.0, 0.0))
 
-    ref = np.array(first[row_slice, col_slice], copy = True)
+    ref = np.array(first[row_slice, col_slice], copy=True)
     sub = np.empty_like(ref)
 
     for image in images:
         sub[:] = image[row_slice, col_slice]
-        shift, *_ = register_translation(ref, sub, upsample_factor = int(1/precision))
+        shift, *_ = register_translation(ref, sub, upsample_factor=int(1 / precision))
         yield np.asarray(shift)
 
-def align(image, reference, mask = None, fill_value = 0.0, fast = True):
+
+def align(image, reference, mask=None, fill_value=0.0, fast=True):
     """
     Align a diffraction image to a reference. Subpixel resolution available.
 
@@ -118,7 +123,7 @@ def align(image, reference, mask = None, fill_value = 0.0, fast = True):
     reference : `~numpy.ndarray`, shape (M,N)
         `image` will be align onto the `reference` image.
     mask : `~numpy.ndarray` or None, optional
-        Mask that evaluates to True on invalid pixels of the array `image`.
+        Mask that evaluates to True on valid pixels of the array `image`.
     fill_value : float, optional
         Edges will be filled with `fill_value` after alignment.
     fast : bool, optional
@@ -134,11 +139,15 @@ def align(image, reference, mask = None, fill_value = 0.0, fast = True):
     --------
     ialign : generator of aligned images
     """
-    shift = diff_register(image, reference = reference, mask = mask, crop = fast)
-    return shift_image(image, shift, fill_value = fill_value)
+    if mask is None:
+        mask = np.ones_like(image, dtype=np.bool)
+    
+    shift = masked_register_translation(src_image=image, target_image=reference, src_mask=mask)
+    return shift_image(image, -1*shift, fill_value=fill_value)
+
 
 @array_stream
-def ialign(images, reference = None, mask = None, fill_value = 0.0, fast = True):
+def ialign(images, reference=None, mask=None, fill_value=0.0, fast=True):
     """
     Generator of aligned diffraction images.
 
@@ -151,7 +160,7 @@ def ialign(images, reference = None, mask = None, fill_value = 0.0, fast = True)
         'reference' is None (default), the first image in the 'images' stream
         is used as a reference
     mask : `~numpy.ndarray` or None, optional
-        Mask that evaluates to True on invalid pixels.
+        Mask that evaluates to True on valid pixels.
     fill_value : float, optional
         Edges will be filled with `fill_value` after alignment.
     fast : bool, optional
@@ -168,75 +177,96 @@ def ialign(images, reference = None, mask = None, fill_value = 0.0, fast = True)
     skued.align : align a single diffraction pattern onto a reference.
     """
     images = iter(images)
-    
+
     if reference is None:
         reference = next(images)
         yield reference
 
-    yield from map(partial(align, reference = reference, mask = mask, fill_value =  fill_value, fast = fast), images)
+    yield from map(
+        partial(
+            align, reference=reference, mask=mask, fill_value=fill_value, fast=fast
+        ),
+        images,
+    )
 
 
-def _crop_to_half(image, copy = False):
-    nrows, ncols = np.array(image.shape)/4
-    return np.array(image[int(nrows):-int(nrows), int(ncols):-int(ncols)], copy = copy)
+def _crop_to_half(image, copy=False):
+    nrows, ncols = np.array(image.shape) / 4
+    return np.array(
+        image[int(nrows) : -int(nrows), int(ncols) : -int(ncols)], copy=copy
+    )
 
-# TODO: add option to upsample, akin to skimage.feature.register_translation
-#		Could this be done initially by zero-padding?
-#		See https://github.com/scikit-image/scikit-image/blob/master/skimage/feature/register_translation.py#L109
-def diff_register(image, reference, mask = None, crop = True, sigma = 5):
+
+def masked_register_translation(
+    src_image,
+    target_image,
+    src_mask,
+    target_mask=None,
+    mode="same",
+    overlap_ratio=3 / 10,
+):
     """
-    Register translation of diffraction patterns by masked 
-    normalized cross-correlation.
-    
+    Efficient image translation registration by masked normalized cross-correlation.
+
     Parameters
     ----------
-    image : iterable
-        Iterable of ndarrays of shape (N,M)
-    reference : `~numpy.ndarray`
-        This is the reference image to which `image` will be aligned. 
-    mask : `~numpy.ndarray` or None, optional
-        Mask that evaluates to True on invalid pixels of the array `image`.
-    crop : bool, optional
-        If True (default), ``image`` and ``reference`` are cropped to one
-        quarter of their areas; this results in faster execution at the expense of 
-        precision. Disable for small images.
-    sigma : float or None, optional
-        Standard deviation for Gaussian kernel with which to smooth 
-        ``image`` and ``reference``. If None, no smoothing is performed.
-    
+    src_image : `~numpy.ndarray`
+        Reference image.
+    target_image : `~numpy.ndarray`
+        Image to register.  Must be same dimensionality as ``src_image``.
+    src_mask : `~numpy.ndarray`, dtype bool
+        Mask that evaluates to True on valid pixels of `src_image`.
+    target_mask : `~numpy.ndarray`, dtype bool or None, optional
+        Mask that evaluates to True on valid pixels of `target_image`. If None,
+        `src_mask` is used instead.
+    mode : {'full', 'same'}, optional
+        Convolution mode. See `skued.mnxc` for a detailed description. In general,
+        `'same'` mode has less edge effects, and therefore should be preferred.
+    overlap_ratio : float, optional
+        Maximum allowed overlap ratio between masks. The correlation at pixels with overlap ratio higher
+        than this threshold will be zeroed.
+
     Returns
     -------
-    shift : `~numpy.ndarray`, shape (2,), dtype float
-        Shift in rows and columns. The ordering is compatible with :func:`shift_image`
+    shifts : ndarray
+        Shift vector (in pixels) required to register ``target_image`` with
+        ``src_image``.  Axis ordering is consistent with numpy (e.g. Z, Y, X)
     
+    See Also
+    --------
+    skimage.feature.register_translation : efficient sub-pixel image translation registration
+
     References
     ----------
-    .. [PADF] Dirk Padfield. Masked Object Registration in the Fourier Domain. 
+    .. [1] Dirk Padfield. Masked Object Registration in the Fourier Domain. 
         IEEE Transactions on Image Processing, vol.21(5), pp. 2706-2718, 2012. 
     """
-    if mask is None:
-        mask = np.zeros_like(image, dtype = np.bool)
-    
-    if crop:
-        image = _crop_to_half(image, copy = True)
-        reference = _crop_to_half(reference, copy = True)
-        mask = _crop_to_half(mask, copy = True)
+    if target_mask is None:
+        target_mask = np.array(src_mask, dtype=np.bool, copy=True)
 
-    # Diffraction images register better with some filtering
-    if sigma:
-        image = gaussian(image, sigma, preserve_range = True)
-        reference = gaussian(reference, sigma, preserve_range = True)
+    # We need masks to be of the same size as their respective images
+    for (im, mask) in [(src_image, src_mask), (target_image, target_mask)]:
+        if im.shape != mask.shape:
+            raise ValueError(
+                "Error: image sizes must match their respective mask sizes."
+            )
 
-    # Contrary to Padfield, we do not have to crop out the edge
-    # since we are using the 'valid' correlation mode.
-    xcorr = mnxc2(reference, image, mask, mode = 'same')
+    # The mismatch in size will impact the center location of the
+    # cross-correlation
+    size_mismatch = np.array(target_image.shape) - np.array(src_image.shape)
 
-    # Generalize to the average of multiple maxima
+    xcorr = mnxc(
+        target_image,
+        src_image,
+        target_mask,
+        src_mask,
+        axes=(0, 1),
+        mode="full",
+        overlap_ratio=overlap_ratio,
+    )
+
+    # Generalize to the average of multiple equal maxima
     maxima = np.transpose(np.nonzero(xcorr == xcorr.max()))
-    center = np.mean(maxima, axis = 0)
-    
-    # Due to centering of mnxc2, +1 is required
-    # TODO: was this due to wrong output shape
-    # 		of mnxc2?
-    shift_row_col = center - np.array(xcorr.shape)/2 + 1
-    return -shift_row_col[::-1]	# Reversing to be compatible with shift_image
+    center = np.mean(maxima, axis=0)
+    shifts = center - np.array(src_image.shape) + 1
+    return -shifts + (size_mismatch / 2)

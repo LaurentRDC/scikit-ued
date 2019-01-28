@@ -45,7 +45,7 @@ To install the latest development version from `Github <https://github.com/Laure
 
 After installing scikit-ued you can use it like any other Python module as ``skued``.
 
-Each version is tested against **Python 3.6**. If you are using a different version, tests can be run
+Each version is tested against **Python 3.6+**. If you are using a different version, tests can be run
 using the standard library's `unittest` module.
 
 Optional dependencies
@@ -66,10 +66,15 @@ A graphical user interface for the dual-tree complex wavelet transform baseline-
 Citations
 ---------
 
+If you find this software useful, please consider citing the following publication:
+
+.. [#] L. P. René de Cotret, M. R. Otto, M. J. Stern. and B. J. Siwick, *An open-source software ecosystem for the interactive 
+       exploration of ultrafast electron scattering data*, Advanced Structural and Chemical Imaging 4:11 (2018) DOI: 10.1186/s40679-018-0060-y
+
 If you are using the baseline-removal functionality of scikit-ued, please consider citing the following publication:
 
-    .. [#] L. P. René de Cotret and B. J. Siwick, A general method for baseline-removal in ultrafast 
-           electron powder diffraction data using the dual-tree complex wavelet transform, Struct. Dyn. 4 (2017) DOI: 10.1063/1.4972518.
+.. [#] L. P. René de Cotret and B. J. Siwick, *A general method for baseline-removal in ultrafast 
+       electron powder diffraction data using the dual-tree complex wavelet transform*, Struct. Dyn. 4 (2017) DOI: 10.1063/1.4972518.
 
 Support / Report Issues
 -----------------------

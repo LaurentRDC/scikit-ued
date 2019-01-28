@@ -9,11 +9,11 @@ from itertools import repeat
 import numpy as np
 
 # array_stream decorator ensures that input images are cast to ndarrays
-from npstreams import array_stream, imean, iprod, istd, itercopy, last, peek
+from npstreams import array_stream, imean, prod, istd, itercopy, last, peek
 
 
 @array_stream
-def isnr(images, fill_value = 0.0):
+def isnr(images, fill_value=0.0):
     """
     Streaming, pixelwise signal-to-noise ratio (SNR).
     
@@ -43,8 +43,9 @@ def isnr(images, fill_value = 0.0):
         snr[np.logical_not(valid)] = fill_value
         yield snr
 
+
 @array_stream
-def snr_from_collection(images, fill_value = 0.0):
+def snr_from_collection(images, fill_value=0.0):
     """
     Signal-to-noise ratio (SNR) on a per-pixel basis, for images in a collection.
     These images should represent identical measurements.
@@ -71,10 +72,11 @@ def snr_from_collection(images, fill_value = 0.0):
     --------
     isnr : streaming signal-to-noise ratio
     """
-    return last(isnr(images, fill_value = fill_value))
+    return last(isnr(images, fill_value=fill_value))
+
 
 @array_stream
-def mask_from_collection(images, px_thresh = (0, 3e4), std_thresh = None):
+def mask_from_collection(images, px_thresh=(0, 3e4), std_thresh=None):
     """ 
     Determine binary mask from a set of images. These images should represent identical measurements, e.g. a set
     of diffraction patterns before photoexcitation. Pixels are rejected on the following two criteria:
@@ -111,9 +113,9 @@ def mask_from_collection(images, px_thresh = (0, 3e4), std_thresh = None):
         min_int, max_int = min(px_thresh), max(px_thresh)
     else:
         min_int, max_int = None, px_thresh
-    
+
     first, images = peek(images)
-    mask = np.zeros_like(first, dtype = np.bool)    # 0 = False
+    mask = np.zeros_like(first, dtype=np.bool)  # 0 = False
 
     if std_thresh is not None:
         images, images_for_std = itercopy(images)
@@ -122,33 +124,32 @@ def mask_from_collection(images, px_thresh = (0, 3e4), std_thresh = None):
         std_calc = repeat(np.inf)
 
     for image, std in zip(images, std_calc):
-        
+
         mask[image > max_int] = True
-        
+
         if std_thresh is not None:
             mask[std > std_thresh] = True
 
         if min_int is not None:
             mask[image < min_int] = True
-    
+
     return mask
+
 
 def combine_masks(*masks):
     """ 
     Combine multiple pixel masks into one. This assumes that pixel masks evaluate
-    to ``True`` on invalid pixels.
+    to ``True`` on valid pixels and ``False`` on invalid pixels.
 
     Returns
     -------
     combined : `~numpy.ndarray`, dtype bool 
     """
     # By multiplying boolean arrays, values of False propagate
-    # Hence, much easier to do if invalue pixels are False instead of True
-    valids = map(np.logical_not, masks)
-    combined_valid = last(iprod(valids, dtype = np.bool))
-    return np.logical_not(combined_valid)
+    return prod(masks, dtype=np.bool)
 
-def mask_image(image, mask, fill_value = 0, copy = True):
+
+def mask_image(image, mask, fill_value=0, copy=True):
     """
     Fill invalid pixels in an image with another value, according to a pixel mask.
     While this function has simply functionality, it is ideal for integrating into a
@@ -159,7 +160,7 @@ def mask_image(image, mask, fill_value = 0, copy = True):
     image : `~numpy.ndarray`
     
     mask : `~numpy.ndarray`
-        Boolean array. ``mask`` should evaluate to ``True`` on invalid pixels.
+        Boolean array. ``mask`` should evaluate to ``True`` on valid pixels.
     fill_value : float, optional
         Invalid pixels fill value.
     copy : bool, optional
@@ -170,13 +171,14 @@ def mask_image(image, mask, fill_value = 0, copy = True):
     masked : `~numpy.ndarray`
         Masked image. If ``copy = True``, masked points to the same object as ``image``.
     """
-    image = np.array(image, copy = copy)
-    mask = np.asarray(mask, dtype = np.bool)
+    image = np.array(image, copy=copy)
+    mask = np.asarray(mask, dtype=np.bool)
 
-    image[mask] = fill_value
+    image[np.logical_not(mask)] = fill_value
     return image
 
-def triml(array, percentile, axis = None, fill_value = 0):
+
+def triml(array, percentile, axis=None, fill_value=0):
     """
     Trim values in an array that fall below (i.e. to the left) a certain percentile.
 
@@ -201,11 +203,12 @@ def triml(array, percentile, axis = None, fill_value = 0):
     trimr : trim values in percentiles above a specific percentile.
     """
     array = np.array(array)
-    val_percentile = np.percentile(array, q = float(percentile), axis = axis, keepdims = True)
+    val_percentile = np.percentile(array, q=float(percentile), axis=axis, keepdims=True)
     array[array < val_percentile] = fill_value
     return array
 
-def trimr(array, percentile, axis = None, fill_value = 0):
+
+def trimr(array, percentile, axis=None, fill_value=0):
     """
     Trim values in an array that fall above (i.e. to the right) a certain percentile.
 
@@ -230,6 +233,6 @@ def trimr(array, percentile, axis = None, fill_value = 0):
     triml : trim values in percentiles below a specific percentile.
     """
     array = np.array(array)
-    val_percentile = np.percentile(array, q = float(percentile), axis = axis, keepdims = True)
+    val_percentile = np.percentile(array, q=float(percentile), axis=axis, keepdims=True)
     array[array > val_percentile] = fill_value
     return array

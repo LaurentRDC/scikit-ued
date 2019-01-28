@@ -2,8 +2,7 @@
 """ Electron properties """
 
 import numpy as np
-from scipy.constants import (Planck, electron_mass, elementary_charge,
-                             speed_of_light)
+from scipy.constants import Planck, electron_mass, elementary_charge, speed_of_light
 
 
 def lorentz(keV):
@@ -23,7 +22,8 @@ def lorentz(keV):
     ----------
     .. Kirkland 2010 Eq. 2.2
     """
-    return 1 + (elementary_charge*keV*1e3)/(electron_mass*speed_of_light**2)
+    return 1 + (elementary_charge * keV * 1e3) / (electron_mass * speed_of_light ** 2)
+
 
 def electron_wavelength(keV):
     """ 
@@ -50,8 +50,13 @@ def electron_wavelength(keV):
     .. Kirkland 2010 Eq. 2.5
     """
     eV = elementary_charge * keV * 1e3
-    wavelength_meters = Planck * speed_of_light / np.sqrt( eV * (2*electron_mass*speed_of_light**2 + eV))
+    wavelength_meters = (
+        Planck
+        * speed_of_light
+        / np.sqrt(eV * (2 * electron_mass * speed_of_light ** 2 + eV))
+    )
     return wavelength_meters * 1e10  # wavelength in angstroms
+
 
 def electron_velocity(keV):
     """
@@ -76,9 +81,10 @@ def electron_velocity(keV):
     .. Kirkland 2010 Eq. 2.3
     """
     eV = elementary_charge * keV * 1e3
-    m0c2 = electron_mass * speed_of_light**2
-    v_over_c = np.sqrt( eV * (eV + 2 * m0c2)/(m0c2 + eV) )
-    return (c * v_over_c) * 1e10    # speed in Angstroms
+    m0c2 = electron_mass * speed_of_light ** 2
+    v_over_c = np.sqrt(eV * (eV + 2 * m0c2) / (m0c2 + eV))
+    return (c * v_over_c) * 1e10  # speed in Angstroms
+
 
 def interaction_parameter(keV):
     """
@@ -101,4 +107,9 @@ def interaction_parameter(keV):
     l = electron_wavelength(keV)
     V = keV * 1e3
 
-    return (2*np.pi)/(electron_wavelength(keV)*V)*(electron_mass*speed_of_light**2 + elementary_charge * V)/(2*electron_mass*speed_of_light**2 + elementary_charge * V)
+    return (
+        (2 * np.pi)
+        / (electron_wavelength(keV) * V)
+        * (electron_mass * speed_of_light ** 2 + elementary_charge * V)
+        / (2 * electron_mass * speed_of_light ** 2 + elementary_charge * V)
+    )

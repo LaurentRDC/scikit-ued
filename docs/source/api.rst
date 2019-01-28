@@ -29,7 +29,10 @@ Please refer to the :ref:`tutorial on baseline-determination <baseline_tutorial>
 Structure manipulation
 ======================
 
-Structure manipulation is done through the following classes:
+.. currentmodule:: crystals
+
+Structure manipulation is provided by the `crystals <https://crystals.rtfd.io>`_ library. A summary of the documentation
+is provided below.
 
 .. autosummary::
     :toctree: classes/
@@ -68,8 +71,6 @@ Parsers
 -------
 
 Structure parsers are used to build :class:`Crystal` instances, mostly through :class:`Crystal` class methods.
-
-.. currentmodule:: skued.structure
 
 .. autosummary::
     :toctree: classes/
@@ -155,7 +156,6 @@ Polycrystalline diffraction
     :nosignatures:
 
     azimuthal_average
-    powder_center
 
 Calibrations
 ------------
@@ -175,7 +175,7 @@ Image alignment
 
     align
     ialign
-    diff_register
+    masked_register_translation
     shift_image
     itrack_peak
 
@@ -187,7 +187,7 @@ Correlations
     :nosignatures:
     
     xcorr
-    mnxc2
+    mnxc
 
 Image masking
 -------------
