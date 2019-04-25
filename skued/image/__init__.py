@@ -9,7 +9,6 @@ from .alignment import (
     masked_register_translation,
 )
 from .calibration import powder_calq
-from .correlation import mnxc, xcorr
 from .metrics import (
     snr_from_collection,
     isnr,

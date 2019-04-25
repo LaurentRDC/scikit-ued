@@ -7,12 +7,10 @@ from functools import partial
 
 import numpy as np
 from scipy.ndimage import shift as subpixel_shift
-from skimage.feature import register_translation
+from skimage.feature import register_translation, masked_register_translation
 from skimage.filters import gaussian
 
 from npstreams import array_stream, peek
-
-from .correlation import mnxc
 
 non = lambda s: s if s < 0 else None
 mom = lambda s: max(0, s)
@@ -195,78 +193,3 @@ def _crop_to_half(image, copy=False):
     return np.array(
         image[int(nrows) : -int(nrows), int(ncols) : -int(ncols)], copy=copy
     )
-
-
-def masked_register_translation(
-    src_image,
-    target_image,
-    src_mask,
-    target_mask=None,
-    mode="same",
-    overlap_ratio=3 / 10,
-):
-    """
-    Efficient image translation registration by masked normalized cross-correlation.
-
-    Parameters
-    ----------
-    src_image : `~numpy.ndarray`
-        Reference image.
-    target_image : `~numpy.ndarray`
-        Image to register.  Must be same dimensionality as ``src_image``.
-    src_mask : `~numpy.ndarray`, dtype bool
-        Mask that evaluates to True on valid pixels of `src_image`.
-    target_mask : `~numpy.ndarray`, dtype bool or None, optional
-        Mask that evaluates to True on valid pixels of `target_image`. If None,
-        `src_mask` is used instead.
-    mode : {'full', 'same'}, optional
-        Convolution mode. See `skued.mnxc` for a detailed description. In general,
-        `'same'` mode has less edge effects, and therefore should be preferred.
-    overlap_ratio : float, optional
-        Maximum allowed overlap ratio between masks. The correlation at pixels with overlap ratio higher
-        than this threshold will be zeroed.
-
-    Returns
-    -------
-    shifts : ndarray
-        Shift vector (in pixels) required to register ``target_image`` with
-        ``src_image``.  Axis ordering is consistent with numpy (e.g. Z, Y, X)
-    
-    See Also
-    --------
-    skimage.feature.register_translation : efficient sub-pixel image translation registration
-
-    References
-    ----------
-    .. [1] Dirk Padfield. Masked Object Registration in the Fourier Domain. 
-        IEEE Transactions on Image Processing, vol.21(5), pp. 2706-2718, 2012. 
-    """
-    if target_mask is None:
-        target_mask = np.array(src_mask, dtype=np.bool, copy=True)
-
-    # We need masks to be of the same size as their respective images
-    for (im, mask) in [(src_image, src_mask), (target_image, target_mask)]:
-        if im.shape != mask.shape:
-            raise ValueError(
-                "Error: image sizes must match their respective mask sizes."
-            )
-
-    # The mismatch in size will impact the center location of the
-    # cross-correlation
-    size_mismatch = np.array(target_image.shape) - np.array(src_image.shape)
-
-    xcorr = mnxc(
-        target_image,
-        src_image,
-        target_mask,
-        src_mask,
-        axes=(0, 1),
-        mode="full",
-        overlap_ratio=overlap_ratio,
-    )
-
-    # Generalize to the average of multiple equal maxima
-    maxima = np.transpose(np.nonzero(xcorr == xcorr.max()))
-    center = np.mean(maxima, axis=0)
-    shifts = center - np.array(src_image.shape) + 1
-    return -shifts + (size_mismatch / 2)

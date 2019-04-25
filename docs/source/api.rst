@@ -175,19 +175,8 @@ Image alignment
 
     align
     ialign
-    masked_register_translation
     shift_image
     itrack_peak
-
-Correlations
-------------
-
-.. autosummary::
-    :toctree: functions/
-    :nosignatures:
-    
-    xcorr
-    mnxc
 
 Image masking
 -------------

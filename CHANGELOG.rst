@@ -4,6 +4,8 @@ Changelog
 Release 2.0.0 (Development)
 ---------------------------
 
+* Removed `masked_register_translation` in favour of the new scikit-image implementation ported from scikit-ued.
+* Removed `xcorr` and `mnxc` as these were the backbone of `masked_register_translation` and are no longer needed.
 * Changed the convention on image masks to align with the scikit-image convention. Masks will be ``True`` for valid pixels, and ``False`` on invalid pixels.
 * Broke off the ``skued.structure`` package into its own library, ``crystals``. The API is still provided under ``skued.structure`` for now.
 * Added aspherical electron form factor parametrization from Zheng et al. 2009.

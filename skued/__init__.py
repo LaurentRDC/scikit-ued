@@ -45,7 +45,6 @@ from .image import (
     align,
     azimuthal_average,
     combine_masks,
-    masked_register_translation,
     ialign,
     isnr,
     itrack_peak,
@@ -58,7 +57,6 @@ from .image import (
     snr_from_collection,
     triml,
     trimr,
-    xcorr,
 )
 from .io import diffread, diffshow, dmread, imibread, mibheader, mibread
 from .plot_utils import rgb_sweep, spectrum_colors
