@@ -52,9 +52,9 @@ However, diffraction patterns all have a fixed feature: the position of the beam
 in each diffraction pattern must be ignored in the computation of the cross-correlation. 
 
 Setting the 'invalid pixels' to 0 will not work, at those will correlate with the invalid pixels from the reference. One must use
-the **masked normalized cross-correlation** through scikit-ued's :func:`mnxc`.
+the **masked normalized cross-correlation**.
 
-All of this is taken care of in scikit-ued's :func:`masked_register_translation` function. Let's look at some polycrystalline Chromium:
+All of this is taken care of in scikit-image's :func:`masked_register_translation` function (previously available in scikit-ued). Let's look at some polycrystalline Chromium:
 
 .. plot::
 
@@ -83,7 +83,8 @@ All of this is taken care of in scikit-ued's :func:`masked_register_translation`
 From the difference pattern, we can see that the 'Data' pattern is shifted from 'Reference' quite a bit.
 To determine the exact shift, we need to use a mask that obscures the beam-block and main beam::
 
-	from skued import masked_register_translation, shift_image, diffread
+	from skimage.feature import masked_register_translation
+	from skued import shift_image, diffread
 	import numpy as np
 
 	ref = diffread('Cr_1.tif')
@@ -102,7 +103,8 @@ Let's look at the difference:
 
 	import matplotlib.pyplot as plt
 	import numpy as np
-	from skued import masked_register_translation, shift_image, diffread
+	from skimage.feature import masked_register_translation
+	from skued import shift_image, diffread
 
 	ref = diffread('Cr_1.tif')
 	im = diffread('Cr_2.tif')
