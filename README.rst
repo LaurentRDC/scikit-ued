@@ -60,6 +60,8 @@ Streaming operations on NumPy arrays are available in the `npstreams package <ht
 
 Interactive exploration of ultrafast electron diffraction data with the `iris-ued package <https://pypi.org/project/iris-ued/>`_.
 
+Crystal structure manipulation (including symmetry-determination) with the `crystals package <https://pypi.org/project/crystals/>`_. (Included with scikit-ued)
+
 A graphical user interface for the dual-tree complex wavelet transform baseline-removal routine is available as a 
 `separate package <https://pypi.org/pypi/dtgui>`_.
 
