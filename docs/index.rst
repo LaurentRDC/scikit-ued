@@ -27,6 +27,7 @@ General Documentation
     :maxdepth: 2
 
     installation
+    whatsnew
     tutorials/baseline
     tutorials/structure
     tutorials/image
