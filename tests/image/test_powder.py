@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from skued import  azimuthal_average, powdersim
+from skued import azimuthal_average, powdersim
 from crystals import Crystal
 import unittest
 

@@ -142,9 +142,7 @@ def pelectrostatic(crystal, x, y, bounds=None):
     lattice = np.array(crystal.lattice_vectors)
     for atom in atoms:
         xa, ya, _ = atom.coords_cartesian
-        r = minimum_image_distance(
-            x - xa, y - ya, z, lattice=lattice
-        )
+        r = minimum_image_distance(x - xa, y - ya, z, lattice=lattice)
         potential += _pelectrostatic_atom(atom, r)
 
     # Due to sampling, x,y, and z might pass through the center of atoms

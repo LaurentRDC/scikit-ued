@@ -59,6 +59,7 @@ from .image import (
     trimr,
 )
 from .io import diffread, diffshow, dmread, imibread, mibheader, mibread
+from .patterson import patterson
 from .plot_utils import rgb_sweep, spectrum_colors
 from .potential_map import potential_map, potential_synthesis
 from .simulation import (

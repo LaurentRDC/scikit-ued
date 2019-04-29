@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from skued import  mad
+from skued import mad
 import numpy as np
 
 

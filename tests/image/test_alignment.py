@@ -11,12 +11,7 @@ from skimage.feature import register_translation
 from skimage.transform import rotate
 from scipy.ndimage import fourier_shift
 
-from skued import  (
-    align,
-    ialign,
-    itrack_peak,
-    shift_image,
-)
+from skued import align, ialign, itrack_peak, shift_image
 from .test_powder import circle_image
 
 np.random.seed(23)
@@ -172,6 +167,7 @@ class TestItrackPeak(unittest.TestCase):
         shifts = list(itrack_peak(images, row_slice=np.s_[:], col_slice=np.s_[:]))
 
         self.assertEqual(len(shifts), len(images))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -226,6 +226,7 @@ Visualization
 
     potential_map
     potential_synthesis
+    patterson
 
 ============
 Input/Output

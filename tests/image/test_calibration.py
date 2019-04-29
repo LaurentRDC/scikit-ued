@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from skued import  powder_calq, powdersim
+from skued import powder_calq, powdersim
 from crystals import Crystal
 import unittest
 

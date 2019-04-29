@@ -15,10 +15,14 @@ We took the opportunity to make other breaking changes:
 * Removed `xcorr` and `mnxc` as these were the backbone of `masked_register_translation` and are no longer needed.
 * Broke off the ``skued.structure`` package into its own library, ``crystals``. The API is still provided under ``skued.structure`` for now.
 * Added aspherical electron form factor parametrization from Zheng et al. 2009.
-* Removed ``diff_register`` in favor of an analog of scikit-image's `register_translation`, `masked_register_translation`. 
+* Removed ``diff_register`` in favor of an analog of scikit-image's `register_translation` and `masked_register_translation`. 
 * Removed `powder_center` due to unpredictable performance. Warnings will be issued on every function call. It will be removed in an upcoming release
 * Removed `calibrate_scattvector`, which was deprecated.
 * Removed `time_shift` and `time_shifts`, which were deprecated.
+
+We have also added some features:
+
+* Added the `patterson` function to calculate Patterson pair-pair distribution functions from polycrystalline diffraction patterns.
 
 Release 1.0.1.1
 ---------------

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
-from skued import  spectrum_colors, rgb_sweep
+from skued import spectrum_colors, rgb_sweep
 
 
 class TestSpectrumColors(unittest.TestCase):

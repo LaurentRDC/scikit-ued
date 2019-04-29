@@ -139,9 +139,11 @@ def align(image, reference, mask=None, fill_value=0.0, fast=True):
     """
     if mask is None:
         mask = np.ones_like(image, dtype=np.bool)
-    
-    shift = masked_register_translation(src_image=image, target_image=reference, src_mask=mask)
-    return shift_image(image, -1*shift, fill_value=fill_value)
+
+    shift = masked_register_translation(
+        src_image=image, target_image=reference, src_mask=mask
+    )
+    return shift_image(image, -1 * shift, fill_value=fill_value)
 
 
 @array_stream

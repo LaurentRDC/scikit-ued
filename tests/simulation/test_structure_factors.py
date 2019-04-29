@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 from random import randint
 
-from skued import  structure_factor, bounded_reflections, affe
+from skued import structure_factor, bounded_reflections, affe
 from crystals import Crystal, Atom
 
 

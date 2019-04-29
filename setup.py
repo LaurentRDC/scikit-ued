@@ -73,7 +73,7 @@ if __name__ == "__main__":
         packages=PACKAGES,
         data_files=[
             ("skued\\baseline\\data", WAVELET_FILES),
-            ("skued\\simulation\\data", FF_FILES)
+            ("skued\\simulation\\data", FF_FILES),
         ],
         include_package_data=True,
         zip_safe=False,

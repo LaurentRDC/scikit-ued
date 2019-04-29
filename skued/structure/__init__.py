@@ -18,5 +18,5 @@ from crystals import (
     CIFParser,
     PDBParser,
     CODParser,
-    symmetry_expansion
+    symmetry_expansion,
 )

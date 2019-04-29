@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from skued import  electrostatic, pelectrostatic
+from skued import electrostatic, pelectrostatic
 from crystals import Crystal
 from copy import deepcopy
 import numpy as np
