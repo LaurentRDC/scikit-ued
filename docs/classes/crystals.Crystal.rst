@@ -21,13 +21,18 @@ crystals.Crystal
       ~Crystal.from_database
       ~Crystal.from_parameters
       ~Crystal.from_pdb
+      ~Crystal.from_pwscf
+      ~Crystal.ideal
       ~Crystal.itersorted
       ~Crystal.mesh
       ~Crystal.miller_indices
       ~Crystal.primitive
+      ~Crystal.reciprocal_symmetry_operations
+      ~Crystal.satisfying
       ~Crystal.scattering_vector
       ~Crystal.supercell
       ~Crystal.symmetry
+      ~Crystal.symmetry_operations
       ~Crystal.transform
    
    

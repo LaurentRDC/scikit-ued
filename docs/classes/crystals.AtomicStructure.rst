@@ -15,6 +15,7 @@ crystals.AtomicStructure
    
       ~AtomicStructure.__init__
       ~AtomicStructure.itersorted
+      ~AtomicStructure.satisfying
       ~AtomicStructure.transform
    
    
