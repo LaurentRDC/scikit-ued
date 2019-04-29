@@ -80,8 +80,9 @@ All of this is taken care of in scikit-image's :func:`masked_register_translatio
 	plt.tight_layout()
 	plt.show()
 
-From the difference pattern, we can see that the 'Data' pattern is shifted from 'Reference' quite a bit.
-To determine the exact shift, we need to use a mask that obscures the beam-block and main beam::
+From the difference pattern, we can see that the 'Data' pattern is shifted from 'Reference' quite a bit, 
+but the beamblock **has not moved**. To determine the exact shift, we need to use a mask that obscures the 
+beam-block and main beam::
 
 	from skimage.feature import masked_register_translation
 	from skued import shift_image, diffread
