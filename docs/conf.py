@@ -18,7 +18,7 @@ import os
 import sys
 
 currentpath = os.path.dirname(__file__)
-sys.path.append(os.path.join(currentpath, '..'))
+sys.path.append(os.path.join(currentpath, ".."))
 
 from skued import __version__
 

@@ -14,7 +14,7 @@ class TestPattersonFunction(unittest.TestCase):
         q = np.linspace(0.2, 10, 1024)
         I = powdersim(crystal=crystal, q=q)
 
-        radii = np.arange(0.1, 5, 1/50)
+        radii = np.arange(0.1, 5, 1 / 50)
         pairdist = patterson(q=q, I=I, crystal=crystal, radii=radii)
 
         self.assertEqual(radii.shape, pairdist.shape)

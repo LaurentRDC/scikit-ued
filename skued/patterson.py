@@ -41,7 +41,7 @@ def patterson(q, I, crystal, radii):
     # We employ the outer product to avoid loops
     # integral over q is done over axis 1
     # Therefore, we extend the reduced intensity over axis 1
-    rr, GG = np.meshgrid(radii, q) 
+    rr, GG = np.meshgrid(radii, q)
     extended_reduced_intensity = np.outer(reduced_intensity, np.ones_like(radii))
 
     dq = np.mean(np.diff(q))
