@@ -40,9 +40,7 @@ As an example, let's use a simulated diffraction pattern of monoclinic $VO_2$::
 
     fig, ax = plt.subplots(1,1)
     ax.plot(rr, pairdist, '.k')
-    ax.set_xlabel('Radial distance $\AA$')
-    ax.set_ylabel('Pair-pair correlation [a.u.]')
-
+    
 .. plot::
 
     import numpy as np
