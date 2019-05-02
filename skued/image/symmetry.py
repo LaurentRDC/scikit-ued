@@ -11,7 +11,6 @@ from npstreams import average, nan_to_num
 from ..array_utils import mirror
 
 
-# TODO: out parameter?
 def nfold(im, mod, center=None, mask=None, fill_value=0.0):
     """ 
     Returns an images averaged according to n-fold rotational symmetry. This can be used to

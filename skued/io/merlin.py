@@ -43,7 +43,8 @@ def mibheader(filepath, hoffset=0):
 
     header_items = header.decode("ascii").split(",")
 
-    # TODO: more header items
+    # More header items could be implemented if need be
+    # but this is good enough for now.
     (
         header_ID,
         seq_num,

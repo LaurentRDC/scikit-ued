@@ -3,6 +3,7 @@
 Structure Factor calculation
 """
 from collections import Iterable
+from functools import lru_cache
 from itertools import count, product, takewhile
 
 import numpy as np
@@ -70,7 +71,10 @@ def structure_factor(crystal, h, k, l, normalized=False):
 
     return SF
 
-
+# This is a computationally expensive function
+# since crystals.Crystal objects can be hashed,
+# we can cache the results
+@lru_cache(maxsize=4, typed=True)
 def bounded_reflections(crystal, nG):
     """
     Returns iterable of reflections (hkl) with norm(G) < nG
@@ -90,7 +94,6 @@ def bounded_reflections(crystal, nG):
         raise ValueError("Bound {} is negative.".format(nG))
 
     # Determine the maximum index such that (i00) family is still within data limits
-    # TODO: cache results based on max_index?
     bounded = lambda i: any(
         [
             norm(crystal.scattering_vector(i, 0, 0)) <= nG,
