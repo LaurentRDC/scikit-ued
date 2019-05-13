@@ -65,7 +65,8 @@ def potential_map(q, I, crystal, mesh):
 
     # Prepare reflections
     # G is reshaped so that it is perpendicular to xx, yy, zz to enables broadcasting
-    hs, ks, ls = bounded_reflections(crystal, q.max())
+    reflections = np.vstack(tuple(bounded_reflections(crystal, q.max())))
+    hs, ks, ls = np.hsplit(reflections, 3)
     SF = structure_factor(crystal, hs, ks, ls)
 
     # Extract structure factor with correction factors

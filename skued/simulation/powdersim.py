@@ -28,7 +28,8 @@ def powdersim(crystal, q, fwhm_g=0.03, fwhm_l=0.06, **kwargs):
     pattern : `~numpy.ndarray`, shape (N,)
         Diffraction pattern
     """
-    h, k, l = bounded_reflections(crystal, nG=q.max())
+    refls = np.vstack(tuple(bounded_reflections(crystal, nG=q.max())))
+    h, k, l = np.hsplit(refls, 3)
     Gx, Gy, Gz = crystal.scattering_vector(h, k, l)
     qs = np.sqrt(Gx ** 2 + Gy ** 2 + Gz ** 2)
     intensities = np.absolute(structure_factor(crystal, h, k, l)) ** 2

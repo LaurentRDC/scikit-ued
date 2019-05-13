@@ -5,9 +5,11 @@ Structure Factor calculation
 from collections import Iterable
 from functools import lru_cache
 from itertools import count, product, takewhile
+from math import sqrt
 
 import numpy as np
 from numpy.linalg import norm
+from npstreams import primed
 
 from .form_factors import affe
 
@@ -71,13 +73,17 @@ def structure_factor(crystal, h, k, l, normalized=False):
 
     return SF
 
-# This is a computationally expensive function
-# since crystals.Crystal objects can be hashed,
-# we can cache the results
-@lru_cache(maxsize=4, typed=True)
+# Generalized hypotenuse
+def _hypot(*args):
+    return sqrt(sum(map(lambda i: i**2, args)))
+
+# We prime this generator so that pre-checks are evaluated
+# For example, no negative bounds.
+# This is better for quick feedback while writing a script.
+@primed
 def bounded_reflections(crystal, nG):
     """
-    Returns iterable of reflections (hkl) with norm(G) < nG
+    Generates reflections (hkl) with norm(G) <= nG
     
     Parameters
     ----------
@@ -86,14 +92,17 @@ def bounded_reflections(crystal, nG):
     nG : float
         Maximal scattering vector norm. By our convention, :math:`G = 4 \pi s`.
     
-    Returns
-    -------
-    h, k, l : ndarrays, shapes (N,), dtype int
+    Yields
+    ------
+    reflection : 3-tuple of ints
+        Miller indices of a bounded reflection.
     """
     if nG < 0:
         raise ValueError("Bound {} is negative.".format(nG))
-
+    
+    yield
     # Determine the maximum index such that (i00) family is still within data limits
+    # This provides a (large) upper bound so that we are sure that the overall filtering will terminate
     bounded = lambda i: any(
         [
             norm(crystal.scattering_vector(i, 0, 0)) <= nG,
@@ -103,14 +112,8 @@ def bounded_reflections(crystal, nG):
     )
     max_index = max(takewhile(bounded, count(0)))
     extent = range(-max_index, max_index + 1)
-    h, k, l = np.split(
-        np.array(list(product(extent, extent, extent)), dtype=np.int), 3, axis=-1
-    )
-    h, k, l = h.ravel(), k.ravel(), l.ravel()
+    refls = product(extent, repeat=3)
 
-    # we only have an upper bound on possible reflections
-    # Let's filter down
-    Gx, Gy, Gz = crystal.scattering_vector(h, k, l)
-    norm_G = np.sqrt(Gx ** 2 + Gy ** 2 + Gz ** 2)
-    in_bound = norm_G <= nG
-    return h.compress(in_bound), k.compress(in_bound), l.compress(in_bound)
+    # The above bound was only a first pass. We can refine further
+    in_bounds = lambda refl: _hypot(*crystal.scattering_vector(*refl)) <= nG
+    yield from filter(in_bounds, refls)
