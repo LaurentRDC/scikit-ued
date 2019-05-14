@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 from random import randint
 
-from skued import structure_factor, bounded_reflections, affe
+from skued import structure_factor, affe
 from crystals import Crystal, Atom
 
 
@@ -52,32 +52,6 @@ class TestStructureFactor(unittest.TestCase):
 
         self.assertSequenceEqual(sf.shape, h.shape)
         self.assertEqual(sf.dtype, np.complex)
-
-
-class TestBoundedReflections(unittest.TestCase):
-    def setUp(self):
-        self.crystal = Crystal.from_database(next(iter(Crystal.builtins)))
-
-    def test_bounded_reflections_negative(self):
-        """ Test that negative reflection bounds raise an Exception.
-        Otherwise, an infinite number of reflections will be generated """
-        with self.assertRaises(ValueError):
-            hkl = bounded_reflections(self.crystal, -1)
-
-    def test_bounded_reflections_zero(self):
-        """ Check that bounded_reflections returns (000) for a zero bound """
-        reflections = set(bounded_reflections(self.crystal, 0))
-        self.assertIn((0,0,0), reflections)
-        self.assertTrue(len(reflections), 1)
-
-    def test_bounded_reflections_all_within_bounds(self):
-        """ Check that every reflection is within the bound """
-        bound = 10
-        reflections = np.vstack(tuple(bounded_reflections(self.crystal, bound)))
-        h, k, l = np.hsplit(reflections, 3)
-        Gx, Gy, Gz = self.crystal.scattering_vector(h, k, l)
-        norm_G = np.sqrt(Gx ** 2 + Gy ** 2 + Gz ** 2)
-        self.assertTrue(np.all(norm_G <= bound))
 
 
 if __name__ == "__main__":

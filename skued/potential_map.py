@@ -6,7 +6,10 @@
 
 import numpy as np
 
-from .simulation import bounded_reflections, powdersim, structure_factor
+from crystals.affine import change_basis_mesh
+
+from .simulation import powdersim, structure_factor
+
 
 # TODO: add tutorial
 # TODO: use potential_synthesis inside potential_map
@@ -65,13 +68,13 @@ def potential_map(q, I, crystal, mesh):
 
     # Prepare reflections
     # G is reshaped so that it is perpendicular to xx, yy, zz to enables broadcasting
-    reflections = np.vstack(tuple(bounded_reflections(crystal, q.max())))
+    reflections = np.vstack(tuple(crystal.bounded_reflections(q.max())))
     hs, ks, ls = np.hsplit(reflections, 3)
     SF = structure_factor(crystal, hs, ks, ls)
 
     # Extract structure factor with correction factors
     # Diffracted intensities add up linearly (NOT structure factors)
-    qx, qy, qz = crystal.scattering_vector(hs, ks, ls)
+    qx, qy, qz = change_basis_mesh(hs, ks, ls, basis1=crystal.reciprocal_vectors, basis2=np.eye(3))
     qx, qy, qz = (
         qx.reshape((1, 1, 1, -1)),
         qy.reshape((1, 1, 1, -1)),
@@ -143,7 +146,7 @@ def potential_synthesis(reflections, intensities, crystal, mesh):
     experimental_SF = np.sqrt(intensities) * np.exp(1j * phases)
     experimental_SF = experimental_SF.reshape((1, 1, 1, -1))
 
-    qx, qy, qz = crystal.scattering_vector(hs, ks, ls)
+    qx, qy, qz = change_basis_mesh(hs, ks, ls, basis1=crystal.reciprocal_vectors, basis2=np.eye(3))
     qx, qy, qz = (
         qx.reshape((1, 1, 1, -1)),
         qy.reshape((1, 1, 1, -1)),

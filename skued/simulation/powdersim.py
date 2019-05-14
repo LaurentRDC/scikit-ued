@@ -5,8 +5,10 @@ Polycrystalline diffraction pattern simulation
 """
 import numpy as np
 
+from crystals.affine import change_basis_mesh
+
 from ..voigt import pseudo_voigt
-from .structure_factors import bounded_reflections, structure_factor
+from .structure_factors import structure_factor
 
 
 def powdersim(crystal, q, fwhm_g=0.03, fwhm_l=0.06, **kwargs):
@@ -28,9 +30,9 @@ def powdersim(crystal, q, fwhm_g=0.03, fwhm_l=0.06, **kwargs):
     pattern : `~numpy.ndarray`, shape (N,)
         Diffraction pattern
     """
-    refls = np.vstack(tuple(bounded_reflections(crystal, nG=q.max())))
+    refls = np.vstack(tuple(crystal.bounded_reflections(q.max())))
     h, k, l = np.hsplit(refls, 3)
-    Gx, Gy, Gz = crystal.scattering_vector(h, k, l)
+    Gx, Gy, Gz = change_basis_mesh(h, k, l, basis1=crystal.reciprocal_vectors, basis2=np.eye(3))
     qs = np.sqrt(Gx ** 2 + Gy ** 2 + Gz ** 2)
     intensities = np.absolute(structure_factor(crystal, h, k, l)) ** 2
 

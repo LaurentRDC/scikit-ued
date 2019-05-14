@@ -64,7 +64,6 @@ from .plot_utils import rgb_sweep, spectrum_colors
 from .potential_map import potential_map, potential_synthesis
 from .simulation import (
     affe,
-    bounded_reflections,
     electrostatic,
     pelectrostatic,
     powdersim,

@@ -19,7 +19,7 @@ We took the opportunity to make other breaking changes:
 * Removed `powder_center` due to unpredictable performance. Warnings will be issued on every function call. It will be removed in an upcoming release
 * Removed `calibrate_scattvector`, which was deprecated.
 * Removed `time_shift` and `time_shifts`, which were deprecated.
-* `bounded_reflections` is now a generator of `(h,k,l)` tuples. This makes much more sense from a usability point of view.
+* `bounded_reflections` has been removed in favor of ``Crystal.bounded_reflections`` in the crystals library (version >= 0.6.4)
 
 We have also added some features:
 

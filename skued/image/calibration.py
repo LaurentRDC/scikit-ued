@@ -46,8 +46,8 @@ def calq(I, crystal, peak_indices, miller_indices):
         )
 
     hkl1, hkl2 = miller_indices
-    qx1, qy1, _ = crystal.scattering_vector(*hkl1)
-    qx2, qy2, _ = crystal.scattering_vector(*hkl2)
+    qx1, qy1, _ = crystal.scattering_vector(hkl1)
+    qx2, qy2, _ = crystal.scattering_vector(hkl2)
 
     # calibration is done by fitting a line
     # Expecting that I is defined on an
@@ -125,7 +125,7 @@ def powder_calq(I, crystal, peak_indices, miller_indices):
         )
 
     # scattering vector length based on known structure
-    qs = [hypot(*crystal.scattering_vector(*hkl)) for hkl in miller_indices]
+    qs = [hypot(*crystal.scattering_vector(hkl)) for hkl in miller_indices]
 
     # calibration is done by fitting a line
     # Expecting that I is defined on an

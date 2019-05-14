@@ -1,4 +1,4 @@
-crystals     >= 0.6.3
+crystals     >= 0.6.4
 npstreams    >= 1.6,  < 2
 numpy        >= 1.13, < 2
 pywavelets   >= 1.0.0

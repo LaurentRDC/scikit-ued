@@ -22,12 +22,12 @@ class TestPowderCalQ(unittest.TestCase):
         I = powdersim(c, s)
 
         peak1 = (2, 0, 0)
-        Gx1, Gy1, Gz1 = c.scattering_vector(*peak1)
+        Gx1, Gy1, Gz1 = c.scattering_vector(peak1)
         q1 = np.sqrt(Gx1 ** 2 + Gy1 ** 2 + Gz1 ** 2)
         arr_index1 = np.argmin(np.abs(q - q1))
 
         peak2 = (2, 2, 0)
-        Gx2, Gy2, Gz2 = c.scattering_vector(*peak2)
+        Gx2, Gy2, Gz2 = c.scattering_vector(peak2)
         q2 = np.sqrt(Gx2 ** 2 + Gy2 ** 2 + Gz2 ** 2)
         arr_index2 = np.argmin(np.abs(q - q2))
 
@@ -48,17 +48,17 @@ class TestPowderCalQ(unittest.TestCase):
         I = powdersim(c, s)
 
         peak1 = (2, 0, 0)
-        Gx1, Gy1, Gz1 = c.scattering_vector(*peak1)
+        Gx1, Gy1, Gz1 = c.scattering_vector(peak1)
         q1 = np.sqrt(Gx1 ** 2 + Gy1 ** 2 + Gz1 ** 2)
         arr_index1 = np.argmin(np.abs(q - q1))
 
         peak2 = (2, 2, 0)
-        Gx2, Gy2, Gz2 = c.scattering_vector(*peak2)
+        Gx2, Gy2, Gz2 = c.scattering_vector(peak2)
         q2 = np.sqrt(Gx2 ** 2 + Gy2 ** 2 + Gz2 ** 2)
         arr_index2 = np.argmin(np.abs(q - q2))
 
         peak3 = (3, 0, -2)
-        Gx2, Gy2, Gz2 = c.scattering_vector(*peak3)
+        Gx2, Gy2, Gz2 = c.scattering_vector(peak3)
         q3 = np.sqrt(Gx2 ** 2 + Gy2 ** 2 + Gz2 ** 2)
         arr_index3 = np.argmin(np.abs(q - q3))
 
