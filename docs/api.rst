@@ -214,7 +214,6 @@ Simulation
     powdersim
     electrostatic
     pelectrostatic
-    bounded_reflections
 
 =============
 Visualization
