@@ -29,7 +29,6 @@ General Documentation
     installation
     whatsnew
     tutorials/baseline
-    tutorials/structure
     tutorials/image
     tutorials/plotting
     tutorials/time_series
