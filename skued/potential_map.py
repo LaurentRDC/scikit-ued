@@ -74,7 +74,9 @@ def potential_map(q, I, crystal, mesh):
 
     # Extract structure factor with correction factors
     # Diffracted intensities add up linearly (NOT structure factors)
-    qx, qy, qz = change_basis_mesh(hs, ks, ls, basis1=crystal.reciprocal_vectors, basis2=np.eye(3))
+    qx, qy, qz = change_basis_mesh(
+        hs, ks, ls, basis1=crystal.reciprocal_vectors, basis2=np.eye(3)
+    )
     qx, qy, qz = (
         qx.reshape((1, 1, 1, -1)),
         qy.reshape((1, 1, 1, -1)),
@@ -146,7 +148,9 @@ def potential_synthesis(reflections, intensities, crystal, mesh):
     experimental_SF = np.sqrt(intensities) * np.exp(1j * phases)
     experimental_SF = experimental_SF.reshape((1, 1, 1, -1))
 
-    qx, qy, qz = change_basis_mesh(hs, ks, ls, basis1=crystal.reciprocal_vectors, basis2=np.eye(3))
+    qx, qy, qz = change_basis_mesh(
+        hs, ks, ls, basis1=crystal.reciprocal_vectors, basis2=np.eye(3)
+    )
     qx, qy, qz = (
         qx.reshape((1, 1, 1, -1)),
         qy.reshape((1, 1, 1, -1)),
