@@ -66,7 +66,7 @@ function InstallMiniconda ($miniconda_version, $architecture, $python_home) {
 
 # Install miniconda, if no version is given use the latest
 if (! $env:MINICONDA_VERSION) {
-   $env:MINICONDA_VERSION="latest"
+   $env:MINICONDA_VERSION="4.6.14" # TEMPORARY FIX for https://github.com/conda/conda/issues/8865
 }
 
 InstallMiniconda $env:MINICONDA_VERSION $env:PLATFORM $env:PYTHON
