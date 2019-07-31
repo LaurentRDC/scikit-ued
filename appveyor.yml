@@ -7,7 +7,7 @@ environment:
 
   global:
       PYTHON: "C:\\conda"
-      MINICONDA_VERSION: "latest"
+      MINICONDA_VERSION: "4.6.14"
       CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\.appveyor\\windows_sdk.cmd"
       PYTHON_ARCH: "64" # needs to be set for CMD_IN_ENV to succeed. If a mix
                         # of 32 bit and 64 bit builds are needed, move this
