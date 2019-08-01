@@ -24,6 +24,8 @@ We took the opportunity to make other breaking changes:
 We have also added some features:
 
 * Added the `patterson` function to calculate Patterson pair-pair distribution functions from polycrystalline diffraction patterns.
+* Added the `detector_wavevectors` function to determine the wavevectors visible on a detector, in transmission,
+  based on experimental geometry.
 
 Release 1.0.1.1
 ---------------

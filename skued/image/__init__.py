@@ -8,7 +8,7 @@ from .alignment import (
     itrack_peak,
     masked_register_translation,
 )
-from .calibration import powder_calq
+from .calibration import powder_calq, detector_wavevectors
 from .metrics import (
     snr_from_collection,
     isnr,

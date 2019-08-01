@@ -132,3 +132,54 @@ def powder_calq(I, crystal, peak_indices, miller_indices):
     # equally-spaced grid [0, 1, ..., I.size]
     slope, intercept = np.polyfit(np.asarray(peak_indices), np.asarray(qs), deg=1)
     return slope * np.arange(0, I.size) + intercept
+
+# TODO: add test
+def detector_wavevectors(energy, camera_length, shape, pixel_size, center=None):
+    """
+    Returns a mesh of reciprocal space visible on a particular detector 
+    in transmission geometry. The curvature of the Ewald sphere is 
+    taken into account.
+
+    Parameters
+    ----------
+    energy : float
+        Electron energy [keV].
+    camera_length : float
+        Sample-camera distance [meters].
+    shape : 2-tuple of ints
+        Detector shape in pixels, e.g. ``(2048, 2048)``. For non-square detectors,
+        it is assumed that the shape is [width, height].
+    pixel_size : float
+        Pixel size [meters].
+    center : 2-tuple of ints or None, optional
+        Location of the image center [px]. If None (default), it is taken
+        to be the exact center of the detector.
+    
+    Returns
+    -------
+    qx, qy, qz : 2-D arrays
+        Value of scattering vector in (x, y, z) direction for every pixel
+        of the detector.
+    """
+    if center is None:
+        center = np.rint(np.array(shape) / 2)
+
+    # Grid of detector dimention in meters
+    cx, cy = center
+    extent_x = np.arange(0, shape[0]) - cx
+    extent_y = np.arange(0, shape[1]) - cy
+    xx, yy = np.meshgrid(pixel_size * extent_x, pixel_size * extent_y)
+
+    r, phi = np.sqrt(xx ** 2 + yy ** 2), np.arctan2(yy, xx)
+    angle = np.arctan(r / camera_length) # Diffraction angle 2 theta
+
+    # Scattering vector norm (inverse Angs)
+    ewald_radius = 4 * np.pi * np.sin(angle / 2) / electron_wavelength(energy)
+    extent_kx, extent_ky = (
+        (ewald_radius * np.cos(phi))[0, :],
+        (ewald_radius * np.sin(phi))[:, 0],
+    )
+    qx, qy = np.meshgrid(extent_kx, extent_ky)
+
+    qz = ewald_radius - np.sqrt(ewald_radius ** 2 - qx ** 2 - qy ** 2)
+    return tuple(map(np.squeeze, (qx, qy, qz)))
