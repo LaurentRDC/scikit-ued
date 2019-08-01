@@ -44,7 +44,7 @@ from .eproperties import (
 from .image import (
     align,
     azimuthal_average,
-    detector_wavevectors,
+    detector_scattvectors,
     combine_masks,
     ialign,
     isnr,

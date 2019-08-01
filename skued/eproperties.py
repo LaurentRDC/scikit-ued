@@ -7,6 +7,7 @@ from scipy.constants import (Planck, electron_mass, elementary_charge,
                              speed_of_light)
 
 
+@lru_cache(maxsize=4)
 def lorentz(keV):
     """
     Relativistic factor :math:`\gamma`, defined as :math:`\gamma = \\frac{1}{\sqrt{1 - v^2/c^2}}`
@@ -61,6 +62,7 @@ def electron_wavelength(keV):
     return wavelength_meters * 1e10  # wavelength in angstroms
 
 
+@lru_cache(maxsize=4)
 def electron_velocity(keV):
     """
     Relativistic velocity :math:`v_e` of an accelerated electron.
@@ -89,6 +91,7 @@ def electron_velocity(keV):
     return (c * v_over_c) * 1e10  # speed in Angstroms
 
 
+@lru_cache(maxsize=4)
 def interaction_parameter(keV):
     """
     Interaction parameter from relativistic electron wavelength.

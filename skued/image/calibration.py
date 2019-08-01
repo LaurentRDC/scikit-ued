@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+from ..eproperties import electron_wavelength
+from ..utils import suppress_warnings
 
 
 def hypot(*args):
@@ -133,16 +135,16 @@ def powder_calq(I, crystal, peak_indices, miller_indices):
     slope, intercept = np.polyfit(np.asarray(peak_indices), np.asarray(qs), deg=1)
     return slope * np.arange(0, I.size) + intercept
 
-# TODO: add test
-def detector_wavevectors(energy, camera_length, shape, pixel_size, center=None):
+
+def detector_scattvectors(keV, camera_length, shape, pixel_size, center=None):
     """
-    Returns a mesh of reciprocal space visible on a particular detector 
+    Returns a mesh of reciprocal space vectors visible on a particular detector 
     in transmission geometry. The curvature of the Ewald sphere is 
     taken into account.
 
     Parameters
     ----------
-    energy : float
+    keV : float
         Electron energy [keV].
     camera_length : float
         Sample-camera distance [meters].
@@ -171,15 +173,22 @@ def detector_wavevectors(energy, camera_length, shape, pixel_size, center=None):
     xx, yy = np.meshgrid(pixel_size * extent_x, pixel_size * extent_y)
 
     r, phi = np.sqrt(xx ** 2 + yy ** 2), np.arctan2(yy, xx)
-    angle = np.arctan(r / camera_length) # Diffraction angle 2 theta
+    angle = np.arctan(r / camera_length)  # Diffraction angle 2 theta
 
-    # Scattering vector norm (inverse Angs)
-    ewald_radius = 4 * np.pi * np.sin(angle / 2) / electron_wavelength(energy)
+    # Scattering vector norm parallel to the detector (inverse Angs)
+    q_norm_parallel = 4 * np.pi * np.sin(angle / 2) / electron_wavelength(keV=keV)
     extent_kx, extent_ky = (
-        (ewald_radius * np.cos(phi))[0, :],
-        (ewald_radius * np.sin(phi))[:, 0],
+        (q_norm_parallel * np.cos(phi))[0, :],
+        (q_norm_parallel * np.sin(phi))[:, 0],
     )
     qx, qy = np.meshgrid(extent_kx, extent_ky)
 
-    qz = ewald_radius - np.sqrt(ewald_radius ** 2 - qx ** 2 - qy ** 2)
+    # By our convention, we have |q| = 2*pi/wavelength
+    ewald_sphere_radius = 2 * np.pi / electron_wavelength(keV=keV)
+
+    # Warnings about invalid values in sqrt
+    # The resulting NaNs are changed to zeroes
+    with suppress_warnings():
+        qz = np.nan_to_num(np.sqrt(ewald_sphere_radius ** 2 - qx ** 2 - qy ** 2))
+
     return tuple(map(np.squeeze, (qx, qy, qz)))
