@@ -38,12 +38,6 @@ var/
 .installed.cfg
 *.egg
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
-
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
@@ -63,34 +57,16 @@ coverage.xml
 *.mo
 *.pot
 
-# Django stuff:
-*.log
-local_settings.py
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
 # Sphinx documentation
 docs/_build/
 docs/source/functions/
 docs/source/classes/
 
-
 # PyBuilder
 target/
 
-# IPython Notebook
-.ipynb_checkpoints
-
 # pyenv
 .python-version
-
-# celery beat schedule file
-celerybeat-schedule
 
 # dotenv
 .env
@@ -107,11 +83,3 @@ ENV/
 
 # PyCharm
 .idea/
-
-# File caches
-test_cache/
-cod_cache/
-pdb_cache/
-
-# Misc
-benchmark.py
