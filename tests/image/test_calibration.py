@@ -109,7 +109,7 @@ class TestDetectorScattvectors(unittest.TestCase):
         )
 
         q_norm = np.sqrt(qx ** 2 + qy ** 2 + qz ** 2)
-        ewald_sphere_radius = 2*np.pi/electron_wavelength(keV=200)
+        ewald_sphere_radius = 2 * np.pi / electron_wavelength(keV=200)
 
         self.assertTrue(np.allclose(q_norm, ewald_sphere_radius))
 
