@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 """ Electron properties """
-from functools import lru_cache
 
 import numpy as np
-from scipy.constants import (Planck, electron_mass, elementary_charge,
-                             speed_of_light)
+from scipy.constants import Planck, electron_mass, elementary_charge, speed_of_light
 
 
 @lru_cache(maxsize=4)
@@ -28,7 +26,6 @@ def lorentz(keV):
     return 1 + (elementary_charge * keV * 1e3) / (electron_mass * speed_of_light ** 2)
 
 
-@lru_cache(maxsize=4)
 def electron_wavelength(keV):
     """ 
     Relativistic wavelength :math:`\lambda` of an accelerated electron.
