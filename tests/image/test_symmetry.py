@@ -41,7 +41,9 @@ class TestNFoldSymmetry(unittest.TestCase):
         im.setflags(write=False)
         mask.setflags(write=False)
 
-        rot = nfold(im, center=(67, 93), mod=3, mask=mask)
+        with catch_warnings():
+            simplefilter("ignore")
+            rot = nfold(im, center=(67, 93), mod=3, mask=mask)
 
     def test_fill_value(self):
         """ Test that the fill_value parameter of nfold() is working correctly """
