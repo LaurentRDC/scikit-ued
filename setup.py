@@ -64,7 +64,7 @@ if __name__ == "__main__":
         maintainer=AUTHOR,
         maintainer_email=AUTHOR_EMAIL,
         install_requires=REQUIREMENTS,
-        keywords="ultrafast electron diffraction",
+        keywords="ultrafast electron scattering",
         project_urls={
             "Documentation": "https://scikit-ued.readthedocs.io/",
             "Source": "https://github.com/LaurentRDC/scikit-ued",
