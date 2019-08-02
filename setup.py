@@ -11,7 +11,7 @@ from setuptools import find_packages, setup
 
 PACKAGE_NAME = "scikit-ued"
 DESCRIPTION = (
-    "Collection of algorithms and functions for ultrafast electron diffraction"
+    "Collection of algorithms and functions for ultrafast electron scattering"
 )
 URL = "http://scikit-ued.readthedocs.io"
 DOWNLOAD_URL = "http://github.com/LaurentRDC/scikit-ued"
