@@ -81,11 +81,10 @@ class PhononMode(object):
         Default is the (000) reflection only.
     """
 
-    def __init__(self, name, q_points, frequencies, polarizations, crystal, hkls=None):
+    def __init__(self, q_points, frequencies, polarizations, crystal, hkls=None):
         if hkls is None:
             hkls = np.zeros_like(q_points)
 
-        self.name = name
         self.q_points = q_points
         self.frequencies = frequencies
         self.polarizations = polarizations
@@ -132,7 +131,6 @@ def symmetrize(mode):
     k_points = mapply(from_fractional, k_points_frac)
 
     return Mode(
-        name=mode.name,
         q_points=k_points,
         frequencies=frequencies,
         polarizations=polarizations,
@@ -171,7 +169,6 @@ def extend_bragg(mode, reflections):
     )
 
     return Mode(
-        name=mode.name,
         q_points=q_points,
         frequencies=frequencies,
         polarizations=polarizations,
@@ -197,7 +194,6 @@ def decimate(mode, decimals=2):
     )
 
     return Mode(
-        name=mode.name,
         q_points=q_points,
         polarizations=polarizations,
         frequencies=frequencies,
