@@ -351,9 +351,7 @@ def _dwt_approx_rec(array, level, wavelet, mode, axis):
         level = max_level
     elif max_level < level:
         warn(
-            "Decomposition level {} higher than maximum {}. Maximum is used.".format(
-                level, max_level
-            )
+            f"Decomposition level {level} higher than maximum {max_level}. Maximum is used."
         )
         level = max_level
 
@@ -433,9 +431,7 @@ def _dwt_approx_rec2(array, level, wavelet, mode, axis):
         level = max_level
     elif max_level < level:
         warn(
-            "Decomposition level {} higher than maximum {}. Maximum is used.".format(
-                level, max_level
-            )
+            f"Decomposition level {level} higher than maximum {max_level}. Maximum is used."
         )
         level = max_level
 

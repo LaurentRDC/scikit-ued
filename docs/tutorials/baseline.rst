@@ -124,7 +124,7 @@ Here is a usage example for the data presented above::
 
 	for l, c in zip(levels, colors):
 		baseline = baseline_dwt(signal, level = l, max_iter = 150, wavelet = 'sym6')
-		ax2.plot(s, baseline, color = c, label = 'Level {}'.format(l))
+		ax2.plot(s, baseline, color = c, label = f'Level {l}')
 	ax2.set_title('Baseline examples (DWT)')
 
 	for ax in (ax1, ax2):
@@ -190,7 +190,7 @@ Here is a usage example for the data presented above::
 
 	for l, c in zip(levels, colors):
 		baseline = baseline_dt(signal, level = l, max_iter = 150, wavelet = 'qshift3')
-		ax2.plot(s, baseline, color = c, label = 'Level {}'.format(l))
+		ax2.plot(s, baseline, color = c, label = f'Level {l}')
 	ax2.set_title('Baseline examples (DTCWT)')
 
 	for ax in (ax1, ax2):

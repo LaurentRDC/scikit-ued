@@ -43,9 +43,7 @@ def nfold(im, mod, center=None, mask=None, fill_value=0.0):
     """
     if 360 % mod:
         raise ValueError(
-            "{}-fold rotational symmetry is not valid (not a divisor of 360).".format(
-                mod
-            )
+            f"{mod}-fold rotational symmetry is not valid (not a divisor of 360)."
         )
     angles = range(0, 360, int(360 / mod))
 

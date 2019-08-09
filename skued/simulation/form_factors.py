@@ -96,9 +96,7 @@ def affe(atom, nG):
         ]
     except KeyError:
         raise ValueError(
-            "Scattering information for element Z={} is unavailable.".format(
-                atomic_number
-            )
+            f"Scattering information for element Z={atomic_number} is unavailable."
         )
 
     # Parametrization of form factors is done in terms of q = 2 s = 2 pi |G|

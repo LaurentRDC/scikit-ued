@@ -259,7 +259,7 @@ class DM3(object):
     def _makeGroupString(self):
         tString = str(self._curGroupAtLevelX[0])
         for i in range(1, self._curGroupLevel + 1):
-            tString += ".{}".format(self._curGroupAtLevelX[i])
+            tString += f".{self._curGroupAtLevelX[i]}"
         return tString
 
     def _makeGroupNameString(self):

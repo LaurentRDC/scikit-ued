@@ -44,7 +44,7 @@ def calq(I, crystal, peak_indices, miller_indices):
 
     if I.ndim != 2:
         raise ValueError(
-            "Expected 2D diffraction pattern, but received shape {}".format(I.shape)
+            f"Expected 2D diffraction pattern, but received shape {I.shape}"
         )
 
     hkl1, hkl2 = miller_indices
@@ -108,22 +108,18 @@ def powder_calq(I, crystal, peak_indices, miller_indices):
 
     if I.ndim > 1:
         raise ValueError(
-            "Expected 1D diffraction intensity, but received shape {}".format(I.shape)
+            f"Expected 1D diffraction intensity, but received shape {I.shape}"
         )
 
     if len(peak_indices) != len(miller_indices):
         raise ValueError(
-            "Number of array indices {} does not match the \
-                          number of Miller indices {}".format(
-                len(peak_indices), len(miller_indices)
-            )
+            f"Number of array indices {len(peak_indices)} does not match the \
+                          number of Miller indices {len(miller_indices)}"
         )
 
     if len(peak_indices) < 2:
         raise ValueError(
-            "Two peaks are required to calibrate, but received {}".format(
-                len(peak_indices)
-            )
+            f"Two peaks are required to calibrate, but received {len(peak_indices)}"
         )
 
     # scattering vector length based on known structure

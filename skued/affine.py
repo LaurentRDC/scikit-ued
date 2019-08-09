@@ -67,10 +67,8 @@ def transform(matrix, array):
     """
     if matrix.shape not in [(3, 3), (4, 4)]:
         raise ValueError(
-            "Input matrix is neither a 3x3 or 4x4 matrix, but \
-						  rather of shape {}.".format(
-                matrix.shape
-            )
+            f"Input matrix is neither a 3x3 or 4x4 matrix, but \
+						  rather of shape {matrix.shape}."
         )
 
     matrix = affine_map(matrix)
