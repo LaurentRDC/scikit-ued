@@ -20,10 +20,10 @@ from datetime import datetime
 
 import alabaster
 
-from skued import __version__
-
 currentpath = os.path.dirname(__file__)
 sys.path.append(os.path.join(currentpath, ".."))
+
+from skued import __version__
 
 
 # -- General configuration ------------------------------------------------
