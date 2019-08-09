@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Release 2.0.0a1
----------------
+Release 2.0.0
+-------------
 
 Due to a conflict between scikit-image and scikit-ued conventions, some breaking changes are required. 
 Image conventions will now follow that of scikit-image. Most importantly:
