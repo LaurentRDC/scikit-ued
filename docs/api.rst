@@ -55,18 +55,6 @@ atomic information.
     LatticeSystem
     AtomicStructure
 
-Utilities
----------
-
-To help with fleshing out unit cell atoms from symmetry operators:
-
-.. autosummary::
-    :toctree: functions/
-    :nosignatures:
-
-    symmetry_expansion
-    lattice_system
-
 Parsers
 -------
 
