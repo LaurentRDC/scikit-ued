@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import unittest
-import numpy as np
 from random import randint
 
-from skued import structure_factor, affe
-from crystals import Crystal, Atom
+import numpy as np
+
+from crystals import Atom, Crystal
+from skued import affe, structure_factor
 
 
 class TestElectronFormFactor(unittest.TestCase):

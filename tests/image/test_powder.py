@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
-from skued import azimuthal_average, powdersim
-from crystals import Crystal
 import unittest
 
+import numpy as np
 from skimage.filters import gaussian
+
+from crystals import Crystal
+from skued import azimuthal_average, powdersim
 
 np.random.seed(23)
 

@@ -4,14 +4,9 @@ from itertools import combinations_with_replacement
 
 import numpy as np
 
-from skued import (
-    Crystal,
-    plane_mesh,
-    powdersim,
-    structure_factor,
-    potential_map,
-    potential_synthesis,
-)
+from crystals import Crystal
+from skued import (plane_mesh, potential_map, potential_synthesis, powdersim,
+                   structure_factor)
 from skued.utils import suppress_warnings
 
 

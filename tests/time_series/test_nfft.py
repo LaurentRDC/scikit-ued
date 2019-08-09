@@ -1,6 +1,8 @@
-from skued import nfft, nfftfreq
 import unittest
+
 import numpy as np
+
+from skued import nfft, nfftfreq
 
 np.random.seed(23)
 

@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-import numpy as np
-from skued import nfold, reflection
 import unittest
 from warnings import catch_warnings, simplefilter
+
+import numpy as np
+
+from skued import nfold, reflection
 
 np.random.seed(23)
 

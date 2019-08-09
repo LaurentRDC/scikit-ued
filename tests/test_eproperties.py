@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-import numpy as np
 import unittest
-from skued import lorentz, electron_wavelength, interaction_parameter
+
+import numpy as np
+
+from skued import electron_wavelength, interaction_parameter, lorentz
 
 
 class TestLorentz(unittest.TestCase):

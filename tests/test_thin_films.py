@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from random import randint, random, seed
-from skued import film_optical_coefficients
 from math import sqrt
+from random import randint, random, seed
+
+from skued import film_optical_coefficients
 
 seed(23)
 

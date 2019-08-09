@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+
 from ..eproperties import electron_wavelength
 from ..utils import suppress_warnings
 

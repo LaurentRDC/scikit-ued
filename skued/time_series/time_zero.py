@@ -3,9 +3,8 @@
 from functools import lru_cache, partial
 
 import numpy as np
-from scipy.signal import correlate
-
 from npstreams import array_stream, peek
+from scipy.signal import correlate
 
 
 # Save the normalization of correlations so that identical

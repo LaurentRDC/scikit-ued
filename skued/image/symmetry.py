@@ -4,9 +4,8 @@ Image manipulation involving symmetry
 =====================================
 """
 import numpy as np
-from skimage.transform import rotate
-
 from npstreams import average, nan_to_num
+from skimage.transform import rotate
 
 from ..array_utils import mirror
 

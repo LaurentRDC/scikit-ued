@@ -1,8 +1,9 @@
-from skued import register_time_shift, register_time_shifts
 import unittest
-import numpy as np
 
+import numpy as np
 from scipy.ndimage.interpolation import shift as scipy_shift
+
+from skued import register_time_shift, register_time_shifts
 
 np.random.seed(23)
 

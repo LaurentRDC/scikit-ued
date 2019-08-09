@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
 from datetime import datetime
+
+import numpy as np
 
 
 def mibheader(filepath, hoffset=0):

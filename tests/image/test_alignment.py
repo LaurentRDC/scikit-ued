@@ -4,14 +4,15 @@ from pathlib import Path
 from random import randint
 
 import numpy as np
+from scipy import ndimage as ndi
 from skimage import data
+from skimage.feature import register_translation
 from skimage.filters import gaussian
 from skimage.io import imread
-from skimage.feature import register_translation
 from skimage.transform import rotate
-from scipy import ndimage as ndi
 
 from skued import align, ialign, itrack_peak
+
 from .test_powder import circle_image
 
 np.random.seed(23)

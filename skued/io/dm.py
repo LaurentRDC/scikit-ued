@@ -40,8 +40,9 @@ SOFTWARE
 
 import os.path
 import struct
-import numpy
 from contextlib import closing
+
+import numpy
 
 
 def dmread(filepath):

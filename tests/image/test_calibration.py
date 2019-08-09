@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
-from skued import powder_calq, powdersim, detector_scattvectors, electron_wavelength
-from crystals import Crystal
 import unittest
 
+import numpy as np
 from skimage.filters import gaussian
+
+from crystals import Crystal
+from skued import (detector_scattvectors, electron_wavelength, powder_calq,
+                   powdersim)
 
 np.random.seed(23)
 

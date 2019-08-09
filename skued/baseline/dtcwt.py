@@ -4,11 +4,12 @@ Dual-tree complex wavelet transform
 ===================================
 """
 from collections import deque
-from itertools import cycle
-import numpy as np
-from pywt import dwt, idwt, dwt2, idwt2, dwt_max_level, wavelist, Wavelet
 from functools import lru_cache
+from itertools import cycle
 from pathlib import Path
+
+import numpy as np
+from pywt import Wavelet, dwt, dwt2, dwt_max_level, idwt, idwt2, wavelist
 
 DATADIR = Path(__file__).parent / "data"
 
