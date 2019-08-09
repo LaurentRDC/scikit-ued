@@ -7,6 +7,7 @@ from collections import Iterable
 from itertools import repeat
 
 import numpy as np
+
 # array_stream decorator ensures that input images are cast to ndarrays
 from npstreams import array_stream, imean, istd, itercopy, last, peek, prod
 

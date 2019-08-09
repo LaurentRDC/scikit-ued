@@ -3,9 +3,13 @@ import unittest
 
 import numpy as np
 
-from skued.baseline.algorithms import (_dt_approx_rec, _dwt_approx_rec,
-                                       _dwt_approx_rec2, baseline_dt,
-                                       baseline_dwt)
+from skued.baseline.algorithms import (
+    _dt_approx_rec,
+    _dwt_approx_rec,
+    _dwt_approx_rec2,
+    baseline_dt,
+    baseline_dwt,
+)
 
 np.random.seed(23)
 

@@ -6,8 +6,7 @@ import numpy as np
 from skimage.filters import gaussian
 
 from crystals import Crystal
-from skued import (detector_scattvectors, electron_wavelength, powder_calq,
-                   powdersim)
+from skued import detector_scattvectors, electron_wavelength, powder_calq, powdersim
 
 np.random.seed(23)
 

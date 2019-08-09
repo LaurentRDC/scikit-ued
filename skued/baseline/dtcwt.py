@@ -359,9 +359,7 @@ def dualtree_wavelet(name):
                 rec_imag_high,
             ) = tuple([mat[k].flatten() for k in filters])
         except KeyError:
-            raise ValueError(
-                f"Wavelet does not define ({filters}) coefficients"
-            )
+            raise ValueError(f"Wavelet does not define ({filters}) coefficients")
 
     real_filter_bank = [dec_real_low, dec_real_high, rec_real_low, rec_real_high]
     imag_filter_bank = [dec_imag_low, dec_imag_high, rec_imag_low, rec_imag_high]

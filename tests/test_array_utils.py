@@ -3,8 +3,16 @@ import unittest
 
 import numpy as np
 
-from skued import (cart2polar, cart2spherical, complex_array, mirror,
-                   plane_mesh, polar2cart, repeated_array, spherical2cart)
+from skued import (
+    cart2polar,
+    cart2spherical,
+    complex_array,
+    mirror,
+    plane_mesh,
+    polar2cart,
+    repeated_array,
+    spherical2cart,
+)
 
 np.random.seed(23)
 

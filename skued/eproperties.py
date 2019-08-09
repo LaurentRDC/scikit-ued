@@ -2,8 +2,7 @@
 """ Electron properties """
 
 import numpy as np
-from scipy.constants import (Planck, electron_mass, elementary_charge,
-                             speed_of_light)
+from scipy.constants import Planck, electron_mass, elementary_charge, speed_of_light
 
 
 def lorentz(keV):

@@ -52,7 +52,7 @@ def register_time_shift(trace, reference, method="auto"):
         raise ValueError(
             f"Time trace and reference trace are expected to have the same shape, be received \
                          a time-trace of shape {trace.shape} and a reference trace of shape {reference.shape}"
-            )
+        )
 
     if trace.ndim > 1:
         raise ValueError(

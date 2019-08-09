@@ -5,8 +5,12 @@ import numpy as np
 import pywt
 
 from skued.baseline import (
-    available_dt_filters, available_first_stage_filters, dt_max_level, dtcwt,
-    idtcwt)
+    available_dt_filters,
+    available_first_stage_filters,
+    dt_max_level,
+    dtcwt,
+    idtcwt,
+)
 
 np.random.seed(23)
 

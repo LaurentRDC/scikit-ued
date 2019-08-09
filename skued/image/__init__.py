@@ -3,7 +3,14 @@
 
 from .alignment import align, ialign, itrack_peak, masked_register_translation
 from .calibration import detector_scattvectors, powder_calq
-from .metrics import (combine_masks, isnr, mask_from_collection, mask_image,
-                      snr_from_collection, triml, trimr)
+from .metrics import (
+    combine_masks,
+    isnr,
+    mask_from_collection,
+    mask_image,
+    snr_from_collection,
+    triml,
+    trimr,
+)
 from .powder import azimuthal_average
 from .symmetry import nfold, reflection

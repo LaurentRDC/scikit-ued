@@ -724,7 +724,7 @@ class DM3(object):
             self.tags["%s.ImageData.Calibrations.Dimension.0.Scale" % tag_root]
         )
         unit = self.tags["%s.ImageData.Calibrations.Dimension.0.Units" % tag_root]
-        if unit == u"\xb5m":
+        if unit == "\xb5m":
             unit = "micron"
         else:
             unit = unit.encode("ascii")
