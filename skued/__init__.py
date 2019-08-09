@@ -54,7 +54,6 @@ from .image import (
     nfold,
     powder_calq,
     reflection,
-    shift_image,
     snr_from_collection,
     triml,
     trimr,

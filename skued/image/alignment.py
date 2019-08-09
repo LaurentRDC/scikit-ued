@@ -6,64 +6,9 @@ Module concerned with alignment of diffraction images
 from functools import partial
 
 import numpy as np
-from scipy.ndimage import shift as subpixel_shift
-from skimage.feature import register_translation, masked_register_translation
-from skimage.filters import gaussian
-
-from npstreams import array_stream, peek
-
-non = lambda s: s if s < 0 else None
-mom = lambda s: max(0, s)
-
-
-def shift_image(arr, shift, fill_value=0):
-    """ 
-    Shift an image. Subpixel resolution shifts are also possible.
-
-    Parameters
-    ----------
-    arr : `~numpy.ndarray`
-        Array to be shifted.
-    shift : array_like, shape (2,)
-        Shifts in the x and y directions, respectively. Shifts can be of sub-pixel value,
-        in which case interpolation is used.
-    fill_value : numerical, optional
-        Edges will be filled with `fill_value` after shifting. 
-
-    Returns
-    -------
-    out : `~numpy.ndarray`
-        Shifted array. The type of the shifted array will be the smallest size
-        that accomodates the types of `arr` and `fill_value`.
-    
-    See Also
-    --------
-    scipy.ndimage.shift : shift an image via interpolation
-    """
-    # Since the fill value is often NaN, but arrays may be integers
-    # We need to promote the final type to smallest coherent type
-    final_type = np.promote_types(arr.dtype, np.dtype(type(fill_value)))
-    output = np.full_like(arr, fill_value=fill_value, dtype=final_type)
-
-    # Floating point shifts are much slower
-    j, i = tuple(shift)
-    if (int(i) != i) or (int(j) != j):  # shift is float
-        # Image must not be float16
-        # because subpixel shifting involves interpolation
-        subpixel_shift(arr.astype(np.float), (i, j), output=output, cval=fill_value)
-        return output
-
-    i, j = int(i), int(j)
-
-    dst_slices = [slice(None, None)] * arr.ndim
-    src_slices = [slice(None, None)] * arr.ndim
-
-    for s, ax in zip((i, j), (0, 1)):
-        dst_slices[ax] = slice(mom(s), non(s))
-        src_slices[ax] = slice(mom(-s), non(-s))
-
-    output[tuple(dst_slices)] = arr[tuple(src_slices)]
-    return output
+from npstreams import array_stream
+from scipy import ndimage as ndi
+from skimage.feature import masked_register_translation, register_translation
 
 
 @array_stream
@@ -143,7 +88,7 @@ def align(image, reference, mask=None, fill_value=0.0, fast=True):
     shift = masked_register_translation(
         src_image=image, target_image=reference, src_mask=mask
     )
-    return shift_image(image, -1 * shift, fill_value=fill_value)
+    return ndi.shift(image, shift, order=2, mode="constant", cval=fill_value)
 
 
 @array_stream
