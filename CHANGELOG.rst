@@ -10,6 +10,7 @@ Image conventions will now follow that of scikit-image. Most importantly:
 * Changed the convention on image masks to align with the scikit-image convention. Masks will be ``True`` for valid pixels, and ``False`` on invalid pixels.
 
 We took the opportunity to make other breaking changes:
+
 * Broke off the ``skued.structure`` package into its own library, ``crystals``.
 * Removed `masked_register_translation` in favour of the new scikit-image implementation ported from scikit-ued.
 * Removed `xcorr` and `mnxc` as these were the backbone of `masked_register_translation` and are no longer needed.
