@@ -163,7 +163,6 @@ Image alignment
 
     align
     ialign
-    shift_image
     itrack_peak
 
 Image masking
