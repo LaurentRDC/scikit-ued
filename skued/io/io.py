@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import tifffile
+from contextlib import contextmanager
 
 from .dm import dmread
 from .merlin import mibread
@@ -61,6 +62,18 @@ def diffread(fname):
     return skimage.io.imread(fname, as_gray=True)
 
 
+@contextmanager
+def rowmajor_axisorder():
+    """
+    Context manager that sets the PyQtGraph image axis order to row-major. 
+    The environment is reset to the initial value after context close.
+    """
+    old_image_axis_order = pg.getConfigOption("imageAxisOrder")
+    pg.setConfigOptions(imageAxisOrder="row-major")
+    yield
+    pg.setConfigOptions(imageAxisOrder=old_image_axis_order)
+
+
 def diffshow(image):
     """ 
     Display an image (from an array or from a file) in an interactive window.
@@ -71,16 +84,12 @@ def diffshow(image):
     Parameters
     ----------
     image : path-like or array-like
-        Image file name or array-like. 
+        Image file name or array-like. All file formats supported 
+        by ``skued.diffread`` are also supported by this function. 
     
     Raises
     ------
     ImportError : if `PyQtGraph` is not available.
-
-    Notes
-    -----
-    All file formats supported by ``skued.diffread`` are
-    also supported by this function. 
     """
     if not WITH_PYQTGRAPH:
         raise ImportError("PyQtGraph is not installed.")
@@ -88,9 +97,10 @@ def diffshow(image):
     if isinstance(image, (str, Path)):
         image = diffread(image)
 
-    app = pg.QtGui.QApplication([])
-    viewer = pg.ImageView()
-    viewer.setImage(image)
-    viewer.setWindowTitle("Scikit-UED Diffraction Viewer")
-    viewer.show()
-    app.exec_()
+    with rowmajor_axisorder():
+        app = pg.QtGui.QApplication([])
+        viewer = pg.ImageView()
+        viewer.setImage(image)
+        viewer.setWindowTitle("Scikit-UED image viewer")
+        viewer.show()
+        app.exec_()

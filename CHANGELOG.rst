@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.0.1
+-------------
+
+* ``skued.diffshow`` will temporarily switch PyQtGraph's image axis order to the row-major, which is a saner default.
+
 Release 2.0.0
 -------------
 
