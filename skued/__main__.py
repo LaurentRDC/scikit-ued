@@ -9,7 +9,10 @@ from pathlib import Path
 from . import __version__
 from .io import WITH_PYQTGRAPH, diffshow
 
-DIFFSHOW_HELP = """Path to file. All formats supported by ``skued.diffread`` are supported 
+DIFFSHOW_HELP = "" if WITH_PYQTGRAPH else "[UNAVAILABLE] "
+DIFFSHOW_HELP += "Read a file and show interactive window. Requires PyQtGraph."
+
+FILENAME_HELP = """Path to file. All formats supported by ``skued.diffread`` are supported 
 here, including TIFFs (*.tif, *.tiff), Digital Micrograph 3/4 (*.dm3, *.dm4),
 Merlin Image Binary (*.mib), and all formats supported by scikit-image."""
 parser = argparse.ArgumentParser(
@@ -19,10 +22,8 @@ parser = argparse.ArgumentParser(
 subparsers = parser.add_subparsers(title="command", dest="command")
 
 # Possibility in the future to add more utilities with more subparsers
-diffshow_parser = subparsers.add_parser(
-    "diffshow", help="Read a file and show interactive window. Requires PyQtGraph."
-)
-diffshow_parser.add_argument("filename", type=Path, help=DIFFSHOW_HELP)
+diffshow_parser = subparsers.add_parser("diffshow", description=DIFFSHOW_HELP)
+diffshow_parser.add_argument("filename", type=Path, help=FILENAME_HELP)
 
 
 def main(args=None):
@@ -36,7 +37,10 @@ def main(args=None):
 def main_diffshow(fname):
     """ Display an interactive window """
     if not WITH_PYQTGRAPH:
-        print("PyQtGraph is required for this functionality.")
+        print(
+            "PyQtGraph is required for this functionality. You can install PyQtGraph either with \
+            conda or pip, depending on what you used to install scikit-ued."
+        )
         sys.exit(1)
     diffshow(fname)
     sys.exit(0)
