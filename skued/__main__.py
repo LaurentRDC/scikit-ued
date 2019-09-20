@@ -10,8 +10,7 @@ from . import __version__
 from .io import WITH_PYQTGRAPH, diffshow
 
 parser = argparse.ArgumentParser(
-    prog="skued",
-    description=f"scikit-ued {__version__} command-line utilities.",
+    prog="skued", description=f"scikit-ued {__version__} command-line utilities."
 )
 
 subparsers = parser.add_subparsers(title="command", dest="command")
@@ -26,12 +25,14 @@ diffshow_parser.add_argument(
     help="Path to file. All formats supported by ``skued.diffread`` are supported here, including TIFFs and DM3/DM4",
 )
 
+
 def main(args=None):
     if args is None:
         args = parser.parse_args()
-    
-    if args.command == 'diffshow':
+
+    if args.command == "diffshow":
         main_diffshow(args.filename)
+
 
 def main_diffshow(fname):
     """ Display an interactive window """
