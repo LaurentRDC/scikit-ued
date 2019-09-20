@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 from . import __version__
-from .io.io import WITH_PYQTGRAPH, diffshow
+from .io import WITH_PYQTGRAPH, diffshow
 
 
 def main_diffshow(fname):
