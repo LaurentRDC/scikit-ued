@@ -5,7 +5,7 @@ Release 2.0.1
 -------------
 
 * ``skued.diffshow`` will temporarily switch PyQtGraph's image axis order to the row-major, which is a saner default.
-* Added diffshow command-line utility. Images can be shown (with interactive viewer) using ``python -m skued diffshow [path]``.
+* Added skued command-line utilities. Images can be shown (with interactive viewer) using ``skued diffshow [path]``.
 
 Release 2.0.0
 -------------
