@@ -73,6 +73,7 @@ if __name__ == "__main__":
             ("skued\\baseline\\data", WAVELET_FILES),
             ("skued\\simulation\\data", FF_FILES),
         ],
+        entry_points={"console_scripts": ["skued = skued.__main__:main"]},
         include_package_data=True,
         zip_safe=False,
         #        include_dirs = [numpy.get_include()],
