@@ -29,14 +29,6 @@ formats supported by scikit-image."""
 diffshow_parser = subparsers.add_parser("diffshow", description=DIFFSHOW_HELP)
 diffshow_parser.add_argument("filename", type=Path, help=DIFFSHOW_FILENAME_HELP)
 
-CRYSTINFO_HELP = "Display the crystallographic information related to a crystal file"
-
-CRYSTINFO_FILENAME_HELP = """Path to the file. Supported formats are Crystallography 
-Information File (*.cif) and Quantum ESPRESSO PWSCF (*.pwscf). """
-
-crystinfo = subparsers.add_parser('crystinfo', description=CRYSTINFO_HELP)
-crystinfo.add_argument("filename", type=Path, help=CRYSTINFO_FILENAME_HELP)
-
 
 def main(args=None):
     if args is None:
@@ -44,9 +36,6 @@ def main(args=None):
 
     if args.command == "diffshow":
         main_diffshow(args.filename)
-    
-    if args.command == 'crystinfo':
-        main_crystinfo(args.filename)
 
 
 def main_diffshow(fname):
@@ -59,35 +48,6 @@ def main_diffshow(fname):
         sys.exit(1)
     diffshow(fname)
     sys.exit(0)
-
-def main_crystinfo(fname):
-    """ Display information associated with crystal file """
-    cryst = None
-    for constructor in (Crystal.from_cif, Crystal.from_pwscf,):
-        try:
-            cryst = constructor(fname)
-        except:
-            continue
-        else:
-            break
-    
-    if cryst is None:
-        print(f"{fname} could not be parsed.")
-        sys.exit(1)
-
-    unitcell = repr(cryst).replace("< ", "").replace(" >", "") # This is from python's object representation
-    sym = f"""Symmetry information:
-    International symbol 
-                (short) ..... {cryst.international_symbol}
-                (full) ...... {cryst.international_full}
-    International number .... {cryst.international_number}
-    Hermann-Mauguin symbol .. {cryst.hm_symbol}
-    Pointgroup .............. {cryst.pointgroup}
-    Hall Number ............. {cryst.hall_number}
-    Centering ............... {cryst.centering}"""
-
-    print(unitcell)
-    print(sym)
 
 if __name__ == "__main__":
     main()
