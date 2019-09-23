@@ -6,7 +6,6 @@ import argparse
 import sys
 from pathlib import Path
 from crystals import Crystal
-from pprint import pprint
 
 from . import __version__
 from .io import WITH_PYQTGRAPH, diffshow
@@ -76,7 +75,7 @@ def main_crystinfo(fname):
         print(f"{fname} could not be parsed.")
         sys.exit(1)
 
-    unitcell = repr(cryst).replace("< ", "").replace(" >", "")
+    unitcell = repr(cryst).replace("< ", "").replace(" >", "") # This is from python's object representation
     sym = f"""Symmetry information:
     International symbol 
                 (short) ..... {cryst.international_symbol}
