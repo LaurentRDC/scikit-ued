@@ -49,5 +49,6 @@ def main_diffshow(fname):
     diffshow(fname)
     sys.exit(0)
 
+
 if __name__ == "__main__":
     main()
