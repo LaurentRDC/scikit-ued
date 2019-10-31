@@ -1,17 +1,13 @@
 Changelog
 =========
 
-Release 2.0.2
--------------
-
-* Fixed an issue where a typo in ``electron_velocity`` would raise an exception.
-
 Release 2.0.1
 -------------
 
 * ``skued.diffshow`` will temporarily switch PyQtGraph's image axis order to the row-major, which is a saner default.
 * Added skued command-line utilities. Images can be shown (with interactive viewer) using ``skued diffshow [path]``.
   Crystal information can be determined using ``skued crystinfo [path]``.
+* Fixed an issue where a typo in ``electron_velocity`` would raise an exception.
 
 Release 2.0.0
 -------------
