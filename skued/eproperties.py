@@ -83,7 +83,7 @@ def electron_velocity(keV):
     eV = elementary_charge * keV * 1e3
     m0c2 = electron_mass * speed_of_light ** 2
     v_over_c = np.sqrt(eV * (eV + 2 * m0c2) / (m0c2 + eV))
-    return (c * v_over_c) * 1e10  # speed in Angstroms
+    return (speed_of_light * v_over_c) * 1e10  # speed in Angstroms
 
 
 def interaction_parameter(keV):

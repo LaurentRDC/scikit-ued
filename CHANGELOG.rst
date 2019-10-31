@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.0.2
+-------------
+
+* Fixed an issue where a typo in ``electron_velocity`` would raise an exception.
+
 Release 2.0.1
 -------------
 
