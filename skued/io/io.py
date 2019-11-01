@@ -7,13 +7,6 @@ import tifffile
 from .dm import dmread
 from .merlin import mibread
 
-try:
-    import pyqtgraph as pg
-except ImportError:
-    WITH_PYQTGRAPH = False
-else:
-    WITH_PYQTGRAPH = True
-
 
 def diffread(fname):
     """
@@ -59,38 +52,3 @@ def diffread(fname):
     import skimage.io
 
     return skimage.io.imread(fname, as_gray=True)
-
-
-def diffshow(image):
-    """ 
-    Display an image (from an array or from a file) in an interactive window.
-
-    This function requires `PyQtGraph` to be importable. These
-    are optional dependencies.
-
-    Parameters
-    ----------
-    image : path-like or array-like
-        Image file name or array-like. 
-    
-    Raises
-    ------
-    ImportError : if `PyQtGraph` is not available.
-
-    Notes
-    -----
-    All file formats supported by ``skued.diffread`` are
-    also supported by this function. 
-    """
-    if not WITH_PYQTGRAPH:
-        raise ImportError("PyQtGraph is not installed.")
-
-    if isinstance(image, (str, Path)):
-        image = diffread(image)
-
-    app = pg.QtGui.QApplication([])
-    viewer = pg.ImageView()
-    viewer.setImage(image)
-    viewer.setWindowTitle("Scikit-UED Diffraction Viewer")
-    viewer.show()
-    app.exec_()

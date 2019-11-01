@@ -25,7 +25,7 @@ def _electrostatic_atom(atom, r):
         ]
     except KeyError:
         raise ValueError(
-            "Scattering information for element {} is unavailable.".format(atom.element)
+            f"Scattering information for element {atom.element} is unavailable."
         )
 
     sum1 = np.zeros_like(r, dtype=np.float)
@@ -88,7 +88,7 @@ def _pelectrostatic_atom(atom, r):
         ]
     except KeyError:
         raise ValueError(
-            "Scattering information for element {} is unavailable.".format(atom.element)
+            f"Scattering information for element {atom.element} is unavailable."
         )
 
     potential = np.zeros_like(r, dtype=np.float)

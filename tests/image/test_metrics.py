@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
+import unittest
+
 import numpy as np
 from npstreams import last
+
 from skued import (
-    snr_from_collection,
+    combine_masks,
     isnr,
     mask_from_collection,
     mask_image,
-    combine_masks,
-    trimr,
+    snr_from_collection,
     triml,
+    trimr,
 )
-import unittest
 
 
 class TestSNRFromCollection(unittest.TestCase):

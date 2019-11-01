@@ -4,11 +4,12 @@ Dual-tree complex wavelet transform
 ===================================
 """
 from collections import deque
-from itertools import cycle
-import numpy as np
-from pywt import dwt, idwt, dwt2, idwt2, dwt_max_level, wavelist, Wavelet
 from functools import lru_cache
+from itertools import cycle
 from pathlib import Path
+
+import numpy as np
+from pywt import Wavelet, dwt, dwt2, dwt_max_level, idwt, idwt2, wavelist
 
 DATADIR = Path(__file__).parent / "data"
 
@@ -107,16 +108,12 @@ def dtcwt(data, first_stage, wavelet, mode="constant", level=None, axis=-1):
     # Check axis bounds
     if axis > data.ndim - 1:
         raise ValueError(
-            "Input array has {} dimensions, but input axis is {}".format(
-                data.ndim, axis
-            )
+            f"Input array has {data.ndim} dimensions, but input axis is {axis}"
         )
     elif data.shape[axis] % 2:
         raise ValueError(
-            "Input array has shape {} along transform direction \
-                          (axis = {}). Even length is required.".format(
-                data.shape[axis], axis
-            )
+            f"Input array has shape {data.shape[axis]} along transform direction \
+                          (axis = {axis}). Even length is required."
         )
 
     real_wavelet, imag_wavelet = dualtree_wavelet(wavelet)
@@ -178,9 +175,7 @@ def idtcwt(coeffs, first_stage, wavelet, mode="constant", axis=-1):
     """
     if len(coeffs) < 1:
         raise ValueError(
-            "Coefficient list too short with {} elements (minimum 1 array required).".format(
-                len(coeffs)
-            )
+            f"Coefficient list too short with {len(coeffs)} elements (minimum 1 array required)."
         )
     elif len(coeffs) == 1:  # level 0 inverse transform
         return np.sqrt(2) * coeffs[0]
@@ -364,9 +359,7 @@ def dualtree_wavelet(name):
                 rec_imag_high,
             ) = tuple([mat[k].flatten() for k in filters])
         except KeyError:
-            raise ValueError(
-                "Wavelet does not define ({0}) coefficients".format(", ".join(filters))
-            )
+            raise ValueError(f"Wavelet does not define ({filters}) coefficients")
 
     real_filter_bank = [dec_real_low, dec_real_high, rec_real_low, rec_real_high]
     imag_filter_bank = [dec_imag_low, dec_imag_high, rec_imag_low, rec_imag_high]
@@ -398,7 +391,7 @@ def dt_first_stage(wavelet):
         wavelet = Wavelet(wavelet)
 
     if wavelet.name not in available_first_stage_filters():
-        raise ValueError("{} is an invalid first stage wavelet.".format(wavelet.name))
+        raise ValueError(f"{wavelet.name} is an invalid first stage wavelet.")
 
     # extend filter bank with zeros
     filter_bank = [np.array(f, copy=True) for f in wavelet.filter_bank]

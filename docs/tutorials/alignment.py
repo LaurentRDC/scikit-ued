@@ -8,7 +8,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from skimage.feature import masked_register_translation
-from skued import shift_image, diffread
+
+from skued import diffread, shift_image
 
 ref = diffread("Cr_1.tif")
 im = diffread("Cr_2.tif")

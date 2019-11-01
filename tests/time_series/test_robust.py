@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from skued import mad
+
 import numpy as np
+
+from skued import mad
 
 
 class TestMad(unittest.TestCase):

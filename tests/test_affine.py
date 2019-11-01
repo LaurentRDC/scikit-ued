@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-from itertools import product
-import numpy as np
-from skued import affine as tr
 import unittest
+from itertools import product
+
+import numpy as np
+
+from skued import affine as tr
 
 np.random.seed(23)
 

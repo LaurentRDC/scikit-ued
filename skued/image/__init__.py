@@ -1,22 +1,16 @@
 # -*- coding: utf-8 -*-
 """ Diffraction image analysis """
 
-from .alignment import (
-    align,
-    ialign,
-    shift_image,
-    itrack_peak,
-    masked_register_translation,
-)
-from .calibration import powder_calq, detector_scattvectors
+from .alignment import align, ialign, itrack_peak, masked_register_translation
+from .calibration import detector_scattvectors, powder_calq
 from .metrics import (
-    snr_from_collection,
+    combine_masks,
     isnr,
     mask_from_collection,
-    combine_masks,
     mask_image,
-    trimr,
+    snr_from_collection,
     triml,
+    trimr,
 )
 from .powder import azimuthal_average
 from .symmetry import nfold, reflection

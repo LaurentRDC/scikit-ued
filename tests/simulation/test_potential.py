@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-from skued import electrostatic, pelectrostatic
-from crystals import Crystal
-from copy import deepcopy
-import numpy as np
 import unittest
+from copy import deepcopy
+
+import numpy as np
+
+from crystals import Crystal
+from skued import electrostatic, pelectrostatic
 
 
 class TestElectrostatic(unittest.TestCase):

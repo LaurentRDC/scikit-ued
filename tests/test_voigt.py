@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-import numpy as np
 import unittest
+
+import numpy as np
+
 from skued import gaussian, lorentzian, pseudo_voigt
 
 

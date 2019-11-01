@@ -4,6 +4,7 @@ I/O package
 -----------
 This package provdes utility functions for interfacing with less common file formats.
 """
-from .io import diffread, diffshow
-from .merlin import mibheader, mibread, imibread
 from .dm import dmread
+from .diffshow import diffshow, WITH_PYQTGRAPH
+from .io import diffread
+from .merlin import imibread, mibheader, mibread

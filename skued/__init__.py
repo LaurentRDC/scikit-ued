@@ -2,7 +2,7 @@
 __author__ = "Laurent P. René de Cotret"
 __email__ = "laurent.renedecotret@mail.mcgill.ca"
 __license__ = "MIT"
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 
 from .affine import (
     affine_map,
@@ -44,8 +44,8 @@ from .eproperties import (
 from .image import (
     align,
     azimuthal_average,
-    detector_scattvectors,
     combine_masks,
+    detector_scattvectors,
     ialign,
     isnr,
     itrack_peak,
@@ -54,7 +54,6 @@ from .image import (
     nfold,
     powder_calq,
     reflection,
-    shift_image,
     snr_from_collection,
     triml,
     trimr,
@@ -64,15 +63,6 @@ from .patterson import patterson
 from .plot_utils import rgb_sweep, spectrum_colors
 from .potential_map import potential_map, potential_synthesis
 from .simulation import affe, electrostatic, pelectrostatic, powdersim, structure_factor
-from .structure import (
-    Atom,
-    AtomicStructure,
-    Crystal,
-    Lattice,
-    LatticeSystem,
-    lattice_system,
-    symmetry_expansion,
-)
 from .thin_films import film_optical_coefficients
 from .time_series import (
     biexponential,

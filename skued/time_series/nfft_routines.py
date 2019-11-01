@@ -4,9 +4,10 @@ Non-uniform Fast Fourier Transform.
 """
 
 from functools import lru_cache
+from math import log, pi, sqrt
+
 import numpy as np
 from scipy.fftpack import fft, ifft
-from math import sqrt, log, pi
 
 
 def nfftfreq(M, df=1):
@@ -67,10 +68,8 @@ def nfft(x, y, M, df=1.0, eps=1e-15):
     x, y = np.atleast_1d(x, y)
     if x.shape != y.shape:
         raise ValueError(
-            "Signal location is of unexpected shape {} \
-                          compared to signal shape {} ".format(
-                x.shape, y.shape
-            )
+            f"Signal location is of unexpected shape {x.shape} \
+                          compared to signal shape {y.shape} "
         )
 
     M = int(M)

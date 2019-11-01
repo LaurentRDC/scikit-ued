@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
-from skued.baseline import (
-    dtcwt,
-    idtcwt,
-    dt_max_level,
-    available_first_stage_filters,
-    available_dt_filters,
-)
+import unittest
 
 import numpy as np
 import pywt
-import unittest
+
+from skued.baseline import (
+    available_dt_filters,
+    available_first_stage_filters,
+    dt_max_level,
+    dtcwt,
+    idtcwt,
+)
 
 np.random.seed(23)
 

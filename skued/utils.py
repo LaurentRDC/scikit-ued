@@ -36,10 +36,8 @@ def deprecated(message):
     def decorator(func):
         @wraps(func)
         def newfunc(*args, **kwargs):
-            full_message = """Calls to {name} deprecated: {message}. 
-            {name} will be removed in a future release.""".format(
-                name=func.__name__, message=message
-            )
+            full_message = f"""Calls to {func.__name__} deprecated: {message}. 
+            {func.__name__} will be removed in a future release."""
             warn(full_message, category=DeprecationWarning, stacklevel=2)
             return func(*args, **kwargs)
 

@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
-import numpy as np
 import unittest
-from skued import patterson, Crystal, powdersim
+
+import numpy as np
+
+from crystals import Crystal
+from skued import patterson, powdersim
 
 
 class TestPattersonFunction(unittest.TestCase):

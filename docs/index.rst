@@ -35,6 +35,7 @@ General Documentation
     tutorials/time_series
     tutorials/simulation
     api
+    cmdline
 
 Related Projects
 ================

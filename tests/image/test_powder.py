@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
-from skued import azimuthal_average, powdersim
-from crystals import Crystal
 import unittest
 
+import numpy as np
 from skimage.filters import gaussian
+
+from crystals import Crystal
+from skued import azimuthal_average, powdersim
 
 np.random.seed(23)
 
@@ -104,10 +105,14 @@ class TestAzimuthalAverage(unittest.TestCase):
         xx, yy = np.meshgrid(extent, extent)
         rr = np.sqrt((xx - xc) ** 2 + (yy - yc) ** 2)
         image[np.logical_and(24 < rr, rr < 26)] = 1
+        # Add some ridiculously high value under the mask
+        # to see if it will be taken intou account
+        image[128, 128] = 10000
 
-        radius, intensity = azimuthal_average(image, center, mask=mask)
+        radius, intensity = azimuthal_average(image, center, mask=mask, trim=False)
 
-        self.assertEqual(intensity.max(), image.max())
+        # The maximum value outside of the mask area was set to 1
+        self.assertEqual(intensity.max(), 1)
         self.assertSequenceEqual(radius.shape, intensity.shape)
 
     def test_trim_and_mask(self):

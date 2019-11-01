@@ -3,7 +3,7 @@
 Calculations on thin films 
 ==========================
 """
-from cmath import pi, exp, cos, sin
+from cmath import cos, exp, pi, sin
 
 
 def film_optical_coefficients(wavelength, thickness, n_film, n_substrate=0):

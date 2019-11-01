@@ -6,7 +6,7 @@ This package allows for exploration of time-series data, especially
 in the context of ultrafast diffraction.
 """
 
-from .fitting import exponential, biexponential
-from .robust import mad
+from .fitting import biexponential, exponential
 from .nfft_routines import nfft, nfftfreq
+from .robust import mad
 from .time_zero import register_time_shift, register_time_shifts

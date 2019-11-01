@@ -3,9 +3,8 @@
 from functools import lru_cache, partial
 
 import numpy as np
-from scipy.signal import correlate
-
 from npstreams import array_stream, peek
+from scipy.signal import correlate
 
 
 # Save the normalization of correlations so that identical
@@ -51,17 +50,13 @@ def register_time_shift(trace, reference, method="auto"):
     trace, reference = np.atleast_1d(trace, reference)
     if trace.shape != reference.shape:
         raise ValueError(
-            "Time trace and reference trace are expected to have the same shape, be received \
-                         a time-trace of shape {} and a reference trace of shape {}".format(
-                trace.shape, reference.shape
-            )
+            f"Time trace and reference trace are expected to have the same shape, be received \
+                         a time-trace of shape {trace.shape} and a reference trace of shape {reference.shape}"
         )
 
     if trace.ndim > 1:
         raise ValueError(
-            "Expected 1D time traces, but received traces of shape {}".format(
-                trace.shape
-            )
+            f"Expected 1D time traces, but received traces of shape {trace.shape}"
         )
 
     trace = trace - trace.mean()

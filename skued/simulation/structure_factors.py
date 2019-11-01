@@ -8,8 +8,8 @@ from itertools import count, product, takewhile
 from math import sqrt
 
 import numpy as np
-from numpy.linalg import norm
 from npstreams import primed
+from numpy.linalg import norm
 
 from crystals.affine import change_basis_mesh
 

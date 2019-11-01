@@ -40,8 +40,9 @@ SOFTWARE
 
 import os.path
 import struct
-import numpy
 from contextlib import closing
+
+import numpy
 
 
 def dmread(filepath):
@@ -259,7 +260,7 @@ class DM3(object):
     def _makeGroupString(self):
         tString = str(self._curGroupAtLevelX[0])
         for i in range(1, self._curGroupLevel + 1):
-            tString += ".{}".format(self._curGroupAtLevelX[i])
+            tString += f".{self._curGroupAtLevelX[i]}"
         return tString
 
     def _makeGroupNameString(self):
@@ -723,7 +724,7 @@ class DM3(object):
             self.tags["%s.ImageData.Calibrations.Dimension.0.Scale" % tag_root]
         )
         unit = self.tags["%s.ImageData.Calibrations.Dimension.0.Units" % tag_root]
-        if unit == u"\xb5m":
+        if unit == "\xb5m":
             unit = "micron"
         else:
             unit = unit.encode("ascii")

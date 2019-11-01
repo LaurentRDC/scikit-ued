@@ -10,9 +10,7 @@ from unittest import TestLoader
 from setuptools import find_packages, setup
 
 PACKAGE_NAME = "scikit-ued"
-DESCRIPTION = (
-    "Collection of algorithms and functions for ultrafast electron diffraction"
-)
+DESCRIPTION = "Collection of algorithms and functions for ultrafast electron scattering"
 URL = "http://scikit-ued.readthedocs.io"
 DOWNLOAD_URL = "http://github.com/LaurentRDC/scikit-ued"
 AUTHOR = "Laurent P. René de Cotret"
@@ -64,7 +62,7 @@ if __name__ == "__main__":
         maintainer=AUTHOR,
         maintainer_email=AUTHOR_EMAIL,
         install_requires=REQUIREMENTS,
-        keywords="ultrafast electron diffraction",
+        keywords="ultrafast electron scattering",
         project_urls={
             "Documentation": "https://scikit-ued.readthedocs.io/",
             "Source": "https://github.com/LaurentRDC/scikit-ued",
@@ -75,6 +73,7 @@ if __name__ == "__main__":
             ("skued\\baseline\\data", WAVELET_FILES),
             ("skued\\simulation\\data", FF_FILES),
         ],
+        entry_points={"console_scripts": ["skued = skued.__main__:main"]},
         include_package_data=True,
         zip_safe=False,
         #        include_dirs = [numpy.get_include()],

@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-from skued.baseline.algorithms import (
-    baseline_dt,
-    baseline_dwt,
-    _dwt_approx_rec,
-    _dwt_approx_rec2,
-    _dt_approx_rec,
-)
+import unittest
 
 import numpy as np
-import unittest
+
+from skued.baseline.algorithms import (
+    _dt_approx_rec,
+    _dwt_approx_rec,
+    _dwt_approx_rec2,
+    baseline_dt,
+    baseline_dwt,
+)
 
 np.random.seed(23)
 

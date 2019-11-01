@@ -85,7 +85,8 @@ but the beamblock **has not moved**. To determine the exact shift, we need to us
 beam-block and main beam::
 
 	from skimage.feature import masked_register_translation
-	from skued import shift_image, diffread
+	import scipy.ndimage as ndi
+	from skued import diffread
 	import numpy as np
 
 	ref = diffread('Cr_1.tif')
@@ -96,7 +97,7 @@ beam-block and main beam::
 	mask[0:1250, 950:1250] = False
 
 	shift = masked_register_translation(im, target_image = ref, src_mask = mask)
-	im = shift_image(im, -1*shift)
+	im = ndi.shift(im, -1*shift)
 
 Let's look at the difference:
 

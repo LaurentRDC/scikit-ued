@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-import numpy as np
 import unittest
-from skued import lorentz, electron_wavelength, interaction_parameter
 
+import numpy as np
+
+from skued import electron_wavelength, electron_velocity, interaction_parameter, lorentz
+from scipy.constants import speed_of_light
 
 class TestLorentz(unittest.TestCase):
     def test_trivial(self):
@@ -22,10 +24,21 @@ class TestLorentz(unittest.TestCase):
 
 
 class TestElectronWavelength(unittest.TestCase):
-    def test_trivial(self):
-        """ Test that the electron wavelength at zero energy is zero """
+    def test_known(self):
+        """ Test that the electron wavelength at certain voltages is as expected. """
         self.assertAlmostEqual(electron_wavelength(10), 0.122, places=3)
         self.assertAlmostEqual(electron_wavelength(200), 0.0250, places=3)
+
+
+class TestElectronVelocity(unittest.TestCase):
+    def test_trivial(self):
+        """ Test that the electron velocity at zero energy is zero """
+        self.assertEqual(electron_velocity(0), 0)
+    
+    def test_limits(self):
+        """ Test that the electron velocity never exceeds the speed of light. """
+        c = speed_of_light * 1e10 # Speed of light in Ang/s
+        self.assertEqual(electron_velocity(1e20) / c, 1)
 
 
 class TestInteractionParameter(unittest.TestCase):

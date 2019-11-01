@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 import unittest
+
 import numpy as np
+
 from skued import (
-    repeated_array,
-    mirror,
     cart2polar,
-    polar2cart,
-    plane_mesh,
-    spherical2cart,
     cart2spherical,
     complex_array,
+    mirror,
+    plane_mesh,
+    polar2cart,
+    repeated_array,
+    spherical2cart,
 )
 
 np.random.seed(23)
