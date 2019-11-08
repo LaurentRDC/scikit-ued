@@ -6,6 +6,7 @@ import numpy as np
 from skued import electron_wavelength, electron_velocity, interaction_parameter, lorentz
 from scipy.constants import speed_of_light
 
+
 class TestLorentz(unittest.TestCase):
     def test_trivial(self):
         """ Test that the lorentz factor for 0 kV is unity """
@@ -34,10 +35,10 @@ class TestElectronVelocity(unittest.TestCase):
     def test_trivial(self):
         """ Test that the electron velocity at zero energy is zero """
         self.assertEqual(electron_velocity(0), 0)
-    
+
     def test_limits(self):
         """ Test that the electron velocity never exceeds the speed of light. """
-        c = speed_of_light * 1e10 # Speed of light in Ang/s
+        c = speed_of_light * 1e10  # Speed of light in Ang/s
         self.assertEqual(electron_velocity(1e20) / c, 1)
 
 

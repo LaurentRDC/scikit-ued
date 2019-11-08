@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.0.2
+-------------
+
+* Added real-time pixel value and cursor position to ``skued.diffshow``.
+
 Release 2.0.1
 -------------
 

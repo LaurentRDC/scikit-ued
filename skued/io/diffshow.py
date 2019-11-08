@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import warnings
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -49,8 +50,47 @@ def diffshow(image):
 
     with rowmajor_axisorder():
         app = pg.QtGui.QApplication([])
-        viewer = pg.ImageView()
-        viewer.setImage(image)
-        viewer.setWindowTitle("scikit-ued image viewer")
+        viewer = Diffshow(image)
         viewer.show()
         app.exec_()
+
+
+class Diffshow(pg.QtGui.QWidget):
+    """
+    Widget containing a main viewer, plus some cursor information.
+    """
+
+    def __init__(self, image, **kwargs):
+        super().__init__(**kwargs)
+        self.viewer = pg.ImageView()
+
+        with warnings.catch_warnings():
+            # Pesky FutureWarning from PyQtGraph
+            warnings.simplefilter("ignore")
+            self.viewer.setImage(image)
+
+        self.cursor_info = pg.QtGui.QLabel("")
+        self.cursor_info.setAlignment(pg.QtCore.Qt.AlignCenter)
+
+        self.__cursor_proxy = pg.SignalProxy(
+            self.viewer.scene.sigMouseMoved, rateLimit=60, slot=self.update_cursor_info
+        )
+
+        self.setWindowTitle("scikit-ued image viewer")
+
+        layout = pg.QtGui.QVBoxLayout()
+        layout.addWidget(self.viewer)
+        layout.addWidget(self.cursor_info)
+        self.setLayout(layout)
+
+    def update_cursor_info(self, event):
+        """
+        Determine cursor information from mouse event.
+        """
+        mouse_point = self.viewer.getView().mapSceneToView(event[0])
+        i, j = int(mouse_point.x()), int(mouse_point.y())
+        try:
+            val = self.viewer.getImageItem().image[j, i]
+        except IndexError:
+            val = 0
+        self.cursor_info.setText(f"Position: ({i},{j}) | Pixel value: {val:.2f} cnts")
