@@ -19,6 +19,10 @@ if WITH_PYQTGRAPH:
     class Diffshow(pg.QtGui.QWidget):
         """
         Widget containing a main viewer, plus some cursor information.
+
+        Parameters
+        ----------
+        image : ndarray
         """
 
         def __init__(self, image, **kwargs):
@@ -45,13 +49,11 @@ if WITH_PYQTGRAPH:
             self.setLayout(layout)
 
         def update_cursor_info(self, event):
-            """
-            Determine cursor information from mouse event.
-            """
+            """ Determine cursor information from mouse event. """
             mouse_point = self.viewer.getView().mapSceneToView(event[0])
-            i, j = int(mouse_point.x()), int(mouse_point.y())
+            i, j = int(mouse_point.y()), int(mouse_point.x())
             try:
-                val = self.viewer.getImageItem().image[j, i]
+                val = self.viewer.getImageItem().image[i, j]
             except IndexError:
                 val = 0
             self.cursor_info.setText(f"Position: ({i},{j}) | Pixel value: {val:.2f} cnts")
