@@ -22,7 +22,7 @@ DIFFSHOW_HELP += "Read a file and show interactive window. Requires PyQtGraph."
 
 DIFFSHOW_FILENAME_HELP = """Path to file. All formats supported by 
 ``skued.diffread`` are supported here, including TIFFs (*.tif, *.tiff), 
-Digital Micrograph 3/4 (*.dm3, *.dm4),Merlin Image Binary (*.mib), and all 
+Digital Micrograph 3/4 (*.dm3, *.dm4), Merlin Image Binary (*.mib), and all 
 formats supported by scikit-image."""
 
 # Possibility in the future to add more utilities with more subparsers
