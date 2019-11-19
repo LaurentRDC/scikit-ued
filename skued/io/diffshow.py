@@ -16,6 +16,7 @@ else:
 # This is weird, but PyQtGraph is an optional dependency
 # Therefore, we cannot define this class unless PyQtGraph is importable
 if WITH_PYQTGRAPH:
+
     class Diffshow(pg.QtGui.QWidget):
         """
         Widget containing a main viewer, plus some cursor information.
@@ -38,7 +39,9 @@ if WITH_PYQTGRAPH:
             self.cursor_info.setAlignment(pg.QtCore.Qt.AlignCenter)
 
             self.__cursor_proxy = pg.SignalProxy(
-                self.viewer.scene.sigMouseMoved, rateLimit=60, slot=self.update_cursor_info
+                self.viewer.scene.sigMouseMoved,
+                rateLimit=60,
+                slot=self.update_cursor_info,
             )
 
             self.setWindowTitle("scikit-ued image viewer")
@@ -56,7 +59,9 @@ if WITH_PYQTGRAPH:
                 val = self.viewer.getImageItem().image[i, j]
             except IndexError:
                 val = 0
-            self.cursor_info.setText(f"Position: ({i},{j}) | Pixel value: {val:.2f} cnts")
+            self.cursor_info.setText(
+                f"Position: ({i},{j}) | Pixel value: {val:.2f} cnts"
+            )
 
 
 @contextmanager
