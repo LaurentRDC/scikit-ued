@@ -5,6 +5,7 @@ Release 2.0.2
 -------------
 
 * Added real-time pixel value and cursor position to ``skued.diffshow``.
+* Added `indices_to_text`, a plotting utility function to render Miller indices to Mathjax/LaTeX-style text (Matplotlib-compatible).
 
 Release 2.0.1
 -------------

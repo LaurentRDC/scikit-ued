@@ -83,3 +83,35 @@ def rgb_sweep(num_colors, source, dest):
         dest = _hex_to_rgb(dest)
 
     yield from multilinspace(source, dest, num=num_colors)
+
+
+def indices_to_text(h, k, l):
+    """ 
+	Returns a Matplotlib-compatible string representation of Miller indices,
+	in LaTeX/Mathjax format.
+
+	Parameters
+	----------
+	h, k, l : int
+		Miller indices
+	
+	Returns
+	-------
+	s : string
+		Matplotlib-compatible representation
+	
+	Examples
+	--------
+	>>> indices_to_text(1,0,0)
+	'(100)'
+	>>> indices_to_text(2,-1,1)
+	'(2$\\bar{1}$1)'
+	"""
+    t = r"("
+    for index in (h, k, l):
+        if index < 0:
+            t = t + r"$\bar{" + f"{abs(index)}" + r"}$"
+        else:
+            t = t + f"{index}"
+
+    return t + ")"

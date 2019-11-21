@@ -262,6 +262,7 @@ Plot Utilities
 
     spectrum_colors
     rgb_sweep
+    indices_to_text
 
 ===============
 Array Utilities

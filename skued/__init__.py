@@ -2,7 +2,7 @@
 __author__ = "Laurent P. René de Cotret"
 __email__ = "laurent.renedecotret@mail.mcgill.ca"
 __license__ = "MIT"
-__version__ = "2.0.1"
+__version__ = "2.0.2"
 
 from .affine import (
     affine_map,
@@ -60,7 +60,7 @@ from .image import (
 )
 from .io import diffread, diffshow, dmread, imibread, mibheader, mibread
 from .patterson import patterson
-from .plot_utils import rgb_sweep, spectrum_colors
+from .plot_utils import rgb_sweep, spectrum_colors, indices_to_text
 from .potential_map import potential_map, potential_synthesis
 from .simulation import affe, electrostatic, pelectrostatic, powdersim, structure_factor
 from .thin_films import film_optical_coefficients
