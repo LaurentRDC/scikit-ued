@@ -81,7 +81,7 @@ Here is an example:
 
     import matplotlib.pyplot as plt
     import numpy as np
-    from skued import indices_to_text
+    from skued import indices_to_text, spectrum_colors
 
     t = np.linspace(0, 10, num = 1000)
     y = np.exp(-t/0.4) + 10 *(1 - np.exp(-t/2))
