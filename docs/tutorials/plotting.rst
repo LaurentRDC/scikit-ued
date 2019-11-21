@@ -66,7 +66,16 @@ Miller indices
 
 .. _miller:
 
-Miller indices notation in Matplotlib plots is facilitated by using `indices_to_text`:
+Miller indices notation in Matplotlib plots is facilitated by using `indices_to_text`. This function renders
+indices in LaTeX/Mathjax-style, which is compatible with Matplotlib::
+
+    >>> from skued import indices_to_text
+    >>> indices_to_text(1,1,0)
+    '(110)'
+    >>> indices_to_text(1,-2,3)
+    '(1$\\bar{2}$3)'
+
+Here is an example:
 
 .. plot::
 
