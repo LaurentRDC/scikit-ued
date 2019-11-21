@@ -16,9 +16,12 @@ Contents
 * :ref:`colors`
 
 .. _colors:
+.. _miller:
 
 Colors
 ======
+
+.. _colors:
 
 Time-order
 ----------
@@ -57,5 +60,30 @@ This functionality can be accessed through the :func:`spectrum_colors` generator
     red = list(colors)[-1]
 
 You can see some examples of uses of :func:`spectrum_colors` in the :ref:`baseline tutorial <baseline_tutorial>`.
+
+Miller indices
+==============
+
+.. _miller:
+
+Miller indices notation in Matplotlib plots is facilitated by using `indices_to_text`:
+
+.. plot::
+
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from skued import indices_to_text
+
+    t = np.linspace(0, 10, num = 1000)
+    y = np.exp(-t/0.4) + 10 *(1 - np.exp(-t/2))
+
+    fig, ax = plt.subplots(1,1)
+    ax.scatter(t, y, c = list(spectrum_colors(y.size)), label=indices_to_text(-2,3,-4))
+
+    ax.set_title("Bragg reflection " + indices_to_text(-2,3,-4))
+    ax.set_xlabel('Time (ps)')
+    ax.set_ylabel('Intensity (a.u.)')
+
+    plt.show()
 
 :ref:`Return to Top <plotting_tutorial>`
