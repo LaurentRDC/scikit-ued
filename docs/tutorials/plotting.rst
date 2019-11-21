@@ -85,13 +85,12 @@ Here is an example:
     y = np.exp(-t/0.4) + 10 *(1 - np.exp(-t/2))
 
     fig, ax = plt.subplots(1,1)
-    ax.scatter(t, y, c = list(spectrum_colors(y.size)), label=indices_to_text(-2,3,-4))
+    ax.scatter(t, y, c = list(spectrum_colors(y.size)))
 
     ax.set_title("Bragg reflection " + indices_to_text(-2,3,-4))
     ax.set_xlabel('Time (ps)')
     ax.set_ylabel('Intensity (a.u.)')
-
-    ax.legend('lower right')
+    
     plt.show()
 
 :ref:`Return to Top <plotting_tutorial>`
