@@ -13,6 +13,7 @@ Contents
 ========
 
 * :ref:`fitting`
+* :ref:`selection`
 
 .. _fitting:
 
@@ -87,5 +88,29 @@ We can plot the result:
     ax.set_xlim([time.min(), 40])
     ax.legend()
     plt.show()
+
+.. _selection:
+
+Selections
+==========
+
+In the context of ultrafast electron/x-ray scattering, time-series are assembled by selection a portion 
+of scattering patterns for each time-delay. The :class:`Selection` class (and related subclasses) is 
+the generalization of selecting a rectangular area of scattering patterns to arbitrary patterns, 
+e.g. disks, torii, etc.
+
+Instances can be used like boolean masks to select portions of scattering patterns. Consider an example
+where we want to know the integrated intensity in a Bragg peak::
+
+    from skued import DiskSelection, diffread
+
+    im = diffread(...)
+
+    bragg = DiskSelection(shape = im.shape, center=(1024, 1024), radius=30)
+    intensity = np.sum(im[bragg])
+
+Selections really shine when trying to extract non-standard shapes, e.g. rings. You can use them
+in combination with `iris-ued` `DiffractionDatasets` to assemble specialized time-series.
+
 
 :ref:`Return to Top <timeseries_tutorial>`
