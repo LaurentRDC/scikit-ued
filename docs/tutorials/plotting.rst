@@ -14,14 +14,12 @@ Contents
 ========
 
 * :ref:`colors`
+* :ref:`miller`
 
 .. _colors:
-.. _miller:
 
 Colors
 ======
-
-.. _colors:
 
 Time-order
 ----------
@@ -61,12 +59,12 @@ This functionality can be accessed through the :func:`spectrum_colors` generator
 
 You can see some examples of uses of :func:`spectrum_colors` in the :ref:`baseline tutorial <baseline_tutorial>`.
 
+.. _miller:
+
 Miller indices
 ==============
 
-.. _miller:
-
-Miller indices notation in Matplotlib plots is facilitated by using `indices_to_text`. This function renders
+Miller indices notation in Matplotlib plots is facilitated by using :func:`indices_to_text`. This function renders
 indices in LaTeX/Mathjax-style, which is compatible with Matplotlib::
 
     >>> from skued import indices_to_text
@@ -93,6 +91,7 @@ Here is an example:
     ax.set_xlabel('Time (ps)')
     ax.set_ylabel('Intensity (a.u.)')
 
+    ax.legend('lower right')
     plt.show()
 
 :ref:`Return to Top <plotting_tutorial>`
