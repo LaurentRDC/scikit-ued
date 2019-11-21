@@ -72,5 +72,10 @@ from .time_series import (
     nfftfreq,
     register_time_shift,
     register_time_shifts,
+    Selection,
+    ArbitrarySelection,
+    RectSelection,
+    DiskSelection,
+    RingSelection,
 )
 from .voigt import gaussian, lorentzian, pseudo_voigt

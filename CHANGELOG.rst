@@ -4,6 +4,8 @@ Changelog
 Release 2.0.2
 -------------
 
+* Added the :class:`Selection` class and :class:`RectSelection`, :class:`DiskSelection`, :class:`RingSelection`, and 
+  :class:`ArbitrarySelection` to assemble time-series. This is a generalization of iris-ued's time-series rects.
 * Added real-time pixel value and cursor position to ``skued.diffshow``.
 * Added `indices_to_text`, a plotting utility function to render Miller indices to Mathjax/LaTeX-style text (Matplotlib-compatible).
 

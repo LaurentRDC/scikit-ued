@@ -117,6 +117,19 @@ Non-uniform Fast Fourier Transform
     nfft
     nfftfreq
 
+Time-series Selections
+----------------------
+
+.. autosummary::
+    :toctree: classes/
+    :nosignatures:
+
+    Selection
+    RectSelection
+    DiskSelection
+    RingSelection
+    ArbitrarySelection
+
 ==============
 Image Analysis
 ==============
