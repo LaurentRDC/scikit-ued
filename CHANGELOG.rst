@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.0.3
+-------------
+
+* Added the `Selection.mpatch` method to draw patches on Matplotlib plots.
+
 Release 2.0.2
 -------------
 

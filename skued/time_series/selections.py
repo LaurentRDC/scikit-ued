@@ -6,6 +6,8 @@ Selection masks for assembling time-series.
 from abc import ABCMeta, abstractmethod, abstractproperty
 
 import matplotlib.patches as mpatches
+import matplotlib.transforms as mtransforms
+from matplotlib.collections import PatchCollection
 import numpy as np
 
 
@@ -40,6 +42,24 @@ class Selection(metaclass=ABCMeta):
     def __array__(self, *args, **kwargs):
         """ Cast as a NumPy array. """
         pass
+
+    def mpatch(self, *args, **kwargs):
+        """ 
+        Matplotlib patch associated with this selection.
+        keyword arguments are passed to the appropriate `Matplotlib.patches.Patch` 
+        subclass.
+
+        By default, a patch drawing a rectangle around the bounding box is used.
+        """
+        top, bottom, left, right = self.bounding_box
+
+        return mpatches.Rectangle(
+            xy=(left, bottom),
+            width=right - left,
+            height=bottom - top,
+            angle=0,
+            **kwargs
+        )
 
     # The method below should be specialized for subclasses.
     @property
@@ -190,6 +210,19 @@ class DiskSelection(Selection):
         selection[distance <= self._radius] = True
         return selection
 
+    def mpatch(self, **kwargs):
+        """
+        Circular patch. Keyword arguments are passed 
+        to `matplotlib.patches.Circle`.
+
+        Returns
+        -------
+        patch : matplotlib.patches.Circle
+        """
+        y, x = self._center
+
+        return mpatches.Circle(xy=(x, y), radius=self._radius, angle=0, **kwargs)
+
 
 class RingSelection(Selection):
     """
@@ -252,3 +285,19 @@ class RingSelection(Selection):
             )
         ] = True
         return selection
+
+    def mpatch(self, **kwargs):
+        """
+        Toroidal patch. Keyword arguments are passed 
+        to `matplotlib.patches.Circle`.
+
+        Returns
+        -------
+        patch : matplotlib.collections.PatchCollection
+        """
+        y, x = self._center
+
+        inner_circ = patches.Circle(xy=(x, y), radius=inner_radius, **kwargs)
+        outer_circ = patches.Circle(xy=(x, y), radius=outer_radius, **kwargs)
+
+        return PatchCollection([inner_circ, outer_circ])
