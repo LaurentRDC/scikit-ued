@@ -7,7 +7,6 @@ from abc import ABCMeta, abstractmethod, abstractproperty
 
 import matplotlib.patches as mpatches
 import matplotlib.transforms as mtransforms
-from matplotlib.collections import PatchCollection
 import numpy as np
 
 
@@ -282,6 +281,7 @@ class RingSelection(Selection):
         ] = True
         return selection
 
+    # TODO: make new patch class
     def mpatch(self, **kwargs):
         """
         Toroidal patch. Keyword arguments are passed 
@@ -289,11 +289,12 @@ class RingSelection(Selection):
 
         Returns
         -------
-        patch : matplotlib.collections.PatchCollection
+        inner : matplotlib.patches.Circle
+        outer : matplotlib.patches.Circle
         """
         y, x = self._center
 
         inner_circ = mpatches.Circle(xy=(x, y), radius=self._inner_radius, **kwargs)
         outer_circ = mpatches.Circle(xy=(x, y), radius=self._outer_radius, **kwargs)
 
-        return PatchCollection([inner_circ, outer_circ])
+        return inner_circ, outer_circ
