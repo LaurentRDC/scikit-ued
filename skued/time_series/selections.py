@@ -54,11 +54,7 @@ class Selection(metaclass=ABCMeta):
         top, bottom, left, right = self.bounding_box
 
         return mpatches.Rectangle(
-            xy=(left, bottom),
-            width=right - left,
-            height=bottom - top,
-            angle=0,
-            **kwargs
+            xy=(left, top), width=right - left, height=bottom - top, angle=0, **kwargs
         )
 
     # The method below should be specialized for subclasses.
@@ -297,7 +293,7 @@ class RingSelection(Selection):
         """
         y, x = self._center
 
-        inner_circ = patches.Circle(xy=(x, y), radius=inner_radius, **kwargs)
-        outer_circ = patches.Circle(xy=(x, y), radius=outer_radius, **kwargs)
+        inner_circ = mpatches.Circle(xy=(x, y), radius=self._inner_radius, **kwargs)
+        outer_circ = mpatches.Circle(xy=(x, y), radius=self._outer_radius, **kwargs)
 
         return PatchCollection([inner_circ, outer_circ])
