@@ -98,7 +98,8 @@ class ArbitrarySelection(Selection):
 
 class RectSelection(Selection):
     """
-    Rectangular selection mask.
+    Rectangular selection mask. Note that rectangular bounds are *inclusive*,
+    contrary to normal numpy index selections.
 
     .. versionadded:: 2.0.2
 
