@@ -49,6 +49,8 @@ class Selection(metaclass=ABCMeta):
         subclass.
 
         By default, a patch drawing a rectangle around the bounding box is used.
+
+        .. versionadded:: 2.0.3
         """
         top, bottom, left, right = self.bounding_box
 
@@ -210,6 +212,8 @@ class DiskSelection(Selection):
         Circular patch. Keyword arguments are passed 
         to `matplotlib.patches.Circle`.
 
+        .. versionadded:: 2.0.3
+
         Returns
         -------
         patch : matplotlib.patches.Circle
@@ -286,6 +290,8 @@ class RingSelection(Selection):
         """
         Toroidal patch. Keyword arguments are passed 
         to `matplotlib.patches.Circle`.
+
+        .. versionadded:: 2.0.3
 
         Returns
         -------
