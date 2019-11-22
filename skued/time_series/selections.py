@@ -15,7 +15,7 @@ class Selection(metaclass=ABCMeta):
     Abstract base class for time-series selection masks.
 
     In the context of ultrafast electron/x-ray scattering, time-series are
-    assembled by selection a portion of scattering patterns for each 
+    assembled by integrating over a portion of scattering patterns for each 
     time-delay. This class is the generalization of selecting a rectangular 
     area of scattering patterns to arbitrary patterns, e.g. disks, torii, etc.
 
