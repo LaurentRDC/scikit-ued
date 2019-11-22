@@ -6,3 +6,4 @@ scikit-image >= 0.15
 scipy        >= 1.0.0
 tifffile     >= 0.13
 pyyaml       >= 3.1
+matplotlib   >= 3.0.0, <4
