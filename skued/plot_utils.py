@@ -66,7 +66,7 @@ def spectrum_colors(num_colors):
 spectrum_cmap = ListedColormap(colors=list(spectrum_colors(256)), name="spectrum")
 spectrum_cmap.__doc__ = """ \
 	Rainbow-style Matplotlib colormap generated from :func:`skued.spectrum_colors`.
-	If you import skued, you can even use it like any built-in colormap using the
+	If you import scikit-ued, you can even use it like any built-in colormap using the
 	name `'spectrum'`.
 
 	See Also
@@ -81,7 +81,7 @@ spectrum_cmap.__doc__ = """ \
 	>>> arr = np.random.random((256, 256))
 	>>> 
 	>>> plt.figure()
-	>>> plt.imshow(arr, cmap='spectrum')
+	>>> plt.imshow(arr, cmap='spectrum') # equivalently: `cmap=skued.spectrum_cmap`
 	>>> plt.show()
 	"""
 register_cmap(name="spectrum", cmap=spectrum_cmap)
