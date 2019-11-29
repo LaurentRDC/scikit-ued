@@ -274,6 +274,7 @@ Plot Utilities
     :nosignatures:
 
     spectrum_colors
+    spectrum_cmap
     rgb_sweep
     indices_to_text
 

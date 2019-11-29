@@ -4,7 +4,8 @@ Plotting utilities
 ==================
 """
 from colorsys import hsv_to_rgb
-
+from matplotlib.colors import ListedColormap
+from matplotlib.cm import register_cmap
 from npstreams import linspace, multilinspace
 
 
@@ -27,6 +28,9 @@ def spectrum_colors(num_colors):
     """
 	Generates a set of RGB colors corresponding to the visible spectrum (i.e. the rainbow). 
 	These colors can be used by Matplotlib, PyQtGraph, Qt, and other plotting/graphics libraries.
+
+	You can use the colors from this function as a colormap, named  `'spectrum'`, provided that 
+	scikit-ued has been imported.
     
 	Parameters
 	----------
@@ -38,6 +42,10 @@ def spectrum_colors(num_colors):
 	------
 	color : (R,G,B) tuple.
 		R, G, B values in a tuple, from 0.0 to 1.0.
+	
+	See Also
+	--------
+	spectrum_cmap : Matplotlib colormap based on the colors from `spectrum_colors`.
 	"""
     if isinstance(num_colors, int):
         num_colors = range(num_colors)
@@ -53,6 +61,30 @@ def spectrum_colors(num_colors):
         # Scale so that the maximum is 'purple' (hue = 0.8)
         # otherwise plots don't look as good
     yield from map(lambda hue: hsv_to_rgb(0.8 * hue, s=0.7, v=0.9), hue_values)
+
+
+spectrum_cmap = ListedColormap(colors=list(spectrum_colors(256)), name='spectrum')
+spectrum_cmap.__doc__ = """ \
+	Rainbow-style Matplotlib colormap generated from :func:`skued.spectrum_colors`.
+	If you import skued, you can even use it like any built-in colormap using the
+	name `'spectrum'`.
+
+	See Also
+	--------
+	spectrum_colors : generator of spectrum colors.
+	
+	Examples
+	--------
+	>>> import skued
+	>>> import matplotlib.pyplot as plt
+	>>> import numpy as np
+	>>> arr = np.random.random((256, 256))
+	>>> 
+	>>> plt.figure()
+	>>> plt.imshow(arr, cmap='spectrum')
+	>>> plt.show()
+	""" 
+register_cmap(name='spectrum', cmap=spectrum_cmap)
 
 
 def rgb_sweep(num_colors, source, dest):
