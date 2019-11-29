@@ -124,6 +124,8 @@ def indices_to_text(h, k, l):
 	Returns a Matplotlib-compatible string representation of Miller indices,
 	in LaTeX/Mathjax format.
 
+	.. versionadded:: 2.0.2
+
 	Parameters
 	----------
 	h, k, l : int
