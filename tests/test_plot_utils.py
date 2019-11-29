@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-from skued import rgb_sweep, spectrum_colors
+from skued import rgb_sweep, spectrum_colors, spectrum_cmap
+from matplotlib.cm import get_cmap
 
 
 class TestSpectrumColors(unittest.TestCase):
@@ -23,6 +24,12 @@ class TestSpectrumColors(unittest.TestCase):
     def test_on_length_1_iterable(self):
         """ Test that spectrum_colors is working on single-length iterables """
         self.assertSequenceEqual(list(spectrum_colors(1)), list(spectrum_colors([0])))
+
+
+class TestSpectrumCmap(unittest.TestCase):
+    def test_in_matplotlib_get_cmap(self):
+        """ Test that the "spectrum" colormap is added to Matplotlib's colormaps """
+        self.assertIs(get_cmap("spectrum"), spectrum_cmap)
 
 
 class TestRGBSweep(unittest.TestCase):

@@ -63,7 +63,7 @@ def spectrum_colors(num_colors):
     yield from map(lambda hue: hsv_to_rgb(0.8 * hue, s=0.7, v=0.9), hue_values)
 
 
-spectrum_cmap = ListedColormap(colors=list(spectrum_colors(256)), name='spectrum')
+spectrum_cmap = ListedColormap(colors=list(spectrum_colors(256)), name="spectrum")
 spectrum_cmap.__doc__ = """ \
 	Rainbow-style Matplotlib colormap generated from :func:`skued.spectrum_colors`.
 	If you import skued, you can even use it like any built-in colormap using the
@@ -83,8 +83,8 @@ spectrum_cmap.__doc__ = """ \
 	>>> plt.figure()
 	>>> plt.imshow(arr, cmap='spectrum')
 	>>> plt.show()
-	""" 
-register_cmap(name='spectrum', cmap=spectrum_cmap)
+	"""
+register_cmap(name="spectrum", cmap=spectrum_cmap)
 
 
 def rgb_sweep(num_colors, source, dest):
