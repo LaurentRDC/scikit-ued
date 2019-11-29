@@ -69,6 +69,8 @@ spectrum_cmap.__doc__ = """ \
 	If you import scikit-ued, you can even use it like any built-in colormap using the
 	name `'spectrum'`.
 
+	.. versionadded:: 2.0.3
+
 	See Also
 	--------
 	spectrum_colors : generator of spectrum colors.
