@@ -93,7 +93,7 @@ beam-block and main beam::
 	im = diffread('Cr_2.tif')
 
 	# Invalid pixels are masked with a False
-	mask = np.ones(ref, dtype = np.bool)
+	mask = np.ones_like(ref, dtype = np.bool)
 	mask[0:1250, 950:1250] = False
 
 	shift = masked_register_translation(im, target_image = ref, src_mask = mask)
