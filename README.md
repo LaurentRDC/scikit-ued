@@ -7,20 +7,17 @@ Collection of algorithms and functions for ultrafast electron
 diffraction. It aims to be a fully-tested package taking advantage of
 Python\'s most recent features.
 
-For examples, see our
-[tutorials](https://scikit-ued.readthedocs.io/en/latest/tutorials/index.html).
+For examples, see our [tutorials](https://scikit-ued.readthedocs.io/).
 
 API Reference
 -------------
 
-The [API Reference on readthedocs.io](https://scikit-ued.readthedocs.io)
-provides API-level documentation, as well as tutorials.
+The [API Reference on readthedocs.io](https://scikit-ued.readthedocs.io) provides API-level documentation, as well as tutorials.
 
 Installation
 ------------
 
-scikit-ued is available on PyPI; it can be installed with
-[pip](https://pip.pypa.io):
+scikit-ued is available on PyPI; it can be installed with [pip](https://pip.pypa.io):
 
     python -m pip install scikit-ued
 
@@ -30,8 +27,7 @@ package manager](https://conda.io/docs/):
     conda config --add channels conda-forge
     conda install scikit-ued
 
-To install the latest development version from
-[Github](https://github.com/LaurentRDC/scikit-ued):
+To install the latest development version from [Github](https://github.com/LaurentRDC/scikit-ued):
 
     python -m pip install git+git://github.com/LaurentRDC/scikit-ued.git
 
@@ -40,7 +36,7 @@ as `skued`.
 
 Each version is tested against **Python 3.6+**. If you are using a
 different version, tests can be run using the standard library\'s
-[unittest]{.title-ref} module.
+`unittest` module.
 
 Optional dependencies
 ---------------------
@@ -54,16 +50,13 @@ Related projects
 Streaming operations on NumPy arrays are available in the [npstreams
 package](https://pypi.org/pypi/npstreams).
 
-Interactive exploration of ultrafast electron diffraction data with the
-[iris-ued package](https://pypi.org/project/iris-ued/).
+Interactive exploration of ultrafast electron diffraction data with the [iris-ued package](https://pypi.org/project/iris-ued/).
 
-Crystal structure manipulation (including symmetry-determination) with
-the [crystals package](https://pypi.org/project/crystals/). (Included
+Crystal structure manipulation (including symmetry-determination) with the [crystals package](https://pypi.org/project/crystals/). (Included
 with scikit-ued)
 
 A graphical user interface for the dual-tree complex wavelet transform
-baseline-removal routine is available as a [separate
-package](https://pypi.org/pypi/dtgui).
+baseline-removal routine is available as a [separate package](https://pypi.org/pypi/dtgui).
 
 Citations
 ---------
@@ -82,12 +75,10 @@ please consider citing the following publication:
 Support / Report Issues
 -----------------------
 
-All support requests and issue reports should be [filed on Github as an
-issue](https://github.com/LaurentRDC/scikit-ued/issues).
+All support requests and issue reports should be [filed on Github as an issue](https://github.com/LaurentRDC/scikit-ued/issues).
 
 License
 -------
 
 scikit-ued is made available under the MIT License. For more details,
-see
-[LICENSE.txt](https://github.com/LaurentRDC/scikit-ued/blob/master/LICENSE.txt).
+see [LICENSE.txt](https://github.com/LaurentRDC/scikit-ued/blob/master/LICENSE.txt).
