@@ -33,7 +33,7 @@ with open(base_path / BASE_PACKAGE / "__init__.py") as f:
         re.compile(r".*__license__ = \"(.*?)\"", re.S).match(module_content).group(1)
     )
 
-with open("README.rst") as f:
+with open("README.md") as f:
     README = f.read()
 
 with open("requirements.txt") as f:
