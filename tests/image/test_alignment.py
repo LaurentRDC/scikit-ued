@@ -17,19 +17,22 @@ from .test_powder import circle_image
 
 np.random.seed(23)
 
+# Because of a bug in scikit-iamge 0.16.2, I have placed the 
+# output of `skimage.data.camera()` in its own file.
+TEST_IMAGE = imread(Path(__file__).parent / 'camera.png')
 
 class TestIAlign(unittest.TestCase):
     def test_trivial(self):
         """ Test alignment of identical images """
-        aligned = tuple(ialign([data.camera() for _ in range(5)]))
+        aligned = tuple(ialign([TEST_IMAGE for _ in range(5)]))
 
         self.assertEqual(len(aligned), 5)
-        self.assertSequenceEqual(data.camera().shape, aligned[0].shape)
+        self.assertSequenceEqual(TEST_IMAGE.shape, aligned[0].shape)
 
     def test_misaligned_canned_images_fast(self):
         """ shift images from skimage.data by entire pixels.
 	   We don't expect perfect alignment."""
-        original = data.camera()
+        original = TEST_IMAGE
         misaligned = [
             ndi.shift(original, (randint(-4, 4), randint(-4, 4))) for _ in range(5)
         ]
@@ -50,7 +53,7 @@ class TestIAlign(unittest.TestCase):
     def test_misaligned_canned_images_notfast(self):
         """ shift images from skimage.data by entire pixels.
 	   We don't expect perfect alignment."""
-        original = data.camera()
+        original = TEST_IMAGE
         misaligned = [
             ndi.shift(original, (randint(-4, 4), randint(-4, 4))) for _ in range(5)
         ]
@@ -72,15 +75,15 @@ class TestIAlign(unittest.TestCase):
 class TestAlign(unittest.TestCase):
     def test_no_side_effects(self):
         """ Test that aligned images are not modified in-place """
-        im = np.array(data.camera()[0:64, 0:64])
+        im = np.array(TEST_IMAGE[0:64, 0:64])
         im.setflags(write=False)
         aligned = align(im, reference=im, fill_value=np.nan)
-        self.assertEqual(im.dtype, data.camera().dtype)
+        self.assertEqual(im.dtype, TEST_IMAGE.dtype)
 
     def test_misaligned_canned_images_fast(self):
         """ shift images from skimage.data by entire pixels.
 	   	We don't expect perfect alignment."""
-        original = data.camera()
+        original = TEST_IMAGE
         misaligned = ndi.shift(original, (randint(-4, 4), randint(-4, 4)))
 
         aligned = align(misaligned, reference=original)
@@ -95,7 +98,7 @@ class TestAlign(unittest.TestCase):
     def test_misaligned_canned_images_notfast(self):
         """ shift images from skimage.data by entire pixels.
 	   	We don't expect perfect alignment."""
-        original = data.camera()
+        original = TEST_IMAGE
         misaligned = ndi.shift(original, (randint(-4, 4), randint(-4, 4)))
 
         aligned = align(misaligned, reference=original, fast=False)
