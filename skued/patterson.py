@@ -11,7 +11,8 @@ from .simulation import affe
 
 def patterson(q, I, crystal, radii):
     """
-    Computation of the patterson pair-distribution function from azimuthal diffraction pattern.
+    Computation of the patterson pair-distribution function from azimuthally-averaged 
+    diffraction pattern.
 
     Parameters
     ----------
@@ -31,7 +32,8 @@ def patterson(q, I, crystal, radii):
     
     References
     ----------
-    [1] Fultz and Howe, Transmission Electron Microscopy and DIffractometry of Materials, equation 9.144
+    [#] Fultz, B, and James M Howe. Transmission Electron Microscopy and Diffractometry of Materials. 
+        4th ed., 4th ed., Springer, 2013, Equation 10.153
     """
     q, I, radii = tuple(map(np.asfarray, [q, I, radii]))
 
