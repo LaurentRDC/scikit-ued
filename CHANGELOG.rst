@@ -5,7 +5,8 @@ Release 2.0.3
 -------------
 
 * Added the `Selection.mpatch` method to draw patches on Matplotlib plots.
-* Added the `spectrum_cmap` Matplotlib colormap, available under the name `"spectrum"`. 
+* Added the `spectrum_cmap` Matplotlib colormap, available under the name `"spectrum"`.
+* Fixed an issue where diffracted intensities were not correctly scaled in `potential_map`. 
 
 Release 2.0.2
 -------------
