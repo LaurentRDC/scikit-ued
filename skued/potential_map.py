@@ -86,7 +86,7 @@ def potential_map(q, I, crystal, mesh):
     q_theo = np.squeeze(np.sqrt(qx ** 2 + qy ** 2 + qz ** 2))
     theo_I = powdersim(crystal, q_theo)
     peak_mult_corr = np.abs(SF) ** 2 / theo_I
-    exp_SF = np.sqrt(np.interp(q_theo, q, I)) * peak_mult_corr
+    exp_SF = np.sqrt(np.interp(q_theo, q, I) * peak_mult_corr)
 
     # Squeeze out extra dimensions (e.g. if mesh was 2D)
     potential_map = np.sum(
