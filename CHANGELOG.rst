@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.0.4
+-------------
+
+* Added support for `crystals.ElectronicStructure`. This requires `crystals` version 1.1.0 and up.
+
 Release 2.0.3
 -------------
 
