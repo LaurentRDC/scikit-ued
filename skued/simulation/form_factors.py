@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 from yaml import load
 
-from crystals import Element
+from crystals import Element, Atom, ElectronicStructure, Orbital
 
 from .scattering_params import scattering_params
 
@@ -22,48 +22,6 @@ DATADIR = Path(__file__).parent / "data"
 
 with open(DATADIR / "aspherical.yaml") as f:
     aspherical_ff = load(f, Loader=Loader)
-
-
-def aspherical_affe(atom, s):
-    """ 
-    Aspherical atomic form factors for electron scattering. 
-    Only atoms lighter than Xe (and including) are supported (Z <= 54).
-
-    Parameters
-    ----------
-    atom : skued.Atom, int, or str
-        Atomic number, atomic symbol, or Atom instance.
-        Atomic symbols are expected to be properly capitalized, e.g. ``As`` or ``W``.
-    s : array_like
-        Scattering vector norm
-    
-    Returns
-    -------
-    eff : `~numpy.ndarray`, dtype float
-        Atomic form factor for electron scattering.
-
-    Raises
-    ------
-    ValueError : scattering information is not available, for example if the atomic number is larger than 54
-
-    References
-    ----------
-    .. [#] Jin-Cheng Zheng, Lijun Wu and Yimei Zhu. "Aspherical electron scattering factors and their 
-           parameterizations for elements from H to Xe" (2009). J. Appl. Cryst. vol 42, pp. 1043 - 1053.
-    """
-    if isinstance(atom, (int, str)):
-        atom = Element(atom)
-    element = atom.element
-
-    params_a = aspherical_ff[element]["total"]["a"]
-    params_b = aspherical_ff[element]["total"]["b"]
-
-    s2 = np.square(np.asfarray(s))
-
-    result = np.zeros_like(s2)
-    for a, b in zip(params_a, params_b):
-        result += a * np.exp(-b * s2)
-    return result
 
 
 def affe(atom, nG):
@@ -106,3 +64,70 @@ def affe(atom, nG):
     sum1 = a1 / (q2 + b1) + a2 / (q2 + b2) + a3 / (q2 + b3)
     sum2 = c1 * np.exp(-d1 * q2) + c2 * np.exp(-d2 * q2) + c3 * np.exp(-d3 * q2)
     return sum1 + sum2
+
+
+def aspherical_affe(atom, s):
+    """ 
+    Aspherical atomic form factors for electron scattering. 
+    Only atoms lighter than Xe (and including) are supported (Z <= 54).
+
+    Parameters
+    ----------
+    atom : crystals.Atom, int, or str
+        Atomic number, atomic symbol, or Atom instance.
+        Atomic symbols are expected to be properly capitalized, e.g. ``As`` or ``W``.
+        Note that if `atom` is provided as an int or str, the ground state electronic structure
+        is used. If an `crystals.Atom` object is provided, then its electronic structure will
+        be used to construct the electron form factor.
+    s : array_like
+        Scattering vector norm
+    
+    Returns
+    -------
+    eff : `~numpy.ndarray`, dtype float
+        Atomic form factor for electron scattering.
+
+    Raises
+    ------
+    ValueError : scattering information is not available, for example if the atomic number is larger than 54
+
+    References
+    ----------
+    .. [#] Jin-Cheng Zheng, Lijun Wu and Yimei Zhu. "Aspherical electron scattering factors and their 
+           parameterizations for elements from H to Xe" (2009). J. Appl. Cryst. vol 42, pp. 1043 - 1053.
+    """
+    if isinstance(atom, (int, str)):
+        atom = Atom(atom)
+    element = atom.element
+
+    params_a = aspherical_ff[element]["total"]["a"]
+    params_b = aspherical_ff[element]["total"]["b"]
+
+    s2 = np.square(np.asfarray(s))
+
+    result = np.zeros_like(s2)
+    for a, b in zip(params_a, params_b):
+        result += a * np.exp(-b * s2)
+    return result
+
+
+def orbital_affe(element, orbital, s):
+    """
+    Partial atomic form factor for electron scattering, based on a particular orbital.
+
+    Parameters
+    ----------
+    element : crystals.Element, int, or str
+        Atomic number, atomic symbol, or Atom/Element instance.
+    orbital : crystals.Orbital
+        Electronic orbital
+    s : array_like
+        Scattering vector norm
+
+    Returns
+    -------
+    eff : `~numpy.ndarray`, dtype float
+        Atomic form factor for electron scattering.
+    """
+    if isinstance(element, (int, str)):
+        element = Element(Element)
