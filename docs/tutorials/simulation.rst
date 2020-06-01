@@ -64,12 +64,13 @@ computing such potential is a useful tool.
 To compute the electrostatic potential for an infinite crystal on an arbitrary 3D mesh,
 take a look at :func:`electrostatic`::
 
-    from skued import Crystal
+    import numpy as np
+    from crystals import Crystal
     from skued import electrostatic
 
     graphite = Crystal.from_database('C')
 
-    extent = np.linspace(-10, 10, 256)
+    extent = np.linspace(-10, 10, 128)
     xx, yy, zz = np.meshgrid(extent, extent, extent)
     potential = electrostatic(graphite, xx, yy, zz)
 
