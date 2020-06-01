@@ -74,6 +74,19 @@ take a look at :func:`electrostatic`::
     xx, yy, zz = np.meshgrid(extent, extent, extent)
     potential = electrostatic(graphite, xx, yy, zz)
 
+In order to look at a slice in 2D, take a look at the function :func:`plane_mesh`::
+
+    import numpy as np
+    from crystals import Crystal
+    from skued import electrostatic, plane_mesh
+
+    vo2 = Crystal.from_database('vo2-m1')
+    a, b, _ = vo2.lattice_vectors
+
+    extent = np.linspace(-10, 10, 128)
+    xx, yy, zz = plane_mesh(a, b, extent, extent)
+    potential = electrostatic(vo2, xx, yy, zz)
+
 Another possibility is to calculate the electrostatic potential for an infinite slab in the 
 x-y plane, but finite in z-direction, using :func:`pelectrostatic` (p for projected)::
 
