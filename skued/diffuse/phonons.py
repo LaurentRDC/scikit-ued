@@ -5,6 +5,7 @@ Modelling phonons
 
 import numpy as np
 
+from .dft_tools import apply_symops
 from crystals.affine import change_of_basis
 
 
