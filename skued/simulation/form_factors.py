@@ -7,6 +7,7 @@ from pathlib import Path
 
 import numpy as np
 from yaml import load
+from math import sin, cos
 
 from crystals import Element, Atom, ElectronicStructure, Orbital
 
@@ -100,34 +101,37 @@ def aspherical_affe(atom, s):
         atom = Atom(atom)
     element = atom.element
 
-    params_a = aspherical_ff[element]["total"]["a"]
-    params_b = aspherical_ff[element]["total"]["b"]
+    return _affe_parametrization(s, aspherical_ff[element]["total"])
 
+
+def _affe_parametrization(s, d):
+    """ Reconstruct affe parametrization.
+
+    Parameters
+    ----------
+    s : array_like
+        Scattering vector norm
+    d : dict[str, array_like]
+        Dictionary containing the "a" and "b" parameters.
+    """
     s2 = np.square(np.asfarray(s))
-
     result = np.zeros_like(s2)
-    for a, b in zip(params_a, params_b):
+    for a, b in zip(d["a"], d["b"]):
         result += a * np.exp(-b * s2)
     return result
 
 
-def orbital_affe(element, orbital, s):
+def _affe_p(element, s):
     """
-    Partial atomic form factor for electron scattering, based on a particular orbital.
+    Atomic form factor for p orbitals. Effectively, this is from the reference, Eq. 11
 
-    Parameters
-    ----------
-    element : crystals.Element, int, or str
-        Atomic number, atomic symbol, or Atom/Element instance.
-    orbital : crystals.Orbital
-        Electronic orbital
-    s : array_like
-        Scattering vector norm
-
-    Returns
-    -------
-    eff : `~numpy.ndarray`, dtype float
-        Atomic form factor for electron scattering.
+    .. [#] Jin-Cheng Zheng, Lijun Wu and Yimei Zhu. "Aspherical electron scattering factors and their 
+           parameterizations for elements from H to Xe" (2009). J. Appl. Cryst. vol 42, pp. 1043 - 1053.
     """
-    if isinstance(element, (int, str)):
-        element = Element(Element)
+    affe_p_sph = _affe_parametrization(s, aspherical_ff[element]["p0"]) # Numerical parametrization of Eq 12
+    affe_p_p1 = _affe_parametrization(s, aspherical_ff[element]["p1"])  # Numerical parametrization of Eq 13
+
+    # Angle between the electron beam and the z-axis of the orbital
+    # TODO: How do we find this?
+    beta = 0 # radians
+    return (3/2)*(sin(beta)**2)*affe_p_sph + (cos(beta)**2 - (1/2)*sin(beta)**2)*affe_p_p1
