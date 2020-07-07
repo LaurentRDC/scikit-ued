@@ -128,10 +128,16 @@ def _affe_p(element, s):
     .. [#] Jin-Cheng Zheng, Lijun Wu and Yimei Zhu. "Aspherical electron scattering factors and their 
            parameterizations for elements from H to Xe" (2009). J. Appl. Cryst. vol 42, pp. 1043 - 1053.
     """
-    affe_p_sph = _affe_parametrization(s, aspherical_ff[element]["p0"]) # Numerical parametrization of Eq 12
-    affe_p_p1 = _affe_parametrization(s, aspherical_ff[element]["p1"])  # Numerical parametrization of Eq 13
+    affe_p_sph = _affe_parametrization(
+        s, aspherical_ff[element]["p0"]
+    )  # Numerical parametrization of Eq 12
+    affe_p_p1 = _affe_parametrization(
+        s, aspherical_ff[element]["p1"]
+    )  # Numerical parametrization of Eq 13
 
     # Angle between the electron beam and the z-axis of the orbital
     # TODO: How do we find this?
-    beta = 0 # radians
-    return (3/2)*(sin(beta)**2)*affe_p_sph + (cos(beta)**2 - (1/2)*sin(beta)**2)*affe_p_p1
+    beta = 0  # radians
+    return (3 / 2) * (sin(beta) ** 2) * affe_p_sph + (
+        cos(beta) ** 2 - (1 / 2) * sin(beta) ** 2
+    ) * affe_p_p1

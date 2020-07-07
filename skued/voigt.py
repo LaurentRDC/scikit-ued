@@ -60,7 +60,7 @@ def gaussian(coordinates, center, fwhm=None, std=None):
         return (
             1
             / (std * np.sqrt(2 * pi))
-            * np.exp(-(coordinates - center) ** 2 / (2 * std * std))
+            * np.exp(-((coordinates - center) ** 2) / (2 * std * std))
         )
 
         # Computation

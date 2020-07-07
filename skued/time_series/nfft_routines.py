@@ -100,7 +100,7 @@ def _fast_gaussian_grid(x, y, Mr, Msp, tau):
 
     E1 = np.exp(-0.25 * (xmod - hx * m) ** 2 / tau)
     E2 = np.exp(msp * (xmod - hx * m) * pi / (Mr * tau))
-    E3 = np.exp(-(pi * msp / Mr) ** 2 / tau)
+    E3 = np.exp(-((pi * msp / Mr) ** 2) / tau)
 
     spread = (y * E1) * E2 * E3
     np.add.at(ftau, mm % Mr, spread)

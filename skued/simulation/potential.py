@@ -34,7 +34,7 @@ def _electrostatic_atom(atom, r):
 
     sum2 = np.zeros_like(r, np.float)
     for c, d in zip((c1, c2, c3), (d1, d2, d3)):
-        sum2 += c * (d ** (-1.5)) * np.exp(-(r * pi) ** 2 / d)
+        sum2 += c * (d ** (-1.5)) * np.exp(-((r * pi) ** 2) / d)
 
     e = 14.4  # [Volt-Angstrom]
     a0 = 0.5291  # [Angs]
@@ -94,7 +94,7 @@ def _pelectrostatic_atom(atom, r):
     potential = np.zeros_like(r, dtype=np.float)
     for a, b, c, d in zip((a1, a2, a3), (b1, b2, b3), (c1, c2, c3), (d1, d2, d3)):
         potential += 2 * a * bessel(2 * pi * r * sqrt(b)) + (c / d) * np.exp(
-            -(r * pi) ** 2 / d
+            -((r * pi) ** 2) / d
         )
 
     return 2 * a0 * e * (pi ** 2) * potential

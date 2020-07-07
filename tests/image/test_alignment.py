@@ -17,9 +17,10 @@ from .test_powder import circle_image
 
 np.random.seed(23)
 
-# Because of a bug in scikit-iamge 0.16.2, I have placed the 
+# Because of a bug in scikit-iamge 0.16.2, I have placed the
 # output of `skimage.data.camera()` in its own file.
-TEST_IMAGE = imread(Path(__file__).parent / 'camera.png')
+TEST_IMAGE = imread(Path(__file__).parent / "camera.png")
+
 
 class TestIAlign(unittest.TestCase):
     def test_trivial(self):

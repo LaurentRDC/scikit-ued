@@ -78,8 +78,8 @@ class Selection(metaclass=ABCMeta):
         # the bounding box by finding minimum and maximum indices
         # where the projection is nonzero
         # Warning : nonzero() returns a tuple!
-        row_nonzero, = np.sum(selection, axis=1).nonzero()
-        col_nonzero, = np.sum(selection, axis=0).nonzero()
+        (row_nonzero,) = np.sum(selection, axis=1).nonzero()
+        (col_nonzero,) = np.sum(selection, axis=0).nonzero()
 
         # In case of empty selection (i.e. all False), min and max will fail
         # Therefore, we replace with trivial value
