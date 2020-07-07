@@ -121,7 +121,7 @@ Let's see what :func:`with_irf` in action:
 
     plt.figure()
     plt.plot(times, data, ".k", label='No IRF')
-    plt.plot(times, conv, "-g", label='With IRF')
+    plt.plot(times, conv, "-r", label='With IRF')
     plt.legend()
     plt.show()
 
@@ -141,8 +141,9 @@ Let's see what :func:`with_irf` in action:
     conv = skued.with_irf(2)(skued.exponential)(times, 0, 1, 1)
 
     plt.figure()
-    plt.plot(times, data, ".k")
-    plt.plot(times, conv, "-g")
+    plt.plot(times, data, ".k", label='No IRF'))
+    plt.plot(times, conv, "-r", label='With IRF')
+    plt.legend()
     plt.show()
 
 
