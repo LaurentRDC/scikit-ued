@@ -89,6 +89,64 @@ We can plot the result:
     ax.legend()
     plt.show()
 
+Taking into account the IRF
+---------------------------
+
+No fitting of time-resolved data is complete without taking into account the instrument response function, 
+or IRF. To help with this, `scikit-ued` provides the :func:`with_irf` decorator factory. It can be used as follows::
+
+    from skued import exponential, with_irf
+
+    # If the data is recorded in picoseconds, then the following
+    # applies a Gaussian IRF with a full-width at half-max of 150fs (0.15 picoseconds) 
+    @with_irf(0.150)
+    def exponential_with_irf(time, *args, **kwargs):
+        return exponential(time, *args, **kwargs)
+    
+Let's see what :func:`with_irf` in action:
+
+.. plot::
+
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import skued
+
+    times = np.linspace(-5, 15, 256)
+    data = skued.exponential(times, 0, 1, 3)
+
+    @skued.with_irf(4) # IRF is larger than expected time-constant
+    def exponential_with_irf(time, *args, **kwargs):
+        return skued.exponential(time, *args, **kwargs)
+    conv = exponential_with_irf(times, 0, 1, 3)
+
+    plt.figure()
+    plt.plot(times, data, ".k", label='No IRF')
+    plt.plot(times, conv, "-g", label='With IRF')
+    plt.legend()
+    plt.show()
+
+
+:func:`with_irf` also works with data that is not defined on an even grid, like many ultrafast experiments:
+
+.. plot::
+
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import skued
+
+    times = np.concatenate(
+        (np.arange(-10, -2, step=1), np.arange(-2, 2, step=0.05), np.arange(2, 10, step=1))
+    )
+    data = skued.exponential(times, 0, 1, 1)
+    conv = skued.with_irf(2)(skued.exponential)(times, 0, 1, 1)
+
+    plt.figure()
+    plt.plot(times, data, ".k")
+    plt.plot(times, conv, "-g")
+    plt.show()
+
+
+
 .. _selection:
 
 Selections
