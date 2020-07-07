@@ -106,6 +106,7 @@ Fitting
 
     exponential
     biexponential
+    with_irf
 
 Non-uniform Fast Fourier Transform
 ----------------------------------

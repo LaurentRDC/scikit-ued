@@ -123,6 +123,8 @@ def convolve(arr, kernel):
 
 # TODO: test with unevenly-spaced data points
 # TODO: figure out wth is going on with the width
+# TODO: add example
+# TODO: add example to user guide
 def with_irf(fwhm, f):
     """
     This decorator applies a Gaussian impulse response function (IRF) to a fitting function.
