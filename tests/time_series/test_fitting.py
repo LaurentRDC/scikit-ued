@@ -18,7 +18,9 @@ class TestExponentialDecay(unittest.TestCase):
     def test_tzero_limits(self):
         """ Test that the output of ``exponential`` has the correct time-zero """
         t = np.arange(-10, 50, step=0.3)
-        I = exponential(t, tzero=self.tzero, amp=self.amp, tconst=self.tconst, offset=self.offset)
+        I = exponential(
+            t, tzero=self.tzero, amp=self.amp, tconst=self.tconst, offset=self.offset
+        )
 
         # Check that all values before time-zero are the amplitude
         self.assertTrue(np.all(np.equal(I[t < self.tzero], self.offset)))
@@ -27,7 +29,9 @@ class TestExponentialDecay(unittest.TestCase):
     def test_positivity(self):
         """ Test that the output of ``exponential`` is always positive. """
         t = np.arange(-10, 50, step=0.3)
-        I = exponential(t, tzero=self.tzero, amp=self.amp, tconst=self.tconst, offset=self.offset)
+        I = exponential(
+            t, tzero=self.tzero, amp=self.amp, tconst=self.tconst, offset=self.offset
+        )
 
         self.assertTrue(np.all(I >= 0))
 
@@ -35,7 +39,9 @@ class TestExponentialDecay(unittest.TestCase):
         """ Test that the output of ``exponential`` is at most 0, 
         and at least ``amp`` (if ``amp`` is negative). """
         t = np.arange(-10, 50, step=0.3)
-        I = exponential(t, tzero=self.tzero, amp=self.amp, tconst=self.tconst, offset=self.offset)
+        I = exponential(
+            t, tzero=self.tzero, amp=self.amp, tconst=self.tconst, offset=self.offset
+        )
 
         self.assertTrue(np.all(np.less_equal(I, self.offset)))
         self.assertTrue(np.all(np.greater_equal(I, self.amp + self.offset)))
@@ -68,7 +74,7 @@ class TestBiExponentialDecay(unittest.TestCase):
             amp2=self.amp2,
             tconst1=self.tconst1,
             tconst2=self.tconst2,
-            offset=15
+            offset=15,
         )
 
         # Check that all values before time-zero are the amplitude
@@ -85,7 +91,7 @@ class TestBiExponentialDecay(unittest.TestCase):
             amp2=self.amp2,
             tconst1=self.tconst1,
             tconst2=self.tconst2,
-            offset = abs(self.amp1) + abs(self.amp2)
+            offset=abs(self.amp1) + abs(self.amp2),
         )
 
         self.assertTrue(np.all(I >= 0))
@@ -100,7 +106,7 @@ class TestBiExponentialDecay(unittest.TestCase):
             amp2=self.amp2,
             tconst1=self.tconst1,
             tconst2=self.tconst2,
-            offset=10
+            offset=10,
         )
 
         self.assertTrue(np.all(np.less_equal(I, 10)))

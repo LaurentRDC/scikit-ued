@@ -5,6 +5,7 @@ Convenience functions for fitting time-series.
 
 import numpy as np
 from math import sqrt, log
+from functools import wraps
 
 
 def exponential(time, tzero, amp, tconst, offset=0):
@@ -43,7 +44,8 @@ def exponential(time, tzero, amp, tconst, offset=0):
     biexponential : bi-exponential curve with onset
     """
     return (
-        np.heaviside(time - tzero, 1 / 2) * (amp * (1 - np.exp(-(time - tzero) / tconst)))
+        np.heaviside(time - tzero, 1 / 2)
+        * (amp * (1 - np.exp(-(time - tzero) / tconst)))
         + offset
     )
 
@@ -93,36 +95,7 @@ def biexponential(time, tzero, amp1, amp2, tconst1, tconst2, offset=0):
     return arr
 
 
-def gauss_kernel(t, t0, fwhm):
-    """
-    Gaussian convolution kernel.
-
-    Parameters
-    ----------
-    x : array-like
-        Independant variable
-    t0 : array-like
-        t0 offset
-    fwhm : float
-        Full-width at half-maximum of the Gaussian kernel
-    """
-    std = fwhm / (2 * sqrt(2 * log(2)))
-    return (1/(np.sqrt(2*np.pi)*std)) * np.exp(-(1.0*t-t0)**2 / (2*std**2))
-
-
-def convolve(arr, kernel):
-    """ Convolution of array with kernel. """
-    #logger.debug("Convolving...")
-    npts = min(len(arr), len(kernel))
-    pad  = np.ones(npts)
-    tmp  = np.concatenate((pad*arr[0], arr, pad*arr[-1]))
-    norm = np.sum(kernel)
-    out  = np.convolve(tmp, kernel, mode='same')
-    noff = int((len(out) - npts)/2)
-    return out[noff:noff+npts]/norm
-
 # TODO: test with unevenly-spaced data points
-# TODO: figure out wth is going on with the width
 # TODO: add example
 # TODO: add example to user guide
 def with_irf(fwhm, f):
@@ -145,7 +118,42 @@ def with_irf(fwhm, f):
     --------
 
     """
+
+    @wraps(f)
     def f_(time, *args, **kwargs):
-        kernel = gauss_kernel(time, t0=0, fwhm=fwhm)
-        return convolve(f(time, *args, **kwargs), kernel)
+        kernel = _gauss_kernel(time, fwhm=fwhm)
+        return _convolve(f(time, *args, **kwargs), kernel)
+
     return f_
+
+
+def _gauss_kernel(t, fwhm):
+    """
+    Gaussian convolution kernel.
+
+    Parameters
+    ----------
+    t : array-like
+        Independant variable
+    fwhm : float
+        Full-width at half-maximum of the Gaussian kernel
+    """
+    # It is important that the kernel be centered in the array `t`
+    # for the convolution operation to work properly
+    t0 = t[int(len(t) / 2)]
+
+    std = fwhm / (2 * sqrt(2 * log(2)))
+    return (1 / (np.sqrt(2 * np.pi) * std)) * np.exp(
+        -((1.0 * t - t0) ** 2) / (2 * std ** 2)
+    )
+
+
+def _convolve(arr, kernel):
+    """ Convolution of array with kernel. """
+    npts = min(len(arr), len(kernel))
+    pad = np.ones(npts)
+    tmp = np.concatenate((pad * arr[0], arr, pad * arr[-1]))
+    norm = np.sum(kernel)
+    out = np.convolve(tmp, kernel, mode="same")
+    noff = int((len(out) - npts) / 2)
+    return out[noff : noff + npts] / norm
