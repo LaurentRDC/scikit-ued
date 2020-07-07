@@ -67,6 +67,7 @@ from .thin_films import film_optical_coefficients
 from .time_series import (
     biexponential,
     exponential,
+    with_irf,
     mad,
     nfft,
     nfftfreq,
