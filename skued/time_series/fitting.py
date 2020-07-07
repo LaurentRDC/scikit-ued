@@ -12,11 +12,7 @@ def exponential(time, tzero, amp, tconst, offset=0):
 
     .. math::
 
-        I(t) =
-        \\begin{cases} 
-            I_0 + O &\\text{if } t < t_0 \\\\
-            I_0 e^{-(t - t_0)/\\tau} + O &\\text{if } t \ge t_0
-        \\end{cases}
+        I(t) = I_0 (1 - e^{-(t - t_0)/\\tau}) \\Theta(t - t_0) + O
 
     This functions is expected to be used in conjunction with 
     ``scipy.optimize.curve_fit`` or similar fitting routines.
@@ -30,7 +26,7 @@ def exponential(time, tzero, amp, tconst, offset=0):
     amp : float
         Initial amplitude :math:`I_0`.
     tconst : float
-        Decay time-constant :math:`\\tau` [ps].
+        Time-constant :math:`\\tau` [ps].
     offset : float, optional
         Constant amplitude offset :math:`O`.
 
@@ -43,9 +39,10 @@ def exponential(time, tzero, amp, tconst, offset=0):
     --------
     biexponential : bi-exponential curve with onset
     """
-    arr = np.full_like(time, amp + offset, dtype=np.float)
-    arr[time > tzero] = amp * np.exp(-(time[time > tzero] - tzero) / tconst) + offset
-    return arr
+    return (
+        np.heaviside(time - tzero, 1 / 2) * (amp * (1 - np.exp(-(time - tzero) / tconst)))
+        + offset
+    )
 
 
 def biexponential(time, tzero, amp1, amp2, tconst1, tconst2, offset=0):
@@ -54,11 +51,7 @@ def biexponential(time, tzero, amp1, amp2, tconst1, tconst2, offset=0):
 
     .. math::
 
-        I(t) =
-        \\begin{cases} 
-            I_1 + I_2 + O &\\text{if } t < t_0 \\\\
-            I_1 e^{-(t - t_0)/\\tau_1} + I_2 e^{-(t - t_0)/\\tau_2} + O &\\text{if } t \ge t_0
-        \\end{cases}
+        I(t) = \\Theta(t - t_0) \\left[ I_1 (1 - e^{-(t - t_0)/\\tau_1}) + I_2 (1 - e^{-(t - t_0)/\\tau_2})\\right] + O
 
     This functions is expected to be used in conjunction with 
     ``scipy.optimize.curve_fit`` or similar fitting routines.
@@ -90,6 +83,6 @@ def biexponential(time, tzero, amp1, amp2, tconst1, tconst2, offset=0):
     exponential : single-exponential curve with onset
     """
     arr = np.full_like(time, offset, dtype=np.float)
-    arr += exponential(time, tzero, amp1, tconst1)
-    arr += exponential(time, tzero, amp2, tconst2)
+    arr += exponential(time, tzero=tzero, amp=amp1, tconst=tconst1, offset=0)
+    arr += exponential(time, tzero=tzero, amp=amp2, tconst=tconst2, offset=0)
     return arr
