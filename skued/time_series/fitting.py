@@ -102,7 +102,6 @@ def biexponential(time, tzero, amp1, amp2, tconst1, tconst2, offset=0):
     return arr
 
 
-
 def regrid(f):
     """
     Decorator that makes a function `f` evaluate correctly with uneven-spacing
@@ -120,6 +119,7 @@ def regrid(f):
     f_ : callable
         Callable of the form 
     """
+
     @wraps(f)
     def f_(time, *args, **kwargs):
         mn, mx = np.min(time), np.max(time)
@@ -163,7 +163,7 @@ def with_irf(fwhm):
         def f_(time, *args, **kwargs):
             kernel = _gauss_kernel(time, fwhm=fwhm)
             norm = np.sum(kernel)
-            return np.convolve(f(time, *args, **kwargs), kernel, mode='same') / norm
+            return np.convolve(f(time, *args, **kwargs), kernel, mode="same") / norm
 
         return f_
 
