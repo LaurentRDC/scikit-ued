@@ -15,6 +15,8 @@ def exponential(time, tzero, amp, tconst, offset=0):
 
         I(t) = I_0 (1 - e^{-(t - t_0)/\\tau}) \\Theta(t - t_0) + O
 
+    where :math:`\\Theta(t - t_0)` is the Heaviside step function. 
+
     This functions is expected to be used in conjunction with 
     ``scipy.optimize.curve_fit`` or similar fitting routines.
 
@@ -53,6 +55,8 @@ def biexponential(time, tzero, amp1, amp2, tconst1, tconst2, offset=0):
     .. math::
 
         I(t) = \\Theta(t - t_0) \\left[ I_1 (1 - e^{-(t - t_0)/\\tau_1}) + I_2 (1 - e^{-(t - t_0)/\\tau_2})\\right] + O
+
+    where :math:`\\Theta(t - t_0)` is the Heaviside step function.
 
     This functions is expected to be used in conjunction with 
     ``scipy.optimize.curve_fit`` or similar fitting routines.
