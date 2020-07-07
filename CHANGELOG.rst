@@ -5,6 +5,7 @@ Release 2.0.4
 -------------
 
 * Added support for `crystals.ElectronicStructure`. This requires `crystals` version 1.1.0 and up.
+* Added the function `with_irf`, which allows to modify fitting functions to include the effects of instrument response.
 
 Release 2.0.3
 -------------
