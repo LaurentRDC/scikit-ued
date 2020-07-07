@@ -6,6 +6,7 @@ Convenience functions for fitting time-series.
 import numpy as np
 from math import sqrt, log
 from functools import wraps
+from scipy.interpolate import interp1d
 
 
 def exponential(time, tzero, amp, tconst, offset=0):
@@ -101,12 +102,44 @@ def biexponential(time, tzero, amp1, amp2, tconst1, tconst2, offset=0):
     return arr
 
 
-# TODO: test with unevenly-spaced data points
+
+def regrid(f):
+    """
+    Decorator that makes a function `f` evaluate correctly with uneven-spacing
+    variables `t` by evaluating on a denser, even grid, and then interpolating back to `t`.
+
+    This is useful, for example, if the function `f` involves convolutions.
+
+    Parameters
+    ----------
+    f : callable
+        Function of the form `f = func(t, *args, **kwargs)`, where `t` is the independent variable.
+
+    Returns
+    -------
+    f_ : callable
+        Callable of the form 
+    """
+    @wraps(f)
+    def f_(time, *args, **kwargs):
+        mn, mx = np.min(time), np.max(time)
+        margin = mx - mn
+        dt = np.abs(np.min(time[1:] - time[:-1]))
+        constant_t = np.arange(mn - margin, mx + margin + dt, dt)
+
+        y = f(constant_t, *args, **kwargs)
+
+        intrp = interp1d(constant_t, y, kind=3, copy=False, assume_sorted=True)
+        return intrp(time)
+
+    return f_
+
+
 # TODO: add example
 # TODO: add example to user guide
-def with_irf(fwhm, f):
+def with_irf(fwhm):
     """
-    This decorator applies a Gaussian impulse response function (IRF) to a fitting function.
+    This decorator factory that applies a Gaussian impulse response function (IRF) to a fitting function.
 
     Parameters
     ----------
@@ -122,15 +155,19 @@ def with_irf(fwhm, f):
     
     Examples
     --------
-
     """
 
-    @wraps(f)
-    def f_(time, *args, **kwargs):
-        kernel = _gauss_kernel(time, fwhm=fwhm)
-        return _convolve(f(time, *args, **kwargs), kernel)
+    def decorator(f):
+        @wraps(f)
+        @regrid
+        def f_(time, *args, **kwargs):
+            kernel = _gauss_kernel(time, fwhm=fwhm)
+            norm = np.sum(kernel)
+            return np.convolve(f(time, *args, **kwargs), kernel, mode='same') / norm
 
-    return f_
+        return f_
+
+    return decorator
 
 
 def _gauss_kernel(t, fwhm):
@@ -152,14 +189,3 @@ def _gauss_kernel(t, fwhm):
     return (1 / (np.sqrt(2 * np.pi) * std)) * np.exp(
         -((1.0 * t - t0) ** 2) / (2 * std ** 2)
     )
-
-
-def _convolve(arr, kernel):
-    """ Convolution of array with kernel. """
-    npts = min(len(arr), len(kernel))
-    pad = np.ones(npts)
-    tmp = np.concatenate((pad * arr[0], arr, pad * arr[-1]))
-    norm = np.sum(kernel)
-    out = np.convolve(tmp, kernel, mode="same")
-    noff = int((len(out) - npts) / 2)
-    return out[noff : noff + npts] / norm
