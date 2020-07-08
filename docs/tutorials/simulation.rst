@@ -102,7 +102,7 @@ After plot formatting:
 
     import matplotlib.pyplot as plt
     import numpy as np
-    from skued import Crystal
+    from crystals import Crystal
     from skued import pelectrostatic
 
     extent = np.linspace(-5, 5, 256)
