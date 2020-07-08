@@ -147,7 +147,6 @@ Let's see what :func:`with_irf` in action:
     plt.show()
 
 
-
 .. _selection:
 
 Selections
