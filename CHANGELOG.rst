@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.0.5
+-------------
+
+* Various documentation improvements and fixes.
+
 Release 2.0.4
 -------------
 
