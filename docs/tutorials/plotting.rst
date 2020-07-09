@@ -2,6 +2,8 @@
 
 .. _plotting_tutorial:
 
+.. currentmodule:: skued
+
 ********
 Plotting
 ********

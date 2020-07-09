@@ -2,6 +2,8 @@
 
 .. _image_analysis_tutorial:
 
+.. currentmodule:: skued
+
 *************************
 Image Analysis/Processing
 *************************
@@ -34,7 +36,7 @@ Diffraction patterns can come in a variety of exotic file formats. Scikit-ued ha
 * TIFF images (`*.tif`, `*.tiff`);
 * All other file formats supported by `scikit-image`_.
 
-The :func:`skued.diffread` function will transparently distinguish between those formats and dispatch to the right functions. 
+The :func:`diffread` function will transparently distinguish between those formats and dispatch to the right functions. 
 
 .. _alignment:
 

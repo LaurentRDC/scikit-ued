@@ -2,6 +2,8 @@
 
 .. _baseline_tutorial:
 
+.. currentmodule:: skued
+
 **********************
 Baseline-determination
 **********************

@@ -2,6 +2,8 @@
 
 .. _simulation_tutorial:
 
+.. currentmodule:: skued
+
 ***********
 Simulations
 ***********
@@ -21,7 +23,7 @@ Polycrystalline Diffraction Simulation
 The simplest diffraction simulation available in scikit-ued is polycrystalline
 diffraction simulation.
 
-All you need is a :class:`Crystal` object and a range of scattering length, defined from 
+All you need is a :class:`crystals.Crystal` object and a range of scattering length, defined from 
 scattering angles `s` as :math:`s = \sin{\theta}/\lambda`::
 	
 	import matplotlib.pyplot as plt

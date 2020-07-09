@@ -2,6 +2,8 @@
 
 .. _timeseries_tutorial:
 
+.. currentmodule:: skued
+
 ********************
 Time-series analysis
 ********************
