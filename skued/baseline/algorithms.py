@@ -134,6 +134,10 @@ def baseline_dwt(
 	baseline : `~numpy.ndarray`, shape (M,N)
 		Baseline of the input array.
 
+    See Also
+    --------
+    baseline_dt : Baseline-removal based on the dual-tree complex wavelet transform
+
 	References
 	----------
 	.. [#] Galloway et al. 'An Iterative Algorithm for Background Removal in Spectroscopy by Wavelet 
