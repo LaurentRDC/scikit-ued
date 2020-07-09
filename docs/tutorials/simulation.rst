@@ -42,7 +42,7 @@ After plot formatting:
 	
 	import matplotlib.pyplot as plt
 	import numpy as np
-	from skued import Crystal
+	from crystals import Crystal
 	graphite = Crystal.from_database('C')
 	from skued import powdersim
 	q = np.linspace(1, 10, 1024)
@@ -102,7 +102,7 @@ After plot formatting:
 
     import matplotlib.pyplot as plt
     import numpy as np
-    from skued import Crystal
+    from crystals import Crystal
     from skued import pelectrostatic
 
     extent = np.linspace(-5, 5, 256)

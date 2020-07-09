@@ -119,7 +119,7 @@ def regrid(f):
     f_ : callable
         Callable of the form 
     """
-
+    # This function is based on an e-mail discussion with Samuel Palato. Thanks Sam!
     @wraps(f)
     def f_(time, *args, **kwargs):
         mn, mx = np.min(time), np.max(time)
@@ -135,8 +135,6 @@ def regrid(f):
     return f_
 
 
-# TODO: add example
-# TODO: add example to user guide
 def with_irf(fwhm):
     """
     This decorator factory that applies a Gaussian impulse response function (IRF) to a fitting function.
@@ -145,16 +143,19 @@ def with_irf(fwhm):
     ----------
     fwhm : float
         Full-width at half-maximum.
-    f : callable
-        Fit function (e.g. :func:`exponential`)
     
     Returns
     -------
-    f_ : callable
-        Transformed function
+    decorator : callable
+        Decorator that takes a function of the form ``f(t, *args, **kwargs)``
+        and convolutes it with a Gaussian IRF. See the examples below.
     
     Examples
     --------
+    >>> from skued import with_irf, exponential
+    >>> @with_irf(0.150)
+    ... def exponential_with_irf(time, *args, **kwargs):
+    ...     return exponential(time, *args, **kwargs)
     """
 
     def decorator(f):
