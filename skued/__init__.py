@@ -62,7 +62,14 @@ from .io import diffread, diffshow, dmread, imibread, mibheader, mibread
 from .patterson import patterson
 from .plot_utils import rgb_sweep, spectrum_colors, spectrum_cmap, indices_to_text
 from .potential_map import potential_map, potential_synthesis
-from .simulation import affe, electrostatic, pelectrostatic, powdersim, structure_factor
+from .simulation import (
+    affe,
+    electrostatic,
+    pelectrostatic,
+    powdersim,
+    structure_factor,
+    kinematicsim,
+)
 from .thin_films import film_optical_coefficients
 from .time_series import (
     biexponential,
