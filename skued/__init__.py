@@ -78,5 +78,6 @@ from .time_series import (
     RectSelection,
     DiskSelection,
     RingSelection,
+    RingArcSelection,
 )
 from .voigt import gaussian, lorentzian, pseudo_voigt

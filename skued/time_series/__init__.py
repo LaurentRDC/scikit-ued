@@ -14,6 +14,7 @@ from .selections import (
     DiskSelection,
     RectSelection,
     RingSelection,
+    RingArcSelection,
     Selection,
 )
 from .time_zero import register_time_shift, register_time_shifts

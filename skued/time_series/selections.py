@@ -304,3 +304,105 @@ class RingSelection(Selection):
         outer_circ = mpatches.Circle(xy=(x, y), radius=self._outer_radius, **kwargs)
 
         return inner_circ, outer_circ
+
+
+class RingArcSelection(Selection):
+    """
+    Selection patch for a partial 2-torus.
+
+    .. versionadded:: 2.0.5
+
+    Parameters
+    ----------
+    shape : 2-tuple
+        Shape of the scattering patterns from which data will be selected.
+    center : 2-tuple of ints
+        Center (row, col) of the selection.
+    inner_radius : float
+        Inner radius of the selection.
+    outer_radius : float
+        Outer radius of the selection.
+    angle : float
+        Rotation of the ring in degrees.
+    theta1, theta2 : float
+        Starting and ending angles of the 2-torus in degrees, relative to ``angle``.
+    """
+
+    def __init__(
+        self, shape, center, inner_radius, outer_radius, angle=0, theta1=0, theta2=360
+    ):
+        if inner_radius > outer_radius:
+            raise ValueError("Inner radius cannot be larger than outer radius.")
+
+        super().__init__(shape=shape)
+        self._center = center
+        self._inner_radius = inner_radius
+        self._outer_radius = outer_radius
+        self._angle = angle
+        self._theta1 = theta1
+        self._theta2 = theta2
+
+    @property
+    def bounding_box(self):
+        """ 
+        Returns the array bounding box.
+
+        Returns
+        -------
+        r1, r2 : int
+            Row-wise bounds
+        c1, c2 : int
+            Column-wise bounds
+        """
+        rc, cc = self._center
+        return (
+            rc - self._outer_radius,
+            rc + self._outer_radius + 1,
+            cc - self._outer_radius,
+            cc + self._outer_radius + 1,
+        )
+
+    def __array__(self, *args, **kwargs):
+        center_row, center_col = self._center
+        selection = np.zeros(shape=self.shape, dtype=np.bool)
+        cc, rr = np.meshgrid(
+            np.arange(0, self.shape[0], dtype=np.int) - center_col,
+            np.arange(0, self.shape[1], dtype=np.int) - center_row,
+        )
+        distance = np.sqrt(rr ** 2 + cc ** 2)
+        angle = np.rad2deg(np.arctan2(rr, cc)) + self._angle
+        angle[:] = np.mod(angle, 360)
+
+        distance_criteria = np.logical_and(
+            distance >= self._inner_radius, distance <= self._outer_radius
+        )
+        angle_criteria = np.logical_and(angle >= self._theta1, angle <= self._theta2)
+        selection[np.logical_and(angle_criteria, distance_criteria)] = True
+        return selection
+
+    def mpatch(self, **kwargs):
+        """
+        Partial toroidal patch. Keyword arguments are passed 
+        to `matplotlib.patches.Arc`.
+
+        Returns
+        -------
+        inner : matplotlib.patches.Circle
+        outer : matplotlib.patches.Circle
+        """
+        y, x = self._center
+
+        arc = lambda radius: mpatches.Arc(
+            xy=(x, y),
+            width=2 * radius,
+            height=2 * radius,
+            angle=self._angle,
+            theta1=self._theta1,
+            theta2=self._theta2,
+            **kwargs
+        )
+
+        inner_arc = arc(self._inner_radius)
+        outer_arc = arc(self._outer_radius)
+
+        return inner_circ, outer_circ

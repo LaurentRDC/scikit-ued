@@ -9,6 +9,7 @@ from skued import (
     RectSelection,
     DiskSelection,
     RingSelection,
+    RingArcSelection,
     ArbitrarySelection,
 )
 
@@ -31,6 +32,24 @@ class TestSelectionArray(unittest.TestCase):
         toarr = np.array(selection)
         self.assertEqual(toarr.shape, (8, 8))
         self.assertEqual(toarr.dtype, np.bool)
+
+    def test_ring_arc_array(self):
+        fullarc = RingArcSelection(
+            (8, 8),
+            center=(4, 3),
+            inner_radius=1,
+            outer_radius=3,
+            angle=0,
+            theta1=0,
+            theta2=360,
+        )
+        toarr = np.array(fullarc)
+        self.assertEqual(toarr.shape, (8, 8))
+        self.assertEqual(toarr.dtype, np.bool)
+
+        ring = RingSelection((8, 8), center=(4, 3), inner_radius=1, outer_radius=3)
+
+        self.assertTrue(np.allclose(fullarc, ring))
 
     def test_arbitrary_array(self):
         selection = ArbitrarySelection(np.random.choice([True, False], size=(8, 8)))
@@ -69,6 +88,19 @@ class TestSelectionBBox(unittest.TestCase):
         ring = RingSelection((16, 16), center=(8, 7), inner_radius=1, outer_radius=3)
 
         self.assertEqual(disk.bounding_box, ring.bounding_box)
+
+    def test_ring_arc_selection(self):
+        ring = RingSelection((16, 16), center=(8, 7), inner_radius=1, outer_radius=3)
+        fullarc = RingArcSelection(
+            (16, 16),
+            center=(8, 7),
+            inner_radius=1,
+            outer_radius=3,
+            angle=0,
+            theta1=0,
+            theta2=360,
+        )
+        self.assertEqual(ring.bounding_box, fullarc.bounding_box)
 
     def test_arbitrary_selection(self):
 
