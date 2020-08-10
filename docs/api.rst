@@ -129,6 +129,7 @@ Time-series Selections
     RectSelection
     DiskSelection
     RingSelection
+    RincArcSelection
     ArbitrarySelection
 
 ==============
@@ -213,6 +214,7 @@ Simulation
     structure_factor
     affe
     powdersim
+    kinematicsim
     electrostatic
     pelectrostatic
 
