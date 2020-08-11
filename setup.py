@@ -53,6 +53,7 @@ if __name__ == "__main__":
         name=PACKAGE_NAME,
         description=DESCRIPTION,
         long_description=README,
+        long_description_content_type="text/markdown"
         license=LICENSE,
         url=URL,
         download_url=DOWNLOAD_URL,
