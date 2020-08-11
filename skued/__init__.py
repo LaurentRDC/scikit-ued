@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 __author__ = "Laurent P. René de Cotret"
 __email__ = "laurent.renedecotret@mail.mcgill.ca"
-__license__ = "MIT"
+__license__ = "GPLv3"
 __version__ = "2.0.6"
 
 from .affine import (

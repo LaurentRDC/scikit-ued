@@ -53,7 +53,7 @@ if __name__ == "__main__":
         name=PACKAGE_NAME,
         description=DESCRIPTION,
         long_description=README,
-        long_description_content_type="text/markdown"
+        long_description_content_type="text/markdown",
         license=LICENSE,
         url=URL,
         download_url=DOWNLOAD_URL,
@@ -87,7 +87,7 @@ if __name__ == "__main__":
             "Environment :: Console",
             "Development Status :: 5 - Production/Stable",
             "Intended Audience :: Science/Research",
-            "License :: OSI Approved :: MIT License",
+            "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
             "Natural Language :: English",
             "Operating System :: OS Independent",
             "Programming Language :: Python",

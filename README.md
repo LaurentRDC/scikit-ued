@@ -80,5 +80,5 @@ All support requests and issue reports should be [filed on Github as an issue](h
 License
 -------
 
-scikit-ued is made available under the MIT License. For more details,
+scikit-ued is made available under the GPLv3 License. For more details,
 see [LICENSE.txt](https://github.com/LaurentRDC/scikit-ued/blob/master/LICENSE.txt).

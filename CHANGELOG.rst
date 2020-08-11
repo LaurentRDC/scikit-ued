@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.0.6
+-------------
+
+* `scikit-ued` is being re-licensed from the MIT license to the GPLv3 license.
+
 Release 2.0.5
 -------------
 
