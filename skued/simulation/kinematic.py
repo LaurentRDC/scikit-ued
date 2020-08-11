@@ -16,6 +16,8 @@ def kinematicsim(crystal, kx, ky, energy=90):
     Propagate a plane wave through a crystal and compute the resulting
     diffraction pattern, in the kinematic approximation (thin specimen).
 
+    .. versionadded:: 2.0.5
+
     Parameters
     ----------
     crystal : skued.Crystal
