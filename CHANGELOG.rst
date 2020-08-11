@@ -6,6 +6,7 @@ Release 2.0.5
 
 * Added `skued.kinematicsim`, a simple function to compute electron diffraction patterns from 
   crystals structures in the kinematic approximation (i.e. thin samples).
+* Added the `skued.RingArcSelection` area.
 * Various documentation improvements and fixes.
 
 Release 2.0.4
