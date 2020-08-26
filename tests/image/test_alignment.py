@@ -30,7 +30,7 @@ class TestIAlign(unittest.TestCase):
         self.assertEqual(len(aligned), 5)
         self.assertSequenceEqual(TEST_IMAGE.shape, aligned[0].shape)
 
-    def test_misaligned_canned_images_fast(self):
+    def test_misaligned_canned_images(self):
         """ shift images from skimage.data by entire pixels.
 	   We don't expect perfect alignment."""
         original = TEST_IMAGE
@@ -38,28 +38,7 @@ class TestIAlign(unittest.TestCase):
             ndi.shift(original, (randint(-4, 4), randint(-4, 4))) for _ in range(5)
         ]
 
-        aligned = ialign(misaligned, reference=original, fast=True)
-
-        # TODO: find a better figure-of-merit for alignment
-        for im in aligned:
-            # edge will be filled with zeros, we ignore
-            diff = np.abs(original[5:-5, 5:-5] - im[5:-5, 5:-5])
-
-            # Want less than 1% difference
-            percent_diff = np.sum(diff) / (
-                diff.size * (original.max() - original.min())
-            )
-            self.assertLess(percent_diff, 1)
-
-    def test_misaligned_canned_images_notfast(self):
-        """ shift images from skimage.data by entire pixels.
-	   We don't expect perfect alignment."""
-        original = TEST_IMAGE
-        misaligned = [
-            ndi.shift(original, (randint(-4, 4), randint(-4, 4))) for _ in range(5)
-        ]
-
-        aligned = ialign(misaligned, reference=original, fast=False)
+        aligned = ialign(misaligned, reference=original)
 
         # TODO: find a better figure-of-merit for alignment
         for im in aligned:
@@ -81,28 +60,13 @@ class TestAlign(unittest.TestCase):
         aligned = align(im, reference=im, fill_value=np.nan)
         self.assertEqual(im.dtype, TEST_IMAGE.dtype)
 
-    def test_misaligned_canned_images_fast(self):
+    def test_misaligned_canned_images(self):
         """ shift images from skimage.data by entire pixels.
 	   	We don't expect perfect alignment."""
         original = TEST_IMAGE
         misaligned = ndi.shift(original, (randint(-4, 4), randint(-4, 4)))
 
         aligned = align(misaligned, reference=original)
-
-        # edge will be filled with zeros, we ignore
-        diff = np.abs(original[5:-5, 5:-5] - aligned[5:-5, 5:-5])
-
-        # Want less than 1% difference
-        percent_diff = np.sum(diff) / (diff.size * (original.max() - original.min()))
-        self.assertLess(percent_diff, 1)
-
-    def test_misaligned_canned_images_notfast(self):
-        """ shift images from skimage.data by entire pixels.
-	   	We don't expect perfect alignment."""
-        original = TEST_IMAGE
-        misaligned = ndi.shift(original, (randint(-4, 4), randint(-4, 4)))
-
-        aligned = align(misaligned, reference=original, fast=False)
 
         # edge will be filled with zeros, we ignore
         diff = np.abs(original[5:-5, 5:-5] - aligned[5:-5, 5:-5])

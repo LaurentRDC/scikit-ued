@@ -6,6 +6,7 @@ Module concerned with alignment of diffraction images
 from functools import partial
 
 import numpy as np
+from warnings import warn
 from npstreams import array_stream
 from scipy import ndimage as ndi
 from skimage.feature import masked_register_translation, register_translation
@@ -56,7 +57,7 @@ def itrack_peak(images, row_slice=None, col_slice=None, precision=1 / 10):
         yield np.asarray(shift)
 
 
-def align(image, reference, mask=None, fill_value=0.0, fast=True):
+def align(image, reference, mask=None, fill_value=0.0, fast=None):
     """
     Align a diffraction image to a reference. Subpixel resolution available.
 
@@ -71,8 +72,7 @@ def align(image, reference, mask=None, fill_value=0.0, fast=True):
     fill_value : float, optional
         Edges will be filled with `fill_value` after alignment.
     fast : bool, optional
-        If True (default), alignment is done on images cropped to half
-        (one quarter area). Disable for small images, e.g. 256x256.
+        This parameter is deprecated, and has no effect.
     
     Returns
     -------
@@ -83,6 +83,11 @@ def align(image, reference, mask=None, fill_value=0.0, fast=True):
     --------
     ialign : generator of aligned images
     """
+    if fast is not None:
+        warn(
+            "skued.align: `fast` argument is deprecated and has no effect."
+        )
+
     if mask is None:
         mask = np.ones_like(image, dtype=np.bool)
 
@@ -93,7 +98,7 @@ def align(image, reference, mask=None, fill_value=0.0, fast=True):
 
 
 @array_stream
-def ialign(images, reference=None, mask=None, fill_value=0.0, fast=True):
+def ialign(images, reference=None, mask=None, fill_value=0.0, fast=None):
     """
     Generator of aligned diffraction images.
 
@@ -110,8 +115,7 @@ def ialign(images, reference=None, mask=None, fill_value=0.0, fast=True):
     fill_value : float, optional
         Edges will be filled with `fill_value` after alignment.
     fast : bool, optional
-        If True (default), alignment is done on images cropped to half
-        (one quarter area). Disable for small images, e.g. 256x256.
+        This parameter is deprecated, and has no effect.
 
     Yields
     ------
@@ -122,6 +126,9 @@ def ialign(images, reference=None, mask=None, fill_value=0.0, fast=True):
     --------
     skued.align : align a single diffraction pattern onto a reference.
     """
+    if fast is not None:
+        warn("skued.ialign: `fast` argument is deprecated and has no effect.")
+
     images = iter(images)
 
     if reference is None:
@@ -129,10 +136,7 @@ def ialign(images, reference=None, mask=None, fill_value=0.0, fast=True):
         yield reference
 
     yield from map(
-        partial(
-            align, reference=reference, mask=mask, fill_value=fill_value, fast=fast
-        ),
-        images,
+        partial(align, reference=reference, mask=mask, fill_value=fill_value), images,
     )
 
 
