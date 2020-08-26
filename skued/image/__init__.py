@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """ Diffraction image analysis """
 
-from .alignment import align, ialign, itrack_peak, masked_register_translation
+from .alignment import align, ialign, itrack_peak
 from .calibration import detector_scattvectors, powder_calq
 from .metrics import (
     combine_masks,

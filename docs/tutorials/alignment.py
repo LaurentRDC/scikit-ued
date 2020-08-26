@@ -1,13 +1,13 @@
 # This code used to be part of the documentation
 # and rendered with sphinx
 #
-# However, the masked_register_translation function requires
+# However, the phase_cross_correlation function requires
 # too much memory, and so readthedocs would kill the documentation
 # build. Therefore, we render the image locally instead.
 
 import matplotlib.pyplot as plt
 import numpy as np
-from skimage.feature import masked_register_translation
+from skimage.registration import phase_cross_correlation
 
 from skued import diffread, shift_image
 
@@ -17,7 +17,7 @@ im = diffread("Cr_2.tif")
 mask = np.ones_like(ref, dtype=np.bool)
 mask[0:1250, 950:1250] = False
 
-shift = masked_register_translation(im, ref, mask)
+shift = phase_cross_correlation(im, ref, reference_mask=mask)
 shifted = shift_image(im, -1 * shift)
 
 fig, ((ax1, ax2, ax3), (ax4, ax5, ax6)) = plt.subplots(nrows=2, ncols=3, figsize=(9, 6))

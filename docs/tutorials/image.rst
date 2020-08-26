@@ -46,17 +46,13 @@ Diffraction pattern alignment
 Diffraction patterns can drift over a period of a few minutes, and for reliable data synthesis
 it is important to align patterns to a reference.
 
-The procedure of detecting, or registering, the translation between two similar images is usually
-done by measuring the cross-correlation between images. When images are very similar, this procedure
-is fine; take a look at scikit-image's :func:`skimage.feature.register_translation` for example. 
-
-However, diffraction patterns all have a fixed feature: the position of the beam-block. Therefore, some pixels 
+Diffraction patterns all have a fixed feature: the position of the beam-block. Therefore, some pixels 
 in each diffraction pattern must be ignored in the computation of the cross-correlation. 
 
 Setting the 'invalid pixels' to 0 will not work, at those will correlate with the invalid pixels from the reference. One must use
 the **masked normalized cross-correlation**.
 
-All of this is taken care of in scikit-image's :func:`masked_register_translation` function (previously available in scikit-ued). Let's look at some polycrystalline Chromium:
+All of this is taken care of in scikit-image's :func:`phase_cross_correlation` function (previously available in scikit-ued). Let's look at some polycrystalline Chromium:
 
 .. plot::
 
@@ -86,7 +82,7 @@ From the difference pattern, we can see that the 'Data' pattern is shifted from 
 but the beamblock **has not moved**. To determine the exact shift, we need to use a mask that obscures the 
 beam-block and main beam::
 
-	from skimage.feature import masked_register_translation
+	from skimage.feature import phase_cross_correlation
 	import scipy.ndimage as ndi
 	from skued import diffread
 	import numpy as np
@@ -98,7 +94,7 @@ beam-block and main beam::
 	mask = np.ones_like(ref, dtype = np.bool)
 	mask[0:1250, 950:1250] = False
 
-	shift = masked_register_translation(im, target_image = ref, src_mask = mask)
+	shift, *_ = phase_cross_correlation(moving_image=im, reference_image = ref, reference_mask = mask)
 	im = ndi.shift(im, -1*shift)
 
 Let's look at the difference:
