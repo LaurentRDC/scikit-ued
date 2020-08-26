@@ -9,6 +9,7 @@ import numpy as np
 from npstreams import array_stream
 from scipy import ndimage as ndi
 from skimage.feature import masked_register_translation, register_translation
+from skimage.registration import phase_cross_correlation
 
 
 @array_stream
@@ -85,8 +86,8 @@ def align(image, reference, mask=None, fill_value=0.0, fast=True):
     if mask is None:
         mask = np.ones_like(image, dtype=np.bool)
 
-    shift = masked_register_translation(
-        src_image=image, target_image=reference, src_mask=mask
+    shift, *_ = phase_cross_correlation(
+        reference_image=image, moving_image=reference, reference_mask=mask
     )
     return ndi.shift(image, shift, order=2, mode="constant", cval=fill_value)
 
