@@ -6,6 +6,7 @@ Release 2.0.6
 
 * `scikit-ued` is being re-licensed from the MIT license to the GPLv3 license.
 * The `fast` argument to `skued.align` and `skued.ialign` has been deprecated. Its value has no effect anymore.
+* Official support for Python 3.9.
 
 Release 2.0.5
 -------------
