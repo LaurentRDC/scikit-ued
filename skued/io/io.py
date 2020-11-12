@@ -2,8 +2,6 @@
 
 from pathlib import Path
 
-import tifffile
-
 from .dm import dmread
 from .merlin import mibread
 
@@ -40,9 +38,7 @@ def diffread(fname):
     """
     fname = str(fname)  # In case of pathlib.Path
 
-    if fname.endswith(("tiff", "tif")):
-        return tifffile.imread(fname)
-    elif fname.endswith(".mib"):
+    if fname.endswith(".mib"):
         return mibread(fname)
     elif fname.endswith((".dm3", ".dm4")):
         return dmread(fname)
