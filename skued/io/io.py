@@ -36,11 +36,11 @@ def diffread(fname):
     skimage.io.imread : load images from files
     skued.mibread : Read single- and multi-image Merlin Image Binary files
     """
-    fname = str(fname)  # In case of pathlib.Path
+    fname = Path(fname)
 
-    if fname.endswith(".mib"):
+    if fname.suffix == ".mib":
         return mibread(fname)
-    elif fname.endswith((".dm3", ".dm4")):
+    elif fname.suffix in {".dm3", ".dm4"}:
         return dmread(fname)
 
     # Worst-case scenario, we need skimage.io
