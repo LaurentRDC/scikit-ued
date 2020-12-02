@@ -12,7 +12,7 @@ environment:
       PYTHON_ARCH: "64" # needs to be set for CMD_IN_ENV to succeed. If a mix
                         # of 32 bit and 64 bit builds are needed, move this
                         # to the matrix section.
-      TEST_CMD: "python -m unittest discover --verbose"
+      TEST_CMD: "python -Wa -m unittest discover --verbose"
       CONDA_CHANNELS: "default conda-forge"
       CONDA_DEPENDENCIES: "numpy scipy cython scikit-image crystals pywavelets npstreams pyyaml"
       PIP_DEPENDENCIES: ""
