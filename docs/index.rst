@@ -34,6 +34,7 @@ General Documentation
     tutorials/plotting
     tutorials/time_series
     tutorials/simulation
+    tutorials/visualization
     api
     cmdline
 
