@@ -7,7 +7,7 @@ from scipy.constants import Planck, electron_mass, elementary_charge, speed_of_l
 
 def lorentz(keV):
     """
-    Relativistic factor :math:`\gamma`, defined as :math:`\gamma = \\frac{1}{\sqrt{1 - v^2/c^2}}`
+    Relativistic factor :math:`\\gamma`, defined as :math:`\\gamma = \\frac{1}{\\sqrt{1 - v^2/c^2}}`
 
     Parameters
     ----------
@@ -27,13 +27,13 @@ def lorentz(keV):
 
 def electron_wavelength(keV):
     """ 
-    Relativistic wavelength :math:`\lambda` of an accelerated electron.
+    Relativistic wavelength :math:`\\lambda` of an accelerated electron.
 
     .. math::
 
-        \lambda = \\frac{h}{\sqrt{2 m_e e V}}\gamma
+        \\lambda = \\frac{h}{\\sqrt{2 m_e e V}}\\gamma
     
-    where :math:`\gamma` is the relativistic Lorentz factor.
+    where :math:`\\gamma` is the relativistic Lorentz factor.
         
     Parameters
     ----------
@@ -64,7 +64,7 @@ def electron_velocity(keV):
 
     .. math::
 
-        \\frac{v_e}{c} = \sqrt{1 - \\frac{m_0 c^2}{m_0 c^2 + e V}}
+        \\frac{v_e}{c} = \\sqrt{1 - \\frac{m_0 c^2}{m_0 c^2 + e V}}
 
     Parameters
     ----------

@@ -35,7 +35,7 @@ def affe(atom, nG):
         Atomic number, atomic symbol, or Atom instance.
         Atomic symbols are expected to be properly capitalized, e.g. ``As`` or ``W``.
     nG : array_like
-        Scattering vector norm, in units of Angstroms:math:`^{-1}`. (:math:`|G| = 4 \pi s`). 
+        Scattering vector norm, in units of Angstroms:math:`^{-1}`. (:math:`|G| = 4 \\pi s`). 
     
     Returns
     -------

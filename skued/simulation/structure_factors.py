@@ -2,7 +2,7 @@
 """
 Structure Factor calculation
 """
-from collections import Iterable
+from collections.abc import Iterable
 from functools import lru_cache
 from itertools import count, product, takewhile
 from math import sqrt
