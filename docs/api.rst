@@ -129,7 +129,7 @@ Time-series Selections
     RectSelection
     DiskSelection
     RingSelection
-    RincArcSelection
+    RingArcSelection
     ArbitrarySelection
 
 ==============
