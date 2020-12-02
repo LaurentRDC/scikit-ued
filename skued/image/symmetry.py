@@ -49,14 +49,16 @@ def nfold(im, mod, center=None, mask=None, fill_value=0.0):
     # Data-type must be float because of use of NaN
     im = np.array(im, dtype=np.float, copy=True)
 
-    if mask is not None:
-        im[np.logical_not(mask)] = np.nan
+    if mask is None:
+        mask = np.ones_like(im, dtype=np.uint8)
 
     kwargs = {"center": center, "mode": "constant", "cval": 0, "preserve_range": True}
 
     # Use weights because edges of the pictures, which might be cropped by the rotation
     # should not count in the average
-    wt = np.ones_like(im, dtype=np.uint8)
+    wt = np.ones_like(mask, dtype=np.float)
+    wt[np.logical_not(mask)] = np.nan
+
     weights = (rotate(wt, angle, **kwargs) for angle in angles)
     rotated = (rotate(im, angle, **kwargs) for angle in angles)
 
@@ -98,10 +100,9 @@ def reflection(im, angle, center=None, mask=None, fill_value=0.0):
     im = np.array(im, dtype=np.float, copy=True)
     reflected = np.array(im, copy=True)  # reflected image
 
-    if mask is not None:
-        invalid_pixels = np.logical_not(mask)
-        im[invalid_pixels] = np.nan
-        reflected[invalid_pixels] = np.nan
+    if mask is None:
+        mask = np.ones_like(im, dtype=np.bool)
+    invalid_pixels = np.logical_not(mask)
 
     kwargs = {"center": center, "mode": "constant", "cval": 0, "preserve_range": True}
 
@@ -109,8 +110,16 @@ def reflection(im, angle, center=None, mask=None, fill_value=0.0):
     # Flip the image along the y-axis
     # Rotate back to original orientation
     # FIXME: this will not work properly for images that are offcenter
-    reflected = rotate(reflected, -angle, **kwargs)
-    reflected = mirror(reflected, axes=0)
-    reflected = rotate(reflected, angle, **kwargs)
+    def refl(arr):
+        arr = rotate(arr, -angle, **kwargs)
+        arr = mirror(arr, axes=0)
+        arr = rotate(arr, angle, **kwargs)
+        return arr
+        
+    reflected = refl(reflected)
+    invalid_pixels_r = refl(invalid_pixels).astype(np.bool)
 
-    return nan_to_num(average([im, reflected]), fill_value, copy=False)
+    result = average([im, reflected])
+    result[invalid_pixels_r] = fill_value
+
+    return result
