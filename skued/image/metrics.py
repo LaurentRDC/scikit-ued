@@ -3,7 +3,7 @@
 Image mask routines
 ===================
 """
-from collections import Iterable
+from collections.abc import Iterable
 from itertools import repeat
 
 import numpy as np
