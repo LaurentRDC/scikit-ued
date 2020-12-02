@@ -29,7 +29,7 @@ scattering angles `s` as :math:`s = \sin{\theta}/\lambda`::
 	import matplotlib.pyplot as plt
 	import numpy as np
 	from skued import powdersim
-	from skued import Crystal
+	from crystals import Crystal
 	graphite = Crystal.from_database('C')
 
 	q = np.linspace(1, 10, 1024)

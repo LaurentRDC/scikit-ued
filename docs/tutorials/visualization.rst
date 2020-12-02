@@ -26,7 +26,8 @@ As an example, let's use a simulated diffraction pattern of monoclinic $VO_2$::
 
     import numpy as np
     import matplotlib.pyplot as plt
-    from skued import Crystal, patterson
+    from crystals import Crystal
+    from skued import patterson
     
     # Simulation of polycrystalline diffraction pattern
     # for monoclinic VO2
@@ -45,7 +46,8 @@ As an example, let's use a simulated diffraction pattern of monoclinic $VO_2$::
 
     import numpy as np
     import matplotlib.pyplot as plt
-    from skued import Crystal, patterson
+    from crystals import Crystal, 
+    from skued import patterson
     from skued import powdersim # To simulate experimental data
     
     # Simulation of polycrystalline diffraction pattern
