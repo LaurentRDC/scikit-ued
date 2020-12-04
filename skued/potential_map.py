@@ -14,9 +14,9 @@ from .simulation import powdersim, structure_factor
 # TODO: add tutorial
 # TODO: use potential_synthesis inside potential_map
 def potential_map(q, I, crystal, mesh):
-    """ 
+    """
     Compute the electrostatic potential from powder diffraction data.
-    
+
     Parameters
     ----------
     q : ndarray, shape (N,)
@@ -27,7 +27,7 @@ def potential_map(q, I, crystal, mesh):
         Crystal that gave rise to diffraction pattern `I`.
     mesh : 3-tuple ndarrays, ndim 2 or ndim 3
         Real-space mesh over which to calculate the scattering map.
-        Format should be similar to the output of numpy.meshgrid. 
+        Format should be similar to the output of numpy.meshgrid.
 
     Returns
     -------
@@ -40,13 +40,13 @@ def potential_map(q, I, crystal, mesh):
 
     Notes
     -----
-    To compute the scattering map from a difference of intensities, note that scattering 
+    To compute the scattering map from a difference of intensities, note that scattering
     maps are linear in *structure factor* norm. Thus, to get the map of difference data :code:`I1 - I2`:
 
     .. math::
 
         I = (\sqrt{I_1} - \sqrt{I_2})^2
-    
+
     References
     ----------
     .. [#] Otto et al., How optical excitation controls the structure and properties of vanadium dioxide.
@@ -100,10 +100,10 @@ def potential_map(q, I, crystal, mesh):
 
 def potential_synthesis(reflections, intensities, crystal, mesh):
     """
-    Synthesize the electrostatic potential from a list of experimental 
-    reflections and associated diffracted intensities. Diffraction phases are 
+    Synthesize the electrostatic potential from a list of experimental
+    reflections and associated diffracted intensities. Diffraction phases are
     taken from a known structure
-    
+
     Parameters
     ----------
     reflections : iterable of tuples
@@ -114,7 +114,7 @@ def potential_synthesis(reflections, intensities, crystal, mesh):
         Crystal that gave rise to the diffracted intensities.
     mesh : 3-tuple ndarrays, ndim 2 or ndim 3
         Real-space mesh over which to calculate the scattering map.
-        Format should be similar to the output of numpy.meshgrid. 
+        Format should be similar to the output of numpy.meshgrid.
 
     Returns
     -------

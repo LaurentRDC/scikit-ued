@@ -16,19 +16,19 @@ from skimage.registration import phase_cross_correlation
 def itrack_peak(images, row_slice=None, col_slice=None, precision=1 / 10):
     """
     Generator function that tracks a diffraction peak in a stream of images.
-    
+
     Parameters
     ----------
     images : iterable of array-like
         Iterable of diffraction images. This function also supports generators.
     row_slice : slice or None, optional
-        Slice object for which image rows to use. If None (default), all rows are used. 
+        Slice object for which image rows to use. If None (default), all rows are used.
     col_slice : slice or None, optional
         Slice object for which image columns to use. If None (default), all columns are used.
     precision : float, optional
         Precision of the tracking in pixels. A precision of 1/10 (default) means that
         the tracking will be precise up to 1/10 of a pixel.
-    
+
     Yields
     ------
     shift : `~numpy.ndarray`, shape (2,)
@@ -52,7 +52,9 @@ def itrack_peak(images, row_slice=None, col_slice=None, precision=1 / 10):
 
     for image in images:
         sub[:] = image[row_slice, col_slice]
-        shift, *_ = phase_cross_correlation(reference_image=ref, moving_image=sub, upsample_factor=int(1 / precision))
+        shift, *_ = phase_cross_correlation(
+            reference_image=ref, moving_image=sub, upsample_factor=int(1 / precision)
+        )
         yield np.asarray(shift)
 
 
@@ -72,20 +74,18 @@ def align(image, reference, mask=None, fill_value=0.0, fast=None):
         Edges will be filled with `fill_value` after alignment.
     fast : bool, optional
         This parameter is deprecated, and has no effect.
-    
+
     Returns
     -------
     aligned : `~numpy.ndarray`, shape (M,N)
         Aligned image.
-    
+
     See Also
     --------
     ialign : generator of aligned images
     """
     if fast is not None:
-        warn(
-            "skued.align: `fast` argument is deprecated and has no effect."
-        )
+        warn("skued.align: `fast` argument is deprecated and has no effect.")
 
     if mask is None:
         mask = np.ones_like(image, dtype=np.bool)
@@ -135,7 +135,8 @@ def ialign(images, reference=None, mask=None, fill_value=0.0, fast=None):
         yield reference
 
     yield from map(
-        partial(align, reference=reference, mask=mask, fill_value=fill_value), images,
+        partial(align, reference=reference, mask=mask, fill_value=fill_value),
+        images,
     )
 
 

@@ -12,8 +12,8 @@ def diffread(fname):
 
         * Merlin Image Binary (`*.mib`)
 
-        * Digital Micrograph (`*.dm3`, `*.dm4`) 
-        
+        * Digital Micrograph (`*.dm3`, `*.dm4`)
+
             .. versionadded:: 1.0.1.0
 
         * TIFF (`*.tif`, `*.tiff`)
@@ -23,14 +23,14 @@ def diffread(fname):
     Parameters
     ----------
     fname : path-like
-        Image file name. 
-    
+        Image file name.
+
     Returns
     -------
     img_array : `~numpy.ndarray`, ndim 2
         Diffraction image. Color images are flattened to
         grayscale.
-    
+
     See Also
     --------
     skimage.io.imread : load images from files

@@ -6,16 +6,16 @@ import numpy as np
 
 
 def mibheader(filepath, hoffset=0):
-    """ 
-    Get an image header from a Merlin Image Binary file. 
-    
+    """
+    Get an image header from a Merlin Image Binary file.
+
     Parameters
     ----------
     filepath : str
         Path to the Merlin Image Binary file.
     hoffset : int, optional
         Bytes-offset of the header. For use in multi-image files only.
-    
+
     Returns
     -------
     header : dict
@@ -88,7 +88,7 @@ def imibread(filepath):
     ----------
     filepath : str
         Path to the Merlin Image Binary file.
-    
+
     Yields
     ------
     im : `~numpy.ndarray`, ndim 2
@@ -122,9 +122,9 @@ def imibread(filepath):
 
 
 def mibread(filepath):
-    """ 
-    Read a MIB (Merlin Image Binary) file into a NumPy array. 
-    
+    """
+    Read a MIB (Merlin Image Binary) file into a NumPy array.
+
     Parameters
     ----------
     filepath : str
@@ -135,7 +135,7 @@ def mibread(filepath):
     im : `~numpy.ndarray`
         NumPy array of the Merlin Image Binary. In the case of multi-image files,
         images will be stacked along axis 2.
-    
+
     See Also
     --------
     imibread : generate images contained in a MIB file.

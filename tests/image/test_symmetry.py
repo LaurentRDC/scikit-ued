@@ -81,8 +81,8 @@ class TestNFoldSymmetry(unittest.TestCase):
         self.assertGreaterEqual(rot.min(), min(im.min(), 0))
 
     def test_mod_1(self):
-        """ Test that nfold(mod = 1) returns an unchanged image, except
-        perhaps for a cast to float """
+        """Test that nfold(mod = 1) returns an unchanged image, except
+        perhaps for a cast to float"""
         im = 1000 * np.random.random(size=(256, 256))
         rot = nfold(im, mod=1)
         self.assertTrue(np.allclose(im, rot))

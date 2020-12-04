@@ -18,23 +18,23 @@ from .form_factors import affe
 
 def structure_factor(crystal, h, k, l, normalized=False):
     """
-    Computation of the static structure factor for electron diffraction. 
-    
+    Computation of the static structure factor for electron diffraction.
+
     Parameters
     ----------
     crystal : Crystal
         Crystal instance
     h, k, l : array_likes or floats
         Miller indices. Can be given in a few different formats:
-        
+
         * floats : returns structure factor computed for a single scattering vector
-            
+
         * 3 coordinate ndarrays, shapes (L,M,N) : returns structure factor computed over all coordinate space
-    
+
     normalized : bool, optional
         If True, the normalized structure factor :math`E` is returned. This is the statis structure
         factor normalized by the sum of form factors squared.
-    
+
     Returns
     -------
     sf : ndarray, dtype complex

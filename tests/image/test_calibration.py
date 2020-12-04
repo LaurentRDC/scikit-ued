@@ -13,7 +13,7 @@ np.random.seed(23)
 
 class TestPowderCalQ(unittest.TestCase):
     def test_simulation(self):
-        """ 
+        """
         Test calibration from simulation, down to 1% error . Peaks (200) and (220) from monoclinic VO2 are used,
         """
 
@@ -40,7 +40,7 @@ class TestPowderCalQ(unittest.TestCase):
         self.assertTrue(np.allclose(q, calibrated, rtol=0.01))
 
     def test_simulation_3_peaks(self):
-        """ 
+        """
         Test calibration from simulation, down to 1% error . Peaks (200) and (220) from monoclinic VO2 are used,
         """
         s = np.linspace(0.11, 0.8, 1024)
@@ -89,8 +89,8 @@ class TestDetectorScattvectors(unittest.TestCase):
         self.assertEqual(np.unravel_index(np.argmin(q_parallel), qx.shape), (128, 128))
 
     def test_default_center(self):
-        """ Test that the placement of the center 
-        by default is in the center of the detector. """
+        """Test that the placement of the center
+        by default is in the center of the detector."""
         qx, qy, qz = detector_scattvectors(
             keV=200, camera_length=1, shape=(512, 512), pixel_size=1e-6, center=None
         )
@@ -99,8 +99,8 @@ class TestDetectorScattvectors(unittest.TestCase):
         self.assertEqual(np.unravel_index(np.argmin(q_parallel), qx.shape), (256, 256))
 
     def test_ewald_radius(self):
-        """ Test that the norm of total scattering vector norm is constant and equal to the
-        Ewald sphere radius """
+        """Test that the norm of total scattering vector norm is constant and equal to the
+        Ewald sphere radius"""
         qx, qy, qz = detector_scattvectors(
             keV=200, camera_length=1, shape=(128, 128), pixel_size=1e-6, center=None
         )

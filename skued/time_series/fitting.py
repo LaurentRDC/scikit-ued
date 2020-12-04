@@ -117,7 +117,7 @@ def regrid(f):
     Returns
     -------
     f_ : callable
-        Callable of the form 
+        Callable of the form
     """
     # This function is based on an e-mail discussion with Samuel Palato. Thanks Sam!
     @wraps(f)
@@ -143,13 +143,13 @@ def with_irf(fwhm):
     ----------
     fwhm : float
         Full-width at half-maximum.
-    
+
     Returns
     -------
     decorator : callable
         Decorator that takes a function of the form ``f(t, *args, **kwargs)``
         and convolutes it with a Gaussian IRF. See the examples below.
-    
+
     Examples
     --------
     >>> from skued import with_irf, exponential

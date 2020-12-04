@@ -67,7 +67,7 @@ if WITH_PYQTGRAPH:
 @contextmanager
 def rowmajor_axisorder():
     """
-    Context manager that sets the PyQtGraph image axis order to row-major. 
+    Context manager that sets the PyQtGraph image axis order to row-major.
     The environment is reset to the initial value after context close.
     """
     old_image_axis_order = pg.getConfigOption("imageAxisOrder")
@@ -77,7 +77,7 @@ def rowmajor_axisorder():
 
 
 def diffshow(image):
-    """ 
+    """
     Display an image (from an array or from a file) in an interactive window.
 
     This function requires `PyQtGraph` to be importable. These
@@ -86,9 +86,9 @@ def diffshow(image):
     Parameters
     ----------
     image : path-like or array-like
-        Image file name or array-like. All file formats supported 
-        by ``skued.diffread`` are also supported by this function. 
-    
+        Image file name or array-like. All file formats supported
+        by ``skued.diffread`` are also supported by this function.
+
     Raises
     ------
     ImportError : if `PyQtGraph` is not available.

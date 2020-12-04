@@ -7,7 +7,7 @@ import numpy as np
 
 
 def mad(arr):
-    """ 
+    """
     Element-wise median absolute deviation (MAD) of a signal.
 
     .. math::
@@ -17,8 +17,8 @@ def mad(arr):
     Parameters
     ----------
     arr : array-like
-        Array. 
-    
+        Array.
+
     Returns
     -------
     out : `~numpy.ndarray`, dtype float

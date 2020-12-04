@@ -25,7 +25,7 @@ def _angle_bounds(bounds):
 
 def azimuthal_average(image, center, mask=None, angular_bounds=None, trim=True):
     """
-    This function returns an azimuthally-averaged pattern computed from an image, 
+    This function returns an azimuthally-averaged pattern computed from an image,
     e.g. polycrystalline diffraction.
 
     Parameters

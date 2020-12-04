@@ -90,8 +90,8 @@ class TestMaskFromCollection(unittest.TestCase):
         self.assertEqual(mask[5, 12], True)
 
     def test_single_image(self):
-        """ Test that mask_from_collection works even if input
-        is a single array """
+        """Test that mask_from_collection works even if input
+        is a single array"""
         images = np.zeros((64, 64))
         mask = mask_from_collection(images)
 

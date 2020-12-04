@@ -8,7 +8,7 @@ from cmath import cos, exp, pi, sin
 
 def film_optical_coefficients(wavelength, thickness, n_film, n_substrate=0):
     """
-    Calculate the reflection, transmission, and absorption coefficients 
+    Calculate the reflection, transmission, and absorption coefficients
     of a thin-film (possibly on a substrate).
 
     Parameters
@@ -21,7 +21,7 @@ def film_optical_coefficients(wavelength, thickness, n_film, n_substrate=0):
         Complex refractive index of the film material.
     n_substrate : complex or float, optional
         Complex refractive index of the substrate material.
-    
+
     Returns
     -------
     R, T, A : float

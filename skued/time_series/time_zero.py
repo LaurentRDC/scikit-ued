@@ -16,12 +16,12 @@ def __xcorr_normalization(size, dtype):
 
 
 def register_time_shift(trace, reference, method="auto"):
-    """ 
+    """
     Measure the time shift between a time trace and a reference trace
     by normalized cross correlation.
 
     .. versionadded:: 1.0.1.1
-    
+
     Parameters
     ----------
     trace : array-like, shape (N,)
@@ -30,13 +30,13 @@ def register_time_shift(trace, reference, method="auto"):
         Reference trace.
     method : str {'auto', 'fft', 'direct'}, optional
         A string indicating which method to use to calculate the correlation.
-    
+
     Returns
     -------
     shift : int or float
         Index shift between the two traces, with respect to
         the ``reference`` trace. Note that the shift can be fractional.
-    
+
     Raises
     ------
     ValueError : if ``trace`` and ``reference`` do not have the same shape.
@@ -88,18 +88,18 @@ def register_time_shifts(traces, reference=None, method="auto"):
         are also supported. All traces and ``reference`` must have the same shape.
     reference : `~numpy.ndarray` or None, optional
         If provided, the time-zero shift between the traces in ``traces`` will be measured
-        with respect to ``reference``. Otherwise, the first trace in ``traces`` will be used 
+        with respect to ``reference``. Otherwise, the first trace in ``traces`` will be used
         as a reference.
     method : str {'auto', 'fft', 'direct'}, optional
         A string indicating which method to use to calculate the correlation.
-    
+
     Returns
     -------
     shifts : `~numpy.ndarray`, ndim 1, dtype float
-        Time shifts as indices (possibly fractional). The length of ``shifts`` is always 
+        Time shifts as indices (possibly fractional). The length of ``shifts`` is always
         equal to the number of time-traces; in the case where ``reference = None``, the first
         shifts will always be identically zero.
-    
+
     Raises
     ------
     ValueError : if not all traces have the same shape.

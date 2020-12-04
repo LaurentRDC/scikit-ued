@@ -16,20 +16,20 @@ e1, e2, e3 = np.eye(3)
 def affine_map(array):
     """
     Extends 3x3 transform matrices to 4x4, i.e. general affine transforms.
-    
+
     Parameters
     ----------
     array : ndarray, shape {(3,3), (4,4)}
         Transformation matrix. If shape = (4,4), returned intact.
-    
+
     Returns
     -------
     extended : ndarray, shape (4,4)
         Extended array
 
-	Raises
-	------
-	ValueError : If the transformation matrix is neither 3x3 or 4x4
+        Raises
+        ------
+        ValueError : If the transformation matrix is neither 3x3 or 4x4
     """
     if array.shape == (4, 4):  # Already the right shape
         return array
@@ -46,7 +46,7 @@ def affine_map(array):
 
 def transform(matrix, array):
     """
-	Applies a matrix transform on an array.
+        Applies a matrix transform on an array.
 
     Parameters
     ----------
@@ -55,15 +55,15 @@ def transform(matrix, array):
     array : ndarray, shape {(3,), (3,3), (4,4)}
         Array to be transformed. Either a 1x3 vector, or a transformation
         matrix in 3x3 or 4x4 shape.
-    
+
     Returns
     -------
     transformed : ndarray
         Transformed array, either a 1D vector or a 4x4 transformation matrix
 
-	Raises
-	------
-	ValueError : If the transformation matrix is neither 3x3 or 4x4
+        Raises
+        ------
+        ValueError : If the transformation matrix is neither 3x3 or 4x4
     """
     if matrix.shape not in [(3, 3), (4, 4)]:
         raise ValueError(
@@ -84,16 +84,16 @@ def transform(matrix, array):
 
 def translation_matrix(direction):
     """
-	Return matrix to translate by direction vector.
+    Return matrix to translate by direction vector.
 
-	Parameters
-	----------
-	direction : array_like, shape (3,)
+    Parameters
+    ----------
+    direction : array_like, shape (3,)
 
-	Returns
-	-------
-	translation : `~numpy.ndarray`, shape (4,4)
-		4x4 translation matrix.
+    Returns
+    -------
+    translation : `~numpy.ndarray`, shape (4,4)
+            4x4 translation matrix.
     """
     matrix = np.eye(4)
     matrix[:3, 3] = np.asarray(direction)[:3]
@@ -102,21 +102,21 @@ def translation_matrix(direction):
 
 def change_of_basis(basis1, basis2=(e1, e2, e3)):
     """
-	Returns the matrix that goes from one basis to the other.
-    
-	Parameters
-	----------
-	basis1 : list of array_like, shape (3,)
-		First basis
-	basis2 : list of array_like, shape (3,), optional
-		Second basis. By default, this is the standard basis
+    Returns the matrix that goes from one basis to the other.
 
-	Returns
-	-------
-	cob : `~numpy.ndarray`, shape (3,3)
-		Change-of-basis matrix that, applied to `basis`, will
-		return `basis2`.
-	"""
+    Parameters
+    ----------
+    basis1 : list of array_like, shape (3,)
+            First basis
+    basis2 : list of array_like, shape (3,), optional
+            Second basis. By default, this is the standard basis
+
+    Returns
+    -------
+    cob : `~numpy.ndarray`, shape (3,3)
+            Change-of-basis matrix that, applied to `basis`, will
+            return `basis2`.
+    """
     # Calculate the transform that goes from basis 1 to standard basis
     basis1 = [np.asarray(vector).reshape(3, 1) for vector in basis1]
     basis1_to_standard = np.hstack(tuple(basis1))
@@ -129,19 +129,19 @@ def change_of_basis(basis1, basis2=(e1, e2, e3)):
 
 
 def is_basis(basis):
-    """ 
-	Returns true if the set of vectors forms a basis. This is done by checking
-	whether basis vectors are independent via an eigenvalue calculation.
-    
-	Parameters
-	----------
-	basis : list of array-like, shape (3,)
+    """
+    Returns true if the set of vectors forms a basis. This is done by checking
+    whether basis vectors are independent via an eigenvalue calculation.
 
-	Returns
-	-------
-	out : bool
-		Whether or not the basis is valid.
-	"""
+    Parameters
+    ----------
+    basis : list of array-like, shape (3,)
+
+    Returns
+    -------
+    out : bool
+            Whether or not the basis is valid.
+    """
     return 0 not in np.linalg.eigvals(np.asarray(basis))
 
 
@@ -149,13 +149,13 @@ def is_rotation_matrix(matrix):
     """
     Checks whether a matrix is orthogonal with unit determinant (1 or -1), properties
     of rotation matrices.
-    
+
     Parameters
     ----------
     matrix : ndarray, shape {(3,3), (4,4)}
         Rotation matrix candidate. If (4,4) matrix is provided,
         only the top-left block matrix of (3,) is checked
-       
+
     Returns
     -------
     result : bool
@@ -172,26 +172,26 @@ def is_rotation_matrix(matrix):
 
 
 def rotation_matrix(angle, axis=(0, 0, 1)):
-    """ 
-	Return matrix to rotate about axis defined by direction around the origin [0,0,0].
-	To combine rotation and translations, see http://www.euclideanspace.com/maths/geometry/affine/matrix4x4/index.htm
-    
-	Parameters
-	----------
-	angle : float
-		Rotation angle [rad]
-	axis : array-like of length 3
-		Axis about which to rotate
-    
-	Returns
-	-------
-	matrix : `~numpy.ndarray`, shape (3,3)
-		Rotation matrix.
+    """
+    Return matrix to rotate about axis defined by direction around the origin [0,0,0].
+    To combine rotation and translations, see http://www.euclideanspace.com/maths/geometry/affine/matrix4x4/index.htm
 
-	See also
-	--------
-	translation_rotation_matrix
-	"""
+    Parameters
+    ----------
+    angle : float
+            Rotation angle [rad]
+    axis : array-like of length 3
+            Axis about which to rotate
+
+    Returns
+    -------
+    matrix : `~numpy.ndarray`, shape (3,3)
+            Rotation matrix.
+
+    See also
+    --------
+    translation_rotation_matrix
+    """
     sina, cosa = math.sin(angle), math.cos(angle)
 
     # Make sure direction is a numpy vector of unit length
@@ -215,22 +215,22 @@ def rotation_matrix(angle, axis=(0, 0, 1)):
 
 def translation_rotation_matrix(angle, axis, translation):
     """
-	Returns a 4x4 matrix that includes a rotation and a translation.
+    Returns a 4x4 matrix that includes a rotation and a translation.
 
-	Parameters
-	----------
-	angle : float
-		Rotation angle [rad]
-	axis : array-like of length 3
-		Axis about which to rotate
-	translation : array_like, shape (3,)
-		Translation vector
+    Parameters
+    ----------
+    angle : float
+            Rotation angle [rad]
+    axis : array-like of length 3
+            Axis about which to rotate
+    translation : array_like, shape (3,)
+            Translation vector
 
-	Returns
-	-------
-	matrix : `~numpy.ndarray`, shape (4,4)
-		Affine transform matrix.
-	"""
+    Returns
+    -------
+    matrix : `~numpy.ndarray`, shape (4,4)
+            Affine transform matrix.
+    """
     rmat = affine_map(rotation_matrix(angle=angle, axis=axis))
     rmat[:3, 3] = np.asarray(translation)
     return rmat
@@ -248,7 +248,7 @@ def change_basis_mesh(xx, yy, zz, basis1, basis2):
         Basis of the mesh
     basis2 : list of ndarrays, shape(3,)
         Basis in which to express the mesh
-    
+
     Returns
     -------
     XX, YY, ZZ : `~numpy.ndarray`
@@ -272,20 +272,20 @@ def change_basis_mesh(xx, yy, zz, basis1, basis2):
 
 def minimum_image_distance(xx, yy, zz, lattice):
     """
-	Returns a periodic array according to the minimum image convention.
+    Returns a periodic array according to the minimum image convention.
 
-	Parameters
-	----------
-	xx, yy, zz : ndarrays
-		Arrays of equal shape, such as produced by numpy.meshgrid.
-	lattice : list of ndarrays, shape(3,)
-		Basis of the mesh
-    
-	Returns
-	-------
-	r : `~numpy.ndarray`
-		Minimum image distance over the lattice
-	"""
+    Parameters
+    ----------
+    xx, yy, zz : ndarrays
+            Arrays of equal shape, such as produced by numpy.meshgrid.
+    lattice : list of ndarrays, shape(3,)
+            Basis of the mesh
+
+    Returns
+    -------
+    r : `~numpy.ndarray`
+            Minimum image distance over the lattice
+    """
     COB = change_of_basis(np.eye(3), lattice)
     linearized = np.empty(shape=(3, xx.size), dtype=np.float)  # In the standard basis
     ulinearized = np.empty_like(linearized)  # In the unitcell basis

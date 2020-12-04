@@ -20,14 +20,14 @@ def suppress_warnings():
 
 
 def deprecated(message):
-    """ 
-    Decorator factory that warns of deprecation 
-    
+    """
+    Decorator factory that warns of deprecation
+
     Parameters
     ----------
     message : str
         Message will be dressed up with the name of the function.
-    
+
     Returns
     -------
     decorator : callable

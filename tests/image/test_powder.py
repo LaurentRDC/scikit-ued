@@ -116,8 +116,8 @@ class TestAzimuthalAverage(unittest.TestCase):
         self.assertSequenceEqual(radius.shape, intensity.shape)
 
     def test_trim_and_mask(self):
-        """ Test that regions that only have masks contributions are not present
-        in the angular average """
+        """Test that regions that only have masks contributions are not present
+        in the angular average"""
         image = np.ones(shape=(256, 256), dtype=np.float)
         center = (image.shape[0] / 2, image.shape[1] / 2)
         xc, yc = center

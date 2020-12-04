@@ -27,7 +27,7 @@ with open(DATADIR / "aspherical.yaml") as f:
 
 def affe(atom, nG):
     """
-    Atomic form factors for electrons, for neutral atoms. 
+    Atomic form factors for electrons, for neutral atoms.
 
     Parameters
     ----------
@@ -35,8 +35,8 @@ def affe(atom, nG):
         Atomic number, atomic symbol, or Atom instance.
         Atomic symbols are expected to be properly capitalized, e.g. ``As`` or ``W``.
     nG : array_like
-        Scattering vector norm, in units of Angstroms:math:`^{-1}`. (:math:`|G| = 4 \\pi s`). 
-    
+        Scattering vector norm, in units of Angstroms:math:`^{-1}`. (:math:`|G| = 4 \\pi s`).
+
     Returns
     -------
     eff : `~numpy.ndarray`, dtype float
@@ -68,8 +68,8 @@ def affe(atom, nG):
 
 
 def aspherical_affe(atom, s):
-    """ 
-    Aspherical atomic form factors for electron scattering. 
+    """
+    Aspherical atomic form factors for electron scattering.
     Only atoms lighter than Xe (and including) are supported (Z <= 54).
 
     Parameters
@@ -82,7 +82,7 @@ def aspherical_affe(atom, s):
         be used to construct the electron form factor.
     s : array_like
         Scattering vector norm
-    
+
     Returns
     -------
     eff : `~numpy.ndarray`, dtype float
@@ -94,7 +94,7 @@ def aspherical_affe(atom, s):
 
     References
     ----------
-    .. [#] Jin-Cheng Zheng, Lijun Wu and Yimei Zhu. "Aspherical electron scattering factors and their 
+    .. [#] Jin-Cheng Zheng, Lijun Wu and Yimei Zhu. "Aspherical electron scattering factors and their
            parameterizations for elements from H to Xe" (2009). J. Appl. Cryst. vol 42, pp. 1043 - 1053.
     """
     if isinstance(atom, (int, str)):
@@ -105,7 +105,7 @@ def aspherical_affe(atom, s):
 
 
 def _affe_parametrization(s, d):
-    """ Reconstruct affe parametrization.
+    """Reconstruct affe parametrization.
 
     Parameters
     ----------
@@ -125,7 +125,7 @@ def _affe_p(element, s):
     """
     Atomic form factor for p orbitals. Effectively, this is from the reference, Eq. 11
 
-    .. [#] Jin-Cheng Zheng, Lijun Wu and Yimei Zhu. "Aspherical electron scattering factors and their 
+    .. [#] Jin-Cheng Zheng, Lijun Wu and Yimei Zhu. "Aspherical electron scattering factors and their
            parameterizations for elements from H to Xe" (2009). J. Appl. Cryst. vol 42, pp. 1043 - 1053.
     """
     affe_p_sph = _affe_parametrization(

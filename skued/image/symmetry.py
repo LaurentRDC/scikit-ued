@@ -11,7 +11,7 @@ from ..array_utils import mirror
 
 
 def nfold(im, mod, center=None, mask=None, fill_value=0.0):
-    """ 
+    """
     Returns an images averaged according to n-fold rotational symmetry. This can be used to
     boost the signal-to-noise ratio on an image with known symmetry, e.g. a diffraction pattern.
 
@@ -25,7 +25,7 @@ def nfold(im, mod, center=None, mask=None, fill_value=0.0):
     mod : int
         Fold symmetry number. Valid numbers must be a divisor of 360.
     mask : `~numpy.ndarray` or None, optional
-        Mask of `image`. The mask should evaluate to `True` (or 1) on valid pixels. 
+        Mask of `image`. The mask should evaluate to `True` (or 1) on valid pixels.
         If None (default), no mask is used.
     fill_value : float, optional
         In the case of a mask that overlaps with itself when rotationally averaged,
@@ -83,7 +83,7 @@ def reflection(im, angle, center=None, mask=None, fill_value=0.0):
         Coordinates of the center (in pixels). If ``center=None``, the image is rotated around
         its center, i.e. ``center=(rows / 2 - 0.5, cols / 2 - 0.5)``.
     mask : `~numpy.ndarray` or None, optional
-        Mask of `image`. The mask should evaluate to `True` (or 1) on valid pixels. 
+        Mask of `image`. The mask should evaluate to `True` (or 1) on valid pixels.
         If None (default), no mask is used.
     fill_value : float, optional
         In the case of a mask that overlaps with itself when rotationally averaged,
@@ -115,7 +115,7 @@ def reflection(im, angle, center=None, mask=None, fill_value=0.0):
         arr = mirror(arr, axes=0)
         arr = rotate(arr, angle, **kwargs)
         return arr
-        
+
     reflected = refl(reflected)
     invalid_pixels_r = refl(invalid_pixels).astype(np.bool)
 

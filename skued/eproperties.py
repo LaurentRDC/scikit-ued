@@ -13,7 +13,7 @@ def lorentz(keV):
     ----------
     keV : array_like or float
         Electron energy [keV].
-    
+
     Returns
     -------
     out : array_like or float
@@ -26,20 +26,20 @@ def lorentz(keV):
 
 
 def electron_wavelength(keV):
-    """ 
+    """
     Relativistic wavelength :math:`\\lambda` of an accelerated electron.
 
     .. math::
 
         \\lambda = \\frac{h}{\\sqrt{2 m_e e V}}\\gamma
-    
+
     where :math:`\\gamma` is the relativistic Lorentz factor.
-        
+
     Parameters
     ----------
     keV : array_like or float
         Electron energy [keV].
-    
+
     Returns
     -------
     out : array_like or float
@@ -70,7 +70,7 @@ def electron_velocity(keV):
     ----------
     keV : array_like or float
         Electron energy [keV].
-    
+
     Returns
     -------
     out : array_like or float
@@ -94,7 +94,7 @@ def interaction_parameter(keV):
     ----------
     keV : array_like or float
         Electron energy [keV].
-    
+
     Returns
     -------
     out : array_like or float

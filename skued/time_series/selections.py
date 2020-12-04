@@ -15,8 +15,8 @@ class Selection(metaclass=ABCMeta):
     Abstract base class for time-series selection masks.
 
     In the context of ultrafast electron/x-ray scattering, time-series are
-    assembled by integrating over a portion of scattering patterns for each 
-    time-delay. This class is the generalization of selecting a rectangular 
+    assembled by integrating over a portion of scattering patterns for each
+    time-delay. This class is the generalization of selecting a rectangular
     area of scattering patterns to arbitrary patterns, e.g. disks, torii, etc.
 
     .. versionadded:: 2.0.2
@@ -43,9 +43,9 @@ class Selection(metaclass=ABCMeta):
         pass
 
     def mpatch(self, *args, **kwargs):
-        """ 
+        """
         Matplotlib patch associated with this selection.
-        keyword arguments are passed to the appropriate `Matplotlib.patches.Patch` 
+        keyword arguments are passed to the appropriate `Matplotlib.patches.Patch`
         subclass.
 
         By default, a patch drawing a rectangle around the bounding box is used.
@@ -61,7 +61,7 @@ class Selection(metaclass=ABCMeta):
     # The method below should be specialized for subclasses.
     @property
     def bounding_box(self):
-        """ 
+        """
         Returns the array bounding box.
 
         Returns
@@ -102,7 +102,7 @@ class ArbitrarySelection(Selection):
     Parameters
     ----------
     array : ndarray, ndim 2, dtype bool
-        Boolean array that evaluates to `True` on valid selections. 
+        Boolean array that evaluates to `True` on valid selections.
     """
 
     def __init__(self, array):
@@ -136,7 +136,7 @@ class RectSelection(Selection):
 
     @property
     def bounding_box(self):
-        """ 
+        """
         Returns the array bounding box.
 
         Returns
@@ -178,7 +178,7 @@ class DiskSelection(Selection):
 
     @property
     def bounding_box(self):
-        """ 
+        """
         Returns the array bounding box.
 
         Returns
@@ -209,7 +209,7 @@ class DiskSelection(Selection):
 
     def mpatch(self, **kwargs):
         """
-        Circular patch. Keyword arguments are passed 
+        Circular patch. Keyword arguments are passed
         to `matplotlib.patches.Circle`.
 
         .. versionadded:: 2.0.3
@@ -252,7 +252,7 @@ class RingSelection(Selection):
 
     @property
     def bounding_box(self):
-        """ 
+        """
         Returns the array bounding box.
 
         Returns
@@ -288,7 +288,7 @@ class RingSelection(Selection):
     # TODO: make new patch class
     def mpatch(self, **kwargs):
         """
-        Toroidal patch. Keyword arguments are passed 
+        Toroidal patch. Keyword arguments are passed
         to `matplotlib.patches.Circle`.
 
         .. versionadded:: 2.0.3
@@ -344,7 +344,7 @@ class RingArcSelection(Selection):
 
     @property
     def bounding_box(self):
-        """ 
+        """
         Returns the array bounding box.
 
         Returns
@@ -382,7 +382,7 @@ class RingArcSelection(Selection):
 
     def mpatch(self, **kwargs):
         """
-        Partial toroidal patch. Keyword arguments are passed 
+        Partial toroidal patch. Keyword arguments are passed
         to `matplotlib.patches.Arc`.
 
         Returns

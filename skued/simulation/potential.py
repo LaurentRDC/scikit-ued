@@ -43,21 +43,21 @@ def _electrostatic_atom(atom, r):
 
 def electrostatic(crystal, x, y, z):
     """
-    Electrostatic potential from a crystal calculated on a real-space mesh, 
+    Electrostatic potential from a crystal calculated on a real-space mesh,
     assuming an infinite crystal.
 
     Parameters
     ----------
     crystal : crystals.Crystal
-        
+
     x, y, z : `~numpy.ndarray`
-        Real space coordinates mesh. 
-    
+        Real space coordinates mesh.
+
     Returns
     -------
     potential : `~numpy.ndarray`, dtype float
         Linear superposition of atomic potential [V*Angs]
-    
+
     See also
     --------
     pelectrostatic: projected electrostatic potential of an infinite crystal.
@@ -102,25 +102,25 @@ def _pelectrostatic_atom(atom, r):
 
 def pelectrostatic(crystal, x, y, bounds=None):
     """
-    Projected electrostatic potential from a crystal calculated on a real-space mesh, 
-    assuming an infinite crystal in x and y. Projection axis is defined as the z-axis. 
+    Projected electrostatic potential from a crystal calculated on a real-space mesh,
+    assuming an infinite crystal in x and y. Projection axis is defined as the z-axis.
     To project the potential along a different axis, the crystal can be rotated with ``Crystal.transform``.
 
     Parameters
     ----------
     crystal : crystals.Crystal
-        
+
     x, y:  `~numpy.ndarray`
-        Real-space coordinates. 
+        Real-space coordinates.
     bounds : iterable or None, optional
         Bounds of atom inclusion. Atoms with real-space z-position outside [ min(bounds), max(bounds) )
         are not counted in the computation.
-    
+
     Returns
     -------
     potential : `~numpy.ndarray`, dtype float
         Linear superposition of electrostatic potential [V*Angs]
-    
+
     See also
     --------
     electrostatic: three-dimensional electrostatic potential of an infinite crystal.

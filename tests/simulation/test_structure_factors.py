@@ -46,8 +46,8 @@ class TestStructureFactor(unittest.TestCase):
         self.crystal = Crystal.from_database(next(iter(Crystal.builtins)))
 
     def test_shape_and_dtype(self):
-        """ Test that output of structure_factor is same shape as input,
-        and that the dtype is complex """
+        """Test that output of structure_factor is same shape as input,
+        and that the dtype is complex"""
         h, k, l = np.meshgrid([1, 2, 3], [1, 2, 3], [1, 2, 3])
         sf = structure_factor(self.crystal, h, k, l)
 

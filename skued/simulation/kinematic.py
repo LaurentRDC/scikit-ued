@@ -26,7 +26,7 @@ def kinematicsim(crystal, kx, ky, energy=90):
         Momenta mesh where to calculate the diffraction pattern [:math:`Å^{-1}`]
     energy : float, optional
         Electron energy [keV]
-    
+
     Returns
     -------
     diff_pattern : `~numpy.ndarray`
@@ -41,7 +41,11 @@ def kinematicsim(crystal, kx, ky, energy=90):
     extent_x = np.linspace(0, extent, num=shape[0])
     extent_y = np.linspace(0, extent, num=shape[1])
 
-    xx, yy = np.meshgrid(extent_x, extent_y, indexing="xy",)
+    xx, yy = np.meshgrid(
+        extent_x,
+        extent_y,
+        indexing="xy",
+    )
     kx_, ky_ = fft2freq(xx, yy, indexing="xy")
     k = np.hypot(kx_, ky_)
 
@@ -67,7 +71,7 @@ def kinematicsim(crystal, kx, ky, energy=90):
 
 
 def fft2freq(x, y, indexing="xy"):
-    """ 
+    """
     Return the Discrete Fourier Transform sample frequencies for a 2D array defined on ``x`` and ``y``.
     Generalization of ``fftfreq``.
 
@@ -108,16 +112,16 @@ def fft2freq(x, y, indexing="xy"):
 def limit_bandwidth(image, K, limit):
     """
     Limit the bandwidth of an image.
-    
+
     Parameters
     ----------
     image : `~numpy.ndarray`, ndim 2
-        Image to be bandwidth-limited. 
+        Image to be bandwidth-limited.
     K : `~numpy.ndarray`, ndim 2
         Wavevector norm on which the Fourier transform of the image is defined.
     limit : float
         Bandwidth limit.
-    
+
     Returns
     -------
     limited : `~numpy.ndarray`

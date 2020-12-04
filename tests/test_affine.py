@@ -25,8 +25,8 @@ class TestAffineMap(unittest.TestCase):
         self.assertSequenceEqual(tr.affine_map(in4).shape, (4, 4))
 
     def test_fill(self):
-        """ Tests that affine_map() fills with zeros (and one on diagonal) for
-		an input of shape (3,3) """
+        """Tests that affine_map() fills with zeros (and one on diagonal) for
+        an input of shape (3,3)"""
         arr = np.random.random(size=(3, 3))
         extended = tr.affine_map(arr)
         self.assertTrue(np.allclose(extended[:, -1], [0, 0, 0, 1]))
@@ -35,8 +35,8 @@ class TestAffineMap(unittest.TestCase):
 
 class TestTranslationMatrix(unittest.TestCase):
     def test_random(self):
-        """ Tests that translation_matrix() has the same effect on a point
-		as directly translating."""
+        """Tests that translation_matrix() has the same effect on a point
+        as directly translating."""
         pt = np.random.random((3,))
         translation = np.random.random((3,))
 
@@ -67,8 +67,8 @@ class TestTransform(unittest.TestCase):
 
 class TestChangeOfBasis(unittest.TestCase):
     def test_trivial(self):
-        """ Test that change_of_basis() returns the identity operator
-		for a trivial change of basis """
+        """Test that change_of_basis() returns the identity operator
+        for a trivial change of basis"""
         cob = tr.change_of_basis(np.eye(3), np.eye(3))
         self.assertTrue(np.allclose(cob, np.eye(3)))
 
@@ -86,9 +86,9 @@ class TestChangeOfBasis(unittest.TestCase):
 
 class TestIsBasis(unittest.TestCase):
     def test_trivial(self):
-        """ Test that is_basis() correctly identifies that a 
-		basis of zeros is not a basis and that the standard
-	    basis is a basis"""
+        """Test that is_basis() correctly identifies that a
+            basis of zeros is not a basis and that the standard
+        basis is a basis"""
         self.assertFalse(tr.is_basis(np.zeros((3, 3))))
         self.assertTrue(tr.is_basis(np.eye(3)))
 
@@ -100,8 +100,8 @@ class TestIsRotationMatrix(unittest.TestCase):
         self.assertTrue(tr.is_rotation_matrix(np.eye(4)))
 
     def test_from_rotation_matrix(self):
-        """ test that the rotated identity operator is
-		a rotation matrix"""
+        """test that the rotated identity operator is
+        a rotation matrix"""
         self.assertTrue(
             tr.is_rotation_matrix(tr.rotation_matrix(np.pi / 3, axis=[0, 0, 1]))
         )
@@ -109,8 +109,8 @@ class TestIsRotationMatrix(unittest.TestCase):
 
 class TestRotationMatrix(unittest.TestCase):
     def test_random(self):
-        """ Test that rotation_matrix() returns a valid rotation matrix
-		for random axes and angles """
+        """Test that rotation_matrix() returns a valid rotation matrix
+        for random axes and angles"""
         axis = np.random.random((3,))
         angle = np.random.random()
 
@@ -120,8 +120,8 @@ class TestRotationMatrix(unittest.TestCase):
 
 class TestTranslationRotationMatrix(unittest.TestCase):
     def test_trivial(self):
-        """ Test that a translation_rotation_matrix() reduces to rotation_matrix()
-		for zero translation """
+        """Test that a translation_rotation_matrix() reduces to rotation_matrix()
+        for zero translation"""
 
         axis = np.random.random((3,))
         angle = np.random.random()
@@ -130,8 +130,8 @@ class TestTranslationRotationMatrix(unittest.TestCase):
         self.assertTrue(tr.is_rotation_matrix(mat))
 
     def test_random(self):
-        """ Test that translation_rotation_matrix() produces a matrix that correctly
-		transforms a random point """
+        """Test that translation_rotation_matrix() produces a matrix that correctly
+        transforms a random point"""
         pt = np.random.random((3,))
 
         axis = np.random.random((3,))

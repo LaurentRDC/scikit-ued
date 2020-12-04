@@ -36,7 +36,7 @@ def calq(I, crystal, peak_indices, miller_indices):
     -------
     qx, qy : `~numpy.ndarray`, ndim 2
         Scattering vectors (x and y) associated with the intensity profile ``I``.
-    
+
     Raises
     ------
     ValueError : if ``I`` is not a 2D diffraction pattern.
@@ -96,7 +96,7 @@ def powder_calq(I, crystal, peak_indices, miller_indices):
     -------
     q : `~numpy.ndarray`, ndim 1
         Scattering vectors associated with the intensity profile ``I``.
-    
+
     Raises
     ------
     ValueError : if ``I`` is not a 1D diffraction pattern.
@@ -135,8 +135,8 @@ def powder_calq(I, crystal, peak_indices, miller_indices):
 
 def detector_scattvectors(keV, camera_length, shape, pixel_size, center=None):
     """
-    Returns a mesh of reciprocal space vectors visible on a particular detector 
-    in transmission geometry. The curvature of the Ewald sphere is 
+    Returns a mesh of reciprocal space vectors visible on a particular detector
+    in transmission geometry. The curvature of the Ewald sphere is
     taken into account.
 
     Parameters
@@ -153,7 +153,7 @@ def detector_scattvectors(keV, camera_length, shape, pixel_size, center=None):
     center : 2-tuple of ints or None, optional
         Location of the image center [px]. If None (default), it is taken
         to be the exact center of the detector.
-    
+
     Returns
     -------
     qx, qy, qz : 2-D arrays

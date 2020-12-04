@@ -16,7 +16,7 @@ from npstreams import array_stream, imean, istd, itercopy, last, peek, prod
 def isnr(images, fill_value=0.0):
     """
     Streaming, pixelwise signal-to-noise ratio (SNR).
-    
+
     Parameters
     ----------
     images : iterable of ndarray
@@ -51,10 +51,10 @@ def snr_from_collection(images, fill_value=0.0):
     These images should represent identical measurements.
 
     SNR is defined as :math:`snr = \\mu/\sigma` where :math:`\\mu`
-    is the average pixel value and :math:`\sigma` is the standard deviation of that pixel value.  
+    is the average pixel value and :math:`\sigma` is the standard deviation of that pixel value.
 
     This function operates in constant-memory; it is therefore safe to use on a large collection
-    of images (>10GB).     
+    of images (>10GB).
 
     Parameters
     ----------
@@ -77,7 +77,7 @@ def snr_from_collection(images, fill_value=0.0):
 
 @array_stream
 def mask_from_collection(images, px_thresh=(0, 3e4), std_thresh=None):
-    """ 
+    """
     Determine binary mask from a set of images. These images should represent identical measurements, e.g. a set
     of diffraction patterns before photoexcitation. Pixels are rejected on the following two criteria:
 
@@ -96,14 +96,14 @@ def mask_from_collection(images, px_thresh=(0, 3e4), std_thresh=None):
         are rejected. If ``px_thresh`` is a single float, it is assumed to be the maximal intensity, and no lower
         bound is enforced.
     std_thresh : int or float or None, optional
-        Standard-deviation threshold. If the standard deviation of a pixel exceeds ``std_thresh``, 
+        Standard-deviation threshold. If the standard deviation of a pixel exceeds ``std_thresh``,
         it is rejected. If None (default), a threshold is not enforced.
-    
+
     Returns
     -------
     mask : `~numpy.ndarray`, dtype bool
         Pixel mask. Pixels where ``mask`` is True are invalid.
-    
+
     Notes
     -----
     ``numpy.inf`` can be used to have a lower pixel value bound but no upper bound. For example, to
@@ -137,13 +137,13 @@ def mask_from_collection(images, px_thresh=(0, 3e4), std_thresh=None):
 
 
 def combine_masks(*masks):
-    """ 
+    """
     Combine multiple pixel masks into one. This assumes that pixel masks evaluate
     to ``True`` on valid pixels and ``False`` on invalid pixels.
 
     Returns
     -------
-    combined : `~numpy.ndarray`, dtype bool 
+    combined : `~numpy.ndarray`, dtype bool
     """
     # By multiplying boolean arrays, values of False propagate
     return prod(masks, dtype=np.bool)
@@ -158,14 +158,14 @@ def mask_image(image, mask, fill_value=0, copy=True):
     Parameters
     ---------
     image : `~numpy.ndarray`
-    
+
     mask : `~numpy.ndarray`
         Boolean array. ``mask`` should evaluate to ``True`` on valid pixels.
     fill_value : float, optional
         Invalid pixels fill value.
     copy : bool, optional
         If True (default), ``image`` is copied before masking. If False, ``image`` is modified in-place.
-    
+
     Returns
     -------
     masked : `~numpy.ndarray`
@@ -192,7 +192,7 @@ def triml(array, percentile, axis=None, fill_value=0):
         Axis along which to trim data. If None (default), compute over the whole array.
     fill_value : float, optional
         Trimmed array elements are replaced with this value.
-    
+
     Returns
     -------
     trimmed : `~numpy.ndarray`
@@ -222,7 +222,7 @@ def trimr(array, percentile, axis=None, fill_value=0):
         Axis along which to trim data. If None (default), compute over the whole array.
     fill_value : float, optional
         Trimmed array elements are replaced with this value.
-    
+
     Returns
     -------
     trimmed : `~numpy.ndarray`

@@ -90,15 +90,15 @@ class TestMIBRead(unittest.TestCase):
         self.assertEqual(arr.dtype, np.dtype(">u2"))
 
     def test_mibread(self):
-        """ Test that the array extracted from a test MIB files has the
-        expected attributes """
+        """Test that the array extracted from a test MIB files has the
+        expected attributes"""
         arr = mibread(TEST_MIB)
         self.assertEqual(arr.shape, (256, 256))
         self.assertEqual(arr.dtype, np.dtype(">u2"))
 
     def test_mibread_multi(self):
-        """ Test that the array extracted from a test MIB file containing
-        multiple images has the expected attributes """
+        """Test that the array extracted from a test MIB file containing
+        multiple images has the expected attributes"""
         arr = mibread(TEST_MIB_MULTI)
         self.assertEqual(arr.shape, (256, 256, 9))
         self.assertEqual(arr.dtype, np.dtype(">u1"))

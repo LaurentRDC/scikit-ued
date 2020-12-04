@@ -44,8 +44,8 @@ class TestElectronVelocity(unittest.TestCase):
 
 class TestInteractionParameter(unittest.TestCase):
     def test_100kV(self):
-        """ Test that the interaction_parameter(100) is what is expected
-        from Kirkland 2010 """
+        """Test that the interaction_parameter(100) is what is expected
+        from Kirkland 2010"""
         self.assertAlmostEqual(interaction_parameter(100), 0.924 * 1e-3, places=6)
 
     def test_vectorized(self):

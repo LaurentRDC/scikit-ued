@@ -46,11 +46,11 @@ import numpy
 
 
 def dmread(filepath):
-    """ 
-    Read a DM3/DM4 (Digital Micrograph) file into a NumPy array. 
+    """
+    Read a DM3/DM4 (Digital Micrograph) file into a NumPy array.
 
     .. versionadded:: 1.0.1.0
-    
+
     Parameters
     ----------
     filepath : path-like
@@ -59,8 +59,8 @@ def dmread(filepath):
     Returns
     -------
     im : `~numpy.ndarray`
-        Image as a NumPy array. 
-    
+        Image as a NumPy array.
+
     See Also
     --------
     diffread : general-purpose image-reading function.

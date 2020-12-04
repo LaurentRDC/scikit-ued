@@ -20,7 +20,7 @@ def nfftfreq(M, df=1):
         Number of frequency bins.
     df : float, optional
         Frequency range.
-    
+
     Returns
     -------
     freqs : `~numpy.ndarray`

@@ -21,7 +21,7 @@ def available_dt_filters():
     Returns
     -------
     wavelets : iterable
-        List of sorted string names. The wavelet numerical values can be 
+        List of sorted string names. The wavelet numerical values can be
         retrieved from the :func:`dualtree_wavelet` function.
     """
     return sorted(["qshift1", "qshift2", "qshift3", "qshift4", "qshift5", "qshift6"])
@@ -29,13 +29,13 @@ def available_dt_filters():
 
 def available_first_stage_filters():
     """
-    Iterable of available wavelet filters compatible with the 
+    Iterable of available wavelet filters compatible with the
     first stage of dual-tree complex wavelent transform.
 
     Returns
     -------
     wavelets : iterable
-        List of sorted string names. The wavelet numerical values can be 
+        List of sorted string names. The wavelet numerical values can be
         retrieved from the :func:`dt_first_stage` function.
     """
     return sorted(filter(lambda name: name != "dmey", wavelist(kind="discrete")))
@@ -48,7 +48,7 @@ ALL_FIRST_STAGE = available_first_stage_filters()
 
 def dtcwt(data, first_stage, wavelet, mode="constant", level=None, axis=-1):
     """
-    1D Dual-tree complex wavelet transform [1]_ along an axis. 
+    1D Dual-tree complex wavelet transform [1]_ along an axis.
 
     Parameters
     ----------
@@ -76,24 +76,24 @@ def dtcwt(data, first_stage, wavelet, mode="constant", level=None, axis=-1):
         (`cA_n`) of the result is approximation coefficients array and the
         following elements (`cD_n` - `cD_1`) are details coefficients arrays.
         Arrays have the same number of dimensions as the input.
-    
+
     Raises
     ------
     ValueError: Raised if axis argument is invalid (e.g. too large) or if the input data
                 is not even along the transform direction.
-    
+
     Notes
     -----
     The implementation uses two tricks [1]_:
 
-        * Different first-stage wavelet: The first level of the dual-tree 
+        * Different first-stage wavelet: The first level of the dual-tree
           complex wavelet transform involves a combo of shifted wavelets.
-        * Swapping of filters at each stage: At each level > 1, the filters 
+        * Swapping of filters at each stage: At each level > 1, the filters
           (separated into real and imaginary trees) are swapped.
 
     References
     ----------
-    .. [1] Selesnick, I. W. et al. 'The Dual-tree Complex Wavelet Transform', IEEE Signal Processing 
+    .. [1] Selesnick, I. W. et al. 'The Dual-tree Complex Wavelet Transform', IEEE Signal Processing
            Magazine pp. 123 - 151, November 2005.
     """
     data = np.asarray(data, dtype=np.float) / np.sqrt(2)
@@ -158,7 +158,7 @@ def idtcwt(coeffs, first_stage, wavelet, mode="constant", axis=-1):
         Signal extension mode, see :data:`pywt.Modes`.
     axis : int, optional
         Axis over which to compute the inverse transform.
-        
+
     Returns
     -------
     reconstructed : ndarray
@@ -170,7 +170,7 @@ def idtcwt(coeffs, first_stage, wavelet, mode="constant", axis=-1):
 
     References
     ----------
-    .. [1] Selesnick, I. W. et al. 'The Dual-tree Complex Wavelet Transform', IEEE Signal Processing 
+    .. [1] Selesnick, I. W. et al. 'The Dual-tree Complex Wavelet Transform', IEEE Signal Processing
            Magazine pp. 123 - 151, November 2005.
     """
     if len(coeffs) < 1:
@@ -219,7 +219,7 @@ def dt_max_level(data, first_stage, wavelet, axis=-1):
         See :func:`skued.available_dt_filters` for possible values.
     axis : int, optional
         Axis over which to compute the transform. Default is -1
-        
+
     Returns
     -------
     max_level : int
@@ -233,11 +233,11 @@ def dt_max_level(data, first_stage, wavelet, axis=-1):
 
 
 def _normalize_size_axis(approx, detail, axis):
-    """ 
+    """
     Adjust the approximate coefficients' array size to that of the detail coefficients' array.
-    
+
     Parameters
-    ---------- 
+    ----------
     approx : ndarray
     detail: ndarray
     axis : int
@@ -258,7 +258,7 @@ def _normalize_size_axis(approx, detail, axis):
 def _single_tree_analysis_1d(data, first_stage, wavelet, level, mode, axis):
     """
     Single tree of the forward dual-tree complex wavelet transform.
-    
+
     Parameters
     ----------
     data : ndarray, ndim 1
@@ -334,11 +334,11 @@ def dualtree_wavelet(name):
     Parameters
     ----------
     name : str
-    
+
     Returns
     -------
     real, imag : pywt.Wavelet objects.
-    
+
     Raises
     ------
     ValueError : If illegal wavelet name.

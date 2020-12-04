@@ -12,22 +12,22 @@ from numpy.linalg import norm
 def repeated_array(arr, num, axes=-1):
     """
     Create a composite array from repeated copies of an array
-    
+
     Parameters
     ----------
     arr : ndarray
-    
+
     num : int or iterable of ints
         Number of copies per axis. If provided as tuple, must be the same length
-        as 'axes' parameter. In case of `num` being 0 or an empty iterable, 
+        as 'axes' parameter. In case of `num` being 0 or an empty iterable,
         the inpur `arr` is returned.
     axes : int or iterable of ints
         Axis/axes over which to copy.
-    
+
     Returns
     -------
     out : ndarray
-    
+
     Raises
     ------
     ValueError : If num and axes are tuples of different lengths.
@@ -60,7 +60,7 @@ def complex_array(real, imag):
     ----------
     real, imag : array_like
         Real and imaginary parts of a complex array.
-    
+
     Returns
     -------
     complex : `~numpy.ndarray`
@@ -73,7 +73,7 @@ def complex_array(real, imag):
 
 
 def mirror(arr, axes=None):
-    """ 
+    """
     Reverse array over many axes. Generalization of arr[::-1] for many dimensions.
 
     Parameters
@@ -82,7 +82,7 @@ def mirror(arr, axes=None):
         Array to be reversed
     axes : int or tuple or None, optional
         Axes to be reversed. Default is to reverse all axes.
-    
+
     Returns
     -------
     out : `~numpy.ndarray`
@@ -103,14 +103,14 @@ def mirror(arr, axes=None):
 
 
 def cart2polar(x, y):
-    """ 
+    """
     Transform cartesian coordinates to polar coordinates.
 
     Parameters
     ----------
     x, y : `~numpy.ndarray`
         Cartesian coordinates.
-    
+
     Returns
     -------
     r, t : `~numpy.ndarray`
@@ -141,7 +141,7 @@ def polar2cart(r, t):
 def spherical2cart(r, p, t):
     """
     Transform spherical coordinates into cartesian coordinates.
-    
+
     Parameters
     ----------
     r : `~numpy.ndarray`
@@ -150,7 +150,7 @@ def spherical2cart(r, p, t):
         Polar angle coordinate in radians.
     t : `~numpy.ndarray`
         Azimuthal coordinate in radians.
-    
+
     Returns
     -------
     x, y, z : `~numpy.ndarray`
@@ -165,12 +165,12 @@ def spherical2cart(r, p, t):
 def cart2spherical(x, y, z):
     """
     Transform cartesian coordinates into spherical coordinates .
-    
+
     Parameters
     ----------
     x, y, z : `~numpy.ndarray`
         Cartesian coordinates
-    
+
     Returns
     -------
     r : `~numpy.ndarray`
@@ -193,7 +193,7 @@ def plane_mesh(v1, v2, x1, x2=None, origin=(0, 0, 0)):
     Parameters
     ----------
     v1, v2 : `~numpy.ndarray`, shape (3,)
-        Basis vector of the plane. A warning is raised if 
+        Basis vector of the plane. A warning is raised if
         ``v1`` and ``v2`` are not orthogonal.
     x1, x2 : iterable, shape (N,)
         1-D arrays representing the coordinates on the grid, along basis
@@ -201,7 +201,7 @@ def plane_mesh(v1, v2, x1, x2=None, origin=(0, 0, 0)):
         ``x1`` and ``x2`` are taken to be the same
     origin : iterable, shape (3,), optional
         Plane mesh will be generated with respect to this origin.
-    
+
     Returns
     -------
     x, y, z : `~numpy.ndarray`, ndim 2

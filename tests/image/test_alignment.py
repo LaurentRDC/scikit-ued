@@ -31,8 +31,8 @@ class TestIAlign(unittest.TestCase):
         self.assertSequenceEqual(TEST_IMAGE.shape, aligned[0].shape)
 
     def test_misaligned_canned_images(self):
-        """ shift images from skimage.data by entire pixels.
-	   We don't expect perfect alignment."""
+        """shift images from skimage.data by entire pixels.
+        We don't expect perfect alignment."""
         original = TEST_IMAGE
         misaligned = [
             ndi.shift(original, (randint(-4, 4), randint(-4, 4))) for _ in range(5)
@@ -61,8 +61,8 @@ class TestAlign(unittest.TestCase):
         self.assertEqual(im.dtype, TEST_IMAGE.dtype)
 
     def test_misaligned_canned_images(self):
-        """ shift images from skimage.data by entire pixels.
-	   	We don't expect perfect alignment."""
+        """shift images from skimage.data by entire pixels.
+        We don't expect perfect alignment."""
         original = TEST_IMAGE
         misaligned = ndi.shift(original, (randint(-4, 4), randint(-4, 4)))
 
