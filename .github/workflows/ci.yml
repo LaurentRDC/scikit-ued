@@ -6,6 +6,8 @@ on:
 
 jobs:
   build:
+    # To prevent this job from running, have "[skip ci]" or "[ci skip]" in the commit message 
+    if: contains(toJson(github.event.commits), '[ci skip]') == false && contains(toJson(github.event.commits), '[skip ci]') == false
 
     runs-on: ${{ matrix.os }}
     strategy:
