@@ -5,6 +5,7 @@ Release 2.0.7
 -------------
 
 * Fixed an issue regarding a deprecation of `collections.Sized` (in favour of `collections.abc.Sized`) in Python 3.10+.
+* Migration of continuous integration testing to GitHub Actions.
 
 Release 2.0.6
 -------------

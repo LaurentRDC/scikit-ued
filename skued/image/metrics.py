@@ -50,7 +50,7 @@ def snr_from_collection(images, fill_value=0.0):
     Signal-to-noise ratio (SNR) on a per-pixel basis, for images in a collection.
     These images should represent identical measurements.
 
-    SNR is defined as :math:`snr = \mu/\sigma` where :math:`\mu`
+    SNR is defined as :math:`snr = \\mu/\sigma` where :math:`\\mu`
     is the average pixel value and :math:`\sigma` is the standard deviation of that pixel value.  
 
     This function operates in constant-memory; it is therefore safe to use on a large collection

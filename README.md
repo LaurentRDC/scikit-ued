@@ -1,7 +1,7 @@
 scikit-ued
 ==========
 
-[![Windows Build Status](https://img.shields.io/appveyor/ci/LaurentRDC/scikit-ued/master.svg)](https://ci.appveyor.com/project/LaurentRDC/scikit-ued) [![Documentation Build Status](https://readthedocs.org/projects/scikit-ued/badge/?version=master)](http://scikit-ued.readthedocs.io) [![PyPI Version](https://img.shields.io/pypi/v/scikit-ued.svg)](https://pypi.org/project/scikit-ued/) [![Conda-forge Version](https://img.shields.io/conda/vn/conda-forge/scikit-ued.svg)](https://anaconda.org/conda-forge/scikit-ued) ![Supported Python Versions](https://img.shields.io/pypi/pyversions/scikit-ued.svg)
+[![Documentation Build Status](https://readthedocs.org/projects/scikit-ued/badge/?version=master)](http://scikit-ued.readthedocs.io) [![PyPI Version](https://img.shields.io/pypi/v/scikit-ued.svg)](https://pypi.org/project/scikit-ued/) [![Conda-forge Version](https://img.shields.io/conda/vn/conda-forge/scikit-ued.svg)](https://anaconda.org/conda-forge/scikit-ued) 
 
 Collection of algorithms and functions for ultrafast electron
 diffraction. It aims to be a fully-tested package taking advantage of
