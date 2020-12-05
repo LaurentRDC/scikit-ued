@@ -37,17 +37,18 @@ def gaussian(coordinates, center, fwhm=None, std=None):
 	-----
 	In the case where both `std` and `fwhm` are given, `fwhm` takes precedence.
         
-	Example
-	-------
+	Examples
+	--------
 	>>> import numpy as np
 	>>> from skued import gaussian
 	>>>
 	>>> span = np.arange(-10, 10, 0.1)
 	>>> xx, yy = np.meshgrid(span, span)
-	>>> center = [0,0]
 	>>> g = gaussian( coordinates = [xx,yy], center = [0,0], std = 1)
-	>>> g.shape == xx.shape		  #True
-	>>> np.sum(g)*0.1**2         #Integral should be unity (spacing = 0.1)
+	>>> g.shape == xx.shape
+	True
+	>>> np.sum(g)*0.1**2   # Integral should be close to unity (spacing = 0.1)
+	1.0000000000000075
 	"""
     if not any([fwhm, std]):
         raise ValueError("Either fwhm or std has to be provided")
@@ -113,12 +114,13 @@ def lorentzian(coordinates, center, fwhm):
 	>>> import numpy as np
 	>>> from skued import lorentzian
 	>>>
-	>>> span = np.arange(-10, 10, 0.1)
+	>>> span = np.arange(-15, 15, 0.1)
 	>>> xx, yy = np.meshgrid(span, span)
-	>>> center = [0,0]
 	>>> l = lorentzian( coordinates = [xx,yy], center = [0,0], fwhm = 1)
-	>>> l.shape == xx.shape		  #True
-	>>> np.sum(l)*0.1**2          #Integral should be unity (spacing = 0.1)
+	>>> l.shape == xx.shape
+	True
+	>>> np.sum(l)*0.1**2          # Integral should be unity (spacing = 0.1)
+	0.9700030627398781
 	"""
     width = 0.5 * fwhm
 
@@ -192,12 +194,15 @@ def pseudo_voigt(coordinates, center, fwhm_g, fwhm_l):
 	Example
 	--------
 	>>> import numpy as n
-	>>> span = n.arange(-10, 10, 0.1)
+	>>> from skued import pseudo_voigt
+	>>>
+	>>> span = n.arange(-5, 5, 0.1)
 	>>> xx, yy = n.meshgrid(span, span)
-	>>> center = [0,0]
 	>>> pV = pseudo_voigt( coordinates = [xx,yy], center = [0,0], fwhm_g = 1, fwhm_l = 0.1)
-	>>> pV.shape == xx.shape      #True
-	>>> n.sum(pV)*0.1**2          #Integral should be unity
+	>>> pV.shape == xx.shape
+	True
+	>>> n.sum(pV)*0.1**2 # Integral should be unity
+	1.2257564106117163
 
 	References
 	----------

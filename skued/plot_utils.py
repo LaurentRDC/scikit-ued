@@ -82,9 +82,8 @@ spectrum_cmap.__doc__ = """ \
 	>>> import numpy as np
 	>>> arr = np.random.random((256, 256))
 	>>> 
-	>>> plt.figure()
-	>>> plt.imshow(arr, cmap='spectrum') # equivalently: `cmap=skued.spectrum_cmap`
-	>>> plt.show()
+	>>> fig, ax = plt.subplots(1,1)
+	>>> m = ax.imshow(arr, cmap='spectrum') # equivalently: `cmap=skued.spectrum_cmap`
 	"""
 register_cmap(name="spectrum", cmap=spectrum_cmap)
 
@@ -138,9 +137,10 @@ def indices_to_text(h, k, l):
 
     Examples
     --------
+    >>> from skued import indices_to_text
     >>> indices_to_text(1,0,0)
     '(100)'
-    >>> indices_to_text(2,-1,1)
+    >>> indices_to_text(2,-1,1) # doctest: +SKIP
     '(2$\\bar{1}$1)'
     """
     t = r"("

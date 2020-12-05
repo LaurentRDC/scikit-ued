@@ -61,3 +61,7 @@ jobs:
       run: |
         pip install -r dev-requirements.txt
         python setup.py build_sphinx
+    
+    - name: Doctests
+      run: |
+        python -m sphinx -b doctest docs build

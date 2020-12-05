@@ -35,8 +35,8 @@ scattering angles `s` as :math:`s = \sin{\theta}/\lambda`::
 	q = np.linspace(1, 10, 1024)
 	diff = powdersim(graphite, q)
 
-	plt.figure()
-	plt.plot(q, diff/diff.max())
+	fig, ax = plt.subplots(1,1)
+	ax.plot(q, diff/diff.max())
 
 After plot formatting:
 
