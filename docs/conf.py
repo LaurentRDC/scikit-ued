@@ -53,9 +53,6 @@ intersphinx_mapping = {"numpy": ("http://docs.scipy.org/doc/numpy/", None)}
 napoleon_google_docstring = False
 autosummary_generate = True
 
-# Add any paths that contain templates here, relative to this directory.
-templates_path = ["_templates"]
-
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
