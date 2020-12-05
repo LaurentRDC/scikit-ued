@@ -8,6 +8,7 @@ Release 2.0.7
 * Migration of continuous integration testing to GitHub Actions.
 * Code snippets in documentation are now tested for correctness.
 * Increased the precision of the pseudo-voigt approximation in `skued.pseudo_voigt`.
+* Tests are now included in source distributions.
 
 Release 2.0.6
 -------------
