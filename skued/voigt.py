@@ -193,16 +193,16 @@ def pseudo_voigt(coordinates, center, fwhm_g, fwhm_l):
 
     Example
     --------
-    >>> import numpy as n
+    >>> import numpy as np
     >>> from skued import pseudo_voigt
     >>>
-    >>> span = n.arange(-5, 5, 0.1)
-    >>> xx, yy = n.meshgrid(span, span)
+    >>> span = np.arange(-5, 5, 0.01)
+    >>> xx, yy = np.meshgrid(span, span)
     >>> pV = pseudo_voigt( coordinates = [xx,yy], center = [0,0], fwhm_g = 0.1, fwhm_l = 0.1)
     >>> pV.shape == xx.shape
     True
-    >>> n.sum(pV)*0.1**2 # Integral should be unity
-    1.2257564106117163
+    >>> np.trapz(np.trapz(pV, span[None, :], axis=1), span, axis=0) # Integral should be unity
+    0.9938490810821982
 
     References
     ----------
