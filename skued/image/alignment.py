@@ -58,7 +58,7 @@ def itrack_peak(images, row_slice=None, col_slice=None, precision=1 / 10):
         yield np.asarray(shift)
 
 
-def align(image, reference, mask=None, fill_value=0.0, fast=None):
+def align(image, reference, mask=None, fill_value=0.0):
     """
     Align a diffraction image to a reference. Subpixel resolution available.
 
@@ -72,8 +72,6 @@ def align(image, reference, mask=None, fill_value=0.0, fast=None):
         Mask that evaluates to True on valid pixels of the array `image`.
     fill_value : float, optional
         Edges will be filled with `fill_value` after alignment.
-    fast : bool, optional
-        This parameter is deprecated, and has no effect.
 
     Returns
     -------
@@ -84,12 +82,6 @@ def align(image, reference, mask=None, fill_value=0.0, fast=None):
     --------
     ialign : generator of aligned images
     """
-    if fast is not None:
-        warn("skued.align: `fast` argument is deprecated and has no effect.")
-
-    if mask is None:
-        mask = np.ones_like(image, dtype=np.bool)
-
     shift, *_ = phase_cross_correlation(
         reference_image=reference, moving_image=image, reference_mask=mask
     )
@@ -97,7 +89,7 @@ def align(image, reference, mask=None, fill_value=0.0, fast=None):
 
 
 @array_stream
-def ialign(images, reference=None, mask=None, fill_value=0.0, fast=None):
+def ialign(images, reference=None, mask=None, fill_value=0.0):
     """
     Generator of aligned diffraction images.
 
@@ -113,8 +105,6 @@ def ialign(images, reference=None, mask=None, fill_value=0.0, fast=None):
         Mask that evaluates to True on valid pixels.
     fill_value : float, optional
         Edges will be filled with `fill_value` after alignment.
-    fast : bool, optional
-        This parameter is deprecated, and has no effect.
 
     Yields
     ------
@@ -125,9 +115,6 @@ def ialign(images, reference=None, mask=None, fill_value=0.0, fast=None):
     --------
     skued.align : align a single diffraction pattern onto a reference.
     """
-    if fast is not None:
-        warn("skued.ialign: `fast` argument is deprecated and has no effect.")
-
     images = iter(images)
 
     if reference is None:
