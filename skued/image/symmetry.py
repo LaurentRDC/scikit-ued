@@ -4,7 +4,7 @@ Image manipulation involving symmetry
 =====================================
 """
 import numpy as np
-from npstreams import average, nan_to_num
+import npstreams as ns
 from skimage.transform import rotate
 
 from ..array_utils import mirror
@@ -46,24 +46,34 @@ def nfold(im, mod, center=None, mask=None, fill_value=0.0):
         )
     angles = range(0, 360, int(360 / mod))
 
-    # Data-type must be float because of use of NaN
-    im = np.array(im, dtype=np.float, copy=True)
-
-    if mask is None:
-        mask = np.ones_like(im, dtype=np.uint8)
+    im = np.array(im, copy=True)
 
     kwargs = {"center": center, "mode": "constant", "cval": 0, "preserve_range": True}
 
+    if mask is None:
+        return ns.average(rotate(im, angle, **kwargs) for angle in angles)
+
     # Use weights because edges of the pictures, which might be cropped by the rotation
     # should not count in the average
-    wt = np.ones_like(mask, dtype=np.float)
-    wt[np.logical_not(mask)] = np.nan
+    wt = np.ones_like(mask, dtype=im.dtype)
+    wt[np.logical_not(mask)] = 0
 
     weights = (rotate(wt, angle, **kwargs) for angle in angles)
-    rotated = (rotate(im, angle, **kwargs) for angle in angles)
+    imgs = (rotate(im, angle, **kwargs) for angle in angles)
 
-    avg = average(rotated, weights=weights, ignore_nan=True)
-    return nan_to_num(avg, fill_value, copy=False)
+    avg = ns.average(imgs, weights=weights)
+
+    # Mask may overlap with itself during symmetrization. At those points, the average
+    # will be zero (because the weights are 0 there)
+    # However, because users may want to change that value to `fill_value != 0`, we need
+    # to know where is the overlap
+    if fill_value != 0.0:
+        invalid_pixels = np.logical_not(mask)
+        masks = (rotate(invalid_pixels, angle, **kwargs) for angle in angles)
+        overlap = ns.prod(masks).astype(np.bool)  # equivalent to logical_and
+        avg[overlap] = fill_value
+
+    return ns.nan_to_num(avg, fill_value=fill_value)
 
 
 def reflection(im, angle, center=None, mask=None, fill_value=0.0):
@@ -119,7 +129,7 @@ def reflection(im, angle, center=None, mask=None, fill_value=0.0):
     reflected = refl(reflected)
     invalid_pixels_r = refl(invalid_pixels).astype(np.bool)
 
-    result = average([im, reflected])
+    result = ns.average([im, reflected])
     result[invalid_pixels_r] = fill_value
 
     return result

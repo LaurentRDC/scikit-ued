@@ -1,13 +1,14 @@
 Changelog
 =========
 
-Release 2.0.7
+Release 2.1.0
 -------------
 
-* Fixed an issue regarding a deprecation of `collections.Sized` (in favour of `collections.abc.Sized`) in Python 3.10+.
+* Added pre-emptive support for Python 3.10+ by removing deprecations.
 * Migration of continuous integration testing to GitHub Actions.
 * Code snippets in documentation are now tested for correctness.
 * Increased the precision of the pseudo-voigt approximation in `skued.pseudo_voigt`.
+* Fixed many issues regarding documentation being out-of-date.
 * Tests are now included in source distributions.
 
 Release 2.0.6

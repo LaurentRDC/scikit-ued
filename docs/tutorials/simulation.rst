@@ -26,18 +26,18 @@ diffraction simulation.
 All you need is a :class:`crystals.Crystal` object and a range of scattering length, defined from 
 scattering angles `s` as :math:`s = \sin{\theta}/\lambda`:
 	
-	>>> import matplotlib.pyplot as plt
-	>>> import numpy as np
-	>>> from skued import powdersim
-	>>> from crystals import Crystal
+    >>> import matplotlib.pyplot as plt
+    >>> import numpy as np
+    >>> from skued import powdersim
+    >>> from crystals import Crystal
     >>> 
-	>>> graphite = Crystal.from_database('C')
-    >>>
-	>>> q = np.linspace(1, 10, 1024)
-	>>> diff = powdersim(graphite, q)
+    >>> graphite = Crystal.from_database('C')
     >>> 
-	>>> fig, ax = plt.subplots(1,1)
-	>>> ax.plot(q, diff/diff.max()) # doctest: +SKIP
+    >>> q = np.linspace(1, 10, 1024)
+    >>> diff = powdersim(graphite, q)
+    >>> 
+    >>> fig, ax = plt.subplots(1,1)
+    >>> ax.plot(q, diff/diff.max()) # doctest: +SKIP
 
 After plot formatting:
 

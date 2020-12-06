@@ -23,7 +23,7 @@ class TestNFoldSymmetry(unittest.TestCase):
             nfold(im, mod=1.7)
 
     def test_mask(self):
-        """ Test that nfold_symmetry() works correctly with a mask """
+        """ Test that nfold() works correctly with a mask """
         im = np.zeros((128, 128), dtype=np.int)
         mask = np.ones_like(im, dtype=np.bool)
 
@@ -34,6 +34,32 @@ class TestNFoldSymmetry(unittest.TestCase):
 
             rot = nfold(im, mod=2, mask=mask)
             self.assertTrue(np.allclose(rot, np.zeros_like(rot)))
+
+    def test_mask_with_overlapping_symmetry(self):
+        """ Test that nfold() works correctly with a mask which overlaps with itself when rotated. """
+        im = np.zeros((128, 128), dtype=np.int)
+        mask = np.ones_like(im, dtype=np.bool)
+
+        with catch_warnings():
+            simplefilter("ignore")
+            im[64 - 4 : 64 + 4, :] = 1
+            mask[64 - 5 : 64 + 5, :] = False  # mask slightly larger
+
+            rot = nfold(im, mod=6, mask=mask)
+            self.assertTrue(np.allclose(rot, np.zeros_like(rot)))
+
+    def test_mask_with_overlapping_symmetry_fill_value(self):
+        """ Test that nfold() works correctly with a mask which overlaps with itself when rotated, when `fill_value` is not 0. """
+        im = np.zeros((128, 128), dtype=np.int)
+        mask = np.ones_like(im, dtype=np.bool)
+
+        with catch_warnings():
+            simplefilter("ignore")
+            im[64 - 4 : 64 + 4, :] = 1
+            mask[64 - 5 : 64 + 5, :] = False  # mask slightly larger
+
+            rot = nfold(im, mod=6, mask=mask, fill_value=500)
+            self.assertEqual(rot[64, 64], 500)
 
     def test_no_side_effects(self):
         """ Test that nfold() does not modify the input image and mask """

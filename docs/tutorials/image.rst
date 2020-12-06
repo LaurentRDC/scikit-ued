@@ -52,7 +52,7 @@ in each diffraction pattern must be ignored in the computation of the cross-corr
 Setting the 'invalid pixels' to 0 will not work, at those will correlate with the invalid pixels from the reference. One must use
 the **masked normalized cross-correlation**.
 
-All of this is taken care of in scikit-image's :func:`phase_cross_correlation` function (previously available in scikit-ued). Let's look at some polycrystalline Chromium:
+All of this is taken care of with the :func:`align` function. Let's look at some polycrystalline Chromium:
 
 .. plot::
 
@@ -65,7 +65,7 @@ All of this is taken care of in scikit-image's :func:`phase_cross_correlation` f
 	fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize = (9,3))
 	ax1.imshow(ref, vmin = 0, vmax = 200)
 	ax2.imshow(im, vmin = 0, vmax = 200)
-	ax3.imshow(ref - im, cmap = 'RdBu_r', vmin = -100, vmax = 100)
+	ax3.imshow(ref - im, cmap = 'RdBu_r')
 
 	for ax in (ax1, ax2, ax3):
 		ax.get_xaxis().set_visible(False)
@@ -82,9 +82,7 @@ From the difference pattern, we can see that the 'Data' pattern is shifted from 
 but the beamblock **has not moved**. To determine the exact shift, we need to use a mask that obscures the 
 beam-block and main beam:
 
-	>>> from skimage.registration import phase_cross_correlation
-	>>> import scipy.ndimage as ndi
-	>>> from skued import diffread
+	>>> from skued import diffread, align
 	>>> import numpy as np
 	>>> 
 	>>> ref = diffread('docs/tutorials/Cr_1.tif')
@@ -92,14 +90,50 @@ beam-block and main beam:
 	>>>
 	>>> # Invalid pixels are masked with a False
 	>>> mask = np.ones_like(ref, dtype = np.bool)
-	>>> mask[0:1250, 950:1250] = False
+	>>> mask[0:1250, 975:1225] = False
 	>>>
-	>>> shift, *_ = phase_cross_correlation(moving_image=im, reference_image = ref, reference_mask = mask)
-	>>> im = ndi.shift(im, -1*shift)
+	>>> aligned = align(image=im, reference=ref, mask=mask)
 
 Let's look at the difference:
 
-.. image:: cr_alignment.png
+.. plot::
+
+	from skued import diffread, align
+	from pathlib import Path
+
+	ref = diffread("Cr_1.tif")
+	im = diffread("Cr_2.tif")
+
+	mask = np.ones_like(ref, dtype=np.bool)
+	mask[0:1250, 975:1225] = False
+
+	# Reduce size of images because of memory usage of ReadTheDocs
+	mask = mask[::3, ::3]
+	ref = ref[::3, ::3]
+	im = im[::3, ::3]
+
+	aligned = align(image=im, reference=ref, mask=mask)
+
+	fig, ((ax1, ax2, ax3), (ax4, ax5, ax6)) = plt.subplots(nrows=2, ncols=3, figsize=(9, 6))
+	ax1.imshow(ref, vmin=0, vmax=200, cmap='inferno')
+	ax2.imshow(im, vmin=0, vmax=200, cmap='inferno')
+	ax3.imshow(ref - im, cmap="RdBu_r")
+	ax4.imshow(np.logical_not(mask) * ref, vmin=0, vmax=200, cmap="inferno")
+	ax5.imshow(aligned, vmin=0, vmax=200, cmap='inferno')
+	ax6.imshow(ref - aligned, cmap="RdBu_r")
+
+	for ax in (ax1, ax2, ax3, ax4, ax5, ax6):
+		ax.get_xaxis().set_visible(False)
+		ax.get_yaxis().set_visible(False)
+
+	ax1.set_title("Reference")
+	ax2.set_title("Data")
+	ax3.set_title("Difference")
+	ax4.set_title("Mask")
+	ax5.set_title("Aligned data")
+	ax6.set_title("Difference after alignment")
+
+	plt.tight_layout()
 
 .. _symmetry:
 

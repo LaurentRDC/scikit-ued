@@ -100,8 +100,8 @@ Here is a usage example for the data presented above:
 	>>> diffuse = 75 * np.exp(-7 * s) + 55 * np.exp(-2 * s)
 	>>> substrate1 = 0.8 * gaussian(s, center = s.mean(), fwhm = s.mean()/4)
 	>>> substrate2 = 0.9 * gaussian(s, center = s.mean()/2.5, fwhm = s.mean()/4)
-
-	baseline = baseline_dwt(signal, level = 6, max_iter = 150, wavelet = 'sym6')
+	>>>
+	>>> baseline = baseline_dwt(s, level = 6, max_iter = 150, wavelet = 'sym6')
 
 .. plot::
 

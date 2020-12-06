@@ -91,7 +91,7 @@ def align(image, reference, mask=None, fill_value=0.0, fast=None):
         mask = np.ones_like(image, dtype=np.bool)
 
     shift, *_ = phase_cross_correlation(
-        reference_image=image, moving_image=reference, reference_mask=mask
+        reference_image=reference, moving_image=image, reference_mask=mask
     )
     return ndi.shift(image, shift, order=2, mode="constant", cval=fill_value)
 
