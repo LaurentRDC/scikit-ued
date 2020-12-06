@@ -38,13 +38,16 @@ example polycrystalline vanadium dioxide pattern:
 
 It would be very difficult to interpolate a background from elastic scattering-free regions
 of the diffraction pattern, and this is a moderately We can add a background typical of silicon nitride 
-substrates, as well as inelastic scattering effects::
+substrates, as well as inelastic scattering effects:
 
-	from skued import gaussian
-	
-	background = 75 * np.exp(-7 * s) + 55 * np.exp(-2 * s)
-	substrate1 = 0.8 * gaussian(s, center = s.mean(), fwhm = s.mean()/4)
-	substrate2 = 0.9 * gaussian(s, center = s.mean()/2.5, fwhm = s.mean()/4)
+	>>> from skued import gaussian
+	>>> import numpy as np
+	>>> 
+	>>> s, intensity = np.load("docs/tutorials/powder.npy")
+	>>>
+	>>> background = 75 * np.exp(-7 * s) + 55 * np.exp(-2 * s)
+	>>> substrate1 = 0.8 * gaussian(s, center = s.mean(), fwhm = s.mean()/4)
+	>>> substrate2 = 0.9 * gaussian(s, center = s.mean()/2.5, fwhm = s.mean()/4)
 
 .. plot:: 
 
@@ -85,18 +88,18 @@ The procedure and rational for the :func:`baseline_dwt` routine is described in 
 Galloway et al. 'An Iterative Algorithm for Background Removal in Spectroscopy by Wavelet 
 Transforms', Applied Spectroscopy pp. 1370 - 1376, September 2009.
 
-Here is a usage example for the data presented above::
+Here is a usage example for the data presented above:
 
-	import numpy as np
-	from skued import gaussian
-	from skued import baseline_dwt
-
-	s, intensity = np.load('powder.npy')
-
-	# Double exponential inelastic background and substrate effects
-	diffuse = 75 * np.exp(-7 * s) + 55 * np.exp(-2 * s)
-	substrate1 = 0.8 * gaussian(s, center = s.mean(), fwhm = s.mean()/4)
-	substrate2 = 0.9 * gaussian(s, center = s.mean()/2.5, fwhm = s.mean()/4)
+	>>> import numpy as np
+	>>> from skued import gaussian
+	>>> from skued import baseline_dwt
+	>>> 
+	>>> s, intensity = np.load("docs/tutorials/powder.npy")
+	>>> 
+	>>> # Double exponential inelastic background and substrate effects
+	>>> diffuse = 75 * np.exp(-7 * s) + 55 * np.exp(-2 * s)
+	>>> substrate1 = 0.8 * gaussian(s, center = s.mean(), fwhm = s.mean()/4)
+	>>> substrate2 = 0.9 * gaussian(s, center = s.mean()/2.5, fwhm = s.mean()/4)
 
 	baseline = baseline_dwt(signal, level = 6, max_iter = 150, wavelet = 'sym6')
 
@@ -151,20 +154,20 @@ For more information on the why and how, please refer to:
 L. P. René de Cotret and B. J. Siwick, A general method for baseline-removal in ultrafast 
 electron powder diffraction data using the dual-tree complex wavelet transform, Struct. Dyn. 4 (2017)
 
-Here is a usage example for the data presented above::
+Here is a usage example for the data presented above:
 
-	import numpy as np
-	from skued import gaussian
-	from skued import baseline_dt
-
-	s, intensity = np.load('powder.npy')
-
-	# Double exponential inelastic background and substrate effects
-	diffuse = 75 * np.exp(-7 * s) + 55 * np.exp(-2 * s)
-	substrate1 = 0.8 * gaussian(s, center = s.mean(), fwhm = s.mean()/4)
-	substrate2 = 0.9 * gaussian(s, center = s.mean()/2.5, fwhm = s.mean()/4)
-
-	baseline = baseline_dt(signal, wavelet = 'qhisft3', level = 6, max_iter = 150))
+	>>> import numpy as np
+	>>> from skued import gaussian
+	>>> from skued import baseline_dt
+	>>>
+	>>> s, intensity = np.load("docs/tutorials/powder.npy")
+	>>> 
+	>>> # Double exponential inelastic background and substrate effects
+	>>> diffuse = 75 * np.exp(-7 * s) + 55 * np.exp(-2 * s)
+	>>> substrate1 = 0.8 * gaussian(s, center = s.mean(), fwhm = s.mean()/4)
+	>>> substrate2 = 0.9 * gaussian(s, center = s.mean()/2.5, fwhm = s.mean()/4)
+	>>> 
+	>>> baseline = baseline_dt(s, wavelet = 'qshift3', level = 6, max_iter = 150)
 
 .. plot::
 

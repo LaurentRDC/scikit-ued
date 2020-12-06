@@ -80,22 +80,22 @@ All of this is taken care of in scikit-image's :func:`phase_cross_correlation` f
 
 From the difference pattern, we can see that the 'Data' pattern is shifted from 'Reference' quite a bit, 
 but the beamblock **has not moved**. To determine the exact shift, we need to use a mask that obscures the 
-beam-block and main beam::
+beam-block and main beam:
 
-	from skimage.feature import phase_cross_correlation
-	import scipy.ndimage as ndi
-	from skued import diffread
-	import numpy as np
-
-	ref = diffread('Cr_1.tif')
-	im = diffread('Cr_2.tif')
-
-	# Invalid pixels are masked with a False
-	mask = np.ones_like(ref, dtype = np.bool)
-	mask[0:1250, 950:1250] = False
-
-	shift, *_ = phase_cross_correlation(moving_image=im, reference_image = ref, reference_mask = mask)
-	im = ndi.shift(im, -1*shift)
+	>>> from skimage.registration import phase_cross_correlation
+	>>> import scipy.ndimage as ndi
+	>>> from skued import diffread
+	>>> import numpy as np
+	>>> 
+	>>> ref = diffread('docs/tutorials/Cr_1.tif')
+	>>> im = diffread('docs/tutorials/Cr_2.tif')
+	>>>
+	>>> # Invalid pixels are masked with a False
+	>>> mask = np.ones_like(ref, dtype = np.bool)
+	>>> mask[0:1250, 950:1250] = False
+	>>>
+	>>> shift, *_ = phase_cross_correlation(moving_image=im, reference_image = ref, reference_mask = mask)
+	>>> im = ndi.shift(im, -1*shift)
 
 Let's look at the difference:
 
@@ -144,12 +144,12 @@ rotational symmetry.
     plt.tight_layout()
     plt.show()
 
-To use :func:`nfold`, all you need to know is the center of the diffraction pattern::
+To use :func:`nfold`, all you need to know is the center of the diffraction pattern:
 
-    from skued import nfold, diffread
-
-    im = diffread('graphite.tif')
-    av = nfold(im, mod = 6, center = center)    # mask is optional
+    >>> from skued import nfold, diffread
+	>>> 
+    >>> im = diffread('docs/tutorials/graphite.tif')
+    >>> av = nfold(im, mod = 6, center = (1024, 1024))    # mask is optional
 
 
 .. _pixel_masks:
@@ -168,19 +168,19 @@ Creation of a pixel mask
 A pixel mask can be created from a set of images sharing the same properties. For example, diffraction patterns
 before photoexcitation (i.e. dark runs) form a set of images that should be identical.
 
-Let's imaging a set of such images with filenames `dark_run_*.tif`. We can create a pixel mask with the :func:`mask_from_collection`::
+Let's imaging a set of such images with filenames `dark_run_*.tif`. We can create a pixel mask with the :func:`mask_from_collection`:
 
-    from glob import iglob
-    from skued import mask_from_collection, diffread
-
-    dark_runs = map(diffread, iglob('dark_run_*.tif'))    # Can be a huge stack of images
-    mask = mask_from_collection(dark_runs)
+    >>> from glob import iglob
+    >>> from skued import mask_from_collection, diffread
+	>>> 
+    >>> dark_runs = map(diffread, iglob('dark_run_*.tif')) # doctest: +SKIP
+    >>> mask = mask_from_collection(dark_runs) # doctest: +SKIP
 
 In the above example, pixel values outside opf the [0, 30000] range will be marked as invalid (default behaviour). Moreover,
 the per-pixel standard deviation over the image set is computed; pixels that fluctuate too much are also rejected.
 
-Note that since :func:`mask_from_collection` uses :mod:`npstreams` under the hood, the collection used to compute the 
-mask can be huge.
+Note that since :func:`mask_from_collection` uses :mod:`npstreams` under the hood, the collection of files used to compute the 
+mask can be huge, much larger than available memory.
 
 .. _powder:
 
@@ -190,26 +190,26 @@ Image analysis on polycrystalline diffraction patterns
 Angular average
 ---------------
 
-First, we create a test image::
+First, we create a test image:
 
-	import numpy as np
-	import matplotlib.pyplot as plt
-	from skued import gaussian
-
-	image = np.zeros( (256, 256) )
-	xc, yc = image.shape[0]/2, image.shape[1]/2	# center
-
-	extent = np.arange(0, image.shape[0])
-	xx, yy = np.meshgrid(extent, extent)
-	rr = np.sqrt((xx - xc)**2 + (yy-yc)**2)
-	image += gaussian([xx, yy], center = [xc, yc], fwhm = 200)
-	image[np.logical_and(rr < 40, rr > 38)] = 1
-	image[np.logical_and(rr < 100, rr > 98)] = 0.5
-	image /= image.max()	# Normalize max to 1
-	image += np.random.random(size = image.shape)
-
-	plt.imshow(image)
-	plt.show()
+	>>> import numpy as np
+	>>> import matplotlib.pyplot as plt
+	>>> from skued import gaussian
+	>>> 
+	>>> image = np.zeros( (256, 256) )
+	>>> xc, yc = image.shape[0]/2, image.shape[1]/2	# center
+	>>> 
+	>>> extent = np.arange(0, image.shape[0])
+	>>> xx, yy = np.meshgrid(extent, extent)
+	>>> rr = np.sqrt((xx - xc)**2 + (yy-yc)**2)
+	>>> image += gaussian([xx, yy], center = [xc, yc], fwhm = 200)
+	>>> image[np.logical_and(rr < 40, rr > 38)] = 1
+	>>> image[np.logical_and(rr < 100, rr > 98)] = 0.5
+	>>> image /= image.max()	# Normalize max to 1
+	>>> image += np.random.random(size = image.shape)
+	>>> 
+	>>> plt.imshow(image)	# doctest: +SKIP
+	>>> plt.show() # doctest: +SKIP
 
 .. plot::
 
@@ -236,13 +236,13 @@ First, we create a test image::
     plt.show()
 
 
-... and we can easily compute an angular average::
+... and we can easily compute an angular average:
 	
-	from skued import azimuthal_average
-
-	radius, intensity = azimuthal_average(image, (xc, yc))
-
-	plt.plot(radius, intensity)
+	>>> from skued import azimuthal_average
+	>>> 
+	>>> radius, intensity = azimuthal_average(image, (xc, yc)) # doctest: +SKIP
+	>>> 
+	>>> plt.plot(radius, intensity) # doctest: +SKIP
 
 .. plot::
 	
@@ -285,12 +285,12 @@ Consider the following diffraction pattern:
 	ax.yaxis.set_visible(False)
 	plt.show()
 
-We can consider the image *without hotspots* as the baseline of the image *with hotspots* ::
+We can consider the image *without hotspots* as the baseline of the image *with hotspots* :
 
-	from skued import diffread, baseline_dwt
-
-	im = diffread('hotspots.tif')
-	denoised = baseline_dwt(im, max_iter = 250, level = 1, wavelet = 'sym2', axis = (0, 1))
+	>>> from skued import diffread, baseline_dwt
+	>>> 
+	>>> im = diffread('docs/tutorials/hotspots.tif')
+	>>> denoised = baseline_dwt(im, max_iter = 250, level = 1, wavelet = 'sym2', axis = (0, 1))
 
 The result is plotted below:
 

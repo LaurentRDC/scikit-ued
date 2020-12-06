@@ -24,19 +24,20 @@ The simplest diffraction simulation available in scikit-ued is polycrystalline
 diffraction simulation.
 
 All you need is a :class:`crystals.Crystal` object and a range of scattering length, defined from 
-scattering angles `s` as :math:`s = \sin{\theta}/\lambda`::
+scattering angles `s` as :math:`s = \sin{\theta}/\lambda`:
 	
-	import matplotlib.pyplot as plt
-	import numpy as np
-	from skued import powdersim
-	from crystals import Crystal
-	graphite = Crystal.from_database('C')
-
-	q = np.linspace(1, 10, 1024)
-	diff = powdersim(graphite, q)
-
-	fig, ax = plt.subplots(1,1)
-	ax.plot(q, diff/diff.max())
+	>>> import matplotlib.pyplot as plt
+	>>> import numpy as np
+	>>> from skued import powdersim
+	>>> from crystals import Crystal
+    >>> 
+	>>> graphite = Crystal.from_database('C')
+    >>>
+	>>> q = np.linspace(1, 10, 1024)
+	>>> diff = powdersim(graphite, q)
+    >>> 
+	>>> fig, ax = plt.subplots(1,1)
+	>>> ax.plot(q, diff/diff.max()) # doctest: +SKIP
 
 After plot formatting:
 
@@ -64,39 +65,40 @@ The scattering potential of electrons is the crystal electrostatic potential; he
 computing such potential is a useful tool.
 
 To compute the electrostatic potential for an infinite crystal on an arbitrary 3D mesh,
-take a look at :func:`electrostatic`::
+take a look at :func:`electrostatic`:
 
-    import numpy as np
-    from crystals import Crystal
-    from skued import electrostatic
+    >>> import numpy as np
+    >>> from crystals import Crystal
+    >>> from skued import electrostatic
+    >>>
+    >>> graphite = Crystal.from_database('C')
+    >>> 
+    >>> extent = np.linspace(-10, 10, 128)
+    >>> xx, yy, zz = np.meshgrid(extent, extent, extent)
+    >>> potential = electrostatic(graphite, xx, yy, zz)
 
-    graphite = Crystal.from_database('C')
+In order to look at a slice in 2D, take a look at the function :func:`plane_mesh`:
 
-    extent = np.linspace(-10, 10, 128)
-    xx, yy, zz = np.meshgrid(extent, extent, extent)
-    potential = electrostatic(graphite, xx, yy, zz)
-
-In order to look at a slice in 2D, take a look at the function :func:`plane_mesh`::
-
-    import numpy as np
-    from crystals import Crystal
-    from skued import electrostatic, plane_mesh
-
-    vo2 = Crystal.from_database('vo2-m1')
-    a, b, _ = vo2.lattice_vectors
-
-    extent = np.linspace(-10, 10, 128)
-    xx, yy, zz = plane_mesh(a, b, extent, extent)
-    potential = electrostatic(vo2, xx, yy, zz)
+    >>> import numpy as np
+    >>> from crystals import Crystal
+    >>> from skued import electrostatic, plane_mesh
+    >>>
+    >>> vo2 = Crystal.from_database('vo2-m1')
+    >>> a, b, _ = vo2.lattice_vectors
+    >>> 
+    >>> extent = np.linspace(-10, 10, 128)
+    >>> xx, yy, zz = plane_mesh(a, b, extent, extent)
+    >>> potential = electrostatic(vo2, xx, yy, zz)
 
 Another possibility is to calculate the electrostatic potential for an infinite slab in the 
-x-y plane, but finite in z-direction, using :func:`pelectrostatic` (p for projected)::
+x-y plane, but finite in z-direction, using :func:`pelectrostatic` (p for projected):
 
-    from skued import pelectrostatic
-
-    extent = np.linspace(-5, 5, 256)
-    xx, yy= np.meshgrid(extent, extent)
-    potential = pelectrostatic(graphite, xx, yy)
+    >>> import numpy as np
+    >>> from skued import pelectrostatic
+    >>> 
+    >>> extent = np.linspace(-5, 5, 256)
+    >>> xx, yy= np.meshgrid(extent, extent)
+    >>> potential = pelectrostatic(graphite, xx, yy)
 
 After plot formatting:
 

@@ -49,15 +49,15 @@ My favourite way to plot time-series data is to make use of rainbow colors to in
 
     plt.show()
 
-This functionality can be accessed through the :func:`spectrum_colors` generator::
+This functionality can be accessed through the :func:`spectrum_colors` generator:
 
-    from skued import spectrum_colors
-
-    colors = spectrum_colors(5)
-    
-    # Colors always go from purple to red (increasing wavelength)
-    purple = next(colors)
-    red = list(colors)[-1]
+    >>> from skued import spectrum_colors
+    >>> 
+    >>> colors = spectrum_colors(5)
+    >>>     
+    >>> # Colors always go from purple to red (increasing wavelength)
+    >>> purple = next(colors)
+    >>> red = list(colors)[-1]
 
 You can see some examples of uses of :func:`spectrum_colors` in the :ref:`baseline tutorial <baseline_tutorial>`.
 
@@ -67,12 +67,12 @@ Miller indices
 ==============
 
 Miller indices notation in Matplotlib plots is facilitated by using :func:`indices_to_text`. This function renders
-indices in LaTeX/Mathjax-style, which is compatible with Matplotlib::
+indices in LaTeX/Mathjax-style, which is compatible with Matplotlib:
 
     >>> from skued import indices_to_text
     >>> indices_to_text(1,1,0)
     '(110)'
-    >>> indices_to_text(1,-2,3)
+    >>> indices_to_text(1,-2,3) # doctest: +SKIP
     '(1$\\bar{2}$3)'
 
 Here is an example:

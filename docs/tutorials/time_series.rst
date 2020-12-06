@@ -25,32 +25,32 @@ Fitting
 Time-resolved experiments are powerful tools because they can be used to distinguish separate processes by their characteristic time-scales.
 Therefore, extracting time-constants from dynamics is an important tool.
 
-:mod:`skued` exports some curves that make it much easier to fit to scattering time-series::
+:mod:`skued` exports some curves that make it much easier to fit to scattering time-series:
 
-    import numpy as np
-    import skued
-    from scipy.optimize import curve_fit
-
-    # Load data from file first
-    # 2 x N array:
-    #   first row is time-delay
-    #   second row is diffracted intensity
-    block = np.load('tseries1.npy')
-    time, intensity = block[0, :], block[1, :]
-
-    # Compute initial guesses for this curve (optional)
-    initial_guesses = (0,                                   # time-zero
-                       intensity.max() - intensity.min(),   # amplitude
-                       1,                                   # time-constant
-                       intensity.min())                     # offset
-    
-    params, pcov = curve_fit(skued.exponential, time, intensity, 
-                             p0 = initial_guesses)
-                                                         
-    tzero, amplitude, tconst, offset = params
-    best_fit_curve = skued.exponential(time, *params)
-    # Equivalent: 
-    #   best_fit_curve = skued.exponential(time, tzero, amplitude, tconst, offset)
+    >>> import numpy as np
+    >>> import skued
+    >>> from scipy.optimize import curve_fit
+    >>> 
+    >>> # Load data from file first
+    >>> # 2 x N array:
+    >>> #   first row is time-delay
+    >>> #   second row is diffracted intensity
+    >>> block = np.load('docs/tutorials/tseries1.npy')
+    >>> time, intensity = block[0, :], block[1, :]
+    >>> 
+    >>> # Compute initial guesses for this curve (optional)
+    >>> initial_guesses = (0,                                   # time-zero
+    ...                    intensity.max() - intensity.min(),   # amplitude
+    ...                    1,                                   # time-constant
+    ...                    intensity.min())                     # offset
+    >>>
+    >>> params, pcov = curve_fit(skued.exponential, time, intensity, 
+    ...                          p0 = initial_guesses)
+    >>>                                                  
+    >>> tzero, amplitude, tconst, offset = params
+    >>> best_fit_curve = skued.exponential(time, *params)
+    >>> # Equivalent: 
+    >>> #   best_fit_curve = skued.exponential(time, tzero, amplitude, tconst, offset)
 
 We can plot the result:
 
@@ -95,15 +95,15 @@ Taking into account the IRF
 ---------------------------
 
 No fitting of time-resolved data is complete without taking into account the instrument response function, 
-or IRF. To help with this, `scikit-ued` provides the :func:`with_irf` decorator factory. It can be used as follows::
+or IRF. To help with this, `scikit-ued` provides the :func:`with_irf` decorator factory. It can be used as follows:
 
-    from skued import exponential, with_irf
-
-    # If the data is recorded in picoseconds, then the following
-    # applies a Gaussian IRF with a full-width at half-max of 150fs (0.15 picoseconds) 
-    @with_irf(0.150)
-    def exponential_with_irf(time, *args, **kwargs):
-        return exponential(time, *args, **kwargs)
+    >>> from skued import exponential, with_irf
+    >>> 
+    >>> # If the data is recorded in picoseconds, then the following
+    >>> # applies a Gaussian IRF with a full-width at half-max of 150fs (0.15 picoseconds) 
+    >>> @with_irf(0.150)
+    ... def exponential_with_irf(time, *args, **kwargs):
+    ...     return exponential(time, *args, **kwargs)
     
 Let's see what :func:`with_irf` in action:
 
@@ -160,14 +160,14 @@ the generalization of selecting a rectangular area of scattering patterns to arb
 e.g. disks, torii, etc.
 
 Instances can be used like boolean masks to select portions of scattering patterns. Consider an example
-where we want to know the integrated intensity in a Bragg peak::
+where we want to know the integrated intensity in a Bragg peak:
 
-    from skued import DiskSelection, diffread
-
-    im = diffread(...)
-
-    bragg = DiskSelection(shape = im.shape, center=(1024, 1024), radius=30)
-    intensity = np.sum(im[bragg])
+    >>> from skued import DiskSelection, diffread
+    >>>
+    >>> im = diffread(...) # doctest: +SKIP
+    >>> 
+    >>> bragg = DiskSelection(shape = im.shape, center=(1024, 1024), radius=30) # doctest: +SKIP
+    >>> intensity = np.sum(im[bragg]) # doctest: +SKIP
 
 Selections really shine when trying to extract non-standard shapes, e.g. rings. You can use them
 in combination with `iris-ued` `DiffractionDatasets` to assemble specialized time-series.
