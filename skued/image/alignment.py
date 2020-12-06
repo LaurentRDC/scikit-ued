@@ -138,10 +138,3 @@ def ialign(images, reference=None, mask=None, fill_value=0.0, fast=None):
         partial(align, reference=reference, mask=mask, fill_value=fill_value),
         images,
     )
-
-
-def _crop_to_half(image, copy=False):
-    nrows, ncols = np.array(image.shape) / 4
-    return np.array(
-        image[int(nrows) : -int(nrows), int(ncols) : -int(ncols)], copy=copy
-    )

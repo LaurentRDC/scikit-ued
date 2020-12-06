@@ -8,8 +8,8 @@ from scipy import ndimage as ndi
 from skimage import data
 from skimage.feature import register_translation
 from skimage.filters import gaussian
-from skimage.io import imread
 from skimage.transform import rotate
+from skimage.data import camera
 
 from skued import align, ialign, itrack_peak
 
@@ -17,9 +17,7 @@ from .test_powder import circle_image
 
 np.random.seed(23)
 
-# Because of a bug in scikit-iamge 0.16.2, I have placed the
-# output of `skimage.data.camera()` in its own file.
-TEST_IMAGE = imread(Path(__file__).parent / "camera.png")
+TEST_IMAGE = camera()[::2, ::2]  # decimate by 2 for faster tests
 
 
 class TestIAlign(unittest.TestCase):
@@ -34,18 +32,24 @@ class TestIAlign(unittest.TestCase):
         """shift images from skimage.data by entire pixels.
         We don't expect perfect alignment."""
         original = TEST_IMAGE
-        misaligned = [
+        misaligned = [original] + [
             ndi.shift(original, (randint(-4, 4), randint(-4, 4))) for _ in range(5)
         ]
+        # Mask the edges
+        mask = np.ones_like(TEST_IMAGE, dtype=np.bool)
+        mask[0:5, :] = False
+        mask[:-5, :] = False
+        mask[:, 0:5] = False
+        mask[:, :-5] = False
 
-        aligned = ialign(misaligned, reference=original)
+        aligned = ialign(misaligned, reference=original, mask=mask)
 
         # TODO: find a better figure-of-merit for alignment
         for im in aligned:
             # edge will be filled with zeros, we ignore
-            diff = np.abs(original[5:-5, 5:-5] - im[5:-5, 5:-5])
+            diff = np.abs(original[mask] - im[mask])
 
-            # Want less than 1% difference
+            # Want less than 0.5% difference
             percent_diff = np.sum(diff) / (
                 diff.size * (original.max() - original.min())
             )
@@ -64,16 +68,23 @@ class TestAlign(unittest.TestCase):
         """shift images from skimage.data by entire pixels.
         We don't expect perfect alignment."""
         original = TEST_IMAGE
-        misaligned = ndi.shift(original, (randint(-4, 4), randint(-4, 4)))
+        misaligned = ndi.shift(original, (-4, 4))
 
-        aligned = align(misaligned, reference=original)
+        # Mask the edges
+        mask = np.ones_like(TEST_IMAGE, dtype=np.bool)
+        mask[0:5, :] = False
+        mask[:-5, :] = False
+        mask[:, 0:5] = False
+        mask[:, :-5] = False
+
+        aligned = align(misaligned, reference=original, mask=mask)
 
         # edge will be filled with zeros, we ignore
-        diff = np.abs(original[5:-5, 5:-5] - aligned[5:-5, 5:-5])
+        diff = np.abs(original[mask] - aligned[mask])
 
-        # Want less than 1% difference
+        # Want less than 0.5% difference
         percent_diff = np.sum(diff) / (diff.size * (original.max() - original.min()))
-        self.assertLess(percent_diff, 1)
+        self.assertLess(percent_diff, 0.5)
 
 
 class TestItrackPeak(unittest.TestCase):
