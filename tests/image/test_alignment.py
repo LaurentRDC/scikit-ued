@@ -6,10 +6,11 @@ from random import randint
 import numpy as np
 from scipy import ndimage as ndi
 from skimage import data
+from skimage.draw import ellipse
 from skimage.feature import register_translation
 from skimage.filters import gaussian
 from skimage.transform import rotate
-from skimage.data import camera
+import skimage.data as data
 
 from skued import align, ialign, itrack_peak
 
@@ -17,74 +18,64 @@ from .test_powder import circle_image
 
 np.random.seed(23)
 
-TEST_IMAGE = camera()[::2, ::2]  # decimate by 2 for faster tests
+
+def camera():
+    return data.camera()[::2, ::2]  # decimate by 2 for faster tests
 
 
 class TestIAlign(unittest.TestCase):
     def test_trivial(self):
         """ Test alignment of identical images """
-        aligned = tuple(ialign([TEST_IMAGE for _ in range(5)]))
+        aligned = tuple(ialign([camera() for _ in range(5)]))
 
         self.assertEqual(len(aligned), 5)
-        self.assertSequenceEqual(TEST_IMAGE.shape, aligned[0].shape)
+        self.assertSequenceEqual(camera().shape, aligned[0].shape)
 
     def test_misaligned_canned_images(self):
         """shift images from skimage.data by entire pixels.
         We don't expect perfect alignment."""
-        original = TEST_IMAGE
-        misaligned = [original] + [
-            ndi.shift(original, (randint(-4, 4), randint(-4, 4))) for _ in range(5)
-        ]
-        # Mask the edges
-        mask = np.ones_like(TEST_IMAGE, dtype=np.bool)
-        mask[0:5, :] = False
-        mask[:-5, :] = False
-        mask[:, 0:5] = False
-        mask[:, :-5] = False
+        reference = camera()
+        shifts = [(randint(-4, 0), randint(0, 4)) for _ in range(5)]
 
-        aligned = ialign(misaligned, reference=original, mask=mask)
+        mask = np.zeros_like(reference, dtype=np.bool)
+        rr1, cc1 = ellipse(129, 127, r_radius=63, c_radius=50, shape=reference.shape)
+        mask[rr1, cc1] = True
 
-        # TODO: find a better figure-of-merit for alignment
-        for im in aligned:
-            # edge will be filled with zeros, we ignore
-            diff = np.abs(original[mask] - im[mask])
+        misaligned = (ndi.shift(camera(), shift=s) for s in shifts)
 
-            # Want less than 0.5% difference
-            percent_diff = np.sum(diff) / (
-                diff.size * (original.max() - original.min())
-            )
-            self.assertLess(percent_diff, 1)
+        for aligned, (sx, sy) in zip(
+            ialign(misaligned, reference=reference, mask=mask), shifts
+        ):
+            self.assertTrue(np.allclose(reference[sx::, 0:-sy], aligned[sx::, 0:-sy]))
 
 
 class TestAlign(unittest.TestCase):
     def test_no_side_effects(self):
         """ Test that aligned images are not modified in-place """
-        im = np.array(TEST_IMAGE[0:64, 0:64])
+        im = np.array(camera()[0:64, 0:64])
         im.setflags(write=False)
         aligned = align(im, reference=im, fill_value=np.nan)
-        self.assertEqual(im.dtype, TEST_IMAGE.dtype)
+        self.assertEqual(im.dtype, camera().dtype)
 
-    def test_misaligned_canned_images(self):
-        """shift images from skimage.data by entire pixels.
-        We don't expect perfect alignment."""
-        original = TEST_IMAGE
-        misaligned = ndi.shift(original, (-4, 4))
+    def test_misaligned_no_mask(self):
+        """ Test that alignment of images with no masks works """
+        reference = camera()
+        image = ndi.shift(camera(), shift=(-7, 12))
+        aligned = align(image, reference=reference)
 
-        # Mask the edges
-        mask = np.ones_like(TEST_IMAGE, dtype=np.bool)
-        mask[0:5, :] = False
-        mask[:-5, :] = False
-        mask[:, 0:5] = False
-        mask[:, :-5] = False
+        self.assertTrue(np.allclose(reference[7::, 0:-12], aligned[7::, 0:-12]))
 
-        aligned = align(misaligned, reference=original, mask=mask)
+    def test_misaligned_with_mask(self):
+        """ Test that alignment of images with no masks works """
+        reference = camera()
+        image = ndi.shift(camera(), shift=(-7, 12))
 
-        # edge will be filled with zeros, we ignore
-        diff = np.abs(original[mask] - aligned[mask])
+        mask = np.ones_like(reference, dtype=np.bool)
+        mask[75:100, 50:100] = False
 
-        # Want less than 0.5% difference
-        percent_diff = np.sum(diff) / (diff.size * (original.max() - original.min()))
-        self.assertLess(percent_diff, 0.5)
+        aligned = align(image, reference=reference, mask=mask)
+
+        self.assertTrue(np.allclose(reference[7::, 0:-12], aligned[7::, 0:-12]))
 
 
 class TestItrackPeak(unittest.TestCase):

@@ -4,8 +4,10 @@ Changelog
 Release 2.1.0
 -------------
 
-* Added pre-emptive support for Python 3.10+ by removing deprecations.
 * The `fast` argument to `skued.align` and `skued.ialign` has been removed. It was previously-marked as deprecated.
+* Fixed an issue where the detected shift in `skued.align` and `skued.ialign` might be partial (i.e. only shift in one direction).
+
+* Added pre-emptive support for Python 3.10+ by removing deprecations.
 * Migration of continuous integration testing to GitHub Actions.
 * Code snippets in documentation are now tested for correctness.
 * Increased the precision of the pseudo-voigt approximation in `skued.pseudo_voigt`.
