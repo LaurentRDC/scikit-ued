@@ -1,5 +1,5 @@
 crystals     >= 1.1.2, < 2
-npstreams    >= 1.6.2,  < 2
+npstreams    >= 1.6.4, < 2
 numpy        >= 1.15, < 2
 pywavelets   >= 1.0.0
 scikit-image >= 0.17, <1
