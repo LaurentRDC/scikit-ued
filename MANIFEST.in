@@ -4,7 +4,7 @@ include LICENSE.txt
 include requirements.txt 
 include dev-requirements.txt
 
-recursive-include tests *
+recursive-include skued/*/tests/data *
 recursive-exclude docs *
 
 global-exclude *.py[cod] __pycache__ *.so *.dylib
