@@ -16,15 +16,6 @@ AUTHOR = "Laurent P. René de Cotret"
 AUTHOR_EMAIL = "laurent.renedecotret@mail.mcgill.ca"
 BASE_PACKAGE = "skued"
 
-WAVELET_FILES = chain.from_iterable(
-    [
-        (Path("skued") / "baseline" / "data").glob("*.npy"),
-        (Path("skued") / "baseline" / "data").glob("*.npz"),
-    ]
-)
-
-FF_FILES = chain.from_iterable([(Path("skued") / "baseline" / "data").glob("*.yaml")])
-
 base_path = Path(__file__).parent
 with open(base_path / BASE_PACKAGE / "__init__.py") as f:
     module_content = f.read()
@@ -72,10 +63,6 @@ if __name__ == "__main__":
         },
         python_requires=">=3.6",
         packages=PACKAGES,
-        data_files=[
-            (Path("skued") / "baseline" / "data", WAVELET_FILES),
-            (Path("skued") / "simulation" / "data", FF_FILES),
-        ],
         entry_points={"console_scripts": ["skued = skued.__main__:main"]},
         include_package_data=True,
         zip_safe=False,
