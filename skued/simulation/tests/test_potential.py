@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import unittest
+
 from copy import deepcopy
 
 import numpy as np
@@ -8,56 +8,52 @@ from crystals import Crystal
 from skued import electrostatic, pelectrostatic
 
 
-class TestElectrostatic(unittest.TestCase):
-    def setUp(self):
-        self.crystal = Crystal.from_database("C")
+def test_return_shape():
+    """ Test that the return shape of pelectrostatic is the same as input arrays """
+    crystal = Crystal.from_database("C")
+    xx, yy, zz = np.meshgrid(
+        np.linspace(-10, 10, 16), np.linspace(-10, 10, 16), np.linspace(-10, 10, 16)
+    )
+    potential = electrostatic(crystal, xx, yy, zz)
 
-    def test_return_shape(self):
-        """ Test that the return shape of pelectrostatic is the same as input arrays """
-        xx, yy, zz = np.meshgrid(
-            np.linspace(-10, 10, 16), np.linspace(-10, 10, 16), np.linspace(-10, 10, 16)
-        )
-        potential = electrostatic(self.crystal, xx, yy, zz)
-
-        self.assertSequenceEqual(xx.shape, potential.shape)
-
-    def test_side_effects(self):
-        """ Test that mesh arrays are not written to in pelectrostatic """
-        xx, yy, zz = np.meshgrid(
-            np.linspace(-10, 10, 16), np.linspace(-10, 10, 16), np.linspace(-10, 10, 16)
-        )
-
-        xx.setflags(write=False)
-        yy.setflags(write=False)
-        zz.setflags(write=False)
-
-        potential = electrostatic(self.crystal, xx, yy, zz)
+    assert xx.shape == potential.shape
 
 
-class TestPElectrostatic(unittest.TestCase):
-    def setUp(self):
-        self.crystal = Crystal.from_database("C")
+def test_side_effects():
+    """ Test that mesh arrays are not written to in pelectrostatic """
+    xx, yy, zz = np.meshgrid(
+        np.linspace(-10, 10, 16), np.linspace(-10, 10, 16), np.linspace(-10, 10, 16)
+    )
 
-    def test_return_shape(self):
-        """ Test that the return shape of pelectrostatic is the same as input arrays """
-        xx, yy = np.meshgrid(np.linspace(-10, 10, 32), np.linspace(-10, 10, 32))
-        potential = pelectrostatic(self.crystal, xx, yy)
+    xx.setflags(write=False)
+    yy.setflags(write=False)
+    zz.setflags(write=False)
 
-        self.assertSequenceEqual(xx.shape, potential.shape)
-
-    def test_side_effects(self):
-        """ Test that mesh arrays are not written to in pelectrostatic """
-        xx, yy = np.meshgrid(np.linspace(-10, 10, 32), np.linspace(-10, 10, 32))
-        xx.setflags(write=False)
-        yy.setflags(write=False)
-        potential = pelectrostatic(self.crystal, xx, yy)
-
-    def test_trivial(self):
-        """ Test that the projected electrostatic potential from an empty slice of crystal is zero"""
-        xx, yy = np.meshgrid(np.linspace(-10, 10, 32), np.linspace(-10, 10, 32))
-        potential = pelectrostatic(self.crystal, xx, yy, bounds=(0, 1))
-        self.assertTrue(np.allclose(potential, 0))
+    crystal = Crystal.from_database("C")
+    potential = electrostatic(crystal, xx, yy, zz)
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_return_shape():
+    """ Test that the return shape of pelectrostatic is the same as input arrays """
+    crystal = Crystal.from_database("C")
+    xx, yy = np.meshgrid(np.linspace(-10, 10, 32), np.linspace(-10, 10, 32))
+    potential = pelectrostatic(crystal, xx, yy)
+
+    assert xx.shape == potential.shape
+
+
+def test_side_effects():
+    """ Test that mesh arrays are not written to in pelectrostatic """
+    crystal = Crystal.from_database("C")
+    xx, yy = np.meshgrid(np.linspace(-10, 10, 32), np.linspace(-10, 10, 32))
+    xx.setflags(write=False)
+    yy.setflags(write=False)
+    potential = pelectrostatic(crystal, xx, yy)
+
+
+def test_trivial():
+    """ Test that the projected electrostatic potential from an empty slice of crystal is zero"""
+    crystal = Crystal.from_database("C")
+    xx, yy = np.meshgrid(np.linspace(-10, 10, 32), np.linspace(-10, 10, 32))
+    potential = pelectrostatic(crystal, xx, yy, bounds=(0, 1))
+    assert np.allclose(potential, 0)

@@ -36,9 +36,7 @@ repository::
 Testing
 =======
 
-If you want to check that all the tests are running correctly with your Python
+Testing requires `pytest`. If you want to check that all the tests are running correctly with your Python
 configuration, type::
 
-    python setup.py test
-
-This will only work if you have downloaded a copy of the source code.
+    python -m pytest --pyargs skued
