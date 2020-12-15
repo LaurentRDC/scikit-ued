@@ -25,7 +25,7 @@ def integrate_3d(x, y, z, f):
     )
 
 
-class TestFunctionUnitIntegral(object):
+class UnitIntegral(object):
     # Same tests for lorentzian and gaussian
     # Unit integral testing is only to one decimal place
     # to save some time.
@@ -59,17 +59,17 @@ class TestFunctionUnitIntegral(object):
         self.assertAlmostEqual(integral, 1, places=2)
 
 
-class TestGaussianUnitIntegral(TestFunctionUnitIntegral, unittest.TestCase):
+class TestGaussianUnitIntegral(UnitIntegral, unittest.TestCase):
     def setUp(self):
         self.function = gaussian
 
 
-class TestLorentzianUnitIntegral(TestFunctionUnitIntegral, unittest.TestCase):
+class TestLorentzianUnitIntegral(UnitIntegral, unittest.TestCase):
     def setUp(self):
         self.function = lorentzian
 
 
-class TestVoigtFunctionUnitIntegral(TestFunctionUnitIntegral, unittest.TestCase):
+class TestVoigtFunctionUnitIntegral(UnitIntegral, unittest.TestCase):
     # voigt and pseudo_voigt have two width parameters
     # Unit integral testing is only to one decimal place
     # to save some time.
