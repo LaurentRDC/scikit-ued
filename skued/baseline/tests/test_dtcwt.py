@@ -41,7 +41,7 @@ class TestComplexWavelets(unittest.TestCase):
 ##############################################################################
 
 
-class Dtcwt(object):
+class TestDtcwt(object):
     """ Skeleton for 1D and 2D testing. Tests are run from subclasses. """
 
     def test_perfect_reconstruction_level_0(self):
@@ -123,17 +123,17 @@ class Dtcwt(object):
 # Actual tests
 
 
-class Test1D(Dtcwt, unittest.TestCase):
+class Test1D(TestDtcwt, unittest.TestCase):
     def setUp(self):
         self.array = np.random.random(size=(100,))
 
 
-class Test2D(Dtcwt, unittest.TestCase):
+class Test2D(TestDtcwt, unittest.TestCase):
     def setUp(self):
         self.array = np.random.random(size=(50, 50))
 
 
-class Test3D(Dtcwt, unittest.TestCase):
+class Test3D(TestDtcwt, unittest.TestCase):
     def setUp(self):
         self.array = np.random.random(size=(10, 10, 10))
 

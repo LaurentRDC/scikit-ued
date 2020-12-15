@@ -55,13 +55,11 @@ jobs:
     # Note the use of the -Wa flag to show DeprecationWarnings
     - name: Unit tests
       run: |
-        pip install -r dev-requirements.txt
-        python setup.py install
-        cd ~
-        python -Wa -m pytest --pyargs skued --import-mode=importlib
+        python -Wa -m unittest discover --verbose --buffer
     
     - name: Build documentation
       run: |
+        pip install -r dev-requirements.txt
         python setup.py build_sphinx
     
     - name: Doctests
