@@ -43,6 +43,11 @@ Optional dependencies
 For displaying diffraction images with interactive contrast using the
 `skued.diffshow` function, PyQtGraph is required.
 
+Contributing
+------------
+
+If you want to contribute to `scikit-ued`, take a look at [`CONTRIBUTING.md`](https://github.com/LaurentRDC/scikit-ued/blob/master/CONTRIBUTING.md).
+
 Related projects
 ----------------
 

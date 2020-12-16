@@ -63,7 +63,6 @@ jobs:
     
     - name: Build documentation
       run: |
-        
         python setup.py build_sphinx
     
     - name: Doctests
