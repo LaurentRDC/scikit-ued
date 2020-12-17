@@ -63,8 +63,8 @@ All of this is taken care of with the :func:`align` function. Let's look at some
 	im = diffread('Cr_2.tif')
 
 	fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize = (9,3))
-	ax1.imshow(ref, vmin = 0, vmax = 200)
-	ax2.imshow(im, vmin = 0, vmax = 200)
+	ax1.imshow(ref, vmin = 0, vmax = 200, cmap='inferno')
+	ax2.imshow(im, vmin = 0, vmax = 200, cmap='inferno')
 	ax3.imshow(ref - im, cmap = 'RdBu_r')
 
 	for ax in (ax1, ax2, ax3):
@@ -163,9 +163,9 @@ rotational symmetry.
     av = nfold(image, mod = 6, center = center, mask = mask)
 
     fig , (ax1, ax2, ax3) = plt.subplots(1,3, figsize = (9,3))
-    ax1.imshow(image, vmin = 0, vmax = 150)
-    ax2.imshow(mask, vmin = 0, vmax = 1)
-    ax3.imshow(av, vmin = 0, vmax = 150)
+    ax1.imshow(image, vmin = 0, vmax = 150, cmap='inferno')
+    ax2.imshow(np.logical_not(mask) * image, vmin = 0, vmax = 150, cmap='inferno')
+    ax3.imshow(av, vmin = 0, vmax = 150, cmap='inferno')
 
     for ax in (ax1, ax2, ax3):
         ax.xaxis.set_visible(False)
@@ -263,7 +263,7 @@ First, we create a test image:
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.imshow(image)
+    ax.imshow(image, cmap='inferno')
 
     ax.xaxis.set_visible(False)
     ax.yaxis.set_visible(False)
@@ -314,7 +314,7 @@ Consider the following diffraction pattern:
 	im = diffread('hotspots.tif')
 	fig = plt.figure()
 	ax = fig.add_subplot(111)
-	ax.imshow(im, vmin = 0, vmax = 2e3)
+	ax.imshow(im, vmin = 0, vmax = 2e3, cmap='inferno')
 	ax.xaxis.set_visible(False)
 	ax.yaxis.set_visible(False)
 	plt.show()
@@ -337,8 +337,8 @@ The result is plotted below:
 	denoised = baseline_dwt(im, max_iter = 250, level = 1, wavelet = 'sym2', axis = (0, 1))
 
 	fig, (ax1, ax2) = plt.subplots(1, 2)
-	ax1.imshow(im, vmin = 0, vmax = 2e3)
-	ax2.imshow(denoised, vmin = 0, vmax = 2e3)
+	ax1.imshow(im, vmin = 0, vmax = 2e3, cmap='inferno')
+	ax2.imshow(denoised, vmin = 0, vmax = 2e3, cmap='inferno')
 
 	for ax in (ax1, ax2):
 		ax.xaxis.set_visible(False)

@@ -119,7 +119,7 @@ After plot formatting:
     ax.xaxis.set_visible(False)
     ax.yaxis.set_visible(False)
     ax.set_title('Electrostatic potential of graphite')
-    im = ax.imshow(potential)
+    im = ax.imshow(potential, cmap='inferno')
     cbar = plt.colorbar(im)
     cbar.set_label('Electrostatic potential ($V \cdot \AA$)')
 
