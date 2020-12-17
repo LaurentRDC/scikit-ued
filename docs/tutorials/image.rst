@@ -149,34 +149,34 @@ rotational symmetry.
 
 .. plot::
 
-    import matplotlib.pyplot as plt
-    from skued import nfold, diffread
-    import numpy as np
+	import matplotlib.pyplot as plt
+	from skued import nfold, diffread
+	import numpy as np
 
-    center = (1010, 1111)
+	center = (1010, 1111)
 
-    mask = np.ones((2048, 2048), dtype = np.bool)
-    mask[1100::, 442:480] = False # Artifact line
-    mask[0:1260, 900:1140] = False # beamblock
+	mask = np.ones((2048, 2048), dtype = np.bool)
+	mask[1100::, 442:480] = False # Artifact line
+	mask[0:1260, 900:1140] = False # beamblock
 
-    image = diffread('graphite.tif')
-    av = nfold(image, mod = 6, center = center, mask = mask)
+	image = diffread('graphite.tif')
+	av = nfold(image, mod = 6, center = center, mask = mask)
 
-    fig , (ax1, ax2, ax3) = plt.subplots(1,3, figsize = (9,3))
-    ax1.imshow(image, vmin = 0, vmax = 150, cmap='inferno')
-    ax2.imshow(np.logical_not(mask) * image, vmin = 0, vmax = 150, cmap='inferno')
-    ax3.imshow(av, vmin = 0, vmax = 150, cmap='inferno')
+	fig , (ax1, ax2, ax3) = plt.subplots(1,3, figsize = (9,3))
+	ax1.imshow(image, vmin = 0, vmax = 150, cmap='inferno')
+	ax2.imshow(np.logical_not(mask) * image, vmin = 0, vmax = 150, cmap='inferno')
+	ax3.imshow(av, vmin = 0, vmax = 150, cmap='inferno')
 
-    for ax in (ax1, ax2, ax3):
-        ax.xaxis.set_visible(False)
-        ax.yaxis.set_visible(False)
+	for ax in (ax1, ax2, ax3):
+		ax.xaxis.set_visible(False)
+		ax.yaxis.set_visible(False)
 
-    ax1.set_title('Graphite')
-    ax2.set_title('Mask')
-    ax3.set_title('Averaged')
+	ax1.set_title('Graphite')
+	ax2.set_title('Mask')
+	ax3.set_title('Averaged')
 
-    plt.tight_layout()
-    plt.show()
+	plt.tight_layout()
+	plt.show()
 
 To use :func:`nfold`, all you need to know is the center of the diffraction pattern:
 
@@ -224,78 +224,73 @@ Image analysis on polycrystalline diffraction patterns
 Angular average
 ---------------
 
-First, we create a test image:
+First, let's load an image:
 
 	>>> import numpy as np
 	>>> import matplotlib.pyplot as plt
-	>>> from skued import gaussian
+	>>> from skued import diffread
 	>>> 
-	>>> image = np.zeros( (256, 256) )
-	>>> xc, yc = image.shape[0]/2, image.shape[1]/2	# center
+	>>> image = diffread("docs/tutorials/Cr_1.tif")
+	>>> xc, yc = 1111, 967
 	>>> 
-	>>> extent = np.arange(0, image.shape[0])
-	>>> xx, yy = np.meshgrid(extent, extent)
-	>>> rr = np.sqrt((xx - xc)**2 + (yy-yc)**2)
-	>>> image += gaussian([xx, yy], center = [xc, yc], fwhm = 200)
-	>>> image[np.logical_and(rr < 40, rr > 38)] = 1
-	>>> image[np.logical_and(rr < 100, rr > 98)] = 0.5
-	>>> image /= image.max()	# Normalize max to 1
-	>>> image += np.random.random(size = image.shape)
+	>>> mask = np.ones_like(image, dtype=np.bool)
+	>>> mask[0:1150, 1000:1170] = False
 	>>> 
 	>>> plt.imshow(image)	# doctest: +SKIP
 	>>> plt.show() # doctest: +SKIP
 
 .. plot::
 
-    import numpy as np
-    import matplotlib.pyplot as plt
-    from skued import gaussian
-    image = np.zeros( (256, 256) )
-    xc, yc = image.shape[0]/2, image.shape[1]/2	# center
-    extent = np.arange(0, image.shape[0])
-    xx, yy = np.meshgrid(extent, extent)
-    rr = np.sqrt((xx - xc)**2 + (yy-yc)**2)
-    image += gaussian([xx, yy], center = [xc, yc], fwhm = 200)
-    image[np.logical_and(rr < 40, rr > 38)] = 1
-    image[np.logical_and(rr < 100, rr > 98)] = 0.5
-    image /= image.max()	# Normalize max to 1
-    image += np.random.random(size = image.shape)
+	import numpy as np
+	import matplotlib.pyplot as plt
+	from skued import diffread
 
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.imshow(image, cmap='inferno')
+	image = diffread("Cr_1.tif")
+	xc, yc = 1111, 967
 
-    ax.xaxis.set_visible(False)
-    ax.yaxis.set_visible(False)
+	mask = np.ones_like(image, dtype=np.bool)
+	mask[0:1150, 1000:1170] = False
+
+	fig, (ax1, ax2) = plt.subplots(1,2)
+	ax1.imshow(image, vmin=0, vmax=200, cmap='inferno')
+	ax2.imshow(np.logical_not(mask) * image, vmin=0, vmax=200, cmap='inferno')
+
+	ax1.set_title('Chromium')
+	ax2.set_title('Masked area')
+
+	for ax in (ax1, ax2):
+		ax.xaxis.set_visible(False)
+		ax.yaxis.set_visible(False)
+
 	plt.tight_layout()
-    plt.show()
+	plt.show()
 
 
 ... and we can easily compute an angular average:
 	
 	>>> from skued import azimuthal_average
 	>>> 
-	>>> radius, intensity = azimuthal_average(image, (xc, yc)) # doctest: +SKIP
+	>>> radius, intensity = azimuthal_average(image, (xc, yc), mask=mask) # doctest: +SKIP
 	>>> 
 	>>> plt.plot(radius, intensity) # doctest: +SKIP
 
 .. plot::
 	
-	from skued import azimuthal_average, gaussian
+	from skued import azimuthal_average, diffread
 	import numpy as np
 	import matplotlib.pyplot as plt
-	image = np.zeros( (256, 256) )
-	xc, yc = image.shape[0]/2, image.shape[1]/2	# center
-	extent = np.arange(0, image.shape[0])
-	xx, yy = np.meshgrid(extent, extent)
-	rr = np.sqrt((xx - xc)**2 + (yy-yc)**2)
-	image += gaussian([xx, yy], center = [xc, yc], fwhm = 200)
-	image[np.logical_and(rr < 40, rr > 38)] = 1
-	image[np.logical_and(rr < 100, rr > 98)] = 0.5
-	image /= image.max()	# Normalize max to 1
-	image += np.random.random(size = image.shape)
-	radius, intensity = azimuthal_average(image, (xc, yc))
+
+	image = diffread("Cr_1.tif")
+	xc, yc = 1111, 967
+
+	mask = np.ones_like(image, dtype=np.bool)
+	mask[0:1150, 1000:1170] = False
+
+	radius, intensity = azimuthal_average(image, (xc, yc), mask=mask)
+
 	plt.plot(radius, intensity)
+	plt.xlabel('Radius [px]')
+	plt.ylabel('Diffracted intensity [a.u.]')
 	plt.tight_layout()
 	plt.show()
 
