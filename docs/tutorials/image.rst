@@ -267,6 +267,7 @@ First, we create a test image:
 
     ax.xaxis.set_visible(False)
     ax.yaxis.set_visible(False)
+	plt.tight_layout()
     plt.show()
 
 
@@ -295,6 +296,7 @@ First, we create a test image:
 	image += np.random.random(size = image.shape)
 	radius, intensity = azimuthal_average(image, (xc, yc))
 	plt.plot(radius, intensity)
+	plt.tight_layout()
 	plt.show()
 
 .. _denoising:
@@ -317,6 +319,7 @@ Consider the following diffraction pattern:
 	ax.imshow(im, vmin = 0, vmax = 2e3, cmap='inferno')
 	ax.xaxis.set_visible(False)
 	ax.yaxis.set_visible(False)
+	plt.tight_layout()
 	plt.show()
 
 We can consider the image *without hotspots* as the baseline of the image *with hotspots* :
@@ -343,6 +346,7 @@ The result is plotted below:
 	for ax in (ax1, ax2):
 		ax.xaxis.set_visible(False)
 		ax.yaxis.set_visible(False)
+	plt.tight_layout()
 	plt.show()
 
 Try different combinations of wavelets, levels, and number of iterations (``max_iter``).
