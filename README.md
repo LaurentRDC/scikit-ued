@@ -3,9 +3,7 @@ scikit-ued
 
 [![Documentation Build Status](https://readthedocs.org/projects/scikit-ued/badge/?version=master)](http://scikit-ued.readthedocs.io) [![PyPI Version](https://img.shields.io/pypi/v/scikit-ued.svg)](https://pypi.org/project/scikit-ued/) [![Conda-forge Version](https://img.shields.io/conda/vn/conda-forge/scikit-ued.svg)](https://anaconda.org/conda-forge/scikit-ued) 
 
-Collection of algorithms and functions for ultrafast electron
-diffraction. It aims to be a fully-tested package taking advantage of
-Python\'s most recent features.
+Collection of algorithms and functions for ultrafast electron diffraction. It aims to be a fully-tested package taking advantage of Python's most recent features.
 
 For examples, see our [tutorials](https://scikit-ued.readthedocs.io/).
 
@@ -34,7 +32,7 @@ To install the latest development version from [Github](https://github.com/Laure
 After installing scikit-ued you can use it like any other Python module
 as `skued`.
 
-Each version is tested against **Python 3.6+**. If you are using a
+Each version is tested against **Python 3.7+**. If you are using a
 different version, tests can be run using the `pytest` package.
 
 Optional dependencies

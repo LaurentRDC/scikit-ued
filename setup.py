@@ -61,7 +61,7 @@ if __name__ == "__main__":
             "Documentation": "https://scikit-ued.readthedocs.io/",
             "Source": "https://github.com/LaurentRDC/scikit-ued",
         },
-        python_requires=">=3.6",
+        python_requires=">=3.7",
         packages=PACKAGES,
         entry_points={"console_scripts": ["skued = skued.__main__:main"]},
         include_package_data=True,
