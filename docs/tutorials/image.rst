@@ -75,7 +75,7 @@ Let's take a look at the result. The center is shown with a red dot:
 
 	rc, cc = autocenter(im, mask=mask)
 
-	fig, ax1 = plt.subplots(figsize = (3,3))
+	fig, ax1 = plt.subplots(figsize = (4.5, 4.5))
 	ax1.imshow(im, vmin = 0, vmax = 200, cmap='inferno')
 	ax1.scatter(cc, rc, color='r')
 
@@ -111,7 +111,7 @@ Let's take a look at the result. The center is shown with a red dot:
 
 	rc, cc = autocenter(im, mask=mask)
 
-	fig, ax1 = plt.subplots(figsize = (3,3))
+	fig, ax1 = plt.subplots(figsize = (4.5, 4.5))
 	ax1.imshow(im, vmin = 0, vmax = 200, cmap='inferno')
 	ax1.scatter(cc, rc, color='r')
 
