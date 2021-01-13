@@ -21,7 +21,7 @@ def nfold(im, mod, center=None, mask=None, fill_value=0.0):
         Image to be azimuthally-symmetrized.
     center : array_like, shape (2,) or None, optional
         Coordinates of the center (in pixels) in the format ``center=[col, row]``. If ``center=None``,
-        the image is rotated around its center, i.e. ``center=(cols / 2 - 0.5, rows / 2 - 0.5)``.
+        the image is rotated around the center of the array, i.e. ``center=(cols / 2 - 0.5, rows / 2 - 0.5)``.
     mod : int
         Fold symmetry number. Valid numbers must be a divisor of 360.
     mask : `~numpy.ndarray` or None, optional
@@ -90,8 +90,8 @@ def reflection(im, angle, center=None, mask=None, fill_value=0.0):
         larger that 360 are mapped back to [0, 360). Note that ``angle`` and ``angle + 180``
         are equivalent.
     center : array_like, shape (2,) or None, optional
-        Coordinates of the center (in pixels). If ``center=None``, the image is rotated around
-        its center, i.e. ``center=(rows / 2 - 0.5, cols / 2 - 0.5)``.
+        Coordinates of the center (in pixels). in the format ``center=[col, row]``. If ``center=None``,
+        the image is rotated around the center of the array, i.e. ``center=(cols / 2 - 0.5, rows / 2 - 0.5)``.
     mask : `~numpy.ndarray` or None, optional
         Mask of `image`. The mask should evaluate to `True` (or 1) on valid pixels.
         If None (default), no mask is used.

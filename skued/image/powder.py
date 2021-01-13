@@ -32,8 +32,9 @@ def azimuthal_average(image, center, mask=None, angular_bounds=None, trim=True):
     ----------
     image : array_like, shape (M, N)
         Array or image.
-    center : array_like, shape (2,)
-        coordinates of the center (in pixels).
+    center : array_like, shape (2,) or None, optional
+        coordinates of the center (in pixels). If ``center=(xc, yc)``, then ``image[yc, xc]``
+        is the intensity at the center of the image.
     mask : `~numpy.ndarray` or None, optional
         Evaluates to True on valid elements of array.
     angular_bounds : 2-tuple or None, optional
