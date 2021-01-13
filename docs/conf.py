@@ -111,10 +111,10 @@ html_theme_path = ["_themes"]
 html_sidebars = {"**": ["about.html", "navigation.html", "searchbox.html"]}
 
 # Everything intersphinx's to Python.
-_python_version_str = '{0.major}.{0.minor}'.format(sys.version_info)
-_python_doc_base = 'https://docs.python.org/' + _python_version_str
+_python_version_str = "{0.major}.{0.minor}".format(sys.version_info)
+_python_doc_base = "https://docs.python.org/" + _python_version_str
 intersphinx_mapping = {
-    'python': (_python_doc_base, None),
+    "python": (_python_doc_base, None),
 }
 
 # Autodoc settings
