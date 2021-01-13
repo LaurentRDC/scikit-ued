@@ -233,17 +233,21 @@ rotational symmetry.
 .. plot::
 
 	import matplotlib.pyplot as plt
-	from skued import nfold, diffread
+	from skued import nfold, diffread, autocenter
 	import numpy as np
 
-	center = (1010, 1111)
+	image = diffread('graphite.tif')
 
-	mask = np.ones((2048, 2048), dtype = np.bool)
+	mask = np.ones_like(image, dtype = np.bool)
 	mask[1100::, 442:480] = False # Artifact line
 	mask[0:1260, 900:1140] = False # beamblock
 
-	image = diffread('graphite.tif')
-	av = nfold(image, mod = 6, center = center, mask = mask)
+	# Reduce size of images because of memory usage of ReadTheDocs
+	image = image[::3, ::3]
+	mask = mask[::3, ::3]
+
+	yc, xc = autocenter(image, mask=mask)
+	av = nfold(image, mod = 6, center = (xc, yc), mask = mask)
 
 	fig , (ax1, ax2, ax3) = plt.subplots(1,3, figsize = (9,3))
 	ax1.imshow(image, vmin = 0, vmax = 150, cmap='inferno')
@@ -311,10 +315,9 @@ First, let's load an image:
 
 	>>> import numpy as np
 	>>> import matplotlib.pyplot as plt
-	>>> from skued import diffread
+	>>> from skued import diffread, autocenter
 	>>> 
 	>>> image = diffread("docs/tutorials/Cr_1.tif")
-	>>> xc, yc = 1111, 967
 	>>> 
 	>>> mask = np.ones_like(image, dtype=np.bool)
 	>>> mask[0:1150, 1000:1170] = False
@@ -329,7 +332,6 @@ First, let's load an image:
 	from skued import diffread
 
 	image = diffread("Cr_1.tif")
-	xc, yc = 1111, 967
 
 	mask = np.ones_like(image, dtype=np.bool)
 	mask[0:1150, 1000:1170] = False
@@ -351,24 +353,29 @@ First, let's load an image:
 
 ... and we can easily compute an angular average:
 	
-	>>> from skued import azimuthal_average
+	>>> from skued import azimuthal_average, autocenter
 	>>> 
+	>>> yc, xc = autocenter(image, mask=mask) # doctest: +SKIP
 	>>> radius, intensity = azimuthal_average(image, (xc, yc), mask=mask) # doctest: +SKIP
 	>>> 
 	>>> plt.plot(radius, intensity) # doctest: +SKIP
 
 .. plot::
 	
-	from skued import azimuthal_average, diffread
+	from skued import azimuthal_average, diffread, autocenter
 	import numpy as np
 	import matplotlib.pyplot as plt
 
 	image = diffread("Cr_1.tif")
-	xc, yc = 1111, 967
 
 	mask = np.ones_like(image, dtype=np.bool)
 	mask[0:1150, 1000:1170] = False
 
+	# Reduce size of images because of memory usage of ReadTheDocs
+	image = image[::3, ::3]
+	mask = mask[::3, ::3]
+
+	yc, xc = autocenter(image, mask=mask)
 	radius, intensity = azimuthal_average(image, (xc, yc), mask=mask)
 
 	plt.plot(radius, intensity)
