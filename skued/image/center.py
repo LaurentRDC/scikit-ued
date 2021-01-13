@@ -26,22 +26,22 @@ def autocenter(im, mask=None):
     Returns
     -------
     r, c : 2-tupe of ints
-        Indices of the center, such that `im[r, c]` is the intensity value at
+        Indices of the center, such that ``im[r, c]`` is the intensity value at
         the center of the pattern.
 
     Notes
     -----
-    The procedure in this routine is an extension of [1]. First, the center-of-mass
-    of the image intensity profile is found. This approximate center is
-    then used to radially-invert the image, with the coordinate transform
-    :math:`(r, \\theta) \\to (-r, \\theta)`. Diffraction patterns reflect this
-    inversion symmetry, and so the shift between the original and inverted image
-    is the correction to the approximate center found in the first step.
+    The procedure in this routine is an extension of the one in the reference below.
+    It has been adapted for both single-crystal and polycrystalline diffraction patterns
+    The continuous inversion symmetry is encoded as the coordinate transformation
+    :math:`(r, \\theta) \\to (-r, \\theta)`. The shift between the image and inverted image
+    is the correction to the approximate center found by calculating the intensity
+    center-of-mass.
 
     References
     ----------
-    .. [1] Liu, Lai Chung. Chemistry in Action: Making Molecular Movies with Ultrafast
-           Electron Diffraction and Data Science, Chapter 2. Springer Nature, 2020.
+    Liu, Lai Chung. Chemistry in Action: Making Molecular Movies with Ultrafast
+    Electron Diffraction and Data Science, Chapter 2. Springer Nature, 2020.
     """
 
     im = np.asfarray(im)

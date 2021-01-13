@@ -40,6 +40,52 @@ The :func:`diffread` function will transparently distinguish between those forma
 
 .. _alignment:
 
+Automatic center-finding
+========================
+
+Many analyses involving diffraction patterns require the knowledge of the center. For this purpose, ``scikit-ued``
+provides :func:`autocenter`. It can be used trivially as follows:
+
+	>>> from skued import diffread, autocenter
+	>>> import numpy as np
+	>>> 
+	>>> im = diffread('docs/tutorials/Cr_1.tif')
+	>>>
+	>>> # Invalid pixels are masked with a False
+	>>> mask = np.ones_like(im, dtype = np.bool)
+	>>> mask[0:1250, 975:1225] = False
+	>>>
+	>>> center = autocenter(im, mask=mask)
+
+Let's take a look at the result. The center is shown with a red dot:
+
+.. plot::
+
+	from skued import diffread, autocenter
+	import matplotlib.pyplot as plt
+
+	im = diffread('Cr_1.tif')
+
+	mask = np.ones_like(im, dtype = np.bool)
+	mask[0:1250, 975:1225] = False
+
+	# Reduce size of images because of memory usage of ReadTheDocs
+	im = im[::3, ::3]
+	mask = mask[::3, ::3]
+
+	rc, cc = autocenter(im, mask=mask)
+
+	fig, ax1 = plt.subplots(figsize = (3,3))
+	ax1.imshow(im, vmin = 0, vmax = 200, cmap='inferno')
+	ax1.scatter(cc, rc, color='r')
+
+	ax1.get_xaxis().set_visible(False)
+	ax1.get_yaxis().set_visible(False)
+
+	plt.tight_layout()
+	plt.show()
+
+
 Diffraction pattern alignment
 =============================
 
