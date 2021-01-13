@@ -85,6 +85,43 @@ Let's take a look at the result. The center is shown with a red dot:
 	plt.tight_layout()
 	plt.show()
 
+We can do the same with single-crystal diffraction patterns:
+
+	>>> from skued import diffread, autocenter
+	>>> import numpy as np
+	>>> 
+	>>> im = diffread('docs/tutorials/graphite.tif')
+	>>> mask = diffread('docs/tutorials/graphite_mask.tif').astype(np.bool)
+	>>>
+	>>> center = autocenter(im, mask=mask)
+
+Let's take a look at the result. The center is shown with a red dot:
+
+.. plot::
+
+	from skued import diffread, autocenter
+	import matplotlib.pyplot as plt
+
+	im = diffread('graphite.tif')
+	mask = diffread('graphite_mask.tif').astype(np.bool)
+
+	# Reduce size of images because of memory usage of ReadTheDocs
+	im = im[::3, ::3]
+	mask = mask[::3, ::3]
+
+	rc, cc = autocenter(im, mask=mask)
+
+	fig, ax1 = plt.subplots(figsize = (3,3))
+	ax1.imshow(im, vmin = 0, vmax = 200, cmap='inferno')
+	ax1.scatter(cc, rc, color='r')
+
+	ax1.get_xaxis().set_visible(False)
+	ax1.get_yaxis().set_visible(False)
+
+	plt.tight_layout()
+	plt.show()
+
+It's worth emphasizing that apart from the mask, there are no parameters to play with; :func:`autocenter` is as automatic as it can be!
 
 Diffraction pattern alignment
 =============================
