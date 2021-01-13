@@ -4,6 +4,7 @@ Changelog
 Release 2.1.1
 -------------
 
+* Added the :func:`autocenter` routine, to automatically find the center of diffraction patterns. This works for both single-crystal and polycrystalline patterns.
 * `Support for Python 3.6 and NumPy<1.17 has been dropped <https://numpy.org/neps/nep-0029-deprecation_policy.html>`_
 
 Release 2.1.0
