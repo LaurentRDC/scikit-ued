@@ -43,25 +43,15 @@ def autocenter(im, mask=None):
     Liu, Lai Chung. Chemistry in Action: Making Molecular Movies with Ultrafast
     Electron Diffraction and Data Science, Chapter 2. Springer Nature, 2020.
     """
-
-    im = np.asfarray(im)
-    im -= im.min()
-
     if mask is None:
         mask = np.ones_like(im, dtype=np.bool)
 
-    weights = im * mask.astype(im.dtype)
-
-    # Center of mass. This works because the intensity envelope of a
-    # diffraction pattern has a radial shape
-    rr, cc = np.indices(im.shape)
-    r_rough = np.average(rr, weights=weights)
-    c_rough = np.average(cc, weights=weights)
+    r_rough, c_rough = _center_of_intensity(im=im, mask=mask)
 
     # The comparison between Friedel pairs from [1] is generalized to
     # any inversion symmetry, including polycrystalline diffraction patterns.
-    im_i = radial_inversion(im, center=(r_rough, c_rough), cval=0.0)
-    mask_i = radial_inversion(mask, center=(r_rough, c_rough), cval=False)
+    im_i = _fast_radial_inversion(im, center=(r_rough, c_rough), cval=0.0)
+    mask_i = _fast_radial_inversion(mask, center=(r_rough, c_rough), cval=False)
 
     shift = phase_cross_correlation(
         reference_image=im,
@@ -73,7 +63,19 @@ def autocenter(im, mask=None):
     return np.array([r_rough, c_rough]) + shift / 2 - np.array([1 / 2, 1 / 2])
 
 
-def radial_inversion(im, center, cval):
+def _center_of_intensity(im, mask=None):
+    im = np.asfarray(im)
+    im -= im.min()
+
+    weights = im * mask.astype(im.dtype)
+
+    rr, cc = np.indices(im.shape)
+    r_rough = np.average(rr, weights=weights)
+    c_rough = np.average(cc, weights=weights)
+    return r_rough, c_rough
+
+
+def _fast_radial_inversion(im, center, cval):
     arr_center = np.array(im.shape) / 2
     shifted = shift(im, shift=arr_center - np.asarray(center))
     shifted = shifted[::-1, ::-1]
