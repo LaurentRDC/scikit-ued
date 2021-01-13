@@ -169,6 +169,15 @@ Calibrations
     
     powder_calq
 
+Center-finding
+--------------
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+
+    autocenter
+
 Image alignment
 ---------------
 

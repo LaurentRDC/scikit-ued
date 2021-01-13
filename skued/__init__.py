@@ -2,7 +2,7 @@
 __author__ = "Laurent P. René de Cotret"
 __email__ = "laurent.renedecotret@mail.mcgill.ca"
 __license__ = "GPLv3"
-__version__ = "2.1.0"
+__version__ = "2.1.1"
 
 from .affine import (
     affine_map,
@@ -43,6 +43,7 @@ from .eproperties import (
 )
 from .image import (
     align,
+    autocenter,
     azimuthal_average,
     combine_masks,
     detector_scattvectors,
