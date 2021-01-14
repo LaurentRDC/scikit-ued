@@ -72,13 +72,19 @@ def _center_of_intensity(im, mask=None):
     rr, cc = np.indices(im.shape)
     r_rough = np.average(rr, weights=weights)
     c_rough = np.average(cc, weights=weights)
-    return r_rough, c_rough
+    return int(r_rough), int(c_rough)
 
 
 def _fast_radial_inversion(im, center, cval):
     arr_center = np.array(im.shape) / 2
-    shifted = shift(im, shift=arr_center - np.asarray(center))
+    shifted = shift(
+        im, shift=arr_center - np.asarray(center), order=1, mode="constant", cval=cval
+    )
     shifted = shifted[::-1, ::-1]
     return shift(
-        shifted, shift=np.asarray(center) - arr_center, mode="constant", cval=cval
+        shifted,
+        shift=np.asarray(center) - arr_center,
+        order=1,
+        mode="constant",
+        cval=cval,
     )
