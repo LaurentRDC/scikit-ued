@@ -6,7 +6,7 @@ Changelog
 Release 2.1.2
 -------------
 
-* Speedup of :func:`autocenter`, :func:`align`, :func:`ialign`, and :func:`itrack_peak` by 50%.
+* Speedup of all routines that use the Fast Fourier transform (:func:`autocenter`, :func:`align`, :func:`ialign`, :func:`itrack_peak`, and :func:`kinematicsim`) by 50%.
 
 Release 2.1.1
 -------------
