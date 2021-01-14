@@ -10,11 +10,12 @@ import numpy as np
 from warnings import warn
 from npstreams import array_stream
 from scipy import ndimage as ndi
-from scipy.fft import set_workers
+from ..fft import with_skued_fft
 from skimage.registration import phase_cross_correlation
 
 
 @array_stream
+@with_skued_fft
 def itrack_peak(images, row_slice=None, col_slice=None, precision=1 / 10):
     """
     Generator function that tracks a diffraction peak in a stream of images.
@@ -55,17 +56,16 @@ def itrack_peak(images, row_slice=None, col_slice=None, precision=1 / 10):
     # scikit-image will use scipy.fft module
     # so we can increase the number of FFT workers
     # to get a performance speedup (50% in my tests)
-    with set_workers(cpu_count()):
-        for image in images:
-            sub[:] = image[row_slice, col_slice]
+    for image in images:
+        sub[:] = image[row_slice, col_slice]
 
-            shift = phase_cross_correlation(
-                reference_image=ref,
-                moving_image=sub,
-                return_error=False,
-                upsample_factor=int(1 / precision),
-            )
-            yield np.asarray(shift)
+        shift = with_skued_fft(phase_cross_correlation)(
+            reference_image=ref,
+            moving_image=sub,
+            return_error=False,
+            upsample_factor=int(1 / precision),
+        )
+        yield np.asarray(shift)
 
 
 def align(image, reference, mask=None, fill_value=0.0):
@@ -92,16 +92,12 @@ def align(image, reference, mask=None, fill_value=0.0):
     --------
     ialign : generator of aligned images
     """
-    # scikit-image will use scipy.fft module
-    # so we can increase the number of FFT workers
-    # to get a performance speedup (50% in my tests)
-    with set_workers(cpu_count()):
-        shift = phase_cross_correlation(
-            reference_image=reference,
-            moving_image=image,
-            reference_mask=mask,
-            return_error=False,
-        )
+    shift = with_skued_fft(phase_cross_correlation)(
+        reference_image=reference,
+        moving_image=image,
+        reference_mask=mask,
+        return_error=False,
+    )
     return ndi.shift(image, shift=shift, order=2, mode="constant", cval=fill_value)
 
 
