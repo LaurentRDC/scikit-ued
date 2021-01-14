@@ -1,8 +1,6 @@
 Changelog
 =========
 
-.. currentmodule:: skued
-
 Release 2.1.2
 -------------
 
