@@ -36,7 +36,7 @@ def autocenter(im, mask=None):
     It has been adapted for both single-crystal and polycrystalline diffraction patterns
     The continuous inversion symmetry is encoded as the coordinate transformation
     :math:`(r, \\theta) \\to (-r, \\theta)`. The shift between the image and inverted image
-    is the correction to the approximate center found by calculating the intensity
+    determines the correction to the approximate center found by calculating the intensity
     center-of-mass.
 
     References
@@ -54,14 +54,21 @@ def autocenter(im, mask=None):
     im_i = _fast_radial_inversion(im, center=(r_rough, c_rough), cval=0.0)
     mask_i = _fast_radial_inversion(mask, center=(r_rough, c_rough), cval=False)
 
+    # masked normalized cross-correlation is extremely expensive
+    # we therefore downsample the images for essentially identical result
+    # but ~4x decrease in processing time
+    downsampling = 2
     shift = with_skued_fft(phase_cross_correlation)(
-        reference_image=im,
-        moving_image=im_i,
-        reference_mask=mask,
-        moving_mask=mask_i,
+        reference_image=im[::downsampling, ::downsampling],
+        moving_image=im_i[::downsampling, ::downsampling],
+        reference_mask=mask[::downsampling, ::downsampling],
+        moving_mask=mask_i[::downsampling, ::downsampling],
     )
+    # Because images were downsampled, the correction
+    # factor to the rough center should be increased from the measured shift
+    correction = shift * downsampling
 
-    return np.array([r_rough, c_rough]) + shift / 2 - np.array([1 / 2, 1 / 2])
+    return np.array([r_rough, c_rough]) + correction / 2
 
 
 def _center_of_intensity(im, mask=None):

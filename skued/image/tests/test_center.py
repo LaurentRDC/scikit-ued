@@ -10,7 +10,7 @@ np.random.seed(23)
 
 def test_autocenter_trivial():
     """ Test that autocenter() finds the center of perfect gaussian at (0,0) """
-    im = np.zeros(shape=(128, 128), dtype=np.float)
+    im = np.zeros(shape=(256, 256), dtype=np.float)
     center = np.asarray(im.shape) / 2
     rows, cols = np.indices(im.shape)
     im += gaussian([rows, cols], center=center, fwhm=center.max() / 2)
