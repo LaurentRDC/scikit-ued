@@ -3,10 +3,11 @@
 Determine the center of diffraction images
 ==========================================
 """
-
+from os import cpu_count
 import numpy as np
 from skimage.registration import phase_cross_correlation
 from scipy.ndimage import shift
+from scipy.fft import set_workers
 
 
 def autocenter(im, mask=None):
@@ -53,12 +54,16 @@ def autocenter(im, mask=None):
     im_i = _fast_radial_inversion(im, center=(r_rough, c_rough), cval=0.0)
     mask_i = _fast_radial_inversion(mask, center=(r_rough, c_rough), cval=False)
 
-    shift = phase_cross_correlation(
-        reference_image=im,
-        moving_image=im_i,
-        reference_mask=mask,
-        moving_mask=mask_i,
-    )
+    # scikit-image will use scipy.fft module
+    # so we can increase the number of FFT workers
+    # to get a performance speedup (50% in my tests)
+    with set_workers(cpu_count()):
+        shift = phase_cross_correlation(
+            reference_image=im,
+            moving_image=im_i,
+            reference_mask=mask,
+            moving_mask=mask_i,
+        )
 
     return np.array([r_rough, c_rough]) + shift / 2 - np.array([1 / 2, 1 / 2])
 

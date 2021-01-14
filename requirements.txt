@@ -3,6 +3,6 @@ npstreams    >= 1.6.4, < 2
 numpy        >= 1.17, < 2
 pywavelets   >= 1.0.0
 scikit-image >= 0.17, <1
-scipy        >= 1.0.0
+scipy        >= 1.5.0
 pyyaml       >= 3.1
 matplotlib   >= 3.0.0, <4

@@ -1,6 +1,13 @@
 Changelog
 =========
 
+.. currentmodule:: skued
+
+Release 2.1.2
+-------------
+
+* Speedup of :func:`autocenter`, :func:`align`, :func:`ialign`, and :func:`itrack_peak` by 50%.
+
 Release 2.1.1
 -------------
 
