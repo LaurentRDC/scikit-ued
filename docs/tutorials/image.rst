@@ -49,7 +49,7 @@ provides :func:`autocenter`. It can be used trivially as follows:
 	>>> from skued import diffread, autocenter
 	>>> import numpy as np
 	>>> 
-	>>> im = diffread('docs/tutorials/Cr_1.tif')
+	>>> im = diffread('docs/tutorials/data/Cr_1.tif')
 	>>>
 	>>> # Invalid pixels are masked with a False
 	>>> mask = np.ones_like(im, dtype = np.bool)
@@ -64,7 +64,7 @@ Let's take a look at the result. The center is shown with a red dot:
 	from skued import diffread, autocenter
 	import matplotlib.pyplot as plt
 
-	im = diffread('Cr_1.tif')
+	im = diffread('data/Cr_1.tif')
 
 	mask = np.ones_like(im, dtype = np.bool)
 	mask[0:1250, 975:1225] = False
@@ -90,8 +90,8 @@ We can do the same with single-crystal diffraction patterns:
 	>>> from skued import diffread, autocenter
 	>>> import numpy as np
 	>>> 
-	>>> im = diffread('docs/tutorials/graphite.tif')
-	>>> mask = diffread('docs/tutorials/graphite_mask.tif').astype(np.bool)
+	>>> im = diffread('docs/tutorials/data/graphite.tif')
+	>>> mask = diffread('docs/tutorials/data/graphite_mask.tif').astype(np.bool)
 	>>>
 	>>> center = autocenter(im, mask=mask)
 
@@ -102,8 +102,8 @@ Let's take a look at the result. The center is shown with a red dot:
 	from skued import diffread, autocenter
 	import matplotlib.pyplot as plt
 
-	im = diffread('graphite.tif')
-	mask = diffread('graphite_mask.tif').astype(np.bool)
+	im = diffread('data/graphite.tif')
+	mask = diffread('data/graphite_mask.tif').astype(np.bool)
 
 	# Reduce size of images because of memory usage of ReadTheDocs
 	im = im[::3, ::3]
@@ -113,6 +113,28 @@ Let's take a look at the result. The center is shown with a red dot:
 
 	fig, ax1 = plt.subplots(figsize = (4.5, 4.5))
 	ax1.imshow(im, vmin = 0, vmax = 200, cmap='inferno')
+	ax1.scatter(cc, rc, color='r')
+
+	ax1.get_xaxis().set_visible(False)
+	ax1.get_yaxis().set_visible(False)
+
+	plt.tight_layout()
+	plt.show()
+
+:func:`autocenter` also works with images that are very off-center and display large Ewald-sphere walkoff:
+
+.. plot::
+
+	from skued import diffread, autocenter
+	import matplotlib.pyplot as plt
+
+	im = diffread('data/ewald_walkoff.tif')
+	mask = diffread('data/ewald_walkoff_mask.tif').astype(np.bool)
+
+	rc, cc = autocenter(im, mask=mask)
+
+	fig, ax1 = plt.subplots(figsize = (4.5, 4.5))
+	ax1.imshow(im * mask, vmin = 0, vmax=1300, cmap='inferno')
 	ax1.scatter(cc, rc, color='r')
 
 	ax1.get_xaxis().set_visible(False)
@@ -142,8 +164,8 @@ All of this is taken care of with the :func:`align` function. Let's look at some
 	from skued import diffread
 	import matplotlib.pyplot as plt
 
-	ref = diffread('Cr_1.tif')
-	im = diffread('Cr_2.tif')
+	ref = diffread('data/Cr_1.tif')
+	im = diffread('data/Cr_2.tif')
 
 	fig, (ax1, ax2, ax3) = plt.subplots(nrows = 1, ncols = 3, figsize = (9,3))
 	ax1.imshow(ref, vmin = 0, vmax = 200, cmap='inferno')
@@ -168,8 +190,8 @@ beam-block and main beam:
 	>>> from skued import diffread, align
 	>>> import numpy as np
 	>>> 
-	>>> ref = diffread('docs/tutorials/Cr_1.tif')
-	>>> im = diffread('docs/tutorials/Cr_2.tif')
+	>>> ref = diffread('docs/tutorials/data/Cr_1.tif')
+	>>> im = diffread('docs/tutorials/data/Cr_2.tif')
 	>>>
 	>>> # Invalid pixels are masked with a False
 	>>> mask = np.ones_like(ref, dtype = np.bool)
@@ -184,8 +206,8 @@ Let's look at the difference:
 	from skued import diffread, align
 	from pathlib import Path
 
-	ref = diffread("Cr_1.tif")
-	im = diffread("Cr_2.tif")
+	ref = diffread("data/Cr_1.tif")
+	im = diffread("data/Cr_2.tif")
 
 	mask = np.ones_like(ref, dtype=np.bool)
 	mask[0:1250, 975:1225] = False
@@ -236,7 +258,7 @@ rotational symmetry.
 	from skued import nfold, diffread, autocenter
 	import numpy as np
 
-	image = diffread('graphite.tif')
+	image = diffread('data/graphite.tif')
 
 	mask = np.ones_like(image, dtype = np.bool)
 	mask[1100::, 442:480] = False # Artifact line
@@ -269,7 +291,7 @@ To use :func:`nfold`, all you need to know is the center of the diffraction patt
 
     >>> from skued import nfold, diffread
 	>>> 
-    >>> im = diffread('docs/tutorials/graphite.tif')
+    >>> im = diffread('docs/tutorials/data/graphite.tif')
     >>> av = nfold(im, mod = 6, center = (1024, 1024))    # mask is optional
 
 
@@ -317,10 +339,10 @@ First, let's load an image:
 	>>> import matplotlib.pyplot as plt
 	>>> from skued import diffread, autocenter
 	>>> 
-	>>> image = diffread("docs/tutorials/Cr_1.tif")
+	>>> image = diffread("docs/tutorials/data/Cr_1.tif")
 	>>> 
-	>>> mask = np.ones_like(image, dtype=np.bool)
-	>>> mask[0:1150, 1000:1170] = False
+	>>> mask = np.ones_like(image, dtype = np.bool)
+	>>> mask[0:1250, 975:1225] = False
 	>>> 
 	>>> plt.imshow(image)	# doctest: +SKIP
 	>>> plt.show() # doctest: +SKIP
@@ -331,10 +353,10 @@ First, let's load an image:
 	import matplotlib.pyplot as plt
 	from skued import diffread
 
-	image = diffread("Cr_1.tif")
+	image = diffread("data/Cr_1.tif")
 
-	mask = np.ones_like(image, dtype=np.bool)
-	mask[0:1150, 1000:1170] = False
+	mask = np.ones_like(image, dtype = np.bool)
+	mask[0:1250, 975:1225] = False
 
 	fig, (ax1, ax2) = plt.subplots(1,2)
 	ax1.imshow(image, vmin=0, vmax=200, cmap='inferno')
@@ -366,17 +388,17 @@ First, let's load an image:
 	import numpy as np
 	import matplotlib.pyplot as plt
 
-	image = diffread("Cr_1.tif")
+	im = diffread('data/Cr_1.tif')
 
-	mask = np.ones_like(image, dtype=np.bool)
-	mask[0:1150, 1000:1170] = False
+	mask = np.ones_like(im, dtype = np.bool)
+	mask[0:1250, 975:1225] = False
 
 	# Reduce size of images because of memory usage of ReadTheDocs
-	image = image[::3, ::3]
+	im = im[::3, ::3]
 	mask = mask[::3, ::3]
 
-	yc, xc = autocenter(image, mask=mask)
-	radius, intensity = azimuthal_average(image, (xc, yc), mask=mask)
+	yc, xc = autocenter(im, mask=mask)
+	radius, intensity = azimuthal_average(im, (xc, yc), mask=mask)
 
 	plt.plot(radius, intensity)
 	plt.xlabel('Radius [px]')
@@ -398,7 +420,7 @@ Consider the following diffraction pattern:
 	import matplotlib.pyplot as plt
 	from skued import diffread
 
-	im = diffread('hotspots.tif')
+	im = diffread('data/hotspots.tif')
 	fig = plt.figure()
 	ax = fig.add_subplot(111)
 	ax.imshow(im, vmin = 0, vmax = 2e3, cmap='inferno')
@@ -411,7 +433,7 @@ We can consider the image *without hotspots* as the baseline of the image *with 
 
 	>>> from skued import diffread, baseline_dwt
 	>>> 
-	>>> im = diffread('docs/tutorials/hotspots.tif')
+	>>> im = diffread('docs/tutorials/data/hotspots.tif')
 	>>> denoised = baseline_dwt(im, max_iter = 250, level = 1, wavelet = 'sym2', axis = (0, 1))
 
 The result is plotted below:
@@ -421,7 +443,7 @@ The result is plotted below:
 	import matplotlib.pyplot as plt
 	from skued import diffread, baseline_dwt
 
-	im = diffread('hotspots.tif')
+	im = diffread('data/hotspots.tif')
 	denoised = baseline_dwt(im, max_iter = 250, level = 1, wavelet = 'sym2', axis = (0, 1))
 
 	fig, (ax1, ax2) = plt.subplots(1, 2)

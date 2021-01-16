@@ -35,7 +35,7 @@ Therefore, extracting time-constants from dynamics is an important tool.
     >>> # 2 x N array:
     >>> #   first row is time-delay
     >>> #   second row is diffracted intensity
-    >>> block = np.load('docs/tutorials/tseries1.npy')
+    >>> block = np.load('docs/tutorials/data/tseries1.npy')
     >>> time, intensity = block[0, :], block[1, :]
     >>> 
     >>> # Compute initial guesses for this curve (optional)
@@ -63,7 +63,7 @@ We can plot the result:
 
     # Load data from file first
     # 2 x N array, first row is time-delay, second row is diffracted intensity
-    block = np.load('tseries1.npy')
+    block = np.load('data/tseries1.npy')
     time, intensity = block[0, :], block[1, :]
 
     # Compute initial guesses for this curve
