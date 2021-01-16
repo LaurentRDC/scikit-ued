@@ -23,7 +23,7 @@ def kinematicsim(crystal, kx, ky, energy=90):
 
     Parameters
     ----------
-    crystal : skued.Crystal
+    crystal : crystals.Crystal
         Crystal from which to scatter.
     kx, ky :  `~numpy.ndarray`, shape (N,M)
         Momenta mesh where to calculate the diffraction pattern [:math:`Å^{-1}`]
@@ -49,7 +49,7 @@ def kinematicsim(crystal, kx, ky, energy=90):
         extent_y,
         indexing="xy",
     )
-    kx_, ky_ = fft.fft2freq(xx, yy, indexing="xy")
+    kx_, ky_ = fft2freq(xx, yy, indexing="xy")
     k = np.hypot(kx_, ky_)
 
     potential = pelectrostatic(crystal, xx, yy)

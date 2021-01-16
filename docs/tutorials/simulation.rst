@@ -14,6 +14,7 @@ Contents
 ========
 
 * :ref:`powdersim`
+* :ref:`kinematicsim`
 * :ref:`electrostatic`
 
 .. _powdersim:
@@ -56,6 +57,48 @@ After plot formatting:
 	plt.xlabel('$q (1/\AA)$')
 	plt.ylabel('Diffracted intensity (A.u.)')
 	plt.title('Polycrystalline graphite diffraction')
+
+
+.. _kinematicsim:
+
+Kinematical single-crystal simulation
+=====================================
+Single-crystal kinematical diffraction simulation is available via the :func:`kinematicsim` function:
+
+    >>> from crystals import Crystal
+    >>> from skued import kinematicsim
+    >>> import numpy as np
+    >>>
+    >>> extent = np.linspace(-10, 10, num=1024)
+    >>> kx, ky = np.meshgrid(extent, extent)
+    >>> kk = np.sqrt(kx**2 + ky**2)
+    >>> 
+    >>> crystal = Crystal.from_database('C') # graphite
+    >>> I = kinematicsim(crystal, kx=kx, ky=ky, energy=50)
+    
+.. plot::
+
+    from crystals import Crystal
+    from skued import kinematicsim
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from scipy.ndimage import gaussian_filter
+
+    extent = np.linspace(-10, 10, num=1024)
+    kx, ky = np.meshgrid(extent, extent)
+    kk = np.sqrt(kx**2 + ky**2)
+
+    I = kinematicsim(Crystal.from_database("C"), kx=kx, ky=ky, energy=50)
+    I[kk < 1] = 0.0
+
+    # Clean up the image a bit
+    I[:] = gaussian_filter(I, sigma=3)
+
+    fig, ax = plt.subplots(1,1, figsize=(4.5, 4.5))
+    ax.imshow(I, vmax=0.9*I.max(), cmap='inferno')
+    ax.axis('off')
+
+    plt.show()
 
 .. _electrostatic:
 
