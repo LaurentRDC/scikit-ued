@@ -4,9 +4,10 @@ Determine the center of diffraction images
 ==========================================
 """
 from os import cpu_count
+from math import floor
 import numpy as np
 from skimage.registration import phase_cross_correlation
-from scipy.ndimage import shift
+from scipy.ndimage import gaussian_filter
 from ..fft import with_skued_fft
 
 
@@ -47,17 +48,45 @@ def autocenter(im, mask=None):
     if mask is None:
         mask = np.ones_like(im, dtype=np.bool)
 
-    r_rough, c_rough = _center_of_intensity(im=im, mask=mask)
+    im = np.array(im, copy=True, dtype=np.float)
+    im -= im.min()
+
+    weights = im * mask.astype(im.dtype)
+
+    rr, cc = np.indices(im.shape)
+    r_ = int(np.average(rr, weights=weights))
+    c_ = int(np.average(cc, weights=weights))
+
+    # Determine the smallest center -> side distance, and crop around that
+    # This is for two reasons.
+    # 1. Some diffraction patterns are not centered, and so there's a lot
+    # of image area that cannot be used for registration.
+    # 2. radial inversion becomes simple inversion of dimensions
+    side_length = floor(min([r_, abs(r_ - im.shape[0]), c_, abs(c_ - im.shape[1])]))
+    rs = slice(r_ - side_length, r_ + side_length)
+    cs = slice(c_ - side_length, c_ + side_length)
+    im = im[rs, cs]
+    mask = mask[rs, cs]
+
+    # Certain images display a gradient in the overall intensity of diffraction
+    # peaks that come from ewald sphere walkoff
+    # e.g. (n00) systematically brighter than (-n00)
+    # For this purpose, we normalize the intensity by some "background",
+    # i.e. very blurred diffraction pattern
+    im /= gaussian_filter(input=im, sigma=min(im.shape) / 25, truncate=2)
 
     # The comparison between Friedel pairs from [1] is generalized to
     # any inversion symmetry, including polycrystalline diffraction patterns.
-    im_i = _fast_radial_inversion(im, center=(r_rough, c_rough), cval=0.0)
-    mask_i = _fast_radial_inversion(mask, center=(r_rough, c_rough), cval=False)
+    im_i = im[::-1, ::-1]
+    mask_i = mask[::-1, ::-1]
 
     # masked normalized cross-correlation is extremely expensive
-    # we therefore downsample the images for essentially identical result
+    # we therefore downsample large images for essentially identical result
     # but ~4x decrease in processing time
-    downsampling = 2
+    downsampling = 1
+    if min(im.shape) > 1024:
+        downsampling = 2
+
     shift = with_skued_fft(phase_cross_correlation)(
         reference_image=im[::downsampling, ::downsampling],
         moving_image=im_i[::downsampling, ::downsampling],
@@ -68,31 +97,14 @@ def autocenter(im, mask=None):
     # factor to the rough center should be increased from the measured shift
     correction = shift * downsampling
 
-    return np.array([r_rough, c_rough]) + correction / 2
+    return np.array([r_, c_]) + correction / 2
 
 
 def _center_of_intensity(im, mask=None):
-    im = np.asfarray(im)
-    im -= im.min()
 
     weights = im * mask.astype(im.dtype)
 
     rr, cc = np.indices(im.shape)
-    r_rough = np.average(rr, weights=weights)
-    c_rough = np.average(cc, weights=weights)
-    return int(r_rough), int(c_rough)
-
-
-def _fast_radial_inversion(im, center, cval):
-    arr_center = np.array(im.shape) / 2
-    shifted = shift(
-        im, shift=arr_center - np.asarray(center), order=1, mode="constant", cval=cval
-    )
-    shifted = shifted[::-1, ::-1]
-    return shift(
-        shifted,
-        shift=np.asarray(center) - arr_center,
-        order=1,
-        mode="constant",
-        cval=cval,
-    )
+    r_ = np.average(rr, weights=weights)
+    c_ = np.average(cc, weights=weights)
+    return int(r_), int(c_)

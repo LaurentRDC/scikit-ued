@@ -4,6 +4,7 @@ Changelog
 Release 2.1.2
 -------------
 
+* Improved :func:`autocenter` for diffraction patterns with large Ewald sphere walkoff.
 * Speedup of all routines that use the Fast Fourier transform (:func:`autocenter`, :func:`align`, :func:`ialign`, :func:`itrack_peak`, and :func:`kinematicsim`) by 50%.
 
 Release 2.1.1

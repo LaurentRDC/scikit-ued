@@ -15,7 +15,19 @@ def test_autocenter_trivial():
     rows, cols = np.indices(im.shape)
     im += gaussian([rows, cols], center=center, fwhm=center.max() / 2)
 
-    assert np.allclose(autocenter(im), center)
+    assert np.allclose(autocenter(im), center, atol=1)
+
+
+def test_autocenter_no_side_effects():
+    """ Test that autocenter() does not modify the inputs """
+    im = np.random.random(size=(256, 256))
+    mask = np.ones_like(im, dtype=np.bool)
+
+    # Modifying the arrays will result in "ValueError: output array is read-only"
+    im.setflags(write=False)
+    mask.setflags(write=False)
+
+    autocenter(im, mask=mask)
 
 
 @pytest.mark.parametrize("rc", range(-10, 10, 2))
