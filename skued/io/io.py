@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+import numpy as np
+
 from .dm import dmread
 from .merlin import mibread
 
@@ -17,6 +19,8 @@ def diffread(fname):
             .. versionadded:: 1.0.1.0
 
         * TIFF (`*.tif`, `*.tiff`)
+
+        * NumPy (`*.npy`)
 
         * All file formats supported by Scikit-image
 
@@ -42,6 +46,8 @@ def diffread(fname):
         return mibread(fname)
     elif fname.suffix in {".dm3", ".dm4"}:
         return dmread(fname)
+    elif fname.suffix == ".npy":
+        return np.load(fname, fix_imports=False)
 
     # Worst-case scenario, we need skimage.io
     # since this is a slow import, we import it here

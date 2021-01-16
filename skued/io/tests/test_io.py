@@ -6,6 +6,7 @@ from pathlib import Path
 
 import numpy as np
 from skimage.io import imsave
+import tempfile
 
 from skued import diffread, dmread, imibread, mibheader, mibread
 from skued.utils import suppress_warnings
@@ -52,6 +53,15 @@ def test_diffread_on_tiff():
     from_skued = diffread(path)
     assert np.allclose(im, from_skued)
     os.remove(path)
+
+
+def test_diffread_on_npy():
+    """ Test diffread() on *.npy files """
+    arr = np.random.random(size=(128, 128))
+    with tempfile.TemporaryDirectory() as tmpdir:
+        np.save(Path(tmpdir) / "skued_test.npy", arr)
+        arr2 = diffread(Path(tmpdir) / "skued_test.npy")
+    assert np.allclose(arr, arr2)
 
 
 def test_diffread_on_skimage_png():
