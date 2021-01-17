@@ -9,6 +9,7 @@ import numpy as np
 from skimage.registration import phase_cross_correlation
 from scipy.ndimage import gaussian_filter
 from ..fft import with_skued_fft
+from warnings import catch_warnings, simplefilter
 
 
 def autocenter(im, mask=None):
@@ -73,7 +74,10 @@ def autocenter(im, mask=None):
     # e.g. (n00) systematically brighter than (-n00)
     # For this purpose, we normalize the intensity by some "background",
     # i.e. very blurred diffraction pattern
-    im /= gaussian_filter(input=im, sigma=min(im.shape) / 25, truncate=2)
+    with catch_warnings():
+        simplefilter("ignore", category=RuntimeWarning)
+        im /= gaussian_filter(input=im, sigma=min(im.shape) / 25, truncate=2)
+    im = np.nan_to_num(im, copy=False)
 
     # The comparison between Friedel pairs from [1] is generalized to
     # any inversion symmetry, including polycrystalline diffraction patterns.
