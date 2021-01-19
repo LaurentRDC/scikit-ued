@@ -142,20 +142,32 @@ def with_irf(fwhm):
     Parameters
     ----------
     fwhm : float
-        Full-width at half-maximum.
+        Full-width at half-maximum. The units of this value should be the same as the units
+        used by the function it is decorating. See examples below.
 
     Returns
     -------
     decorator : callable
         Decorator that takes a function of the form ``f(t, *args, **kwargs)``
-        and convolutes it with a Gaussian IRF. See the examples below.
+        and convolutes it with a Gaussian IRF.
 
     Examples
     --------
+    Here's an example of an exponential function with an IRF. In this example,
+    the ``time`` argument is in units of picoseconds. Therefore, we convolve with
+    an IRF of 0.150 picoseconds (150 fs).
+
     >>> from skued import with_irf, exponential
     >>> @with_irf(0.150)
     ... def exponential_with_irf(time, *args, **kwargs):
     ...     return exponential(time, *args, **kwargs)
+
+    If we were to change the definition to use femtoseconds:
+
+    >>> from skued import with_irf, exponential # exponential is defined on picoseconds
+    >>> @with_irf(150) # femtoseconds
+    ... def exponential_with_irf(time, *args, **kwargs):
+    ...     return exponential(time * 1000, *args, **kwargs) # defined on femtoseconds
     """
 
     def decorator(f):
