@@ -46,13 +46,15 @@ def autocenter(im, mask=None):
     Liu, Lai Chung. Chemistry in Action: Making Molecular Movies with Ultrafast
     Electron Diffraction and Data Science, Chapter 2. Springer Nature, 2020.
     """
-    if mask is None:
-        mask = np.ones_like(im, dtype=np.bool)
 
     im = np.array(im, copy=True, dtype=np.float)
     im -= im.min()
 
-    weights = im * mask.astype(im.dtype)
+    if mask is None:
+        mask = np.ones_like(im, dtype=np.bool)
+        weights = im
+    else:
+        weights = im * mask.astype(im.dtype)
 
     rr, cc = np.indices(im.shape)
     r_ = int(np.average(rr, weights=weights))

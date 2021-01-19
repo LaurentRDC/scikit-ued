@@ -8,12 +8,6 @@ Visualization
 
 Polycrystalline diffraction patterns may be hard to decrypt without some visualization tools. This tutorial goes over some of the tools available in `scikit-ued` that help solve this problem.
 
-
-Contents
-========
-
-* :ref:`patterson`
-
 .. _patterson:
 
 Patterson pair-pair distribution function

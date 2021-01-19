@@ -10,13 +10,6 @@ Simulations
 
 Simulating diffraction patterns
 
-Contents
-========
-
-* :ref:`powdersim`
-* :ref:`kinematicsim`
-* :ref:`electrostatic`
-
 .. _powdersim:
 
 Polycrystalline Diffraction Simulation

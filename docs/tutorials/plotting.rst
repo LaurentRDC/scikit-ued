@@ -12,12 +12,6 @@ Time-resolved diffraction measurements can benefit from careful plotting, especi
 for time-series of data. This tutorial will go over some of the functions that make this easier
 in :mod:`skued`.
 
-Contents
-========
-
-* :ref:`colors`
-* :ref:`miller`
-
 .. _colors:
 
 Colors

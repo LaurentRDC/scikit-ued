@@ -27,16 +27,10 @@ General Documentation
     :maxdepth: 2
 
     installation
-    whatsnew
-    tutorials/baseline
-    tutorials/structure
-    tutorials/image
-    tutorials/plotting
-    tutorials/time_series
-    tutorials/simulation
-    tutorials/visualization
+    tutorials/tutorials
     api
     cmdline
+    whatsnew
 
 Related Projects
 ================

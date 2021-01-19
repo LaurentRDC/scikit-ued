@@ -11,12 +11,6 @@ Time-series analysis
 Time-resolved diffraction measurements reduce down to a (large) series of time-series. Exploring those time-series
 reveal the dynamics captured by experiments. This tutorial will go over some of the functions that help this data exploration.
 
-Contents
-========
-
-* :ref:`fitting`
-* :ref:`selection`
-
 .. _fitting:
 
 Fitting

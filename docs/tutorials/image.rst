@@ -14,16 +14,6 @@ will show some of the image processing and analysis techniques that are part of 
 .. note::
     Use scikit-ued in combination with `npstreams`_ to process electron diffraction data in parallel.
 
-Contents
-========
-
-* :ref:`io`
-* :ref:`alignment`
-* :ref:`symmetry`
-* :ref:`pixel_masks`
-* :ref:`powder`
-* :ref:`denoising`
-
 .. _io:
 
 Reading Images 

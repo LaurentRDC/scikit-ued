@@ -8,12 +8,6 @@
 Baseline-determination
 **********************
 
-Contents
-========
-
-* :ref:`dwt_baseline`
-* :ref:`dual_tree_baseline`
-
 Due to the high electron cross-section, background signals (or baseline) are
 much more of a problem for electron diffraction than equivalent X-ray experiments.
 
