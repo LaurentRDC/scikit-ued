@@ -17,13 +17,14 @@ def patterson(q, I, crystal, radii):
     Parameters
     ----------
     q : ndarray, shape (N,)
-        Scattering vector associated with the diffracted intensity `I` [1/$\AA$].
+        Scattering vector associated with the diffracted intensity `I` [:math:`Å^{-1}`].
     I : ndarray, shape (N,)
         Diffracted intensity.
     crystal : crystals.Crystal
-        Crystal structure associated with this data.
+        Crystal structure associated with this data. This information is used to normalize
+        the pair-distribution function.
     radii : ndarray, shape (M,)
-        Array over which the pair-correlation function is calculated [$\AA$].
+        Array over which the pair-correlation function is calculated [:math:`Å^{-1}`].
 
     Returns
     -------
@@ -32,8 +33,8 @@ def patterson(q, I, crystal, radii):
 
     References
     ----------
-    [#] Fultz, B, and James M Howe. Transmission Electron Microscopy and Diffractometry of Materials.
-        4th ed., 4th ed., Springer, 2013, Equation 10.153
+    Fultz, B, and James M Howe. Transmission Electron Microscopy and Diffractometry of Materials.
+    4th ed., Springer, 2013, Equation 10.153
     """
     q, I, radii = tuple(map(np.asfarray, [q, I, radii]))
 
