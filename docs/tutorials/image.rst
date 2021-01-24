@@ -339,24 +339,30 @@ We can plot the result:
 	import numpy as np
 	from matplotlib.patches import Circle
 
-	im = diffread("data/graphite.tif")
-	mask = diffread("data/graphite_mask.tif").astype(np.bool)
+	im1 = diffread("data/graphite.tif")
+	mask1 = diffread("data/graphite_mask.tif").astype(np.bool)
 
-	# Reduce size of images because of memory usage of ReadTheDocs
-	im = im[::2, ::2]
-	mask = mask[::2, ::2]
+	im2 = diffread("data/ewald_walkoff.tif")
+	mask2 = diffread("data/ewald_walkoff_mask.tif").astype(np.bool)
 
-	peaks = bragg_peaks(im, mask)
+	fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(6, 3))
 
-	fig, ax1 = plt.subplots(figsize=(4.5, 4.5))
-	ax1.imshow(im, vmin=0, vmax=200, cmap="inferno")
+	for ax, im, mask, vmax, radius in zip(
+		[ax1, ax2], [im1, im2], [mask1, mask2], [200, 4000], [15, 4]
+	):
+		# Reduce size of images because of memory usage of ReadTheDocs
+		im = im[::2, ::2]
+		mask = mask[::2, ::2]
 
-	for r, c in peaks:
-		ax1.add_patch(Circle(xy=(c, r), radius=13, ec="r", fc="none"))
+		peaks = bragg_peaks(im, mask)
 
+		ax.imshow(im, vmin=0, vmax=vmax, cmap="inferno")
 
-	ax1.get_xaxis().set_visible(False)
-	ax1.get_yaxis().set_visible(False)
+		for r, c in peaks:
+			ax.add_patch(Circle(xy=(c, r), radius=radius, ec="r", fc="none"))
+
+		ax.get_xaxis().set_visible(False)
+		ax.get_yaxis().set_visible(False)
 
 	plt.tight_layout()
 	plt.show()

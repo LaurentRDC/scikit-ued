@@ -212,6 +212,15 @@ Image noise
     triml
     trimr
 
+Single-crystal indexing
+----------------------
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+
+    bragg_peaks
+
 ==========
 Simulation
 ==========
