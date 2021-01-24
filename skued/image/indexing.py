@@ -17,7 +17,7 @@ from .center import autocenter
 
 
 @with_skued_fft
-def bragg_peaks(im, mask=None, center=None):
+def bragg_peaks(im, mask=None, center=None, min_dist=None):
     """
     Extract the position of Bragg peaks in a single-crystal diffraction pattern.
 
@@ -32,6 +32,11 @@ def bragg_peaks(im, mask=None, center=None):
     center : 2-tuple, optional
         Center of the diffraction pattern, in ``(row, col)`` format.
         If ``None``, the center will be determined via :func:`autocenter`.
+    min_dist : float or None, optional
+        Minimum distance between Bragg peaks (in pixel coordinates). Peaks that are closer
+        than this distance will be considered the same peak, and only one of them will
+        be returned. If `None` (default), the minimum distance is guessed based on the
+        image size.
 
     Returns
     -------
@@ -55,8 +60,9 @@ def bragg_peaks(im, mask=None, center=None):
         im /= gaussian_filter(input=im, sigma=min(im.shape) / 20, truncate=2)
     im = np.nan_to_num(im, copy=False)
 
-    autocorr = cross_correlate_masked(arr1=im, arr2=im, m1=mask, m2=mask, mode="same")
-    autocorr = np.abs(autocorr)
+    autocorr = np.abs(
+        cross_correlate_masked(arr1=im, arr2=im, m1=mask, m2=mask, mode="same")
+    )
 
     # The regions of interest are defined on the labels made
     # from the autocorrelation of the image. The center of the autocorr
@@ -79,12 +85,20 @@ def bragg_peaks(im, mask=None, center=None):
 
     labels = label(regions, return_num=False)
     props = regionprops(label_image=labels, intensity_image=im)
-    # TODO: prune regions to remove regions that are very close to each other
-    return sorted(
-        [
-            prop.weighted_centroid
-            for prop in props
-            if not np.any(np.isnan(prop.weighted_centroid))
-        ],
-        key=lambda p: np.linalg.norm(p - center),
-    )
+    candidates = [
+        prop for prop in props if not np.any(np.isnan(prop.weighted_centroid))
+    ]
+
+    # Some regions are very close to each other; we prune them!
+    if min_dist is None:
+        min_dist = min(im.shape) / 100
+
+    peaks = list()
+    for prop in candidates:
+        pos = np.asarray(prop.weighted_centroid)
+        if any((np.linalg.norm(peak - pos) < min_dist) for peak in peaks):
+            continue
+        else:
+            peaks.append(pos)
+
+    return sorted(peaks, key=lambda p: np.linalg.norm(p - center))
