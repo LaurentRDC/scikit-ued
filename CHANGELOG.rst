@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.1.3
+-------------
+
+* Added the function :func:`bragg_peaks` to determine the location of single-crystal diffraction peaks in an image.
+
 Release 2.1.2
 -------------
 

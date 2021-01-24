@@ -4,6 +4,7 @@
 from .alignment import align, ialign, itrack_peak
 from .calibration import detector_scattvectors, powder_calq
 from .center import autocenter
+from .indexing import bragg_peaks
 from .metrics import (
     combine_masks,
     isnr,

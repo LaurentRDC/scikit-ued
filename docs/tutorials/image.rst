@@ -315,6 +315,54 @@ the per-pixel standard deviation over the image set is computed; pixels that flu
 Note that since :func:`mask_from_collection` uses :mod:`npstreams` under the hood, the collection of files used to compute the 
 mask can be huge, much larger than available memory.
 
+.. _indexing:
+
+Finding Bragg peaks
+===================
+
+The first step in any single-crystal indexing routine is to find Bragg peaks. To this end, the 
+:func:`bragg_peaks` function can be used as follows:
+
+	>>> from skued import diffread, bragg_peaks
+	>>> 
+	>>> im = diffread('docs/tutorials/data/graphite.tif')
+	>>> mask = diffread('docs/tutorials/data/graphite_mask.tif').astype(np.bool)
+	>>>
+	>>> peaks = bragg_peaks(im, mask=mask)
+
+We can plot the result:
+
+.. plot:: 
+
+	from skued import diffread, bragg_peaks
+	import matplotlib.pyplot as plt
+	import numpy as np
+	from matplotlib.patches import Circle
+
+	im = diffread("data/graphite.tif")
+	mask = diffread("data/graphite_mask.tif").astype(np.bool)
+
+	# Reduce size of images because of memory usage of ReadTheDocs
+	im = im[::2, ::2]
+	mask = mask[::2, ::2]
+
+	peaks = bragg_peaks(im, mask)
+
+	fig, ax1 = plt.subplots(figsize=(4.5, 4.5))
+	ax1.imshow(im, vmin=0, vmax=200, cmap="inferno")
+
+	for r, c in peaks:
+		ax1.add_patch(Circle(xy=(c, r), radius=13, ec="r", fc="none"))
+
+
+	ax1.get_xaxis().set_visible(False)
+	ax1.get_yaxis().set_visible(False)
+
+	plt.tight_layout()
+	plt.show()
+
+How cool is that!
+
 .. _powder:
 
 Image analysis on polycrystalline diffraction patterns

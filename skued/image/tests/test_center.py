@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from skued import autocenter, gaussian, kinematicsim, diffshow
+from skued import autocenter, gaussian, kinematicsim
 from crystals import Crystal
 from scipy.ndimage import gaussian_filter
 import numpy as np
@@ -119,7 +119,6 @@ def test_autocenter_single_crystal_ewald_walkoff(rc, cc):
     walkoff *= 0.2
     I += walkoff
 
-    # diffshow(I)
     mask = np.ones_like(I, dtype=np.bool)
     mask[0 : rc + 10, cc - 10 : cc + 10] = False
     I += 0.01 * I.max() * np.random.random(size=I.shape)

@@ -50,6 +50,7 @@ from .image import (
     ialign,
     isnr,
     itrack_peak,
+    bragg_peaks,
     mask_from_collection,
     mask_image,
     nfold,
