@@ -118,7 +118,7 @@ def test_combine_masks_single_element():
 
 
 def test_mask_image_trivial():
-    mask = np.ones((64, 64), dtype=np.bool)
+    mask = np.ones((64, 64), dtype=bool)
     image = np.random.random((64, 64))
     masked = mask_image(image, mask)
 
@@ -127,7 +127,7 @@ def test_mask_image_trivial():
 
 def test_mask_image_no_copy():
     """ Test that mask_image can work in-place """
-    mask = np.random.randint(0, 1, size=(64, 64), dtype=np.bool)
+    mask = np.random.randint(0, 1, size=(64, 64), dtype=bool)
     image = np.random.random((64, 64))
     masked = mask_image(image, mask, copy=False)
 
@@ -150,7 +150,7 @@ def test_trim_left_all_axes():
 
 def test_trim_left_fill_value():
     """ Test that fill_value is indeed introduced """
-    array = np.arange(0, 101, dtype=np.float)  # [0, 1, 2, ..., 100]
+    array = np.arange(0, 101, dtype=float)  # [0, 1, 2, ..., 100]
     trimmed = triml(array, percentile=20, fill_value=np.nan)
     assert np.any(np.isnan(trimmed))
 
@@ -171,6 +171,6 @@ def test_trim_right_trimming():
 
 def test_trim_right_fill_value():
     """ Test that fill_value is indeed introduced """
-    array = np.arange(0, 101, dtype=np.float)  # [0, 1, 2, ..., 100]
+    array = np.arange(0, 101, dtype=float)  # [0, 1, 2, ..., 100]
     trimmed = trimr(array, percentile=20, fill_value=np.nan)
     assert np.any(np.isnan(trimmed))

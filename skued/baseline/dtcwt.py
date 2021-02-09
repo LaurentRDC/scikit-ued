@@ -96,7 +96,7 @@ def dtcwt(data, first_stage, wavelet, mode="constant", level=None, axis=-1):
     .. [1] Selesnick, I. W. et al. 'The Dual-tree Complex Wavelet Transform', IEEE Signal Processing
            Magazine pp. 123 - 151, November 2005.
     """
-    data = np.asarray(data, dtype=np.float) / np.sqrt(2)
+    data = np.asarray(data, dtype=float) / np.sqrt(2)
 
     if level is None:
         level = dt_max_level(
@@ -396,7 +396,7 @@ def dt_first_stage(wavelet):
     # extend filter bank with zeros
     filter_bank = [np.array(f, copy=True) for f in wavelet.filter_bank]
     for filt in filter_bank:
-        extended = np.zeros(shape=(filt.shape[0] + 2,), dtype=np.float)
+        extended = np.zeros(shape=(filt.shape[0] + 2,), dtype=float)
         extended[1:-1] = filt
         filt = extended
 

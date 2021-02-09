@@ -115,7 +115,7 @@ def mask_from_collection(images, px_thresh=(0, 3e4), std_thresh=None):
         min_int, max_int = None, px_thresh
 
     first, images = peek(images)
-    mask = np.zeros_like(first, dtype=np.bool)  # 0 = False
+    mask = np.zeros_like(first, dtype=bool)  # 0 = False
 
     if std_thresh is not None:
         images, images_for_std = itercopy(images)
@@ -146,7 +146,7 @@ def combine_masks(*masks):
     combined : `~numpy.ndarray`, dtype bool
     """
     # By multiplying boolean arrays, values of False propagate
-    return prod(masks, dtype=np.bool)
+    return prod(masks, dtype=bool)
 
 
 def mask_image(image, mask, fill_value=0, copy=True):
@@ -172,7 +172,7 @@ def mask_image(image, mask, fill_value=0, copy=True):
         Masked image. If ``copy = True``, masked points to the same object as ``image``.
     """
     image = np.array(image, copy=copy)
-    mask = np.asarray(mask, dtype=np.bool)
+    mask = np.asarray(mask, dtype=bool)
 
     image[np.logical_not(mask)] = fill_value
     return image

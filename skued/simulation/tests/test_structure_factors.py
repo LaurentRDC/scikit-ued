@@ -51,4 +51,4 @@ def test_shape_and_dtype():
     sf = structure_factor(crystal, h, k, l)
 
     assert sf.shape == h.shape
-    assert sf.dtype == np.complex
+    assert sf.dtype == complex

@@ -20,7 +20,7 @@ np.random.seed(23)
 
 def circle_image(shape, center, radii, intensities):
     """ Creates an image with circle or thickness 2 """
-    im = np.zeros(shape=shape, dtype=np.float)
+    im = np.zeros(shape=shape, dtype=float)
     xx, yy = np.ogrid[0 : shape[0], 0 : shape[1]]
     xx, yy = xx - center[0], yy - center[1]
     for radius, intensity in zip(radii, intensities):
@@ -49,7 +49,7 @@ def test_ialign_misaligned_canned_images():
     reference = camera()
     shifts = [(randint(-4, 0), randint(0, 4)) for _ in range(5)]
 
-    mask = np.zeros_like(reference, dtype=np.bool)
+    mask = np.zeros_like(reference, dtype=bool)
     rr1, cc1 = ellipse(129, 127, r_radius=63, c_radius=50, shape=reference.shape)
     mask[rr1, cc1] = True
 
@@ -83,7 +83,7 @@ def test_align_with_mask():
     reference = camera()
     image = ndi.shift(camera(), shift=(-7, 12))
 
-    mask = np.ones_like(reference, dtype=np.bool)
+    mask = np.ones_like(reference, dtype=bool)
     mask[75:100, 50:100] = False
 
     aligned = align(image, reference=reference, mask=mask)

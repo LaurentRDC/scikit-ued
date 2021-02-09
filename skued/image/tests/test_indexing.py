@@ -47,6 +47,6 @@ def test_bragg_peaks():
         )
     ]
 
-    peaks = bragg_peaks(I, mask=np.ones_like(I, dtype=np.bool))
+    peaks = bragg_peaks(I, mask=np.ones_like(I, dtype=bool))
 
     assert len(peaks) == len(in_plane_refls)

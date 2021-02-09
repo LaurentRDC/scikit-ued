@@ -52,7 +52,7 @@ def bragg_peaks(im, mask=None, center=None, min_dist=None):
     if center is None:
         center = autocenter(im=im, mask=mask)
 
-    im = np.array(im, copy=True, dtype=np.float)
+    im = np.array(im, copy=True, dtype=float)
     im -= im.min()
 
     with catch_warnings():

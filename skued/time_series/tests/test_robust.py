@@ -15,7 +15,7 @@ def test_mad_trivial():
 def test_mad_integers():
     """ Test that mad of an integer array is working as intended """
     arr_int = np.random.randint(-15, 15, size=(8, 8))
-    arr_flo = np.array(arr_int, copy=True, dtype=np.float)
+    arr_flo = np.array(arr_int, copy=True, dtype=float)
 
     mad_int = mad(arr_int)
     mad_flo = mad(arr_flo)

@@ -149,7 +149,7 @@ def test_change_basis_mesh_trivial_basis_change():
     """
     Test the change of basis from standard basis to standard basis.
     """
-    extent = np.linspace(0, 10, 10, dtype=np.int)
+    extent = np.linspace(0, 10, 10, dtype=int)
     xx, yy, zz = np.meshgrid(extent, extent, extent)
 
     XX, YY, ZZ = tr.change_basis_mesh(
@@ -164,7 +164,7 @@ def test_change_basis_mesh_coordinate_swap():
     """
     Tests the change of basis from (x, y, z) to (x, z, y)
     """
-    extent = np.linspace(0, 10, 10, dtype=np.int)
+    extent = np.linspace(0, 10, 10, dtype=int)
     xx, yy, zz = np.meshgrid(extent, extent, extent)
 
     e1, e2, e3 = np.eye(3)
@@ -179,7 +179,7 @@ def test_change_basis_mesh_coordinate_swap():
 
 
 def test_change_basis_mesh_scaling():
-    extent = np.linspace(0, 10, 10, dtype=np.int)
+    extent = np.linspace(0, 10, 10, dtype=int)
     xx, yy, zz = np.meshgrid(extent, extent, extent)
 
     e1, e2, e3 = np.eye(3)

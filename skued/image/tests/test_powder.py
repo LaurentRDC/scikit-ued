@@ -12,7 +12,7 @@ np.random.seed(23)
 
 def circle_image(shape, center, radii, intensities):
     """ Creates an image with circle or thickness 2 """
-    im = np.zeros(shape=shape, dtype=np.float)
+    im = np.zeros(shape=shape, dtype=float)
     xx, yy = np.ogrid[0 : shape[0], 0 : shape[1]]
     xx, yy = xx - center[0], yy - center[1]
     for radius, intensity in zip(radii, intensities):
@@ -25,7 +25,7 @@ def circle_image(shape, center, radii, intensities):
 
 def test_azimuthal_average_trivial_array():
     """ Test azimuthal_average on an array of zeroes """
-    image = np.zeros(shape=(256, 256), dtype=np.float)
+    image = np.zeros(shape=(256, 256), dtype=float)
     center = (image.shape[0] / 2, image.shape[1] / 2)
 
     radius, intensity = azimuthal_average(image, center)
@@ -36,7 +36,7 @@ def test_azimuthal_average_trivial_array():
 
 def test_azimuthal_average_ring():
     """ Test azimuthal_average on an image with a wide ring """
-    image = np.zeros(shape=(256, 256), dtype=np.float)
+    image = np.zeros(shape=(256, 256), dtype=float)
     center = (image.shape[0] / 2, image.shape[1] / 2)
     xc, yc = center
 
@@ -53,7 +53,7 @@ def test_azimuthal_average_ring():
 
 def test_azimuthal_average_angular_bounds():
     """ Test azimuthal_average with a restrictive angular_bounds argument """
-    image = np.zeros(shape=(256, 256), dtype=np.float)
+    image = np.zeros(shape=(256, 256), dtype=float)
     center = (image.shape[0] / 2, image.shape[1] / 2)
     xc, yc = center
 
@@ -85,11 +85,11 @@ def test_azimuthal_average_angular_bounds():
 
 def test_azimuthal_average_ring_with_mask():
     """ Test azimuthal_average on an image with a wide ring """
-    image = np.zeros(shape=(256, 256), dtype=np.float)
+    image = np.zeros(shape=(256, 256), dtype=float)
     center = (image.shape[0] / 2, image.shape[1] / 2)
     xc, yc = center
 
-    mask = np.ones_like(image, dtype=np.bool)
+    mask = np.ones_like(image, dtype=bool)
     mask[120:140, 0:140] = False
 
     # Create an image with a wide ring
@@ -111,7 +111,7 @@ def test_azimuthal_average_ring_with_mask():
 def test_azimuthal_average_trim_and_mask():
     """Test that regions that only have masks contributions are not present
     in the angular average"""
-    image = np.ones(shape=(256, 256), dtype=np.float)
+    image = np.ones(shape=(256, 256), dtype=float)
     center = (image.shape[0] / 2, image.shape[1] / 2)
     xc, yc = center
 
@@ -120,7 +120,7 @@ def test_azimuthal_average_trim_and_mask():
     xx, yy = np.meshgrid(extent, extent)
     rr = np.hypot(xx - xc, yy - yc)
 
-    mask = np.ones_like(image, dtype=np.bool)
+    mask = np.ones_like(image, dtype=bool)
     mask[rr < 20] = False
     # image[rr < 20] = 0
 
@@ -136,7 +136,7 @@ def test_azimuthal_average_trim_and_mask():
 def test_azimuthal_average_mask_and_nan():
     """ Test that azimuthal_average with masks does not yield NaNs. This can happen for large masks. """
     image = np.ones(shape=(256, 256), dtype=np.int16)
-    mask = np.zeros_like(image, dtype=np.bool)
+    mask = np.zeros_like(image, dtype=bool)
     mask[100:156, 100:156] = True
     _, av = azimuthal_average(image, center=(128, 128), mask=mask, trim=False)
 

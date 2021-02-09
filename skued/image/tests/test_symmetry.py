@@ -26,8 +26,8 @@ def test_nfold_valid_mod():
 
 def test_nfold_mask():
     """ Test that nfold() works correctly with a mask """
-    im = np.zeros((128, 128), dtype=np.int)
-    mask = np.ones_like(im, dtype=np.bool)
+    im = np.zeros((128, 128), dtype=int)
+    mask = np.ones_like(im, dtype=bool)
 
     with catch_warnings():
         simplefilter("ignore")
@@ -40,8 +40,8 @@ def test_nfold_mask():
 
 def test_nfold_mask_with_overlapping_symmetry():
     """ Test that nfold() works correctly with a mask which overlaps with it when rotated. """
-    im = np.zeros((128, 128), dtype=np.int)
-    mask = np.ones_like(im, dtype=np.bool)
+    im = np.zeros((128, 128), dtype=int)
+    mask = np.ones_like(im, dtype=bool)
 
     with catch_warnings():
         simplefilter("ignore")
@@ -54,8 +54,8 @@ def test_nfold_mask_with_overlapping_symmetry():
 
 def test_nfold_mask_with_overlapping_symmetry_fill_value():
     """ Test that nfold() works correctly with a mask which overlaps with it when rotated, when `fill_value` is not 0. """
-    im = np.zeros((128, 128), dtype=np.int)
-    mask = np.ones_like(im, dtype=np.bool)
+    im = np.zeros((128, 128), dtype=int)
+    mask = np.ones_like(im, dtype=bool)
 
     with catch_warnings():
         simplefilter("ignore")
@@ -68,8 +68,8 @@ def test_nfold_mask_with_overlapping_symmetry_fill_value():
 
 def test_nfold_no_side_effects():
     """ Test that nfold() does not modify the input image and mask """
-    im = np.empty((128, 128), dtype=np.float)
-    mask = np.zeros_like(im, dtype=np.bool)
+    im = np.empty((128, 128), dtype=float)
+    mask = np.zeros_like(im, dtype=bool)
 
     im.setflags(write=False)
     mask.setflags(write=False)
@@ -129,8 +129,8 @@ def test_reflection_trivial():
 
 def test_reflection_no_side_effects():
     """ Test that reflection() does not modify the input image and mask """
-    im = np.empty((128, 128), dtype=np.float)
-    mask = np.zeros_like(im, dtype=np.bool)
+    im = np.empty((128, 128), dtype=float)
+    mask = np.zeros_like(im, dtype=bool)
 
     im.setflags(write=False)
     mask.setflags(write=False)
@@ -156,7 +156,7 @@ def test_reflection_output_range():
 def test_reflection_correctness_angle0():
     """ Test that reflection() correctly symmetrizes around the x-axis. """
 
-    im = np.zeros((256, 256), dtype=np.float)
+    im = np.zeros((256, 256), dtype=float)
     im[0:10, :] = 1
 
     reflected = reflection(im, angle=0)
@@ -180,7 +180,7 @@ def test_reflection_angle_vs_angle_plus_180():
 def test_reflection_correctness_angle90():
     """ Test that reflection() correctly symmetrizes around the y-axis. """
 
-    im = np.zeros((256, 256), dtype=np.float)
+    im = np.zeros((256, 256), dtype=float)
     im[:, 0:10] = 1
 
     reflected = reflection(im, angle=90)

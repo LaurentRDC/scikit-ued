@@ -46,14 +46,14 @@ def test_repeated_array_multiple_axes():
 
 def test_complex_array_floats():
     """ Test that two floating arrays are cast correctly """
-    real, imag = np.empty((3, 4), dtype=np.float), np.empty((3, 4), dtype=np.float)
-    assert complex_array(real, imag).dtype == np.complex
+    real, imag = np.empty((3, 4), dtype=float), np.empty((3, 4), dtype=float)
+    assert complex_array(real, imag).dtype == complex
 
 
 def test_complex_array_non_floats():
     """ Test that two integer arrays are cast correctly """
     real, imag = np.empty((3, 4), dtype=np.int16), np.empty((3, 4), dtype=np.int8)
-    assert complex_array(real, imag).dtype == np.complex
+    assert complex_array(real, imag).dtype == complex
 
 
 def test_complex_array_results():
@@ -69,21 +69,21 @@ def test_complex_array_results():
 
 def test_mirror_1D():
     """ Test mirror() on a 1D array """
-    arr = np.zeros((16,), dtype=np.float)
+    arr = np.zeros((16,), dtype=float)
     arr[15] = 1
     assert np.allclose(arr[::-1], mirror(arr))
 
 
 def test_mirror_2D_all_axes():
     """ Test mirror() on a 2D array for all axes """
-    arr = np.zeros((16, 16), dtype=np.float)
+    arr = np.zeros((16, 16), dtype=float)
     arr[15, 3] = 1
     assert np.allclose(arr[::-1, ::-1], mirror(arr))
 
 
 def test_mirror_2D_one_axis():
     """ Test mirror() on a 2D array for one axis """
-    arr = np.zeros((16, 16), dtype=np.float)
+    arr = np.zeros((16, 16), dtype=float)
     arr[15, 3] = 1
     assert np.allclose(arr[:, ::-1], mirror(arr, axes=1))
     assert np.allclose(arr[::-1, :], mirror(arr, axes=0))

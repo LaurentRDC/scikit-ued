@@ -35,7 +35,7 @@ def diff_pattern_sc(center):
 
 def test_autocenter_trivial():
     """ Test that autocenter() finds the center of perfect gaussian at (0,0) """
-    im = np.zeros(shape=(256, 256), dtype=np.float)
+    im = np.zeros(shape=(256, 256), dtype=float)
     center = np.asarray(im.shape) / 2
     rows, cols = np.indices(im.shape)
     im += gaussian([rows, cols], center=center, fwhm=center.max() / 2)
@@ -46,7 +46,7 @@ def test_autocenter_trivial():
 def test_autocenter_no_side_effects():
     """ Test that autocenter() does not modify the inputs """
     im = np.random.random(size=(256, 256))
-    mask = np.ones_like(im, dtype=np.bool)
+    mask = np.ones_like(im, dtype=bool)
 
     # Modifying the arrays will result in "ValueError: output array is read-only"
     im.setflags(write=False)
@@ -59,7 +59,7 @@ def test_autocenter_no_side_effects():
 @pytest.mark.parametrize("cc", range(-10, 10, 2))
 def test_autocenter_gaussian_shifted(rc, cc):
     """ Test that autocenter() finds the center of a shifted gaussian """
-    im = np.zeros(shape=(128, 128), dtype=np.float)
+    im = np.zeros(shape=(128, 128), dtype=float)
     rows, cols = np.indices(im.shape)
     center = np.array([64 + rc, 64 + cc])
     im += gaussian([rows, cols], center=center, fwhm=20)
@@ -72,8 +72,8 @@ def test_autocenter_gaussian_shifted(rc, cc):
 def test_autocenter_shifted_with_mask(rc, cc):
     """Test that autocenter() finds the center of a shifted gaussian, where
     the center has been masked away."""
-    im = np.zeros(shape=(256, 256), dtype=np.float)
-    mask = np.ones_like(im, dtype=np.bool)
+    im = np.zeros(shape=(256, 256), dtype=float)
+    mask = np.ones_like(im, dtype=bool)
     mask[0:130, 118:138] = False
 
     rows, cols = np.indices(im.shape)
@@ -96,7 +96,7 @@ def test_autocenter_single_crystal(rc, cc):
     """Test that autocenter() finds the center of a simulated
     shifted single-crystal diffraction pattern."""
     I = 10 * diff_pattern_sc(center=(rc, cc))
-    mask = np.ones_like(I, dtype=np.bool)
+    mask = np.ones_like(I, dtype=bool)
     mask[0 : rc + 10, cc - 10 : cc + 10] = False
     I += 0.01 * I.max() * np.random.random(size=I.shape)
 
@@ -115,11 +115,11 @@ def test_autocenter_single_crystal_ewald_walkoff(rc, cc):
     # intensity do not (e.g. brigher (n00) vs (-n00))
     # We simulate this with a linear intensity gradient
     rows, cols = np.indices(I.shape)
-    walkoff = rows.astype(np.float) / rows.max()
+    walkoff = rows.astype(float) / rows.max()
     walkoff *= 0.2
     I += walkoff
 
-    mask = np.ones_like(I, dtype=np.bool)
+    mask = np.ones_like(I, dtype=bool)
     mask[0 : rc + 10, cc - 10 : cc + 10] = False
     I += 0.01 * I.max() * np.random.random(size=I.shape)
 

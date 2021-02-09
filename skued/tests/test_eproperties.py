@@ -14,7 +14,7 @@ def test_lorentz_trivial():
 
 def test_lorentz_vectorized():
     """ Test lorentz() on an array of energies """
-    kV = np.zeros((128,), dtype=np.float)
+    kV = np.zeros((128,), dtype=float)
     assert np.allclose(lorentz(kV), np.ones_like(kV))
 
 

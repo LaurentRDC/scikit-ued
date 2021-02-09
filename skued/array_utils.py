@@ -67,7 +67,7 @@ def complex_array(real, imag):
         Complex array.
     """
     real, imag = np.asfarray(real), np.asfarray(imag)
-    comp = real.astype(np.complex)
+    comp = real.astype(complex)
     comp += 1j * imag
     return comp
 

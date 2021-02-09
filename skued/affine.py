@@ -254,8 +254,8 @@ def change_basis_mesh(xx, yy, zz, basis1, basis2):
     XX, YY, ZZ : `~numpy.ndarray`
     """
     # Build coordinate array row-wise
-    changed = np.empty(shape=(3, xx.size), dtype=np.float)
-    linearized = np.empty(shape=(3, xx.size), dtype=np.float)
+    changed = np.empty(shape=(3, xx.size), dtype=float)
+    linearized = np.empty(shape=(3, xx.size), dtype=float)
     linearized[0, :] = xx.ravel()
     linearized[1, :] = yy.ravel()
     linearized[2, :] = zz.ravel()
@@ -287,7 +287,7 @@ def minimum_image_distance(xx, yy, zz, lattice):
             Minimum image distance over the lattice
     """
     COB = change_of_basis(np.eye(3), lattice)
-    linearized = np.empty(shape=(3, xx.size), dtype=np.float)  # In the standard basis
+    linearized = np.empty(shape=(3, xx.size), dtype=float)  # In the standard basis
     ulinearized = np.empty_like(linearized)  # In the unitcell basis
 
     linearized[0, :] = xx.ravel()

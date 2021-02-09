@@ -28,11 +28,11 @@ def _electrostatic_atom(atom, r):
             f"Scattering information for element {atom.element} is unavailable."
         )
 
-    sum1 = np.zeros_like(r, dtype=np.float)
+    sum1 = np.zeros_like(r, dtype=float)
     for a, b in zip((a1, a2, a3), (b1, b2, b3)):
         sum1 += a / r * np.exp(-2 * pi * r * np.sqrt(b))
 
-    sum2 = np.zeros_like(r, np.float)
+    sum2 = np.zeros_like(r, float)
     for c, d in zip((c1, c2, c3), (d1, d2, d3)):
         sum2 += c * (d ** (-1.5)) * np.exp(-((r * pi) ** 2) / d)
 
@@ -65,8 +65,8 @@ def electrostatic(crystal, x, y, z):
     # TODO: split xx and yy into smalled non-repeating unit
     # TODO: multicore
 
-    potential = np.zeros_like(x, dtype=np.float)
-    r = np.zeros_like(x, dtype=np.float)
+    potential = np.zeros_like(x, dtype=float)
+    r = np.zeros_like(x, dtype=float)
     for atom in crystal:
         ax, ay, az = atom.coords_cartesian
         r[:] = minimum_image_distance(
@@ -91,7 +91,7 @@ def _pelectrostatic_atom(atom, r):
             f"Scattering information for element {atom.element} is unavailable."
         )
 
-    potential = np.zeros_like(r, dtype=np.float)
+    potential = np.zeros_like(r, dtype=float)
     for a, b, c, d in zip((a1, a2, a3), (b1, b2, b3), (c1, c2, c3), (d1, d2, d3)):
         potential += 2 * a * bessel(2 * pi * r * sqrt(b)) + (c / d) * np.exp(
             -((r * pi) ** 2) / d
@@ -137,7 +137,7 @@ def pelectrostatic(crystal, x, y, bounds=None):
     else:
         atoms = iter(crystal)
 
-    potential = np.zeros_like(x, dtype=np.float)
+    potential = np.zeros_like(x, dtype=float)
     z = np.zeros_like(x)
     lattice = np.array(crystal.lattice_vectors)
     for atom in atoms:

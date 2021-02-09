@@ -53,8 +53,8 @@ def structure_factor(crystal, h, k, l, normalized=False):
     # Separating the structure factor into sine and cosine parts avoids adding
     # complex arrays together. About 3x speedup vs. using complex exponentials
     SFsin, SFcos = (
-        np.zeros(shape=nG.shape, dtype=np.float),
-        np.zeros(shape=nG.shape, dtype=np.float),
+        np.zeros(shape=nG.shape, dtype=float),
+        np.zeros(shape=nG.shape, dtype=float),
     )
 
     # Pre-allocation of form factors gives huge speedups

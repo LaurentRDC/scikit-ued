@@ -48,7 +48,7 @@ def exponential(time, tzero, amp, tconst, offset=0):
     --------
     biexponential : bi-exponential curve with onset
     """
-    arr = np.full_like(time, amp + offset, dtype=np.float)
+    arr = np.full_like(time, amp + offset, dtype=float)
     arr[time > tzero] = amp * np.exp(-(time[time > tzero] - tzero) / tconst) + offset
     return arr
 
@@ -96,7 +96,7 @@ def biexponential(time, tzero, amp1, amp2, tconst1, tconst2, offset=0):
     --------
     exponential : single-exponential curve with onset
     """
-    arr = np.full_like(time, offset, dtype=np.float)
+    arr = np.full_like(time, offset, dtype=float)
     arr += exponential(time, tzero, amp1, tconst1)
     arr += exponential(time, tzero, amp2, tconst2)
     return arr

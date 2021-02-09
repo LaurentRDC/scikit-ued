@@ -192,7 +192,7 @@ def _iterative_baseline(
     baseline : `~numpy.ndarray`
         Iterative baseline
     """
-    array = np.asarray(array, dtype=np.float)
+    array = np.asarray(array, dtype=float)
 
     if background_regions is None:
         background_regions = []
@@ -214,14 +214,14 @@ def _iterative_baseline(
     array = np.pad(array, tuple(padding), mode="edge")
 
     if mask is None:
-        mask = np.zeros_like(array, dtype=np.bool)
+        mask = np.zeros_like(array, dtype=bool)
 
         # Preparation for loop
     original_signal = np.array(array, copy=True)
     signal = np.array(original_signal, copy=True)
-    background = np.zeros_like(signal, dtype=np.float)
-    background_too_large = np.empty_like(background, dtype=np.bool)
-    signal_too_large = np.empty_like(background, dtype=np.bool)
+    background = np.zeros_like(signal, dtype=float)
+    background_too_large = np.empty_like(background, dtype=bool)
+    signal_too_large = np.empty_like(background, dtype=bool)
 
     for i in range(max_iter):
 
@@ -291,7 +291,7 @@ def _dt_approx_rec(array, first_stage, wavelet, mode, level, axis=-1):
     )
     app_coeffs, *det_coeffs = coeffs
 
-    det_coeffs = [np.zeros_like(det, dtype=np.complex) for det in det_coeffs]
+    det_coeffs = [np.zeros_like(det, dtype=complex) for det in det_coeffs]
     reconstructed = idtcwt(
         coeffs=[app_coeffs] + det_coeffs,
         first_stage=first_stage,
@@ -337,7 +337,7 @@ def _dwt_approx_rec(array, level, wavelet, mode, axis):
     if isinstance(axis, Iterable):
         axis = axis[0]
 
-    array = np.asarray(array, dtype=np.float)
+    array = np.asarray(array, dtype=float)
     if array.shape[axis] % 2 != 0:
         raise ValueError("Only even-length signals are supported")
 
@@ -416,7 +416,7 @@ def _dwt_approx_rec2(array, level, wavelet, mode, axis):
     ------
     ValueError : If input array has dimension > 2
     """
-    array = np.asarray(array, dtype=np.float)
+    array = np.asarray(array, dtype=float)
     for ax in axis:
         if array.shape[ax] % 2 != 0:
             raise ValueError("Only even-length signals are supported")

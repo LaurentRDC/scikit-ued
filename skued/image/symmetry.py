@@ -70,7 +70,7 @@ def nfold(im, mod, center=None, mask=None, fill_value=0.0):
     if fill_value != 0.0:
         invalid_pixels = np.logical_not(mask)
         masks = (rotate(invalid_pixels, angle, **kwargs) for angle in angles)
-        overlap = ns.prod(masks).astype(np.bool)  # equivalent to logical_and
+        overlap = ns.prod(masks).astype(bool)  # equivalent to logical_and
         avg[overlap] = fill_value
 
     return ns.nan_to_num(avg, fill_value=fill_value)
@@ -107,11 +107,11 @@ def reflection(im, angle, center=None, mask=None, fill_value=0.0):
     angle = float(angle) % 360
 
     # Data-type must be float because of use of NaN
-    im = np.array(im, dtype=np.float, copy=True)
+    im = np.array(im, dtype=float, copy=True)
     reflected = np.array(im, copy=True)  # reflected image
 
     if mask is None:
-        mask = np.ones_like(im, dtype=np.bool)
+        mask = np.ones_like(im, dtype=bool)
     invalid_pixels = np.logical_not(mask)
 
     kwargs = {"center": center, "mode": "constant", "cval": 0, "preserve_range": True}
@@ -127,7 +127,7 @@ def reflection(im, angle, center=None, mask=None, fill_value=0.0):
         return arr
 
     reflected = refl(reflected)
-    invalid_pixels_r = refl(invalid_pixels).astype(np.bool)
+    invalid_pixels_r = refl(invalid_pixels).astype(bool)
 
     result = ns.average([im, reflected])
     result[invalid_pixels_r] = fill_value

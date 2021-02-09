@@ -106,7 +106,7 @@ class ArbitrarySelection(Selection):
     """
 
     def __init__(self, array):
-        self._array = np.asarray(array, dtype=np.bool)
+        self._array = np.asarray(array, dtype=bool)
         super().__init__(shape=self._array.shape)
 
     def __array__(self, *args, **kwargs):
@@ -149,7 +149,7 @@ class RectSelection(Selection):
         return self._bbox
 
     def __array__(self, *args, **kwargs):
-        arr = np.zeros(shape=self.shape, dtype=np.bool)
+        arr = np.zeros(shape=self.shape, dtype=bool)
         r1, r2, c1, c2 = self._bbox
         arr[r1:r2, c1:c2] = True
         return arr
@@ -198,10 +198,10 @@ class DiskSelection(Selection):
 
     def __array__(self, *args, **kwargs):
         center_row, center_col = self._center
-        selection = np.zeros(shape=self.shape, dtype=np.bool)
+        selection = np.zeros(shape=self.shape, dtype=bool)
         cc, rr = np.meshgrid(
-            np.arange(0, self.shape[0], dtype=np.int) - center_col,
-            np.arange(0, self.shape[1], dtype=np.int) - center_row,
+            np.arange(0, self.shape[0], dtype=int) - center_col,
+            np.arange(0, self.shape[1], dtype=int) - center_row,
         )
         distance = np.sqrt(rr ** 2 + cc ** 2)
         selection[distance <= self._radius] = True
@@ -272,10 +272,10 @@ class RingSelection(Selection):
 
     def __array__(self, *args, **kwargs):
         center_row, center_col = self._center
-        selection = np.zeros(shape=self.shape, dtype=np.bool)
+        selection = np.zeros(shape=self.shape, dtype=bool)
         cc, rr = np.meshgrid(
-            np.arange(0, self.shape[0], dtype=np.int) - center_col,
-            np.arange(0, self.shape[1], dtype=np.int) - center_row,
+            np.arange(0, self.shape[0], dtype=int) - center_col,
+            np.arange(0, self.shape[1], dtype=int) - center_row,
         )
         distance = np.sqrt(rr ** 2 + cc ** 2)
         selection[
@@ -364,10 +364,10 @@ class RingArcSelection(Selection):
 
     def __array__(self, *args, **kwargs):
         center_row, center_col = self._center
-        selection = np.zeros(shape=self.shape, dtype=np.bool)
+        selection = np.zeros(shape=self.shape, dtype=bool)
         cc, rr = np.meshgrid(
-            np.arange(0, self.shape[0], dtype=np.int) - center_col,
-            np.arange(0, self.shape[1], dtype=np.int) - center_row,
+            np.arange(0, self.shape[0], dtype=int) - center_col,
+            np.arange(0, self.shape[1], dtype=int) - center_row,
         )
         distance = np.sqrt(rr ** 2 + cc ** 2)
         angle = np.rad2deg(np.arctan2(rr, cc)) + self._angle

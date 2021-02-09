@@ -47,11 +47,11 @@ def autocenter(im, mask=None):
     Electron Diffraction and Data Science, Chapter 2. Springer Nature, 2020.
     """
 
-    im = np.array(im, copy=True, dtype=np.float)
+    im = np.array(im, copy=True, dtype=float)
     im -= im.min()
 
     if mask is None:
-        mask = np.ones_like(im, dtype=np.bool)
+        mask = np.ones_like(im, dtype=bool)
         weights = im
     else:
         weights = im * mask.astype(im.dtype)

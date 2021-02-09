@@ -53,7 +53,7 @@ def azimuthal_average(image, center, mask=None, angular_bounds=None, trim=True):
         Angular-average of the array.
     """
     if mask is None:
-        mask = np.ones_like(image, dtype=np.bool)
+        mask = np.ones_like(image, dtype=bool)
 
     xc, yc = center
 
@@ -62,7 +62,7 @@ def azimuthal_average(image, center, mask=None, angular_bounds=None, trim=True):
     # TODO: interpolation? or is that too slow?
     Y, X = np.indices(image.shape)
     R = np.hypot(X - xc, Y - yc)
-    Rint = np.rint(R).astype(np.int)
+    Rint = np.rint(R).astype(int)
 
     if angular_bounds:
         mi, ma = _angle_bounds(angular_bounds)
@@ -71,7 +71,7 @@ def azimuthal_average(image, center, mask=None, angular_bounds=None, trim=True):
         )  # arctan2 is defined on [-pi, pi] but we want [0, pi]
         in_bounds = np.logical_and(mi <= angles, angles <= ma)
     else:
-        in_bounds = np.ones_like(image, dtype=np.bool)
+        in_bounds = np.ones_like(image, dtype=bool)
 
     valid = mask[in_bounds]
     image = image[in_bounds]

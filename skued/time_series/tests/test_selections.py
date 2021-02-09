@@ -17,21 +17,21 @@ def test_selection_rect_array():
     selection = RectSelection((8, 8), 0, 1, 2, 3)
     toarr = np.array(selection)
     assert toarr.shape == (8, 8)
-    assert toarr.dtype == np.bool
+    assert toarr.dtype == bool
 
 
 def test_selection_disk_array():
     selection = DiskSelection((8, 8), center=(4, 4), radius=2)
     toarr = np.array(selection)
     assert toarr.shape == (8, 8)
-    assert toarr.dtype == np.bool
+    assert toarr.dtype == bool
 
 
 def test_selection_ring_array():
     selection = RingSelection((8, 8), center=(4, 4), inner_radius=0, outer_radius=2)
     toarr = np.array(selection)
     assert toarr.shape == (8, 8)
-    assert toarr.dtype == np.bool
+    assert toarr.dtype == bool
 
 
 def test_selection_ring_arc_array():
@@ -46,7 +46,7 @@ def test_selection_ring_arc_array():
     )
     toarr = np.array(fullarc)
     assert toarr.shape == (8, 8)
-    assert toarr.dtype == np.bool
+    assert toarr.dtype == bool
 
     ring = RingSelection((8, 8), center=(4, 3), inner_radius=1, outer_radius=3)
 
@@ -57,7 +57,7 @@ def test_selection_arbitrary_array():
     selection = ArbitrarySelection(np.random.choice([True, False], size=(8, 8)))
     toarr = np.array(selection)
     assert toarr.shape == (8, 8)
-    assert toarr.dtype == np.bool
+    assert toarr.dtype == bool
 
 
 def test_selection_bbox_rect_selection():
@@ -103,7 +103,7 @@ def test_selection_bbox_ring_arc_selection():
 
 def test_selection_bbox_arbitrary_selection():
 
-    arr = np.ones(shape=(8, 8), dtype=np.bool)  # selection everywhere
+    arr = np.ones(shape=(8, 8), dtype=bool)  # selection everywhere
     selection = ArbitrarySelection(arr)
 
     assert selection.bounding_box == (0, 8, 0, 8)

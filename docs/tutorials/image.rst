@@ -42,7 +42,7 @@ provides :func:`autocenter`. It can be used trivially as follows:
 	>>> im = diffread('docs/tutorials/data/Cr_1.tif')
 	>>>
 	>>> # Invalid pixels are masked with a False
-	>>> mask = np.ones_like(im, dtype = np.bool)
+	>>> mask = np.ones_like(im, dtype = bool)
 	>>> mask[0:1250, 975:1225] = False
 	>>>
 	>>> center = autocenter(im, mask=mask)
@@ -56,7 +56,7 @@ Let's take a look at the result. The center is shown with a red dot:
 
 	im = diffread('data/Cr_1.tif')
 
-	mask = np.ones_like(im, dtype = np.bool)
+	mask = np.ones_like(im, dtype = bool)
 	mask[0:1250, 975:1225] = False
 
 	# Reduce size of images because of memory usage of ReadTheDocs
@@ -81,7 +81,7 @@ We can do the same with single-crystal diffraction patterns:
 	>>> import numpy as np
 	>>> 
 	>>> im = diffread('docs/tutorials/data/graphite.tif')
-	>>> mask = diffread('docs/tutorials/data/graphite_mask.tif').astype(np.bool)
+	>>> mask = diffread('docs/tutorials/data/graphite_mask.tif').astype(bool)
 	>>>
 	>>> center = autocenter(im, mask=mask)
 
@@ -93,7 +93,7 @@ Let's take a look at the result. The center is shown with a red dot:
 	import matplotlib.pyplot as plt
 
 	im = diffread('data/graphite.tif')
-	mask = diffread('data/graphite_mask.tif').astype(np.bool)
+	mask = diffread('data/graphite_mask.tif').astype(bool)
 
 	# Reduce size of images because of memory usage of ReadTheDocs
 	im = im[::3, ::3]
@@ -119,7 +119,7 @@ Let's take a look at the result. The center is shown with a red dot:
 	import matplotlib.pyplot as plt
 
 	im = diffread('data/ewald_walkoff.tif')
-	mask = diffread('data/ewald_walkoff_mask.tif').astype(np.bool)
+	mask = diffread('data/ewald_walkoff_mask.tif').astype(bool)
 
 	rc, cc = autocenter(im, mask=mask)
 
@@ -184,7 +184,7 @@ beam-block and main beam:
 	>>> im = diffread('docs/tutorials/data/Cr_2.tif')
 	>>>
 	>>> # Invalid pixels are masked with a False
-	>>> mask = np.ones_like(ref, dtype = np.bool)
+	>>> mask = np.ones_like(ref, dtype = bool)
 	>>> mask[0:1250, 975:1225] = False
 	>>>
 	>>> aligned = align(image=im, reference=ref, mask=mask)
@@ -199,7 +199,7 @@ Let's look at the difference:
 	ref = diffread("data/Cr_1.tif")
 	im = diffread("data/Cr_2.tif")
 
-	mask = np.ones_like(ref, dtype=np.bool)
+	mask = np.ones_like(ref, dtype=bool)
 	mask[0:1250, 975:1225] = False
 
 	# Reduce size of images because of memory usage of ReadTheDocs
@@ -250,7 +250,7 @@ rotational symmetry.
 
 	image = diffread('data/graphite.tif')
 
-	mask = np.ones_like(image, dtype = np.bool)
+	mask = np.ones_like(image, dtype = bool)
 	mask[1100::, 442:480] = False # Artifact line
 	mask[0:1260, 900:1140] = False # beamblock
 
@@ -326,7 +326,7 @@ The first step in any single-crystal indexing routine is to find Bragg peaks. To
 	>>> from skued import diffread, bragg_peaks
 	>>> 
 	>>> im = diffread('docs/tutorials/data/graphite.tif')
-	>>> mask = diffread('docs/tutorials/data/graphite_mask.tif').astype(np.bool)
+	>>> mask = diffread('docs/tutorials/data/graphite_mask.tif').astype(bool)
 	>>>
 	>>> peaks = bragg_peaks(im, mask=mask)
 
@@ -340,10 +340,10 @@ We can plot the result:
 	from matplotlib.patches import Circle
 
 	im1 = diffread("data/graphite.tif")
-	mask1 = diffread("data/graphite_mask.tif").astype(np.bool)
+	mask1 = diffread("data/graphite_mask.tif").astype(bool)
 
 	im2 = diffread("data/ewald_walkoff.tif")
-	mask2 = diffread("data/ewald_walkoff_mask.tif").astype(np.bool)
+	mask2 = diffread("data/ewald_walkoff_mask.tif").astype(bool)
 
 	fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(6, 3))
 
@@ -385,7 +385,7 @@ First, let's load an image:
 	>>> 
 	>>> image = diffread("docs/tutorials/data/Cr_1.tif")
 	>>> 
-	>>> mask = np.ones_like(image, dtype = np.bool)
+	>>> mask = np.ones_like(image, dtype = bool)
 	>>> mask[0:1250, 975:1225] = False
 	>>> 
 	>>> plt.imshow(image)	# doctest: +SKIP
@@ -399,7 +399,7 @@ First, let's load an image:
 
 	image = diffread("data/Cr_1.tif")
 
-	mask = np.ones_like(image, dtype = np.bool)
+	mask = np.ones_like(image, dtype = bool)
 	mask[0:1250, 975:1225] = False
 
 	fig, (ax1, ax2) = plt.subplots(1,2)
@@ -434,7 +434,7 @@ First, let's load an image:
 
 	im = diffread('data/Cr_1.tif')
 
-	mask = np.ones_like(im, dtype = np.bool)
+	mask = np.ones_like(im, dtype = bool)
 	mask[0:1250, 975:1225] = False
 
 	# Reduce size of images because of memory usage of ReadTheDocs

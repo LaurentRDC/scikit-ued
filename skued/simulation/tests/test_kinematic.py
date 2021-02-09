@@ -48,7 +48,7 @@ def test_vs_fftfreq():
 
 def test_idempotence():
     """ Test that applying limit_bandwidth more than once has no effect """
-    im = np.ones((32, 32), dtype=np.float)
+    im = np.ones((32, 32), dtype=float)
     kx, ky = np.meshgrid(np.arange(-16, 16), np.arange(-16, 16))
     k = np.hypot(kx, ky)
 

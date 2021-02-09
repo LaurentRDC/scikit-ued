@@ -125,4 +125,4 @@ def register_time_shifts(traces, reference=None, method="auto"):
     kwargs = {"reference": reference, "method": method}
 
     shifts = map(partial(register_time_shift, **kwargs), traces)
-    return np.fromiter(shifts, dtype=np.float, count=count)
+    return np.fromiter(shifts, dtype=float, count=count)
