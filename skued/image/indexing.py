@@ -77,7 +77,8 @@ def bragg_peaks(im, mask=None, center=None, min_dist=None):
     )
 
     laplacian = -1 * laplace(autocorr)
-    regions = (laplacian > 0.02) * mask
+    threshold = filters.threshold_triangle(laplacian)
+    regions = (laplacian > threshold) * mask
 
     # To prevent noise from looking like actual peaks,
     # we erode labels using a small selection area

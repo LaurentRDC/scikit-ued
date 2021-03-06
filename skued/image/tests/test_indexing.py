@@ -27,6 +27,7 @@ def diff_pattern_sc():
     gaussian_filter(I, sigma=1, output=I)
     I = np.minimum(I, 0.8 * I.max())
     I /= I.max()
+    I += 0.05 * np.random.random(size=I.shape)
     return kx, ky, I, cryst
 
 
@@ -40,11 +41,7 @@ def test_bragg_peaks():
     in_plane_refls = [
         refl
         for refl in cryst.bounded_reflections(kk.max())
-        if (
-            refl[2] == 0
-            and np.linalg.norm(refl) > 0
-            and np.abs(cryst.scattering_vector(refl)[0]) < kx.max()
-        )
+        if (refl[2] == 0 and np.abs(cryst.scattering_vector(refl)[0]) < kx.max())
     ]
 
     peaks = bragg_peaks(I, mask=np.ones_like(I, dtype=bool))

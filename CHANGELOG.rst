@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.1.4
+-------------
+
+* Increased the reliability of :func:`bragg_peaks` to distinguish between noise and Bragg peaks.
+
 Release 2.1.3
 -------------
 
