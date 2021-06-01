@@ -39,7 +39,7 @@ class Selection(metaclass=ABCMeta):
 
     @abstractmethod
     def __array__(self, *args, **kwargs):
-        """ Cast as a NumPy array. """
+        """Cast as a NumPy array."""
         pass
 
     def mpatch(self, *args, **kwargs):

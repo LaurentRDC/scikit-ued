@@ -254,7 +254,7 @@ DEFAULTCHARSET = "utf-8"
 
 
 class DM3(object):
-    """DM3 object. """
+    """DM3 object."""
 
     ## utility functions
     def _makeGroupString(self):

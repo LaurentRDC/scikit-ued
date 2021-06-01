@@ -6,19 +6,19 @@ np.random.seed(23)
 
 
 def test_nfft_shape_even():
-    """ Test that the nfftfreq function returns expected shape """
+    """Test that the nfftfreq function returns expected shape"""
     freqs = nfftfreq(16)
     assert freqs.shape == (16,)
 
 
 def test_nfft_shape_odd():
-    """ Test that the nfftfreq function returns expected shape """
+    """Test that the nfftfreq function returns expected shape"""
     freqs = nfftfreq(13)
     assert freqs.shape == (13,)
 
 
 def test_nfftfreq_against_fft():
-    """ Test against goold ol' FFT on evenly spaced data """
+    """Test against goold ol' FFT on evenly spaced data"""
 
     x = np.linspace(0, 10, num=128)
     y = np.sin(2 * np.pi * x)

@@ -36,7 +36,7 @@ class SkuedPocketFFTBackend:
 
 
 def with_skued_fft(f):
-    """ Ensure the use of the SkuedPocketFFTBackend whenever the `scipy.fft` module is used. """
+    """Ensure the use of the SkuedPocketFFTBackend whenever the `scipy.fft` module is used."""
 
     @wraps(f)
     def newf(*args, **kwargs):

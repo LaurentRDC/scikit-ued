@@ -21,7 +21,7 @@ def test_out_shape():
 
 
 def test_int():
-    """ Test that affe(int, ...) also works """
+    """Test that affe(int, ...) also works"""
     atomic_number = randint(1, 103)
     nG = np.random.random(size=(16, 32))
 
@@ -32,7 +32,7 @@ def test_int():
 
 
 def test_str():
-    """ Test that affe(str, ...) also works """
+    """Test that affe(str, ...) also works"""
     # Try with Chlorine (Z = 17)
     atomic_number = 17
     nG = np.random.random(size=(16, 32))

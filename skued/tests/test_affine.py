@@ -11,7 +11,7 @@ np.random.seed(23)
 
 
 def test_affine_map_exception_raised():
-    """ Tests that affine_map() raises an exceptions for incorrect input """
+    """Tests that affine_map() raises an exceptions for incorrect input"""
     with pytest.raises(ValueError):
 
         m = tr.affine_map(np.eye(5))  # Matrix too large
@@ -19,7 +19,7 @@ def test_affine_map_exception_raised():
 
 
 def test_affine_map_output_shape():
-    """ Tests that affine_map() always returns a 4x4 array """
+    """Tests that affine_map() always returns a 4x4 array"""
     in3, in4 = np.eye(3), np.eye(4)
 
     assert tr.affine_map(in3).shape == (4, 4)
@@ -48,7 +48,7 @@ def test_translation_random():
 
 
 def test_transform_vector():
-    """ Tests that transform() on vector returns a vector """
+    """Tests that transform() on vector returns a vector"""
     vec = np.random.random((3,))
 
     # Test for vector of length 3
@@ -58,7 +58,7 @@ def test_transform_vector():
 
 
 def test_transform_matrix():
-    """ Tests that transform() on matrix returns a 4x4 matrix, always """
+    """Tests that transform() on matrix returns a 4x4 matrix, always"""
     arr3, arr4 = np.random.random((3, 3)), np.random.random((4, 4))
     mat3, mat4 = np.eye(3), np.eye(4)
 
@@ -74,7 +74,7 @@ def test_change_of_basis_trivial():
 
 
 def test_change_of_basis():
-    """ Test that change_of_basis() returns a correct change-of-basis matrix"""
+    """Test that change_of_basis() returns a correct change-of-basis matrix"""
 
     b1 = np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0]])
 
@@ -94,7 +94,7 @@ def test_is_basis():
 
 
 def test_is_rotation_matrix_trivial():
-    """ test that the identity matrix is a rotation matrix """
+    """test that the identity matrix is a rotation matrix"""
     assert tr.is_rotation_matrix(np.eye(3))
     assert tr.is_rotation_matrix(np.eye(4))
 

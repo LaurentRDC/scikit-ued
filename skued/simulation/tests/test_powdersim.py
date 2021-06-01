@@ -9,14 +9,14 @@ from skued import powdersim
 
 
 def test_powdersim_return_shape():
-    """ Test that the return shape of powdersim() is as expected """
+    """Test that the return shape of powdersim() is as expected"""
     q = np.linspace(2, 10, 200)
     pattern = powdersim(Crystal.from_database("C"), q)
     assert pattern.shape == q.shape
 
 
 def test_powdersim_peak_alignment():
-    """ Test that the diffraction peaks align with what is expected. """
+    """Test that the diffraction peaks align with what is expected."""
     crystal = Crystal.from_database("C")
 
     for reflection in [(0, 1, 1), (1, 2, 0), (-1, 2, 0)]:

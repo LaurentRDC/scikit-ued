@@ -18,7 +18,7 @@ np.random.seed(23)
 
 
 def test_first_stage():
-    """ Test of perfect reconstruction of first stage wavelets. """
+    """Test of perfect reconstruction of first stage wavelets."""
     array = np.sin(np.arange(0, 10, step=0.01))
     for wavelet in available_first_stage_filters():
         # Using waverec and wavedec instead of dwt and idwt because parameters
@@ -27,7 +27,7 @@ def test_first_stage():
 
 
 def gen_input(n_dimensions):
-    """ Generate random array with the appropriate dimensions """
+    """Generate random array with the appropriate dimensions"""
     shape = {1: (100,), 2: (50, 50), 3: (10, 10, 10)}[n_dimensions]
     return np.random.random(size=shape)
 
@@ -37,7 +37,7 @@ multidim = pytest.mark.parametrize("n_dimensions", (1, 2, 3))
 
 @multidim
 def test_perfect_reconstruction_level_0(n_dimensions):
-    """ Test perfect reconstruction for a 0-level decomposition """
+    """Test perfect reconstruction for a 0-level decomposition"""
     array = gen_input(n_dimensions)
     coeffs = dtcwt(data=array, level=0, first_stage="sym6", wavelet="qshift1")
     reconstructed = idtcwt(coeffs=coeffs, first_stage="sym6", wavelet="qshift1")
@@ -46,7 +46,7 @@ def test_perfect_reconstruction_level_0(n_dimensions):
 
 @multidim
 def test_perfect_reconstruction_level_1(n_dimensions):
-    """ Test perfect reconstruction for a single decomposition level """
+    """Test perfect reconstruction for a single decomposition level"""
     array = gen_input(n_dimensions)
     for first_stage in available_first_stage_filters():
         coeffs = dtcwt(data=array, level=1, first_stage=first_stage, wavelet="qshift1")
@@ -58,7 +58,7 @@ def test_perfect_reconstruction_level_1(n_dimensions):
 
 @multidim
 def test_perfect_reconstruction_multilevel(n_dimensions):
-    """ Test perfect reconstruction for all levels, for all first_stage wavelets, for all DT wavelets """
+    """Test perfect reconstruction for all levels, for all first_stage wavelets, for all DT wavelets"""
     array = gen_input(n_dimensions)
 
     for first_stage in available_first_stage_filters():
@@ -81,7 +81,7 @@ def test_perfect_reconstruction_multilevel(n_dimensions):
 
 @multidim
 def test_axis(n_dimensions):
-    """ Test perfect reconstruction along all axes """
+    """Test perfect reconstruction along all axes"""
     array = gen_input(n_dimensions)
     for axis in range(0, array.ndim):
         coeffs = dtcwt(
@@ -99,7 +99,7 @@ def test_axis(n_dimensions):
 
 @multidim
 def test_axis_limits(n_dimensions):
-    """ Test that an exception is raised for an invalid 'axis' parameter """
+    """Test that an exception is raised for an invalid 'axis' parameter"""
     array = gen_input(n_dimensions)
     with pytest.raises(ValueError):
         coeffs = dtcwt(
@@ -113,7 +113,7 @@ def test_axis_limits(n_dimensions):
 
 @multidim
 def test_even_length_along_axis(n_dimensions):
-    """ Test that an exception is raised when array is not even along transform axis """
+    """Test that an exception is raised when array is not even along transform axis"""
     with pytest.raises(ValueError):
         dtcwt(
             data=np.zeros((17, 8)),

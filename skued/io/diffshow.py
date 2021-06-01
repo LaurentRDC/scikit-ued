@@ -52,7 +52,7 @@ if WITH_PYQTGRAPH:
             self.setLayout(layout)
 
         def update_cursor_info(self, event):
-            """ Determine cursor information from mouse event. """
+            """Determine cursor information from mouse event."""
             mouse_point = self.viewer.getView().mapSceneToView(event[0])
             i, j = int(mouse_point.y()), int(mouse_point.x())
             try:

@@ -93,7 +93,7 @@ def azimuthal_average(image, center, mask=None, angular_bounds=None, trim=True):
 
 
 def _trim_bounds(arr):
-    """ Returns the bounds which would be used in numpy.trim_zeros """
+    """Returns the bounds which would be used in numpy.trim_zeros"""
     first = 0
     for i in arr:
         if i != 0.0:

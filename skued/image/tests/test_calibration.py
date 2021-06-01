@@ -74,7 +74,7 @@ def test_powder_calq_simulation_3_peaks():
 
 
 def test_detector_scattvectors_center():
-    """ Test that the placement of the center is working as intended. """
+    """Test that the placement of the center is working as intended."""
     qx, qy, qz = detector_scattvectors(
         keV=200,
         camera_length=1,

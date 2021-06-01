@@ -8,7 +8,7 @@ seed(23)
 
 
 def test_exponential_tzero_limits():
-    """ Test that the output of ``exponential`` has the correct time-zero """
+    """Test that the output of ``exponential`` has the correct time-zero"""
     tzero = 10 * (random() - 0.5)  # between -5 and 5
     amp = 5 * random() + 5  # between 5 and 10
     tconst = random() + 0.3  # between 0.3 and 1.3
@@ -22,7 +22,7 @@ def test_exponential_tzero_limits():
 
 
 def test_exponential_positivity():
-    """ Test that the output of ``exponential`` is always positive. """
+    """Test that the output of ``exponential`` is always positive."""
     tzero = 10 * (random() - 0.5)  # between -5 and 5
     amp = 5 * random() + 5  # between 5 and 10
     tconst = random() + 0.3  # between 0.3 and 1.3
@@ -34,7 +34,7 @@ def test_exponential_positivity():
 
 
 def test_exponential_amplitude():
-    """ Test that the output of ``exponential`` is at most ``amp``. """
+    """Test that the output of ``exponential`` is at most ``amp``."""
     tzero = 10 * (random() - 0.5)  # between -5 and 5
     amp = 5 * random() + 5  # between 5 and 10
     tconst = random() + 0.3  # between 0.3 and 1.3
@@ -46,7 +46,7 @@ def test_exponential_amplitude():
 
 
 def test_exponential_offset():
-    """ Test that the output of ``exponential`` is at lest ``offset``. """
+    """Test that the output of ``exponential`` is at lest ``offset``."""
     tzero = 10 * (random() - 0.5)  # between -5 and 5
     amp = 5 * random() + 5  # between 5 and 10
     tconst = random() + 0.3  # between 0.3 and 1.3
@@ -59,7 +59,7 @@ def test_exponential_offset():
 
 
 def test_biexponential_tzero_limits():
-    """ Test that the output of ``biexponential`` has the correct time-zero """
+    """Test that the output of ``biexponential`` has the correct time-zero"""
     tzero = 10 * (random() - 0.5)  # between -5 and 5
     amp1 = 5 * random() + 5  # between 5 and 10
     tconst1 = random() + 0.3  # between 0.3 and 1.3
@@ -82,7 +82,7 @@ def test_biexponential_tzero_limits():
 
 
 def test_biexponential_positivity():
-    """ Test that the output of ``biexponential`` is always positive. """
+    """Test that the output of ``biexponential`` is always positive."""
     tzero = 10 * (random() - 0.5)  # between -5 and 5
     amp1 = 5 * random() + 5  # between 5 and 10
     tconst1 = random() + 0.3  # between 0.3 and 1.3
@@ -103,7 +103,7 @@ def test_biexponential_positivity():
 
 
 def test_biexponential_amplitude():
-    """ Test that the output of ``biexponential`` is at most ``amp1 + amp2``. """
+    """Test that the output of ``biexponential`` is at most ``amp1 + amp2``."""
     tzero = 10 * (random() - 0.5)  # between -5 and 5
     amp1 = 5 * random() + 5  # between 5 and 10
     tconst1 = random() + 0.3  # between 0.3 and 1.3
@@ -124,7 +124,7 @@ def test_biexponential_amplitude():
 
 
 def test_biexponential_offset():
-    """ Test that the output of ``biexponential`` is at least ``offset``. """
+    """Test that the output of ``biexponential`` is at least ``offset``."""
     tzero = 10 * (random() - 0.5)  # between -5 and 5
     amp1 = 5 * random() + 5  # between 5 and 10
     tconst1 = random() + 0.3  # between 0.3 and 1.3
@@ -147,7 +147,7 @@ def test_biexponential_offset():
 
 
 def test_biexponential_against_exponential():
-    """ Test that ``biexponential`` reduces to ``exponential`` for appropriate parameters """
+    """Test that ``biexponential`` reduces to ``exponential`` for appropriate parameters"""
     tzero = 10 * (random() - 0.5)  # between -5 and 5
     amp1 = 5 * random() + 5  # between 5 and 10
     tconst1 = random() + 0.3  # between 0.3 and 1.3
@@ -163,7 +163,7 @@ def test_biexponential_against_exponential():
 
 
 def test_with_irf_trivial_constant_spacing():
-    """ Test with_irf with a trivial IRF, with constant spacing """
+    """Test with_irf with a trivial IRF, with constant spacing"""
     params = (0, 1, 3)
     times = np.linspace(-5, 15, 256)
     data = exponential(times, *params)
@@ -178,7 +178,7 @@ def test_with_irf_trivial_constant_spacing():
 
 
 def test_with_irf_trivial_nonconstant_spacing():
-    """ Test with_irf with a trivial IRF, with non-constant spacing """
+    """Test with_irf with a trivial IRF, with non-constant spacing"""
     # Note that the spacing of the steps is important for this test
     # If the array `times` is of even length, then the convolution will result
     # in one time-step shift

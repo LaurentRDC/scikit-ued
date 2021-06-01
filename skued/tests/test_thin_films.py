@@ -10,7 +10,7 @@ seed(23)
 
 
 def test_film_interaction_conservation_power():
-    """ Test that R + T + A = 1 always """
+    """Test that R + T + A = 1 always"""
 
     wavelength = randint(200, 1000)
     thickness = randint(50, 200)
@@ -23,7 +23,7 @@ def test_film_interaction_conservation_power():
 
 
 def test_film_interaction_correctness():
-    """ Test for absorption values of VO2 on SiN substrate. Values provided from Martin R. Otto """
+    """Test for absorption values of VO2 on SiN substrate. Values provided from Martin R. Otto"""
     _, _, A = film_optical_coefficients(
         800, thickness=90, n_film=2.9 + 1j * 0.43, n_substrate=1.9962
     )

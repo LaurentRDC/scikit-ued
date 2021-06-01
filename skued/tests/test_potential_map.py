@@ -16,7 +16,7 @@ import pytest
 
 
 def test_potential_map_shape():
-    """ Test that potential_map returns a map with the same shape as the mesh """
+    """Test that potential_map returns a map with the same shape as the mesh"""
     crystal = Crystal.from_database("vo2-rutile")
     q = np.linspace(1, 5, 256)
     I = powdersim(crystal, q)
@@ -35,7 +35,7 @@ def test_potential_map_shape():
 
 
 def test_potential_map_positive_intensity():
-    """ Test that potential_map raises an error if diffraction intensity is not positive """
+    """Test that potential_map raises an error if diffraction intensity is not positive"""
     crystal = Crystal.from_database("vo2-rutile")
     q = np.linspace(1, 5, 256)
     I = powdersim(crystal, q)
@@ -51,7 +51,7 @@ def test_potential_map_positive_intensity():
 
 
 def test_potential_map_trivial():
-    """ Test that potential_map calculated from zero intensity is zero everywhere """
+    """Test that potential_map calculated from zero intensity is zero everywhere"""
     crystal = Crystal.from_database("vo2-rutile")
     q = np.linspace(1, 5, 256)
     I = powdersim(crystal, q)
@@ -68,7 +68,7 @@ def test_potential_map_trivial():
 
 
 def test_potential_synthesis_trivial():
-    """ Test that potential_synthesis calculated from zero intensity is zero everywhere """
+    """Test that potential_synthesis calculated from zero intensity is zero everywhere"""
     crystal = Crystal.from_database("C")
     reflections = list(combinations_with_replacement(range(-3, 4), 3))
     intensities = [
@@ -90,7 +90,7 @@ def test_potential_synthesis_trivial():
 
 
 def test_potential_synthesis_positive_intensity():
-    """ Test that potential_synthesis raises an error if diffraction intensity is not positive """
+    """Test that potential_synthesis raises an error if diffraction intensity is not positive"""
     crystal = Crystal.from_database("C")
     reflections = list(combinations_with_replacement(range(-3, 4), 3))
     intensities = [
@@ -109,7 +109,7 @@ def test_potential_synthesis_positive_intensity():
 
 
 def test_potential_synthesis_shape():
-    """ Test that potential_synthesis returns a map with the same shape as the mesh """
+    """Test that potential_synthesis returns a map with the same shape as the mesh"""
     crystal = Crystal.from_database("C")
     reflections = list(combinations_with_replacement(range(-3, 4), 3))
     intensities = [

@@ -8,17 +8,17 @@ from skued.voigt import _pseudo_voigt_mixing_factor
 
 
 def integrate_1d(x, f):
-    """ Numerically integrate a function f(x)."""
+    """Numerically integrate a function f(x)."""
     return np.trapz(f, x)
 
 
 def integrate_2d(x, y, f):
-    """ Numerically-integrate a function f(x, y). """
+    """Numerically-integrate a function f(x, y)."""
     return np.trapz(np.trapz(f, y[None, :], axis=1), x, axis=0)
 
 
 def integrate_3d(x, y, z, f):
-    """ Numerically-integrate a function f(x, y). """
+    """Numerically-integrate a function f(x, y)."""
     return np.trapz(
         np.trapz(np.trapz(f, z[None, None, :], axis=2), y[None, :], axis=1), x, axis=0
     )
@@ -62,7 +62,7 @@ def test_3d_unit_integral(func):
 
 
 def test_bounds_pseudo_mixing_factor():
-    """ Test that the mixing factor is always between 0 and 1 """
+    """Test that the mixing factor is always between 0 and 1"""
     random.seed(0)
     for _ in range(100):
         fl = random.uniform(1e-8, 100)

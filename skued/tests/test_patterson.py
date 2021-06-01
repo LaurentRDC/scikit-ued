@@ -8,7 +8,7 @@ from skued import patterson, powdersim
 
 
 def test_patterson_output_shape():
-    """ Test that the output shape is as expected. """
+    """Test that the output shape is as expected."""
     # Simulate a powder pattern first
     crystal = Crystal.from_database("vo2-m1")
     q = np.linspace(0.2, 10, 1024)

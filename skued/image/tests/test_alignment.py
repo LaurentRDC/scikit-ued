@@ -19,7 +19,7 @@ np.random.seed(23)
 
 
 def circle_image(shape, center, radii, intensities):
-    """ Creates an image with circle or thickness 2 """
+    """Creates an image with circle or thickness 2"""
     im = np.zeros(shape=shape, dtype=float)
     xx, yy = np.ogrid[0 : shape[0], 0 : shape[1]]
     xx, yy = xx - center[0], yy - center[1]
@@ -36,7 +36,7 @@ def camera():
 
 
 def test_ialign_trivial():
-    """ Test alignment of identical images """
+    """Test alignment of identical images"""
     aligned = tuple(ialign([camera() for _ in range(5)]))
 
     assert len(aligned) == 5
@@ -62,7 +62,7 @@ def test_ialign_misaligned_canned_images():
 
 
 def test_align_no_side_effects():
-    """ Test that aligned images are not modified in-place """
+    """Test that aligned images are not modified in-place"""
     im = np.array(camera()[0:64, 0:64])
     im.setflags(write=False)
     aligned = align(im, reference=im, fill_value=np.nan)
@@ -70,7 +70,7 @@ def test_align_no_side_effects():
 
 
 def test_align_no_mask():
-    """ Test that alignment of images with no masks works """
+    """Test that alignment of images with no masks works"""
     reference = camera()
     image = ndi.shift(camera(), shift=(-7, 12))
     aligned = align(image, reference=reference)
@@ -79,7 +79,7 @@ def test_align_no_mask():
 
 
 def test_align_with_mask():
-    """ Test that alignment of images with no masks works """
+    """Test that alignment of images with no masks works"""
     reference = camera()
     image = ndi.shift(camera(), shift=(-7, 12))
 
@@ -92,7 +92,7 @@ def test_align_with_mask():
 
 
 def test_itrack_peak_trivial():
-    """ Test that shift is identically zero for images that are identical """
+    """Test that shift is identically zero for images that are identical"""
     # Array prototype is just zeros
     # with a 'peak' in the center
     prototype = np.zeros(shape=(17, 17))
@@ -105,7 +105,7 @@ def test_itrack_peak_trivial():
 
 
 def test_itrack_peak_length():
-    """ Test that shifts yielded by itrack_peak are as numerous as the number of input pictures """
+    """Test that shifts yielded by itrack_peak are as numerous as the number of input pictures"""
     images = [np.random.random(size=(4, 4)) for _ in range(20)]
     shifts = list(itrack_peak(images, row_slice=np.s_[:], col_slice=np.s_[:]))
 

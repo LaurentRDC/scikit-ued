@@ -21,14 +21,14 @@ TEST_PNG = Path(__file__).parent / "data" / "png_test.png"
 
 
 def test_diffread_on_merlin_image_binary():
-    """ Test diffread() on Merlin Image Binary (.mib) """
+    """Test diffread() on Merlin Image Binary (.mib)"""
     im = diffread(TEST_MIB)
     assert im.shape == (256, 256)
     assert im.dtype == np.dtype(">u2")
 
 
 def test_diffread_on_dm3_vs_dm4_image():
-    """ Test that diffread() works on DM3 images """
+    """Test that diffread() works on DM3 images"""
     im3 = diffread(TEST_DM3)
     im4 = diffread(TEST_DM4)
 
@@ -42,7 +42,7 @@ def test_diffread_on_dm3_vs_dm4_image():
 
 
 def test_diffread_on_tiff():
-    """ Test diffread() on tiff files """
+    """Test diffread() on tiff files"""
     im = np.random.randint(0, 127, size=(512, 512))
     path = Path(".\\test_tif.tif")
 
@@ -56,7 +56,7 @@ def test_diffread_on_tiff():
 
 
 def test_diffread_on_npy():
-    """ Test diffread() on *.npy files """
+    """Test diffread() on *.npy files"""
     arr = np.random.random(size=(128, 128))
     with tempfile.TemporaryDirectory() as tmpdir:
         np.save(Path(tmpdir) / "skued_test.npy", arr)
@@ -65,7 +65,7 @@ def test_diffread_on_npy():
 
 
 def test_diffread_on_skimage_png():
-    """ Test the last resort of using skimage.io for pngs """
+    """Test the last resort of using skimage.io for pngs"""
     from_skimage = diffread(TEST_PNG)
 
     assert from_skimage.shape == (256, 256)
@@ -73,7 +73,7 @@ def test_diffread_on_skimage_png():
 
 
 def test_mib_header():
-    """ Test that header parsing of MIB files is working as intended """
+    """Test that header parsing of MIB files is working as intended"""
     header = mibheader(TEST_MIB)
 
     true_value = {
@@ -90,7 +90,7 @@ def test_mib_header():
 
 
 def test_imibread():
-    """ Test the generator version of mibread() """
+    """Test the generator version of mibread()"""
     gen = imibread(TEST_MIB)
     arr = next(gen)
     assert arr.shape == (256, 256)

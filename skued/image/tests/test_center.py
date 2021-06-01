@@ -13,7 +13,7 @@ DIFF_PATTERN_SIZE = 256
 
 
 def diff_pattern_sc(center):
-    """ Simulate a single-crystal diffraction pattern """
+    """Simulate a single-crystal diffraction pattern"""
     r, c = center
 
     cryst = Crystal.from_database("BaTiO3_cubic")
@@ -34,7 +34,7 @@ def diff_pattern_sc(center):
 
 
 def test_autocenter_trivial():
-    """ Test that autocenter() finds the center of perfect gaussian at (0,0) """
+    """Test that autocenter() finds the center of perfect gaussian at (0,0)"""
     im = np.zeros(shape=(256, 256), dtype=float)
     center = np.asarray(im.shape) / 2
     rows, cols = np.indices(im.shape)
@@ -44,7 +44,7 @@ def test_autocenter_trivial():
 
 
 def test_autocenter_no_side_effects():
-    """ Test that autocenter() does not modify the inputs """
+    """Test that autocenter() does not modify the inputs"""
     im = np.random.random(size=(256, 256))
     mask = np.ones_like(im, dtype=bool)
 
@@ -58,7 +58,7 @@ def test_autocenter_no_side_effects():
 @pytest.mark.parametrize("rc", range(-10, 10, 2))
 @pytest.mark.parametrize("cc", range(-10, 10, 2))
 def test_autocenter_gaussian_shifted(rc, cc):
-    """ Test that autocenter() finds the center of a shifted gaussian """
+    """Test that autocenter() finds the center of a shifted gaussian"""
     im = np.zeros(shape=(128, 128), dtype=float)
     rows, cols = np.indices(im.shape)
     center = np.array([64 + rc, 64 + cc])

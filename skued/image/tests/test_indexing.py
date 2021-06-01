@@ -12,7 +12,7 @@ MAX_INV_ANG = 5.5
 
 
 def diff_pattern_sc():
-    """ Simulate a single-crystal diffraction pattern """
+    """Simulate a single-crystal diffraction pattern"""
     cryst = Crystal.from_database("C")
     rr, cc = np.indices((DIFF_PATTERN_SIZE, DIFF_PATTERN_SIZE))
     rr -= rr.shape[1] // 2
@@ -32,7 +32,7 @@ def diff_pattern_sc():
 
 
 def test_bragg_peaks():
-    """ Test that the `bragg_peaks` function finds all Bragg peaks. """
+    """Test that the `bragg_peaks` function finds all Bragg peaks."""
     kx, ky, I, cryst = diff_pattern_sc()
     kk = np.sqrt(kx ** 2 + ky ** 2)
 

@@ -11,7 +11,7 @@ np.random.seed(23)
 
 
 def circle_image(shape, center, radii, intensities):
-    """ Creates an image with circle or thickness 2 """
+    """Creates an image with circle or thickness 2"""
     im = np.zeros(shape=shape, dtype=float)
     xx, yy = np.ogrid[0 : shape[0], 0 : shape[1]]
     xx, yy = xx - center[0], yy - center[1]
@@ -24,7 +24,7 @@ def circle_image(shape, center, radii, intensities):
 
 
 def test_azimuthal_average_trivial_array():
-    """ Test azimuthal_average on an array of zeroes """
+    """Test azimuthal_average on an array of zeroes"""
     image = np.zeros(shape=(256, 256), dtype=float)
     center = (image.shape[0] / 2, image.shape[1] / 2)
 
@@ -35,7 +35,7 @@ def test_azimuthal_average_trivial_array():
 
 
 def test_azimuthal_average_ring():
-    """ Test azimuthal_average on an image with a wide ring """
+    """Test azimuthal_average on an image with a wide ring"""
     image = np.zeros(shape=(256, 256), dtype=float)
     center = (image.shape[0] / 2, image.shape[1] / 2)
     xc, yc = center
@@ -52,7 +52,7 @@ def test_azimuthal_average_ring():
 
 
 def test_azimuthal_average_angular_bounds():
-    """ Test azimuthal_average with a restrictive angular_bounds argument """
+    """Test azimuthal_average with a restrictive angular_bounds argument"""
     image = np.zeros(shape=(256, 256), dtype=float)
     center = (image.shape[0] / 2, image.shape[1] / 2)
     xc, yc = center
@@ -84,7 +84,7 @@ def test_azimuthal_average_angular_bounds():
 
 
 def test_azimuthal_average_ring_with_mask():
-    """ Test azimuthal_average on an image with a wide ring """
+    """Test azimuthal_average on an image with a wide ring"""
     image = np.zeros(shape=(256, 256), dtype=float)
     center = (image.shape[0] / 2, image.shape[1] / 2)
     xc, yc = center
@@ -134,7 +134,7 @@ def test_azimuthal_average_trim_and_mask():
 
 
 def test_azimuthal_average_mask_and_nan():
-    """ Test that azimuthal_average with masks does not yield NaNs. This can happen for large masks. """
+    """Test that azimuthal_average with masks does not yield NaNs. This can happen for large masks."""
     image = np.ones(shape=(256, 256), dtype=np.int16)
     mask = np.zeros_like(image, dtype=bool)
     mask[100:156, 100:156] = True

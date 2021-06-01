@@ -39,7 +39,7 @@ def main(args=None):
 
 
 def main_diffshow(fname):
-    """ Display an interactive window """
+    """Display an interactive window"""
     if not WITH_PYQTGRAPH:
         print(
             "PyQtGraph is required for this functionality. You can install PyQtGraph either with \

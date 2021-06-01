@@ -16,7 +16,7 @@ from skued import (
 
 
 def test_snr_from_collection_trivial():
-    """ Test snr_from_collection on series of identical images """
+    """Test snr_from_collection on series of identical images"""
     images = [np.ones((64, 64)) for _ in range(10)]
     snr = snr_from_collection(images)
 
@@ -24,7 +24,7 @@ def test_snr_from_collection_trivial():
 
 
 def test_snr_from_collection_correctess():
-    """ Test that snr_from_collection is equivalent to np.mean / np.std """
+    """Test that snr_from_collection is equivalent to np.mean / np.std"""
     images = [np.random.random((64, 64)) for _ in range(10)]
     stack = np.dstack(images)
 
@@ -35,7 +35,7 @@ def test_snr_from_collection_correctess():
 
 
 def test_isnr_trivial():
-    """ Test snr_from_collection on series of identical images """
+    """Test snr_from_collection on series of identical images"""
     images = [np.ones((64, 64)) for _ in range(10)]
     snr = last(isnr(images))
 
@@ -43,7 +43,7 @@ def test_isnr_trivial():
 
 
 def test_isnr_correctess():
-    """ Test that snr_from_collection is equivalent to np.mean / np.std """
+    """Test that snr_from_collection is equivalent to np.mean / np.std"""
     images = [np.random.random((64, 64)) for _ in range(10)]
     stack = np.dstack(images)
 
@@ -54,7 +54,7 @@ def test_isnr_correctess():
 
 
 def test_mask_from_collection_trivial():
-    """ Test on set of images with value zero """
+    """Test on set of images with value zero"""
     images = [np.zeros((64, 64)) for _ in range(5)]
     mask = mask_from_collection(images)
 
@@ -63,7 +63,7 @@ def test_mask_from_collection_trivial():
 
 
 def test_mask_from_collection_intensity_threshold_no_lower_bound():
-    """ Test that intensity threshold is respected """
+    """Test that intensity threshold is respected"""
     images = [np.ones((64, 64)) for _ in range(5)]
     images[2][32, 4] = 10
     mask = mask_from_collection(images, px_thresh=9)
@@ -73,7 +73,7 @@ def test_mask_from_collection_intensity_threshold_no_lower_bound():
 
 
 def test_mask_from_collection_intensity_threshold_with_lower_bound():
-    """ Test that intensity threshold is respected """
+    """Test that intensity threshold is respected"""
     images = [np.ones((64, 64)) for _ in range(5)]
     images[2][32, 4] = -10
     mask = mask_from_collection(images, px_thresh=(0, np.inf))
@@ -83,7 +83,7 @@ def test_mask_from_collection_intensity_threshold_with_lower_bound():
 
 
 def test_mask_from_collection_std_threshold():
-    """ Test that std threshold is respected """
+    """Test that std threshold is respected"""
     images = [np.ones((64, 64)) for _ in range(5)]
     images[0][5, 12] = 1000
     mask = mask_from_collection(images, px_thresh=10000, std_thresh=1)
@@ -126,7 +126,7 @@ def test_mask_image_trivial():
 
 
 def test_mask_image_no_copy():
-    """ Test that mask_image can work in-place """
+    """Test that mask_image can work in-place"""
     mask = np.random.randint(0, 1, size=(64, 64), dtype=bool)
     image = np.random.random((64, 64))
     masked = mask_image(image, mask, copy=False)
@@ -135,42 +135,42 @@ def test_mask_image_no_copy():
 
 
 def test_trim_left_trivial():
-    """ Test that nothing is trimmed when percentile is zero """
+    """Test that nothing is trimmed when percentile is zero"""
     array = np.arange(0, 101)
     trimmed = triml(array, percentile=0)
     assert np.allclose(array, trimmed)
 
 
 def test_trim_left_all_axes():
-    """ Test that trimming is working """
+    """Test that trimming is working"""
     array = np.arange(0, 101)  # [0, 1, 2, ..., 100]
     trimmed = triml(array, percentile=20, fill_value=100)
     assert np.all(trimmed >= 20)
 
 
 def test_trim_left_fill_value():
-    """ Test that fill_value is indeed introduced """
+    """Test that fill_value is indeed introduced"""
     array = np.arange(0, 101, dtype=float)  # [0, 1, 2, ..., 100]
     trimmed = triml(array, percentile=20, fill_value=np.nan)
     assert np.any(np.isnan(trimmed))
 
 
 def test_trim_right_trivial():
-    """ Test that nothing is trimmed when percentile is 100 """
+    """Test that nothing is trimmed when percentile is 100"""
     array = np.arange(0, 101)
     trimmed = trimr(array, percentile=100)
     assert np.allclose(array, trimmed)
 
 
 def test_trim_right_trimming():
-    """ Test that trimming is working """
+    """Test that trimming is working"""
     array = np.arange(0, 101)  # [0, 1, 2, ..., 100]
     trimmed = trimr(array, percentile=20, fill_value=0)
     assert np.all(trimmed <= 20)
 
 
 def test_trim_right_fill_value():
-    """ Test that fill_value is indeed introduced """
+    """Test that fill_value is indeed introduced"""
     array = np.arange(0, 101, dtype=float)  # [0, 1, 2, ..., 100]
     trimmed = trimr(array, percentile=20, fill_value=np.nan)
     assert np.any(np.isnan(trimmed))

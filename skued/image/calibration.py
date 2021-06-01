@@ -6,7 +6,7 @@ from ..utils import suppress_warnings
 
 
 def hypot(*args):
-    """ Generalized np.hypot """
+    """Generalized np.hypot"""
     return np.sqrt(np.sum(np.square(args)))
 
 

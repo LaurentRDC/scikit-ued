@@ -8,7 +8,7 @@ import pytest
 
 
 def test_shape():
-    """ Test that the output from fft2freq has the same shape as the input. """
+    """Test that the output from fft2freq has the same shape as the input."""
     extent_x = np.linspace(0, 1)
     extent_y = np.linspace(3, 4, num=47)
 
@@ -20,7 +20,7 @@ def test_shape():
 
 
 def test_indexing_error():
-    """ Test that fft2freq correctly raises ValueError for invalid indexing. """
+    """Test that fft2freq correctly raises ValueError for invalid indexing."""
     extent_x = np.linspace(0, 1)
     extent_y = np.linspace(3, 4, num=47)
 
@@ -29,7 +29,7 @@ def test_indexing_error():
 
 
 def test_vs_fftfreq():
-    """ Test that the results make sense with respect to 1D case """
+    """Test that the results make sense with respect to 1D case"""
     extent_x = np.arange(0, 10, step=0.1)
     extent_y = np.arange(3, 4, step=0.1)
 
@@ -47,7 +47,7 @@ def test_vs_fftfreq():
 
 
 def test_idempotence():
-    """ Test that applying limit_bandwidth more than once has no effect """
+    """Test that applying limit_bandwidth more than once has no effect"""
     im = np.ones((32, 32), dtype=float)
     kx, ky = np.meshgrid(np.arange(-16, 16), np.arange(-16, 16))
     k = np.hypot(kx, ky)
