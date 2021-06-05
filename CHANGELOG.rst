@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.1.5
+-------------
+
+* Releases are now automatically performed using Github Actions
+
 Release 2.1.4
 -------------
 
