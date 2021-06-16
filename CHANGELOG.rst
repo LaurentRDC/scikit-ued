@@ -5,6 +5,7 @@ Release 2.1.5
 -------------
 
 * Releases are now automatically performed using Github Actions
+* It is now possible to install all the dependencies required to use :func:`diffshow` using the following installation option: ``pip install scikit-ued[diffshow]``.
 
 Release 2.1.4
 -------------

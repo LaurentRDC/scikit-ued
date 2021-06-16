@@ -19,8 +19,11 @@ scikit-ued is available on PyPI; it can be installed with [pip](https://pip.pypa
 
     python -m pip install scikit-ued
 
-scikit-ued is also available on the conda-forge channel for the [conda
-package manager](https://conda.io/docs/):
+To also install optional dependencies required to view diffraction images interactively:
+
+    python -m pip install scikit-ued[diffshow]
+
+scikit-ued is also available on the conda-forge channel for the [conda package manager](https://conda.io/docs/):
 
     conda config --add channels conda-forge
     conda install scikit-ued
@@ -49,8 +52,7 @@ If you want to contribute to `scikit-ued`, take a look at [`CONTRIBUTING.md`](ht
 Related projects
 ----------------
 
-Streaming operations on NumPy arrays are available in the [npstreams
-package](https://pypi.org/pypi/npstreams).
+Streaming operations on NumPy arrays are available in the [npstreams package](https://pypi.org/pypi/npstreams).
 
 Interactive exploration of ultrafast electron diffraction data with the [iris-ued package](https://pypi.org/project/iris-ued/).
 

@@ -49,11 +49,11 @@ jobs:
         pip install -r requirements.txt
         pip install -r dev-requirements.txt
 
+    # We run the tests on the installed package, with all optional dependencies
     # Note the use of the -Wa flag to show DeprecationWarnings
-    # We run the tests on the installed package
     - name: Unit tests
       run: |
-        python setup.py install
+        python -m pip install .[diffshow]
         cd ~
         python -Wa -m pytest --pyargs skued --import-mode=importlib
     

@@ -18,6 +18,10 @@ You can install the latest stable version from PyPI::
 
     pip install scikit-ued
 
+To also install optional dependencies required to view diffraction images interactively with :func:`diffshow`::
+
+    python -m pip install scikit-ued[diffshow]
+
 scikit-ued is also available on the conda-forge channel for the `conda package manager <https://conda.io/docs/>`_::
 
     conda config --add channels conda-forge
@@ -31,7 +35,14 @@ repository::
 ...then installing the package with::
 
     cd scikit-ued
-    python setup.py install
+    python -m pip install .
+
+Alternatively, if you want to use :func:`diffshow`::
+
+    git clone https://github.com/LaurentRDC/scikit-ued.git
+    cd scikit-ued
+    python -m pip install .[diffshow]
+
 
 Testing
 =======
