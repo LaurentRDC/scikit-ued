@@ -27,9 +27,9 @@ def affine_map(array):
     extended : ndarray, shape (4,4)
         Extended array
 
-        Raises
-        ------
-        ValueError : If the transformation matrix is neither 3x3 or 4x4
+    Raises
+    ------
+    ValueError : If the transformation matrix is neither 3x3 or 4x4
     """
     if array.shape == (4, 4):  # Already the right shape
         return array
@@ -61,9 +61,9 @@ def transform(matrix, array):
     transformed : ndarray
         Transformed array, either a 1D vector or a 4x4 transformation matrix
 
-        Raises
-        ------
-        ValueError : If the transformation matrix is neither 3x3 or 4x4
+    Raises
+    ------
+    ValueError : If the transformation matrix is neither 3x3 or 4x4
     """
     if matrix.shape not in [(3, 3), (4, 4)]:
         raise ValueError(
@@ -93,7 +93,7 @@ def translation_matrix(direction):
     Returns
     -------
     translation : `~numpy.ndarray`, shape (4,4)
-            4x4 translation matrix.
+        4x4 translation matrix.
     """
     matrix = np.eye(4)
     matrix[:3, 3] = np.asarray(direction)[:3]
@@ -107,15 +107,15 @@ def change_of_basis(basis1, basis2=(e1, e2, e3)):
     Parameters
     ----------
     basis1 : list of array_like, shape (3,)
-            First basis
+        First basis
     basis2 : list of array_like, shape (3,), optional
-            Second basis. By default, this is the standard basis
+        Second basis. By default, this is the standard basis
 
     Returns
     -------
     cob : `~numpy.ndarray`, shape (3,3)
-            Change-of-basis matrix that, applied to `basis`, will
-            return `basis2`.
+        Change-of-basis matrix that, applied to `basis`, will
+        return `basis2`.
     """
     # Calculate the transform that goes from basis 1 to standard basis
     basis1 = [np.asarray(vector).reshape(3, 1) for vector in basis1]
@@ -140,7 +140,7 @@ def is_basis(basis):
     Returns
     -------
     out : bool
-            Whether or not the basis is valid.
+        Whether or not the basis is valid.
     """
     return 0 not in np.linalg.eigvals(np.asarray(basis))
 
@@ -179,14 +179,14 @@ def rotation_matrix(angle, axis=(0, 0, 1)):
     Parameters
     ----------
     angle : float
-            Rotation angle [rad]
+        Rotation angle [rad]
     axis : array-like of length 3
-            Axis about which to rotate
+        Axis about which to rotate
 
     Returns
     -------
     matrix : `~numpy.ndarray`, shape (3,3)
-            Rotation matrix.
+        Rotation matrix.
 
     See also
     --------
@@ -220,16 +220,16 @@ def translation_rotation_matrix(angle, axis, translation):
     Parameters
     ----------
     angle : float
-            Rotation angle [rad]
+        Rotation angle [rad]
     axis : array-like of length 3
-            Axis about which to rotate
+        Axis about which to rotate
     translation : array_like, shape (3,)
-            Translation vector
+        Translation vector
 
     Returns
     -------
     matrix : `~numpy.ndarray`, shape (4,4)
-            Affine transform matrix.
+        Affine transform matrix.
     """
     rmat = affine_map(rotation_matrix(angle=angle, axis=axis))
     rmat[:3, 3] = np.asarray(translation)
@@ -277,14 +277,14 @@ def minimum_image_distance(xx, yy, zz, lattice):
     Parameters
     ----------
     xx, yy, zz : ndarrays
-            Arrays of equal shape, such as produced by numpy.meshgrid.
+        Arrays of equal shape, such as produced by numpy.meshgrid.
     lattice : list of ndarrays, shape(3,)
-            Basis of the mesh
+        Basis of the mesh
 
     Returns
     -------
     r : `~numpy.ndarray`
-            Minimum image distance over the lattice
+        Minimum image distance over the lattice
     """
     COB = change_of_basis(np.eye(3), lattice)
     linearized = np.empty(shape=(3, xx.size), dtype=float)  # In the standard basis
