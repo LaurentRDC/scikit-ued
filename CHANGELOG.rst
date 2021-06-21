@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.1.6
+-------------
+
+* Fixed an issue where :func:`gaussian` would trip on a full-width at half-maximum of 0.
+
 Release 2.1.5
 -------------
 

@@ -50,10 +50,10 @@ def gaussian(coordinates, center, fwhm=None, std=None):
     >>> np.sum(g)*0.1**2   # Integral should be close to unity (spacing = 0.1)
     1.0000000000000075
     """
-    if not any([fwhm, std]):
+    if all([fwhm is None, std is None]):
         raise ValueError("Either fwhm or std has to be provided")
 
-    if fwhm:
+    if fwhm is not None:
         std = fwhm / (2 * np.sqrt(2 * np.log(2)))
 
         # 1D is a special case, as coordinates are not given as a list of arrays
