@@ -8,6 +8,7 @@ import pytest
 from skued.baseline import (
     available_dt_filters,
     available_first_stage_filters,
+    dt_first_stage,
     dt_max_level,
     dtcwt,
     idtcwt,
@@ -17,13 +18,29 @@ import pytest
 np.random.seed(23)
 
 
-def test_first_stage():
+@pytest.mark.parametrize("first_stage_wavelet", available_first_stage_filters())
+def test_first_stage(first_stage_wavelet):
     """Test of perfect reconstruction of first stage wavelets."""
     array = np.sin(np.arange(0, 10, step=0.01))
-    for wavelet in available_first_stage_filters():
-        # Using waverec and wavedec instead of dwt and idwt because parameters
-        # don't need as much parsing.
-        assert np.allclose(array, pywt.waverec(pywt.wavedec(array, wavelet), wavelet))
+    # Using waverec and wavedec instead of dwt and idwt because parameters
+    # don't need as much parsing.
+    assert np.allclose(
+        array,
+        pywt.waverec(pywt.wavedec(array, first_stage_wavelet), first_stage_wavelet),
+    )
+
+
+@pytest.mark.parametrize("first_stage_wavelet", available_first_stage_filters())
+def test_first_stage_issue_36(first_stage_wavelet):
+    """Test that first-stage wavelets are properly shifted. See Issue 36"""
+    w1, w2 = dt_first_stage(first_stage_wavelet)
+    # Reconstruction should be shifted back
+    for f1, f2 in zip(w1.filter_bank[:2], w2.filter_bank[:2]):
+        assert np.allclose(f1[1:-1], f2[2::])
+
+    # Deconstruction should be shifted forward
+    for f1, f2 in zip(w1.filter_bank[2::], w2.filter_bank[2::]):
+        assert np.allclose(f1[1:-1], f2[0:-2])
 
 
 def gen_input(n_dimensions):

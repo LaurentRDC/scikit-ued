@@ -10,6 +10,7 @@ from .dtcwt import (
     available_dt_filters,
     available_first_stage_filters,
     dt_max_level,
+    dt_first_stage,
     dtcwt,
     idtcwt,
 )

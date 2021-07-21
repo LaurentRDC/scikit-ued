@@ -395,18 +395,18 @@ def dt_first_stage(wavelet):
 
     # extend filter bank with zeros
     filter_bank = [np.array(f, copy=True) for f in wavelet.filter_bank]
-    for filt in filter_bank:
+    for i, filt in enumerate(filter_bank):
         extended = np.zeros(shape=(filt.shape[0] + 2,), dtype=float)
         extended[1:-1] = filt
-        filt = extended
+        filter_bank[i] = extended
 
     # Shift deconstruction filters to one side, and reconstruction
     # to the other side
-    shifted_fb = [np.array(f, copy=True) for f in wavelet.filter_bank]
-    for filt in shifted_fb[::2]:  # Deconstruction filters
-        filt = np.roll(filt, 1)
-    for filt in shifted_fb[2::]:  # Reconstruction filters
-        filt = np.roll(filt, -1)
+    shifted_fb = [np.array(f, copy=True) for f in filter_bank]
+    for i, filt in enumerate(shifted_fb[:2]):  # Deconstruction filters
+        shifted_fb[i] = np.roll(filt, 1)
+    for i, filt in enumerate(shifted_fb[2:], start=2):  # Reconstruction filters
+        shifted_fb[i] = np.roll(filt, -1)
 
     return (
         Wavelet(name=wavelet.name, filter_bank=filter_bank),

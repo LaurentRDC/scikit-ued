@@ -5,6 +5,7 @@ Release 2.1.6
 -------------
 
 * Fixed an issue where :func:`gaussian` would trip on a full-width at half-maximum of 0.
+* Fixed an issue where the first stage of the dual-tree complex wavelet transform was not shifted properly (#36).
 
 Release 2.1.5
 -------------
