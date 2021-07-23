@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.1.7
+-------------
+
+* This release brings no changes, and only fixes the conda-forge package.
+
 Release 2.1.6
 -------------
 
