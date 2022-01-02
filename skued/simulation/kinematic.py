@@ -5,7 +5,6 @@ Kinematic simulation of diffraction patterns
 """
 
 import numpy as np
-from os import cpu_count
 import scipy.fft as fft
 from ..fft import with_skued_fft
 from .potential import pelectrostatic

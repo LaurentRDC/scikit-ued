@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Release 2.1.8
+-------------
+
+* Added explicit testing with python 3.10.
+* Cleaned up unused imports.
+
 Release 2.1.7
 -------------
 

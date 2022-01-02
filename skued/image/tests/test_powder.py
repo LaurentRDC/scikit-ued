@@ -4,8 +4,7 @@
 import numpy as np
 from skimage.filters import gaussian
 
-from crystals import Crystal
-from skued import azimuthal_average, powdersim
+from skued import azimuthal_average
 
 np.random.seed(23)
 

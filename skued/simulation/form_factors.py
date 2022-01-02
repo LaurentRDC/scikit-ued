@@ -9,7 +9,7 @@ import numpy as np
 from yaml import load
 from math import sin, cos
 
-from crystals import Element, Atom, ElectronicStructure, Orbital
+from crystals import Element, Atom
 
 from .scattering_params import scattering_params
 

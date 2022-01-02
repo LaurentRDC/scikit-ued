@@ -6,7 +6,7 @@ Plotting utilities
 from colorsys import hsv_to_rgb
 from matplotlib.colors import ListedColormap
 from matplotlib.cm import register_cmap
-from npstreams import linspace, multilinspace
+from npstreams import multilinspace
 
 
 def _hex_to_rgb(value):

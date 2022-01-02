@@ -3,11 +3,10 @@
 Non-uniform Fast Fourier Transform.
 """
 
-from functools import lru_cache
 from math import log, pi, sqrt
 
 import numpy as np
-from scipy.fftpack import fft, ifft
+from scipy.fftpack import fft
 
 
 def nfftfreq(M, df=1):

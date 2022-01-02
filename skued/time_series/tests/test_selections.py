@@ -4,7 +4,6 @@
 import numpy as np
 
 from skued import (
-    Selection,
     RectSelection,
     DiskSelection,
     RingSelection,

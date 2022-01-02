@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from pathlib import Path
 from random import randint
 
 import numpy as np
 from scipy import ndimage as ndi
 from skimage import data
 from skimage.draw import ellipse
-from skimage.feature import register_translation
 from skimage.filters import gaussian
-from skimage.transform import rotate
 import skimage.data as data
 
 from skued import align, ialign, itrack_peak

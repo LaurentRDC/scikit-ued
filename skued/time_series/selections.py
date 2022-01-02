@@ -3,10 +3,9 @@
 Selection masks for assembling time-series.
 """
 
-from abc import ABCMeta, abstractmethod, abstractproperty
+from abc import ABCMeta, abstractmethod
 
 import matplotlib.patches as mpatches
-import matplotlib.transforms as mtransforms
 import numpy as np
 
 

@@ -3,14 +3,13 @@
 Electrostatic potential simulation
 ==================================
 """
-from functools import partial
 from math import sqrt
 
 import numpy as np
 from numpy import pi
 from scipy.special import k0 as bessel
 
-from .. import minimum_image_distance, repeated_array
+from .. import minimum_image_distance
 from .scattering_params import scattering_params
 
 m = 9.109 * 10 ** (-31)  # in kg

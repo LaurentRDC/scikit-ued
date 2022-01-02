@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-from math import sqrt
 from random import randint, random, seed
 
 from skued import film_optical_coefficients
