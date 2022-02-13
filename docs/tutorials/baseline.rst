@@ -201,6 +201,5 @@ Here is a usage example for the data presented above:
 	plt.show()
 
 The :func:`baseline_dt` routine will usually be more accurate than its :func:`baseline_dwt` counterpart.
-However, :func:`baseline_dwt` can be applied to 1D and 2D data.
 
 :ref:`Return to Top <baseline_tutorial>`
