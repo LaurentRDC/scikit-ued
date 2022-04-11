@@ -42,7 +42,7 @@ def structure_factor(crystal, h, k, l, normalized=False):
     Gx, Gy, Gz = change_basis_mesh(
         h, k, l, basis1=crystal.reciprocal_vectors, basis2=np.eye(3)
     )
-    nG = np.sqrt(Gx ** 2 + Gy ** 2 + Gz ** 2)
+    nG = np.sqrt(Gx**2 + Gy**2 + Gz**2)
 
     # Separating the structure factor into sine and cosine parts avoids adding
     # complex arrays together. About 3x speedup vs. using complex exponentials

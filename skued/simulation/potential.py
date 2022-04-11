@@ -37,7 +37,7 @@ def _electrostatic_atom(atom, r):
 
     e = 14.4  # [Volt-Angstrom]
     a0 = 0.5291  # [Angs]
-    return 2 * a0 * e * (pi ** 2 * sum1 + pi ** (2.5) * sum2)
+    return 2 * a0 * e * (pi**2 * sum1 + pi ** (2.5) * sum2)
 
 
 def electrostatic(crystal, x, y, z):
@@ -96,7 +96,7 @@ def _pelectrostatic_atom(atom, r):
             -((r * pi) ** 2) / d
         )
 
-    return 2 * a0 * e * (pi ** 2) * potential
+    return 2 * a0 * e * (pi**2) * potential
 
 
 def pelectrostatic(crystal, x, y, bounds=None):

@@ -24,7 +24,7 @@ def diff_pattern_sc(center):
     kx = 10 * rr / (DIFF_PATTERN_SIZE // 2)
     ky = 10 * cc / (DIFF_PATTERN_SIZE // 2)
 
-    kk = np.sqrt(kx ** 2 + ky ** 2)
+    kk = np.sqrt(kx**2 + ky**2)
     I = kinematicsim(crystal=cryst, kx=kx, ky=ky, energy=50)
     I[kk < 1] = 0
     gaussian_filter(I, sigma=2, output=I)

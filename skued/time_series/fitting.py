@@ -200,5 +200,5 @@ def _gauss_kernel(t, fwhm):
 
     std = fwhm / (2 * sqrt(2 * log(2)))
     return (1 / (np.sqrt(2 * np.pi) * std)) * np.exp(
-        -((1.0 * t - t0) ** 2) / (2 * std ** 2)
+        -((1.0 * t - t0) ** 2) / (2 * std**2)
     )

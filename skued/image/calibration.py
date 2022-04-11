@@ -169,7 +169,7 @@ def detector_scattvectors(keV, camera_length, shape, pixel_size, center=None):
     extent_y = np.arange(0, shape[1]) - cy
     xx, yy = np.meshgrid(pixel_size * extent_x, pixel_size * extent_y)
 
-    r, phi = np.sqrt(xx ** 2 + yy ** 2), np.arctan2(yy, xx)
+    r, phi = np.sqrt(xx**2 + yy**2), np.arctan2(yy, xx)
     angle = np.arctan(r / camera_length)  # Diffraction angle 2 theta
 
     # Scattering vector norm parallel to the detector (inverse Angs)
@@ -186,6 +186,6 @@ def detector_scattvectors(keV, camera_length, shape, pixel_size, center=None):
     # Warnings about invalid values in sqrt
     # The resulting NaNs are changed to zeroes
     with suppress_warnings():
-        qz = np.nan_to_num(np.sqrt(ewald_sphere_radius ** 2 - qx ** 2 - qy ** 2))
+        qz = np.nan_to_num(np.sqrt(ewald_sphere_radius**2 - qx**2 - qy**2))
 
     return tuple(map(np.squeeze, (qx, qy, qz)))

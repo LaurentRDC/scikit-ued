@@ -202,7 +202,7 @@ class DiskSelection(Selection):
             np.arange(0, self.shape[0], dtype=int) - center_col,
             np.arange(0, self.shape[1], dtype=int) - center_row,
         )
-        distance = np.sqrt(rr ** 2 + cc ** 2)
+        distance = np.sqrt(rr**2 + cc**2)
         selection[distance <= self._radius] = True
         return selection
 
@@ -276,7 +276,7 @@ class RingSelection(Selection):
             np.arange(0, self.shape[0], dtype=int) - center_col,
             np.arange(0, self.shape[1], dtype=int) - center_row,
         )
-        distance = np.sqrt(rr ** 2 + cc ** 2)
+        distance = np.sqrt(rr**2 + cc**2)
         selection[
             np.logical_and(
                 distance >= self._inner_radius, distance <= self._outer_radius
@@ -368,7 +368,7 @@ class RingArcSelection(Selection):
             np.arange(0, self.shape[0], dtype=int) - center_col,
             np.arange(0, self.shape[1], dtype=int) - center_row,
         )
-        distance = np.sqrt(rr ** 2 + cc ** 2)
+        distance = np.sqrt(rr**2 + cc**2)
         angle = np.rad2deg(np.arctan2(rr, cc)) + self._angle
         angle[:] = np.mod(angle, 360)
 

@@ -126,11 +126,11 @@ def lorentzian(coordinates, center, fwhm):
 
     # 1D is a special case, as coordinates are not given as a list of arrays
     if not isinstance(coordinates, (list, tuple)):  # iterable but not ndarray
-        return (width / pi) / ((coordinates - center) ** 2 + width ** 2)
+        return (width / pi) / ((coordinates - center) ** 2 + width**2)
 
     dim = len(coordinates)
     core = width / (
-        (sum([(x - c) ** 2 for x, c in zip(coordinates, center)]) + width ** 2)
+        (sum([(x - c) ** 2 for x, c in zip(coordinates, center)]) + width**2)
     ) ** ((dim + 1) / 2)
     factor = 1 / (dim * pi)
     return factor * core
@@ -155,12 +155,12 @@ def _pseudo_voigt_mixing_factor(width_l, width_g):
     # Fast formula (see paper in pseudo_voigt docstrings)
     # This assumes width_g and width_l are the Gaussian FWHM and Lorentzian FWHM
     gamma = (
-        width_g ** 5
-        + 2.69269 * width_l * (width_g ** 4)
-        + 2.42843 * (width_l ** 2) * (width_g ** 3)
-        + 4.47163 * (width_l ** 3) * (width_g ** 2)
-        + 0.07842 * (width_l ** 4) * width_g
-        + width_l ** 5
+        width_g**5
+        + 2.69269 * width_l * (width_g**4)
+        + 2.42843 * (width_l**2) * (width_g**3)
+        + 4.47163 * (width_l**3) * (width_g**2)
+        + 0.07842 * (width_l**4) * width_g
+        + width_l**5
     ) ** (1 / 5)
 
     # Proportion of the Voigt that should be Lorentzian
