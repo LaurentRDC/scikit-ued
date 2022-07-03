@@ -24,7 +24,9 @@ def test_diffread_on_merlin_image_binary():
     """Test diffread() on Merlin Image Binary (.mib)"""
     im = diffread(TEST_MIB)
     assert im.shape == (256, 256)
-    assert im.dtype == np.dtype(">u2")
+    # Sometimes the datatype of numpy.dstack changes slightly
+    # See https://github.com/numpy/numpy/issues/21914
+    assert im.dtype in {np.dtype('uint16'), np.dtype(">u2")}
 
 
 def test_diffread_on_dm3_vs_dm4_image():
@@ -102,7 +104,9 @@ def test_mibread():
     expected attributes"""
     arr = mibread(TEST_MIB)
     assert arr.shape == (256, 256)
-    assert arr.dtype == np.dtype(">u2")
+    # Sometimes the datatype of numpy.dstack changes slightly
+    # See https://github.com/numpy/numpy/issues/21914
+    assert arr.dtype in {np.dtype('uint16'), np.dtype(">u2")}
 
 
 def test_mibread_multi():
