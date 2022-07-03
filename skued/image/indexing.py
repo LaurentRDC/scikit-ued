@@ -82,7 +82,7 @@ def bragg_peaks(im, mask=None, center=None, min_dist=None):
 
     # To prevent noise from looking like actual peaks,
     # we erode labels using a small selection area
-    regions = binary_erosion(regions, selem=disk(2))
+    regions = binary_erosion(regions, footprint=disk(2))
 
     labels = label(regions, return_num=False)
     props = regionprops(label_image=labels, intensity_image=im)

@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.ndimage.interpolation import shift as scipy_shift
+from scipy.ndimage import shift as scipy_shift
 
 from skued import register_time_shift, register_time_shifts
 import pytest
