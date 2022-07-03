@@ -6,6 +6,7 @@ Release 2.1.8
 
 * Added explicit testing with python 3.10.
 * Cleaned up unused imports.
+* Updated some modules which were using deprecated code.
 
 Release 2.1.7
 -------------
