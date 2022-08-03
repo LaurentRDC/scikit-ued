@@ -17,7 +17,7 @@ else:
 # Therefore, we cannot define this class unless PyQtGraph is importable
 if WITH_PYQTGRAPH:
 
-    class Diffshow(pg.QtGui.QWidget):
+    class Diffshow(pg.QtWidgets.QWidget):
         """
         Widget containing a main viewer, plus some cursor information.
 

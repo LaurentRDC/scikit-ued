@@ -56,7 +56,7 @@ if __name__ == "__main__":
         maintainer=AUTHOR,
         maintainer_email=AUTHOR_EMAIL,
         install_requires=REQUIREMENTS,
-        extras_require={"diffshow": ["pyqtgraph", "PyQt5"]},
+        extras_require={"diffshow": ["pyqtgraph>=0.12,<1", "PyQt5"]},
         keywords="ultrafast electron scattering",
         project_urls={
             "Documentation": "https://scikit-ued.readthedocs.io/",

@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.1.9
+-------------
+
+* Updated bounds on `pyqtgraph`.
+
 Release 2.1.8
 -------------
 
