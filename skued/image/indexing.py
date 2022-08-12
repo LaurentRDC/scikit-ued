@@ -49,6 +49,8 @@ def bragg_peaks(im, mask=None, center=None, min_dist=None):
     Liu, Lai Chung. Chemistry in Action: Making Molecular Movies with Ultrafast
     Electron Diffraction and Data Science, Chapter 2. Springer Nature, 2020.
     """
+    if mask is None:
+        mask = np.ones(im.shape)    
     if center is None:
         center = autocenter(im=im, mask=mask)
 
