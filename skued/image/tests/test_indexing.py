@@ -47,3 +47,21 @@ def test_bragg_peaks():
     peaks = bragg_peaks(I, mask=np.ones_like(I, dtype=bool))
 
     assert len(peaks) == len(in_plane_refls)
+
+
+def test_bragg_peaks_no_mask():
+    """Test that the `bragg_peaks` function finds all Bragg peaks, without supplying a mask file."""
+    kx, ky, I, cryst = diff_pattern_sc()
+    kk = np.sqrt(kx**2 + ky**2)
+
+    # only in-plane refls (hk0) and not (000)
+    # Also, some reflections will appear at the edge of the frame
+    in_plane_refls = [
+        refl
+        for refl in cryst.bounded_reflections(kk.max())
+        if (refl[2] == 0 and np.abs(cryst.scattering_vector(refl)[0]) < kx.max())
+    ]
+
+    peaks = bragg_peaks(I)
+
+    assert len(peaks) == len(in_plane_refls)
