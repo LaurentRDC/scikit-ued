@@ -30,7 +30,7 @@ scikit-ued is also available on the conda-forge channel for the [conda package m
 
 To install the latest development version from [Github](https://github.com/LaurentRDC/scikit-ued):
 
-    python -m pip install git+git://github.com/LaurentRDC/scikit-ued.git
+    python -m pip install git+https://github.com/LaurentRDC/scikit-ued.git
 
 After installing scikit-ued you can use it like any other Python module
 as `skued`.
