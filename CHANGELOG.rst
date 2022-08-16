@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.1.10
+--------------
+
+* Fixed an issue where masks needed to be provided in `bragg_peaks` (#41).
+
 Release 2.1.9
 -------------
 
