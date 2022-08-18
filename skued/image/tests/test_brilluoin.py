@@ -32,7 +32,7 @@ def diff_pattern_sc():
 
 def test_brilluoin_consistency():
     kx, ky, I, cryst = diff_pattern_sc()
-    peaks, _, _, _ = bragg_peaks_persistence(I, promimence=0.04)
+    peaks, _, _, _ = bragg_peaks_persistence(I, prominence=0.04)
     center = autocenter(I)
     BZ = brilluoin_zones(
         I, mask=np.ones_like(I, dtype=bool), peaks=peaks.astype(int), center=center.astype(int)

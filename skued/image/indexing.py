@@ -108,7 +108,7 @@ def bragg_peaks(im, mask=None, center=None, min_dist=None):
 
 
 def bragg_peaks_persistence(
-    im, mask=None, center=None, min_dist=None, bd_threshold=0.0, promimence=0.0
+    im, mask=None, center=None, min_dist=None, bd_threshold=0.0, prominence=0.0
 ):
     """
     Extract the position of Bragg peaks in a single-crystal diffraction pattern
@@ -210,7 +210,7 @@ def bragg_peaks_persistence(
         birth_death_indices.append(i)
     for i, homclass in enumerate(g0):
         p_birth, bl, pers, p_death = homclass
-        if pers <= promimence:
+        if pers <= prominence:
             continue
         y, x = p_birth
         candidates.append([x, y])
