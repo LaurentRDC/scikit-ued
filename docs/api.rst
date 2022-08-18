@@ -220,6 +220,8 @@ Single-crystal indexing
     :nosignatures:
 
     bragg_peaks
+    bragg_peaks_persistence
+    brilluoin_zones
 
 ==========
 Simulation

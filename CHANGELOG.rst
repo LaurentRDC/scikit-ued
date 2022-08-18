@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.1.11
+--------------
+
+* Added new Bragg peak determination functionality to combat new datasets with sub-optimal signal-to-noise ratio. Further added Brilluoin zone determination based on Bragg peak locations. 
+
 Release 2.1.10
 --------------
 
