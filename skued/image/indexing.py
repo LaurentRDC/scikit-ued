@@ -147,6 +147,14 @@ def bragg_peaks_persistence(
     peaks : ndarray, shape (N,2)
         Array of coordinates ``[row, col]`` for every detected peak, sorted
         in order of how close they are to the center of the image.
+    birth_death : ndarray, shape (N,2)
+        Array of birth, death attributes for every detected peak.
+    birth_index_indices : list
+        Indices of candidate peaks who pass the bd_threshold
+        prominence criterion
+    persistencies : list of floats
+        List of persistencies of the detected peaks. Useful for determining
+        which threshold to use to accurate peak determination.
 
     References
     ----------
@@ -180,8 +188,9 @@ def bragg_peaks_persistence(
     ax2.set_ylabel("Death level")
     ```
     """
-    if mask is not None:
-        im[mask] = im.min()
+    if mask is None:
+        mask = np.ones_like(im, dtype=bool)
+    im[~mask] = 0.
     if center is None:
         center = autocenter(im=im, mask=mask)
     image = im
