@@ -245,6 +245,27 @@ class brilluoin_zones:
         """
         For a given scattering vector `Q', determine all equivalent reduced scattering vectors
         based on the Bragg peaks determined to be visible by the methods of this class.
+        
+        Parameters
+        ----------
+
+        Qvector : `~numpy.ndarray`, shape (2,)
+            The scattering vector to consider. The closest Bragg peak will be determined,
+            then the relative angle to this peak, and then it will iterate over the other peaks
+            and determine the same vectors who have radial and angular displacements identical 
+            to this vector relative to the other Bragg peaks.
+
+        use_visible : bool
+            If True, consider only Bragg peaks inside of visible BZs determined by
+            a previous run of :meth:`getVisibleBZs()`. Else, use all Bragg peaks
+            used as input for the initialization of this class.
+
+        Returns
+        -------
+
+        QVectors : `~numpy.ndarray`, shape (N,2)
+            The determined equivalent scattering vectors. The number of vectors
+            is dependent on the set of peaks used determined by the `use_visible` parameter.
         """
         self.__Qvector = (
             Qvector - self.center
@@ -291,26 +312,5 @@ class brilluoin_zones:
                 )
         QVectors = np.array(
                 sorted(QVectors, key=lambda p: np.linalg.norm(p - self.center))
-            ).reshape(-1, 2)
-        return np.array(QVectors).reshape(-1, 2).astype(int)[1:,:] #ignore vector around center
-
-
-def rotate(xy, radians, origin=(0, 0)):
-    """Rotate a point around a given point."""
-    try:
-        x, y = xy[:, 0], xy[:, 1]
-    except IndexError:
-        x, y = xy[0], xy[1]
-    offset_x, offset_y = origin
-    adjusted_x = x - offset_x
-    adjusted_y = y - offset_y
-    cos_rad = np.cos(radians)
-    sin_rad = np.sin(radians)
-    output = np.zeros_like(xy)
-    try:
-        output[:, 0] = offset_x + cos_rad * adjusted_x + sin_rad * adjusted_y
-        output[:, 1] = offset_y + -sin_rad * adjusted_x + cos_rad * adjusted_y
-    except IndexError:
-        output[0] = offset_x + cos_rad * adjusted_x + sin_rad * adjusted_y
-        output[1] = offset_y + -sin_rad * adjusted_x + cos_rad * adjusted_y
-    return output
+            ).reshape(-1, 2).astype(int)
+        return QVectors[1:,:] #ignore vector around center
