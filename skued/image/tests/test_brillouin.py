@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from skued import kinematicsim, brilluoin_zones, autocenter, bragg_peaks_persistence
+from skued import kinematicsim, brillouin_zones, autocenter, bragg_peaks_persistence
 from crystals import Crystal
 from scipy.ndimage import gaussian_filter
 import numpy as np
@@ -30,11 +30,11 @@ def diff_pattern_sc():
     I += 0.05 * np.random.random(size=I.shape)
     return kx, ky, I, cryst
 
-def test_brilluoin_consistency():
+def test_brillouin_consistency():
     kx, ky, I, cryst = diff_pattern_sc()
     peaks, _, _, _ = bragg_peaks_persistence(I, prominence=0.04)
     center = autocenter(I)
-    BZ = brilluoin_zones(
+    BZ = brillouin_zones(
         I, mask=np.ones_like(I, dtype=bool), peaks=peaks.astype(int), center=center.astype(int)
     )
     BZ.getVisibleBZs()

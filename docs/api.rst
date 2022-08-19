@@ -221,7 +221,7 @@ Single-crystal indexing
 
     bragg_peaks
     bragg_peaks_persistence
-    brilluoin_zones
+    brillouin_zones
 
 ==========
 Simulation

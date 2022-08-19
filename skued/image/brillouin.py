@@ -59,10 +59,10 @@ class VoronoiRegion:
         self.center = center
 
 
-class brilluoin_zones:
+class brillouin_zones:
     def __init__(self, image, mask, peaks, center=None, optimization_radius=None):
         """
-        Generate Brilluoin zone projections in the particular 2D geometry based on
+        Generate Brillouin zone projections in the particular 2D geometry based on
         Bragg peak locations.
 
         Parameters

@@ -45,7 +45,7 @@ from .image import (
     align,
     autocenter,
     azimuthal_average,
-    brilluoin_zones,
+    brillouin_zones,
     combine_masks,
     detector_scattvectors,
     ialign,
