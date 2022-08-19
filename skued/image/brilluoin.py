@@ -289,8 +289,10 @@ class brilluoin_zones:
                 QVectors.append(
                     peak + REDUCED_WAVEVECTOR_RADIUS * np.array([COSANG, SINANG])
                 )
-
-        return np.array(QVectors).reshape(-1, 2).astype(int)
+        QVectors = np.array(
+                sorted(QVectors, key=lambda p: np.linalg.norm(p - self.center))
+            ).reshape(-1, 2)
+        return np.array(QVectors).reshape(-1, 2).astype(int)[1:,:] #ignore vector around center
 
 
 def rotate(xy, radians, origin=(0, 0)):
