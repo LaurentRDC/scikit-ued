@@ -404,7 +404,7 @@ while :func:`bragg_peaks_persistence` finds all of them, given on the right :
 	plt.show()
 
 Finding Brilluoin zones
-===================
+=======================
 
 We can also determine Brilluoin zones based on the location of Bragg peaks.
 For normal incidence diffraction, such patterns are regular polygons for 
@@ -422,24 +422,31 @@ by the class :class:`brilluoin_zones`.
 	>>> center = np.array([im.shape[0]//2, im.shape[1]//2])
 	>>> BZ = brilluoin_zones(im, mask=np.ones(im.shape), peaks=peaks.astype(int), center=center.astype(int))
 
+We can even determine equivalent scattering vectors at all visible
+Brilluoin zones via the :meth:`getEquivalentScatteringVectors` method, useful for averaging the signal at a given reduced wavevector
+for low SNR single-crystal datasets, visualized explicitly on the right.
+
 .. plot:: 
 
 	from skued import diffread, bragg_peaks_persistence, brilluoin_zones
 	import matplotlib.pyplot as plt
 	import numpy as np
-	from matplotlib.patches import Circle
 
 	im = diffread("data/ab_initio_monolayer_mos2.tif")
-
-	fig, ax = plt.subplots(1, 1, figsize=(4, 4))
-	ax.imshow(im, origin='lower', interpolation='bicubic', vmin=-1, vmax=1)
-	peaks_persistence, _, _, _ = bragg_peaks_persistence(im, prominence=0.1)
 	center = np.array([im.shape[0]//2, im.shape[1]//2])
+	peaks_persistence, _, _, _ = bragg_peaks_persistence(im, prominence=0.1)
 	BZ = brilluoin_zones(im, mask=np.ones(im.shape), peaks=peaks_persistence.astype(int), center=center.astype(int))
 	BZ.getVisibleBZs(symmetry=6)
-	BZ.renderVisibleBZs(ax, **dict(edgecolor='white'))
+	EQUIV = BZ.getEquivalentScatteringVectors(np.array([119, 174]), use_visible=True)
+	fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(6, 3))
+	for ax in [ax1, ax2]:
+		ax.imshow(im, origin='lower', interpolation='bicubic', vmin=-1, vmax=1)
+		BZ.renderVisibleBZs(ax, **dict(edgecolor='white'))
 
-	ax.axis('off')
+		ax.axis('off')
+
+	ax2.scatter(EQUIV[:, 0], EQUIV[:, 1], marker="x", color="r", s=20)
+
 	plt.tight_layout()
 	plt.show()
 
