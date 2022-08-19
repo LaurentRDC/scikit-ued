@@ -131,7 +131,7 @@ def bragg_peaks_persistence(
         than this distance will be considered the same peak, and only one of them will
         be returned. If passing only single number, minimum distance is determined by
         the degree of radial separation. Else, minimum distancing is determined by thresholding
-        x and y coordinates separately with min_dist[0] and min_dist[1]. 
+        x and y coordinates separately with min_dist[0] and min_dist[1].
         If `None` (default), the minimum distance criterion is not enforced, and all peaks
         passing the prominence threshold are returned.
     bd_threshold : float, optional
@@ -190,7 +190,7 @@ def bragg_peaks_persistence(
     """
     if mask is None:
         mask = np.ones_like(im, dtype=bool)
-    im[~mask] = 0.
+    im[~mask] = 0.0
     if center is None:
         center = autocenter(im=im, mask=mask)
     image = im

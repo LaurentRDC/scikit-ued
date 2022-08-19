@@ -15,13 +15,13 @@ else:
 
 # This is weird, but PyQtGraph is an optional dependency
 # Therefore, we cannot define this class unless PyQtGraph is importable
-if hasattr(pg, 'QtWidgets'):
+if hasattr(pg, "QtWidgets"):
     BASE_CLASS = pg.QtWidgets
-elif hasattr(pg, 'QtGui'):
+elif hasattr(pg, "QtGui"):
     BASE_CLASS = pg.QtGui
 else:
     WITH_PYQTGRAPH = False
-    print('pyqtgraph not configure correctly, skipping import of `diffshow`.')
+    print("pyqtgraph not configure correctly, skipping import of `diffshow`.")
 if WITH_PYQTGRAPH:
 
     class Diffshow(BASE_CLASS.QWidget):

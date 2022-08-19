@@ -239,20 +239,20 @@ class brillouin_zones:
             )
             for r in regions
         ]
-        return 1 - np.std(self._areas ) / np.average(self._areas )
+        return 1 - np.std(self._areas) / np.average(self._areas)
 
     def getEquivalentScatteringVectors(self, Qvector, use_visible=False):
         """
         For a given scattering vector `Q', determine all equivalent reduced scattering vectors
         based on the Bragg peaks determined to be visible by the methods of this class.
-        
+
         Parameters
         ----------
 
         Qvector : `~numpy.ndarray`, shape (2,)
             The scattering vector to consider. The closest Bragg peak will be determined,
             then the relative angle to this peak, and then it will iterate over the other peaks
-            and determine the same vectors who have radial and angular displacements identical 
+            and determine the same vectors who have radial and angular displacements identical
             to this vector relative to the other Bragg peaks.
 
         use_visible : bool
@@ -310,7 +310,9 @@ class brillouin_zones:
                 QVectors.append(
                     peak + REDUCED_WAVEVECTOR_RADIUS * np.array([COSANG, SINANG])
                 )
-        QVectors = np.array(
-                sorted(QVectors, key=lambda p: np.linalg.norm(p - self.center))
-            ).reshape(-1, 2).astype(int)
-        return QVectors[1:,:] #ignore vector around center
+        QVectors = (
+            np.array(sorted(QVectors, key=lambda p: np.linalg.norm(p - self.center)))
+            .reshape(-1, 2)
+            .astype(int)
+        )
+        return QVectors[1:, :]  # ignore vector around center

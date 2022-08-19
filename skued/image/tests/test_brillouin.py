@@ -10,6 +10,7 @@ import pytest
 DIFF_PATTERN_SIZE = 256
 MAX_INV_ANG = 5.5
 
+
 def diff_pattern_sc():
     """Simulate a single-crystal diffraction pattern"""
     np.random.seed(23)
@@ -21,7 +22,7 @@ def diff_pattern_sc():
     kx = 5.5 * rr / (DIFF_PATTERN_SIZE // 2)
     ky = 5.5 * cc / (DIFF_PATTERN_SIZE // 2)
 
-    kk = np.sqrt(kx**2 + ky**2)
+    kk = np.sqrt(kx ** 2 + ky ** 2)
     I = kinematicsim(crystal=cryst, kx=kx, ky=ky, energy=50)
     I[kk < 1] = 0
     gaussian_filter(I, sigma=1, output=I)
@@ -30,12 +31,16 @@ def diff_pattern_sc():
     I += 0.05 * np.random.random(size=I.shape)
     return kx, ky, I, cryst
 
+
 def test_brillouin_consistency():
     kx, ky, I, cryst = diff_pattern_sc()
     peaks, _, _, _ = bragg_peaks_persistence(I, prominence=0.04)
     center = autocenter(I)
     BZ = brillouin_zones(
-        I, mask=np.ones_like(I, dtype=bool), peaks=peaks.astype(int), center=center.astype(int)
+        I,
+        mask=np.ones_like(I, dtype=bool),
+        peaks=peaks.astype(int),
+        center=center.astype(int),
     )
     BZ.getVisibleBZs()
-    assert 1-BZ.determineConsistency() < 0.03
+    assert 1 - BZ.determineConsistency() < 0.03
