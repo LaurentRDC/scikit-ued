@@ -180,7 +180,7 @@ def cart2spherical(x, y, z):
     t : `~numpy.ndarray`
         Azimuthal coordinate in radians.
     """
-    r = np.sqrt(x ** 2 + y ** 2 + z ** 2)
+    r = np.sqrt(x**2 + y**2 + z**2)
     p = np.arctan2(y, x)
     t = np.arccos(z / r)
     return r, p, t

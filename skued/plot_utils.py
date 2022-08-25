@@ -20,7 +20,7 @@ def _hex_to_rgb(value):
     blue = int(value[2 * char_per_color : :], base=16)
 
     # We want color values between 0.0 and 1.0
-    max_bits = 16 ** char_per_color - 1
+    max_bits = 16**char_per_color - 1
     return (red / max_bits, green / max_bits, blue / max_bits)
 
 

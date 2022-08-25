@@ -21,7 +21,7 @@ def diff_pattern_sc():
     kx = 5.5 * rr / (DIFF_PATTERN_SIZE // 2)
     ky = 5.5 * cc / (DIFF_PATTERN_SIZE // 2)
 
-    kk = np.sqrt(kx ** 2 + ky ** 2)
+    kk = np.sqrt(kx**2 + ky**2)
     I = kinematicsim(crystal=cryst, kx=kx, ky=ky, energy=50)
     I[kk < 1] = 0
     gaussian_filter(I, sigma=1, output=I)
@@ -34,7 +34,7 @@ def diff_pattern_sc():
 def test_bragg_peaks():
     """Test that the `bragg_peaks` function finds all Bragg peaks."""
     kx, ky, I, cryst = diff_pattern_sc()
-    kk = np.sqrt(kx ** 2 + ky ** 2)
+    kk = np.sqrt(kx**2 + ky**2)
 
     # only in-plane refls (hk0) and not (000)
     # Also, some reflections will appear at the edge of the frame
@@ -52,7 +52,7 @@ def test_bragg_peaks():
 def test_bragg_peaks_no_mask():
     """Test that the `bragg_peaks` function finds all Bragg peaks, without supplying a mask file."""
     kx, ky, I, cryst = diff_pattern_sc()
-    kk = np.sqrt(kx ** 2 + ky ** 2)
+    kk = np.sqrt(kx**2 + ky**2)
 
     # only in-plane refls (hk0) and not (000)
     # Also, some reflections will appear at the edge of the frame

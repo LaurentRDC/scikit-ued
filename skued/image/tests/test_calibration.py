@@ -22,12 +22,12 @@ def test_powder_calq_simulation():
 
     peak1 = (2, 0, 0)
     Gx1, Gy1, Gz1 = c.scattering_vector(peak1)
-    q1 = np.sqrt(Gx1 ** 2 + Gy1 ** 2 + Gz1 ** 2)
+    q1 = np.sqrt(Gx1**2 + Gy1**2 + Gz1**2)
     arr_index1 = np.argmin(np.abs(q - q1))
 
     peak2 = (2, 2, 0)
     Gx2, Gy2, Gz2 = c.scattering_vector(peak2)
-    q2 = np.sqrt(Gx2 ** 2 + Gy2 ** 2 + Gz2 ** 2)
+    q2 = np.sqrt(Gx2**2 + Gy2**2 + Gz2**2)
     arr_index2 = np.argmin(np.abs(q - q2))
 
     calibrated = powder_calq(
@@ -49,17 +49,17 @@ def test_powder_calq_simulation_3_peaks():
 
     peak1 = (2, 0, 0)
     Gx1, Gy1, Gz1 = c.scattering_vector(peak1)
-    q1 = np.sqrt(Gx1 ** 2 + Gy1 ** 2 + Gz1 ** 2)
+    q1 = np.sqrt(Gx1**2 + Gy1**2 + Gz1**2)
     arr_index1 = np.argmin(np.abs(q - q1))
 
     peak2 = (2, 2, 0)
     Gx2, Gy2, Gz2 = c.scattering_vector(peak2)
-    q2 = np.sqrt(Gx2 ** 2 + Gy2 ** 2 + Gz2 ** 2)
+    q2 = np.sqrt(Gx2**2 + Gy2**2 + Gz2**2)
     arr_index2 = np.argmin(np.abs(q - q2))
 
     peak3 = (3, 0, -2)
     Gx2, Gy2, Gz2 = c.scattering_vector(peak3)
-    q3 = np.sqrt(Gx2 ** 2 + Gy2 ** 2 + Gz2 ** 2)
+    q3 = np.sqrt(Gx2**2 + Gy2**2 + Gz2**2)
     arr_index3 = np.argmin(np.abs(q - q3))
 
     calibrated = powder_calq(
@@ -83,7 +83,7 @@ def test_detector_scattvectors_center():
         center=(128, 128),
     )
 
-    q_parallel = np.sqrt(qx ** 2 + qy ** 2)
+    q_parallel = np.sqrt(qx**2 + qy**2)
     assert np.unravel_index(np.argmin(q_parallel), qx.shape) == (128, 128)
 
 
@@ -94,7 +94,7 @@ def test_detector_scattvectors_default_center():
         keV=200, camera_length=1, shape=(512, 512), pixel_size=1e-6, center=None
     )
 
-    q_parallel = np.sqrt(qx ** 2 + qy ** 2)
+    q_parallel = np.sqrt(qx**2 + qy**2)
     assert np.unravel_index(np.argmin(q_parallel), qx.shape) == (256, 256)
 
 
@@ -105,7 +105,7 @@ def test_detector_scattvectors_ewald_radius():
         keV=200, camera_length=1, shape=(128, 128), pixel_size=1e-6, center=None
     )
 
-    q_norm = np.sqrt(qx ** 2 + qy ** 2 + qz ** 2)
+    q_norm = np.sqrt(qx**2 + qy**2 + qz**2)
     ewald_sphere_radius = 2 * np.pi / electron_wavelength(keV=200)
 
     assert np.allclose(q_norm, ewald_sphere_radius)

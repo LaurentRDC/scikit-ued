@@ -77,7 +77,7 @@ def nfft(x, y, M, df=1.0, eps=1e-15):
     R = 3
     Mr = R * M
     Msp = int(-log(eps) / (pi * (R - 1) / (R - 0.5)) + 0.5)
-    tau = pi * Msp / (R * (R - 0.5)) / M ** 2
+    tau = pi * Msp / (R * (R - 0.5)) / M**2
     ftau = _fast_gaussian_grid(x, y, Mr, Msp, tau)
 
     # Compute the FFT on the convolved grid
@@ -85,7 +85,7 @@ def nfft(x, y, M, df=1.0, eps=1e-15):
     Ftau = np.concatenate([Ftau[-(M // 2) :], Ftau[: M // 2 + M % 2]])
 
     # Deconvolve the grid using convolution theorem
-    return (1 / len(x)) * sqrt(pi / tau) * np.exp(tau * k ** 2) * Ftau
+    return (1 / len(x)) * sqrt(pi / tau) * np.exp(tau * k**2) * Ftau
 
 
 def _fast_gaussian_grid(x, y, Mr, Msp, tau):

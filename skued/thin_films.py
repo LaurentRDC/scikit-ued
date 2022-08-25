@@ -44,10 +44,10 @@ def film_optical_coefficients(wavelength, thickness, n_film, n_substrate=0):
 
     # The following are simplifications based on a notebook by Martin R. Otto
     # See also Tomlin, Brit. J. Appl. Phys. (J. Phys. D) ser. 2. vol. 1 1968
-    g1 = (n0 ** 2 - n1 ** 2 - k1 ** 2) / ((n0 + n1) ** 2 + k1 ** 2)
-    g2 = (n1 ** 2 - n2 ** 2 + k1 ** 2 - k2 ** 2) / ((n1 + n2) ** 2 + (k1 + k2) ** 2)
+    g1 = (n0**2 - n1**2 - k1**2) / ((n0 + n1) ** 2 + k1**2)
+    g2 = (n1**2 - n2**2 + k1**2 - k2**2) / ((n1 + n2) ** 2 + (k1 + k2) ** 2)
 
-    h1 = 2 * n0 * k1 / ((n0 + n1) ** 2 + k1 ** 2)
+    h1 = 2 * n0 * k1 / ((n0 + n1) ** 2 + k1**2)
     h2 = 2 * (n1 * k2 - n2 * k1) / ((n1 + n2) ** 2 + (k1 + k2) ** 2)
 
     alpha1 = 2 * pi * k1 * thickness / wavelength
@@ -59,23 +59,23 @@ def film_optical_coefficients(wavelength, thickness, n_film, n_substrate=0):
     D1 = 2 * (g1 * h2 + g2 * h1)
 
     R = (
-        (g1 ** 2 + h1 ** 2) * exp(2 * alpha1)
-        + (g2 ** 2 + h2 ** 2) * exp(-2 * alpha1)
+        (g1**2 + h1**2) * exp(2 * alpha1)
+        + (g2**2 + h2**2) * exp(-2 * alpha1)
         + A * cos(2 * gamma1)
         + B * sin(2 * gamma1)
     )
     R /= (
         exp(2 * alpha1)
-        + (g1 ** 2 + h1 ** 2) * (g2 ** 2 + h2 ** 2) * exp(-2 * alpha1)
+        + (g1**2 + h1**2) * (g2**2 + h2**2) * exp(-2 * alpha1)
         + C1 * cos(2 * gamma1)
         + D1 * sin(2 * gamma1)
     )
     R = R.real
 
-    T = (n2 / n0) * ((1 + g1) ** 2 + h1 ** 2) * ((1 + g2) ** 2 + h2 ** 2)
+    T = (n2 / n0) * ((1 + g1) ** 2 + h1**2) * ((1 + g2) ** 2 + h2**2)
     T /= (
         exp(2 * alpha1)
-        + (g1 ** 2 + h1 ** 2) * (g2 ** 2 + h2 ** 2) * exp(-2 * alpha1)
+        + (g1**2 + h1**2) * (g2**2 + h2**2) * exp(-2 * alpha1)
         + C1 * cos(2 * gamma1)
         + D1 * sin(2 * gamma1)
     )

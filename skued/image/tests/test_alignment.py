@@ -21,7 +21,7 @@ def circle_image(shape, center, radii, intensities):
     xx, yy = np.ogrid[0 : shape[0], 0 : shape[1]]
     xx, yy = xx - center[0], yy - center[1]
     for radius, intensity in zip(radii, intensities):
-        rr = np.sqrt(xx ** 2 + yy ** 2)
+        rr = np.sqrt(xx**2 + yy**2)
         im[np.logical_and(rr < radius + 1, rr > radius - 1)] = intensity
 
     im[:] = gaussian(im, 5)

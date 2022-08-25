@@ -35,7 +35,7 @@ def powdersim(crystal, q, fwhm_g=0.03, fwhm_l=0.06, **kwargs):
     Gx, Gy, Gz = change_basis_mesh(
         h, k, l, basis1=crystal.reciprocal_vectors, basis2=np.eye(3)
     )
-    qs = np.sqrt(Gx ** 2 + Gy ** 2 + Gz ** 2)
+    qs = np.sqrt(Gx**2 + Gy**2 + Gz**2)
     intensities = np.absolute(structure_factor(crystal, h, k, l)) ** 2
 
     pattern = np.zeros_like(q)
