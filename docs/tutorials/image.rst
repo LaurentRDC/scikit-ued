@@ -369,6 +369,88 @@ We can plot the result:
 
 How cool is that!
 
+We can also use the method of 2D peak topological persistence to find Bragg peaks. Using the 
+:func:`bragg_peaks_persistence` function, we determine the peaks via:
+
+	>>> from skued import diffread, bragg_peaks_persistence
+	>>> 
+	>>> im = diffread('docs/tutorials/data/ab_initio_monolayer_mos2.tif')
+	>>>
+	>>> peaks, bd, bd_indices, persistence = bragg_peaks_persistence(im, prominence=0.1)
+
+We plot the results. The left plot shows that the standard :func:`bragg_peaks` finds no peaks,
+while :func:`bragg_peaks_persistence` finds all of them, given on the right :
+
+.. plot:: 
+
+	from skued import diffread, bragg_peaks_persistence, bragg_peaks
+	import matplotlib.pyplot as plt
+	import numpy as np
+	from matplotlib.patches import Circle
+
+	im = diffread("data/ab_initio_monolayer_mos2.tif")
+
+	fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(6, 3))
+
+	peaks = np.array(bragg_peaks(im, mask=np.ones_like(im, dtype=bool))).reshape(-1,2)
+	peaks_persistence, _, _, _ = bragg_peaks_persistence(im, prominence=0.1)
+	for pp, image, ax in zip([peaks, peaks_persistence], [im, im], [ax1, ax2]):
+		ax.imshow(im, origin='lower', interpolation='bicubic', vmin=-1, vmax=1)
+		for r, c in pp:
+			ax.add_patch(Circle(xy=(r, c), radius=5, ec="r", fc="none"))
+		ax.get_xaxis().set_visible(False)
+		ax.get_yaxis().set_visible(False)
+	plt.tight_layout()
+	plt.show()
+
+Finding Brillouin zones
+=======================
+
+We can also determine Brillouin zones based on the location of Bragg peaks.
+For normal incidence diffraction, such patterns are regular polygons for 
+simple crystal structures, but for tilted-incidence diffraction or macromolecules,
+the geometry becomes unclear, necessitating a different approach. The Brillouin zone,
+the Wigner-Seitz unit cell in reciprocal space, is also the Voronoi regions determined
+by the Bragg peak locations. This functionality is implemented in this package 
+by the class :class:`brillouin_zones`. 
+
+	>>> from skued import diffread, autocenter, bragg_peaks_persistence, brillouin_zones
+	>>> 
+	>>> im = diffread('docs/tutorials/data/ab_initio_monolayer_mos2.tif')
+	>>>
+	>>> peaks, bd, bd_indices, persistence = bragg_peaks_persistence(im, prominence=0.1)
+	>>> center = np.array([im.shape[0]//2, im.shape[1]//2])
+	>>> BZ = brillouin_zones(im, mask=np.ones(im.shape), peaks=peaks.astype(int), center=center.astype(int))
+
+We can even determine equivalent scattering vectors at all visible
+Brillouin zones via the :meth:`getEquivalentScatteringVectors` method, useful for averaging the signal at a given reduced wavevector
+for low SNR single-crystal datasets, visualized explicitly on the right.
+
+.. plot:: 
+
+	from skued import diffread, bragg_peaks_persistence, brillouin_zones
+	import matplotlib.pyplot as plt
+	import numpy as np
+
+	im = diffread("data/ab_initio_monolayer_mos2.tif")
+	center = np.array([im.shape[0]//2, im.shape[1]//2])
+	peaks_persistence, _, _, _ = bragg_peaks_persistence(im, prominence=0.1)
+	BZ = brillouin_zones(im, mask=np.ones(im.shape), peaks=peaks_persistence.astype(int), center=center.astype(int))
+	BZ.getVisibleBZs(symmetry=6)
+	EQUIV = BZ.getEquivalentScatteringVectors(np.array([119, 174]), use_visible=True)
+	fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(6, 3))
+	for ax in [ax1, ax2]:
+		ax.imshow(im, origin='lower', interpolation='bicubic', vmin=-1, vmax=1)
+		BZ.renderVisibleBZs(ax, **dict(edgecolor='white'))
+
+		ax.axis('off')
+
+	ax2.scatter(EQUIV[:, 0], EQUIV[:, 1], marker="x", color="r", s=20)
+
+	plt.tight_layout()
+	plt.show()
+
+
 .. _powder:
 
 Image analysis on polycrystalline diffraction patterns

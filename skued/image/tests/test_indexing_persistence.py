@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from skued import kinematicsim, bragg_peaks
+from skued import kinematicsim, bragg_peaks_persistence
 from crystals import Crystal
 from scipy.ndimage import gaussian_filter
 import numpy as np
@@ -13,6 +13,7 @@ MAX_INV_ANG = 5.5
 
 def diff_pattern_sc():
     """Simulate a single-crystal diffraction pattern"""
+    np.random.seed(23)
     cryst = Crystal.from_database("C")
     rr, cc = np.indices((DIFF_PATTERN_SIZE, DIFF_PATTERN_SIZE))
     rr -= rr.shape[1] // 2
@@ -31,7 +32,7 @@ def diff_pattern_sc():
     return kx, ky, I, cryst
 
 
-def test_bragg_peaks():
+def test_bragg_peaks_persistence():
     """Test that the `bragg_peaks` function finds all Bragg peaks."""
     kx, ky, I, cryst = diff_pattern_sc()
     kk = np.sqrt(kx ** 2 + ky ** 2)
@@ -43,13 +44,13 @@ def test_bragg_peaks():
         for refl in cryst.bounded_reflections(kk.max())
         if (refl[2] == 0 and np.abs(cryst.scattering_vector(refl)[0]) < kx.max())
     ]
+    peaks, _, _, _ = bragg_peaks_persistence(
+        I, mask=np.ones_like(I, dtype=bool), prominence=0.04
+    )
+    assert len(peaks) == len(in_plane_refls) - 1  # reflections include Q=0
 
-    peaks = bragg_peaks(I, mask=np.ones_like(I, dtype=bool))
 
-    assert len(peaks) == len(in_plane_refls)
-
-
-def test_bragg_peaks_no_mask():
+def test_bragg_peaks_persistence_no_mask():
     """Test that the `bragg_peaks` function finds all Bragg peaks, without supplying a mask file."""
     kx, ky, I, cryst = diff_pattern_sc()
     kk = np.sqrt(kx ** 2 + ky ** 2)
@@ -61,7 +62,5 @@ def test_bragg_peaks_no_mask():
         for refl in cryst.bounded_reflections(kk.max())
         if (refl[2] == 0 and np.abs(cryst.scattering_vector(refl)[0]) < kx.max())
     ]
-
-    peaks = bragg_peaks(I)
-
-    assert len(peaks) == len(in_plane_refls)
+    peaks, _, _, _ = bragg_peaks_persistence(I, prominence=0.04)
+    assert len(peaks) == len(in_plane_refls) - 1  # reflections include Q=0
