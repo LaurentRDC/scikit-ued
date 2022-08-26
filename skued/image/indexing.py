@@ -237,11 +237,17 @@ def bragg_peaks_persistence(
     birth_death = np.array(birth_death).reshape(-1, 2)
 
     # remove peaks that are within the masked area
-    if mask.sum() != mask.shape[0]*mask.shape[1]:
+    if mask.sum() != mask.shape[0] * mask.shape[1]:
         peaks = np.array([p for p in peaks if mask[p[1], p[0]]])
-        birth_death= np.array([bd for p, bd in zip(peaks, birth_death) if mask[p[1], p[0]]])
-        birth_death_indices= np.array([bdi for p, bdi in zip(peaks, birth_death_indices) if mask[p[1], p[0]]])
-        persistencies= np.array([pers for p, pers in zip(peaks, persistencies) if mask[p[1], p[0]]])
+        birth_death = np.array(
+            [bd for p, bd in zip(peaks, birth_death) if mask[p[1], p[0]]]
+        )
+        birth_death_indices = np.array(
+            [bdi for p, bdi in zip(peaks, birth_death_indices) if mask[p[1], p[0]]]
+        )
+        persistencies = np.array(
+            [pers for p, pers in zip(peaks, persistencies) if mask[p[1], p[0]]]
+        )
     return peaks, birth_death, birth_death_indices, persistencies
 
 
