@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.1.12
+--------------
+
+* Improved the masking functionality in `bragg_peaks_persistence`.
+
 Release 2.1.11
 --------------
 
