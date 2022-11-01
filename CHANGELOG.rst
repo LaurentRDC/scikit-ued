@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.1.13
+--------------
+
+* Fixed some deprecation warnings due to `matplotlib` 3.6
+
 Release 2.1.12
 --------------
 
