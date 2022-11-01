@@ -30,7 +30,7 @@ def test_spectrum_colorson_length_1_iterable():
 
 def test_spectrum_cmap_in_matplotlib_get_cmap():
     """Test that the "spectrum" colormap is added to Matplotlib's colormaps"""
-    assert matplotlib.colormaps.get_cmap("spectrum") == spectrum_cmap
+    assert matplotlib.colormaps["spectrum"] == spectrum_cmap
 
 
 def test_rgb_sweep_on_ints():
