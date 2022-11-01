@@ -2,7 +2,7 @@
 
 
 from skued import rgb_sweep, spectrum_colors, spectrum_cmap
-from matplotlib.cm import get_cmap
+import matplotlib
 
 
 def test_spectrum_colors_on_ints():
@@ -30,7 +30,7 @@ def test_spectrum_colorson_length_1_iterable():
 
 def test_spectrum_cmap_in_matplotlib_get_cmap():
     """Test that the "spectrum" colormap is added to Matplotlib's colormaps"""
-    assert get_cmap("spectrum") is spectrum_cmap
+    assert matplotlib.colormaps.get_cmap("spectrum") == spectrum_cmap
 
 
 def test_rgb_sweep_on_ints():
