@@ -5,7 +5,7 @@ Plotting utilities
 """
 from colorsys import hsv_to_rgb
 from matplotlib.colors import ListedColormap
-from matplotlib.cm import register_cmap
+from matplotlib import colormaps
 from npstreams import multilinspace
 
 
@@ -85,7 +85,7 @@ spectrum_cmap.__doc__ = """ \
 	>>> fig, ax = plt.subplots(1,1)
 	>>> m = ax.imshow(arr, cmap='spectrum') # equivalently: `cmap=skued.spectrum_cmap`
 	"""
-register_cmap(name="spectrum", cmap=spectrum_cmap)
+colormaps.register(name="spectrum", cmap=spectrum_cmap)
 
 
 def rgb_sweep(num_colors, source, dest):
