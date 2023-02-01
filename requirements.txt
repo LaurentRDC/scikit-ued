@@ -3,6 +3,7 @@ npstreams    >= 1.6.5, < 2
 numpy        >= 1.17, < 2
 pywavelets   >= 1.0.0, < 2
 scikit-image >= 0.19, < 1
-scipy        >= 1.5.0, < 2
+# See https://github.com/scipy/scipy/issues/17740
+scipy        >= 1.5.0, < 2, != 1.10.0
 pyyaml       >= 3.1
 matplotlib   >= 3.5, <4
