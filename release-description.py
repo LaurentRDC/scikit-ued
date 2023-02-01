@@ -8,7 +8,6 @@ if __name__ == "__main__":
     filename = sys.argv[1]
 
     with open(filename, mode="r") as f:
-
         # Look for the first second-level title
         for line in f:
             if line.startswith("Release"):

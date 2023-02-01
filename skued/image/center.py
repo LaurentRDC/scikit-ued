@@ -107,7 +107,6 @@ def autocenter(im, mask=None):
 
 
 def _center_of_intensity(im, mask=None):
-
     weights = im * mask.astype(im.dtype)
 
     rr, cc = np.indices(im.shape)

@@ -54,7 +54,6 @@ def structure_factor(crystal, h, k, l, normalized=False):
     # Pre-allocation of form factors gives huge speedups
     atomff_dict = dict()
     for atom in crystal:  # TODO: implement in parallel?
-
         if atom.element not in atomff_dict:
             atomff_dict[atom.element] = affe(atom, nG)
 

@@ -124,7 +124,6 @@ def mask_from_collection(images, px_thresh=(0, 3e4), std_thresh=None):
         std_calc = repeat(np.inf)
 
     for image, std in zip(images, std_calc):
-
         mask[image > max_int] = True
 
         if std_thresh is not None:

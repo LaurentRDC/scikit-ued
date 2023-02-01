@@ -13,7 +13,6 @@ np.random.seed(23)
 def test_affine_map_exception_raised():
     """Tests that affine_map() raises an exceptions for incorrect input"""
     with pytest.raises(ValueError):
-
         m = tr.affine_map(np.eye(5))  # Matrix too large
         m = tr.affine_map(np.eye(2))  # Matrix too small
 

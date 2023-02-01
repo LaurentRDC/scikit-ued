@@ -14,7 +14,6 @@ else:
 
 
 if WITH_PYQTGRAPH:
-
     # This is weird, but PyQtGraph is an optional dependency
     # Therefore, we cannot define this class unless PyQtGraph is importable
     if hasattr(pg, "QtWidgets"):

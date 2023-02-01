@@ -101,7 +101,6 @@ def imibread(filepath):
     coffset = 0  # current image offset (header + data)
 
     with open(filepath, "r+b") as binary:
-
         # Move to end of first image and check if there is another one
         # by reading one more byte after the image data
         # in the case of a single-image file, the next byte is b''

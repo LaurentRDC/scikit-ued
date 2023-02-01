@@ -119,6 +119,7 @@ def regrid(f):
     f_ : callable
         Callable of the form
     """
+
     # This function is based on an e-mail discussion with Samuel Palato. Thanks Sam!
     @wraps(f)
     def f_(time, *args, **kwargs):

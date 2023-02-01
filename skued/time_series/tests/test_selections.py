@@ -60,7 +60,6 @@ def test_selection_arbitrary_array():
 
 
 def test_selection_bbox_rect_selection():
-
     selection = RectSelection((8, 8), 0, 0, 0, 0)
     assert selection.bounding_box == (0, 1, 0, 1)
 
@@ -77,7 +76,6 @@ def test_selection_bbox_disk_selection():
 
 
 def test_selection_bbox_ring_selection():
-
     # A ring selection should have the same bounding box as a disk selection
     # with equivalent outer radius
     disk = DiskSelection((16, 16), center=(8, 7), radius=3)
@@ -101,7 +99,6 @@ def test_selection_bbox_ring_arc_selection():
 
 
 def test_selection_bbox_arbitrary_selection():
-
     arr = np.ones(shape=(8, 8), dtype=bool)  # selection everywhere
     selection = ArbitrarySelection(arr)
 

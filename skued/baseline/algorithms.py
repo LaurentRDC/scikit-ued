@@ -224,7 +224,6 @@ def _iterative_baseline(
     signal_too_large = np.empty_like(background, dtype=bool)
 
     for i in range(max_iter):
-
         # Make sure the background values are equal to the original signal values in the
         # background regions
         for index in background_regions:
