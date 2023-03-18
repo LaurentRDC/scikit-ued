@@ -20,7 +20,7 @@ def powdersim(crystal, q, fwhm_g=0.03, fwhm_l=0.06, **kwargs):
     crystal : `skued.structure.Crystal`
         Crystal from which to diffract.
     q : `~numpy.ndarray`, shape (N,)
-        Range of scattering vector norm over which to compute the diffraction pattern [1/Angs].
+        Range of scattering vector norm over which to compute the diffraction pattern [2 :math:`\\pi` / Angs].
     fwhm_g, fwhm_l : float, optional
         Full-width at half-max of the Gaussian and Lorentzian parts of the Voigt profile.
         See `skued.pseudo_voigt` for more details.

@@ -1,10 +1,15 @@
 Changelog
 =========
 
+Release 2.1.14
+--------------
+
+* Fixed documentation of `powdersim` which specified the wrong units for argument `q` (#44).
+
 Release 2.1.13
 --------------
 
-* Fixed some deprecation warnings due to `matplotlib` 3.6
+* Fixed some deprecation warnings due to `matplotlib` 3.6.
 
 Release 2.1.12
 --------------
