@@ -50,7 +50,7 @@ def potential_map(q, I, crystal, mesh):
     References
     ----------
     .. [#] Otto et al., How optical excitation controls the structure and properties of vanadium dioxide.
-           PNAS, vol. 116 issue 2, pp. 450-455 (2018). :DOI:`10.1073/pnas.1808414115`
+           PNAS, vol. 116 issue 2, pp. 450-455 (2018). DOI: 10.1073/pnas.1808414115`
     """
     if np.any(I < 0):
         raise ValueError("Diffracted intensity cannot physically be negative.")

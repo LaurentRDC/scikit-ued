@@ -213,7 +213,7 @@ Image noise
     trimr
 
 Single-crystal indexing
-----------------------
+-----------------------
 
 .. autosummary::
     :toctree: functions/

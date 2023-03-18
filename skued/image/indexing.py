@@ -115,7 +115,7 @@ def bragg_peaks_persistence(
     using 2D persistence of the image landscape. If detected peaks fall above
     certain thresholds, they are deamed acceptable peaks and returned.
 
-    .. versionadded:: 2.5.5
+    .. versionadded:: 2.1.11
 
     Parameters
     ----------
@@ -170,23 +170,25 @@ def bragg_peaks_persistence(
     -------
     To generate the peak determination from a 2D array and visualize the results,
     as well as the birth-death persistence diagram:
-    ```
-    from skued import bragg_peak_persistence
-    peaks, birth_death, indices = bragg_peak_persistence(image)
-    axis.imshow(image, extent='lower')
-    for i, peak in enumerate(peaks):
-        x, y = peak
-        ax.plot([x], [y], '.', c='b')
-        ax.text(x, y+0.25, str(i+1), color='b')
 
-    ax2.set_title("Peristence diagram")
-    for i, (index, bd) in enumerate(zip(indices, birth_death)):
-        x, y = bd
-        ax2.plot([x], [y], '.', c='b')
-        ax2.text(x, y+2, str(index+1), color='b')
-    ax2.set_xlabel("Birth level")
-    ax2.set_ylabel("Death level")
-    ```
+    .. code::
+
+        from skued import bragg_peak_persistence
+        peaks, birth_death, indices = bragg_peak_persistence(image)
+        axis.imshow(image, extent='lower')
+        for i, peak in enumerate(peaks):
+            x, y = peak
+            ax.plot([x], [y], '.', c='b')
+            ax.text(x, y+0.25, str(i+1), color='b')
+
+        ax2.set_title("Peristence diagram")
+        for i, (index, bd) in enumerate(zip(indices, birth_death)):
+            x, y = bd
+            ax2.plot([x], [y], '.', c='b')
+            ax2.text(x, y+2, str(index+1), color='b')
+        ax2.set_xlabel("Birth level")
+        ax2.set_ylabel("Death level")
+
     """
     if mask is None:
         mask = np.ones_like(im, dtype=bool)
