@@ -2,7 +2,7 @@ crystals     >= 1.3.1, < 2
 npstreams    >= 1.6.5, < 2
 numpy        >= 1.17, < 2
 pywavelets   >= 1.0.0, < 2
-scikit-image >= 0.19, < 1
+scikit-image >= 0.20, < 1
 # See https://github.com/scipy/scipy/issues/17740
 scipy        >= 1.5.0, < 2, != 1.10.0
 pyyaml       >= 3.1

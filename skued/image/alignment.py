@@ -59,11 +59,11 @@ def itrack_peak(images, row_slice=None, col_slice=None, precision=1 / 10):
     for image in images:
         sub[:] = image[row_slice, col_slice]
 
-        shift = with_skued_fft(phase_cross_correlation)(
+        shift, *_ = with_skued_fft(phase_cross_correlation)(
             reference_image=ref,
             moving_image=sub,
-            return_error=False,
             upsample_factor=int(1 / precision),
+            return_error="always",
         )
         yield np.asarray(shift)
 
@@ -92,11 +92,11 @@ def align(image, reference, mask=None, fill_value=0.0):
     --------
     ialign : generator of aligned images
     """
-    shift = with_skued_fft(phase_cross_correlation)(
+    shift, *_ = with_skued_fft(phase_cross_correlation)(
         reference_image=reference,
         moving_image=image,
         reference_mask=mask,
-        return_error=False,
+        return_error="always",
     )
     return ndi.shift(image, shift=shift, order=2, mode="constant", cval=fill_value)
 

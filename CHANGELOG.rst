@@ -5,6 +5,7 @@ Release 2.1.14
 --------------
 
 * Fixed documentation of `powdersim` which specified the wrong units for argument `q` (#44).
+* Updated support for scikit-image 0.21, which is deprecating some behaviors of `skimage.registration.phase_cross_correlation`.
 
 Release 2.1.13
 --------------

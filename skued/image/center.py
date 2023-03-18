@@ -93,11 +93,12 @@ def autocenter(im, mask=None):
     if min(im.shape) > 1024:
         downsampling = 2
 
-    shift = with_skued_fft(phase_cross_correlation)(
+    shift, *_ = with_skued_fft(phase_cross_correlation)(
         reference_image=im[::downsampling, ::downsampling],
         moving_image=im_i[::downsampling, ::downsampling],
         reference_mask=mask[::downsampling, ::downsampling],
         moving_mask=mask_i[::downsampling, ::downsampling],
+        return_error="always",
     )
     # Because images were downsampled, the correction
     # factor to the rough center should be increased from the measured shift
