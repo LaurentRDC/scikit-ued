@@ -1,4 +1,8 @@
-Sphinx >= 3
+# The ability to build documentation using `python setup.py build_sphinx` 
+# has been removed as of Sphinx v7.
+# Until the setup script `setup.py` has been changed to setup.cfg
+# we cannot use sphinx 7+
+Sphinx >= 3, <7
 sphinx_rtd_theme >= 0.4
 cython >= 0.25
 pytest >= 6

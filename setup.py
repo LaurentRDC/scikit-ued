@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 import re
-from glob import glob
-from itertools import chain
 from pathlib import Path
 
 # import numpy
