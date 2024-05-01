@@ -98,7 +98,6 @@ def autocenter(im, mask=None):
         moving_image=im_i[::downsampling, ::downsampling],
         reference_mask=mask[::downsampling, ::downsampling],
         moving_mask=mask_i[::downsampling, ::downsampling],
-        return_error="always",
     )
     # Because images were downsampled, the correction
     # factor to the rough center should be increased from the measured shift

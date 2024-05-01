@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.1.15
+--------------
+
+* Add support for scikit-image 0.22+, `which dropped <https://scikit-image.org/docs/0.22.x/release_notes/release_0.22.html>`_ for some arguments of `skimage.registration.phase_cross_correlation`. 
+
 Release 2.1.14
 --------------
 

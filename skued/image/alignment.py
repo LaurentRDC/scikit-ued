@@ -63,7 +63,6 @@ def itrack_peak(images, row_slice=None, col_slice=None, precision=1 / 10):
             reference_image=ref,
             moving_image=sub,
             upsample_factor=int(1 / precision),
-            return_error="always",
         )
         yield np.asarray(shift)
 
@@ -96,7 +95,6 @@ def align(image, reference, mask=None, fill_value=0.0):
         reference_image=reference,
         moving_image=image,
         reference_mask=mask,
-        return_error="always",
     )
     return ndi.shift(image, shift=shift, order=2, mode="constant", cval=fill_value)
 
