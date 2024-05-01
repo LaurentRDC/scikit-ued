@@ -3,9 +3,6 @@ name: Continuous integration
 on: 
   push:
   pull_request:
-  schedule:
-    # Every month
-    - cron: '0 0 1 * *'
 
 jobs:
   build:
@@ -17,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11"]
         exclude:
           # pycifrw 4.4.4 is broken on Windows / python 3.10
           - os: windows-latest
@@ -27,7 +24,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
