@@ -3,7 +3,7 @@
 Determine the center of diffraction images
 ==========================================
 """
-from os import cpu_count
+
 from math import floor
 import numpy as np
 from skimage.registration import phase_cross_correlation
@@ -12,7 +12,7 @@ from ..fft import with_skued_fft
 from warnings import catch_warnings, simplefilter
 
 
-def autocenter(im, mask=None):
+def autocenter(im, mask=None, normalize_bg=True):
     """
     Find the center of a diffraction pattern automatically.
 
@@ -25,6 +25,13 @@ def autocenter(im, mask=None):
     mask : ndarray, shape (N,M), dtype bool, optional
         Mask that evaluates to `True` on pixels that
         should be used to determine the center.
+    normalize_bg: bool, optional
+        If `True` (default), an attempt will be made to remove
+        asymmetries in the background of `im`. This can sometimes
+        provide worse results, so you may want to disable this feature.
+
+        .. versionadded:: 2.1.16
+
 
     Returns
     -------
@@ -76,9 +83,13 @@ def autocenter(im, mask=None):
     # e.g. (n00) systematically brighter than (-n00)
     # For this purpose, we normalize the intensity by some "background",
     # i.e. very blurred diffraction pattern
-    with catch_warnings():
-        simplefilter("ignore", category=RuntimeWarning)
-        im /= gaussian_filter(input=im, sigma=min(im.shape) / 25, truncate=2)
+    # This step is optional because it may negatively affect the results
+    # on very clean images. See issue #45
+    # (https://github.com/LaurentRDC/scikit-ued/issues/45#issuecomment-2180808898)
+    if normalize_bg:
+        with catch_warnings():
+            simplefilter("ignore", category=RuntimeWarning)
+            im /= gaussian_filter(input=im, sigma=min(im.shape) / 25, truncate=2)
     im = np.nan_to_num(im, copy=False)
 
     # The comparison between Friedel pairs from [1] is generalized to

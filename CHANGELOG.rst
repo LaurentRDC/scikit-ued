@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Release 2.1.16
+--------------
+
+* Fixed an issue where `autocenter` could return bogus results. A new parameter has been added to address This
+  problem while maintaining backwards-compatibility (#45).
+
 Release 2.1.15
 --------------
 
