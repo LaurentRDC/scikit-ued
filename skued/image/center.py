@@ -125,14 +125,15 @@ def _center_of_intensity(im, mask=None):
     c_ = np.average(cc, weights=weights)
     return int(r_), int(c_)
 
-def auto_masking(im,threshold = 0.15):
+
+def auto_masking(im, threshold=0.15):
     """
     Generate a mask based on the darkest fraction of an image
 
     Parameters
     ----------
     im : floats, ndarrays of shape (N,M)
-        image used to generate a mask 
+        image used to generate a mask
     threshold: float, optional
         fraction of the lowest values to be masked, default = 15%
 
@@ -142,10 +143,10 @@ def auto_masking(im,threshold = 0.15):
         Mask that evaluates to True on valid pixels.
 
     """
-    #Find the highest intensity value of the image
-    max_value = (max([max(x) for x in np.real(im)]))
-    #Set the threshold value
+    # Find the highest intensity value of the image
+    max_value = max([max(x) for x in np.real(im)])
+    # Set the threshold value
     mini = threshold * max_value
-    #generate a mask
-    mask = im>=mini
+    # generate a mask
+    mask = im >= mini
     return mask
