@@ -126,7 +126,7 @@ def _center_of_intensity(im, mask=None):
     return int(r_), int(c_)
 
 
-def auto_masking(im, threshold=0.15):
+def auto_masking(im, threshold=0.1):
     """
     Generate a mask based on the darkest fraction of an image
 
@@ -143,10 +143,10 @@ def auto_masking(im, threshold=0.15):
         Mask that evaluates to True on valid pixels.
 
     """
-    # Find the highest intensity value of the image
-    max_value = max([max(x) for x in np.real(im)])
+    # Find the median of the highest intensity value of the image to avoid hot spots
+    max_median = np.median([max(x) for x in np.real(im)])
     # Set the threshold value
-    mini = threshold * max_value
+    lower_limit = threshold * max_median
     # generate a mask
-    mask = im >= mini
+    mask = im >= lower_limit
     return mask

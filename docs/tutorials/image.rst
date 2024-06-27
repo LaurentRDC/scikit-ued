@@ -30,42 +30,40 @@ The :func:`diffread` function will transparently distinguish between those forma
 .. _automatic_mask_generation:
 
 Automatic generation of a mask as needed for the autocenter() function
-===================================
+======================================================================
 
 Automatic mask generation
--------------------
+-------------------------
 A mask can be used for the :func: `autocenter` function to exclude the beam stopper from the analysis and only keep valuable 
 information. Such a mask can automatically be generated using this function; given a diffraction pattern, the mask will be created to block 
-the darkest regions of the image (default blocks 15% of the darker values).
+the darkest regions of the image (default blocks about 10% of the darker values).
 Here is an example: 
 
 .. plot::
 
 	import matplotlib.pyplot as plt
 	from skued import diffread, auto_masking
-	import numpy as np
 
-	image = diffread('data/graphite.tif')
-	mask = auto_masking(image, threshold = 0.15)
+	image = diffread('data/Cr_1.tif')
+	mask = auto_masking(image, threshold = 0.1)
 
 	# Reduce size of images because of memory usage of ReadTheDocs
 	image = image[::3, ::3]
 	mask = mask[::3, ::3]
 
 	fig , (ax1, ax2) = plt.subplots(1,2, figsize = (9,3))
-	ax1.imshow(image, cmap='inferno')
-	ax2.imshow(np.logical_not(mask) * image, cmap='inferno')
+	ax1.imshow(image, vmin=0, vmax=150, cmap='inferno')
+	ax2.imshow(mask, vmin=0, vmax=1, cmap='inferno')
 
-	for ax in (ax1, ax2, ax3):
+	for ax in (ax1, ax2):
 		ax.xaxis.set_visible(False)
 		ax.yaxis.set_visible(False)
 
-	ax1.set_title('Graphite')
+	ax1.set_title('Cr_1')
 	ax2.set_title('Mask')
 
 	plt.tight_layout()
 	plt.show()
-
 .. _alignment:
 
 Automatic center-finding
