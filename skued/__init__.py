@@ -44,7 +44,7 @@ from .eproperties import (
 from .image import (
     align,
     autocenter,
-	auto_masking,
+    auto_masking,
     azimuthal_average,
     brillouin_zones,
     combine_masks,
