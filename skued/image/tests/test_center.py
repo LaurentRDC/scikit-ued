@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from skued import autocenter, gaussian, kinematicsim
+from skued import autocenter, gaussian, kinematicsim, auto_masking
 from crystals import Crystal
 from scipy.ndimage import gaussian_filter
 import numpy as np
-import itertools as it
 import pytest
 
 np.random.seed(23)
@@ -124,3 +123,14 @@ def test_autocenter_single_crystal_ewald_walkoff(rc, cc):
     I += 0.01 * I.max() * np.random.random(size=I.shape)
 
     assert np.allclose(autocenter(I, mask=mask), (rc, cc), atol=1)
+
+
+@pytest.mark.parametrize("seed", range(10))
+def test_auto_masking(seed: int):
+    im = 10 * np.ones(shape=(32, 32))
+    np.random.seed(seed)
+    reference_mask = np.random.randint(low=0, high=1 + 1, size=im.shape)
+
+    mask = auto_masking(im=im * reference_mask).astype(int)
+
+    assert np.allclose(reference_mask, mask)

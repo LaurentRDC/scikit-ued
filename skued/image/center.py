@@ -117,36 +117,25 @@ def autocenter(im, mask=None, normalize_bg=True):
     return np.array([r_, c_]) + correction / 2
 
 
-def _center_of_intensity(im, mask=None):
-    weights = im * mask.astype(im.dtype)
-
-    rr, cc = np.indices(im.shape)
-    r_ = np.average(rr, weights=weights)
-    c_ = np.average(cc, weights=weights)
-    return int(r_), int(c_)
-
-
 def auto_masking(im, threshold=0.1):
     """
-    Generate a mask based on the darkest fraction of an image
+    Generate a mask based on the darkest fraction of an image.
+
+    .. versionadded:: 2.1.17
 
     Parameters
     ----------
-    im : floats, ndarrays of shape (N,M)
+    im : ndarray of shape (N,M)
         image used to generate a mask
     threshold: float, optional
-        fraction of the lowest values to be masked, default = 15%
+        fraction of the lowest values to be masked, default = 10%
 
-    Yields
-    ------
+    Returns
+    -------
     mask : boolean, ndarrays of shape (N,M)
         Mask that evaluates to True on valid pixels.
-
     """
     # Find the median of the highest intensity value of the image to avoid hot spots
-    max_median = np.median([max(x) for x in np.real(im)])
-    # Set the threshold value
-    lower_limit = threshold * max_median
+    lower_limit = threshold * np.median(np.maximum(im, 0))
     # generate a mask
-    mask = im >= lower_limit
-    return mask
+    return im > lower_limit

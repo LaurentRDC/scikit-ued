@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.1.17
+--------------
+
+* Added a new function to automatically determine a diffraction mask, :func:`auto_masking` (#46).
+
 Release 2.1.16
 --------------
 
