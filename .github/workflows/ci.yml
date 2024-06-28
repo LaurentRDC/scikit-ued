@@ -21,26 +21,26 @@ jobs:
             python-version: "3.10"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
-    - uses: actions/cache@v2
+    - uses: actions/cache@v4
       if: startsWith(runner.os, 'Linux')
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/*requirements.txt') }}
 
-    - uses: actions/cache@v2
+    - uses: actions/cache@v4
       if: startsWith(runner.os, 'macOS')
       with:
         path: ~/Library/Caches/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/*requirements.txt') }}
 
-    - uses: actions/cache@v2
+    - uses: actions/cache@v4
       if: startsWith(runner.os, 'Windows')
       with:
         path: ~\AppData\Local\pip\Cache
@@ -74,9 +74,9 @@ jobs:
         python setup.py sdist bdist_wheel
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
-        name: ${{ runner.os }}-py${{ matrix.python-version }}-artifact
+        name: artifact-${{ runner.os }}-py${{ matrix.python-version }}
         path: dist/*
         retention-days: 7
 
@@ -85,25 +85,18 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4
       with:
-        path: artifacts/
+        path: dist/
+        pattern: artifact-*
+        merge-multiple: true
 
     - name: Create release description
       run: |
         python release-description.py CHANGELOG.rst > description.md
         cat description.md
-
-    - name: Move artifacts
-      run: |
-        ls --recursive artifacts/
-        mkdir dist
-        mv --backup=numbered artifacts/*/** dist
-        rm -f dist/*~
-        echo "To be uploaded:"
-        ls dist
 
     - name: Create release
       if: startsWith(github.ref, 'refs/tags/v')
