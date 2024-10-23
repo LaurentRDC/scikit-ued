@@ -11,7 +11,7 @@ DESCRIPTION = "Collection of algorithms and functions for ultrafast electron sca
 URL = "http://scikit-ued.readthedocs.io"
 DOWNLOAD_URL = "http://github.com/LaurentRDC/scikit-ued"
 AUTHOR = "Laurent P. René de Cotret"
-AUTHOR_EMAIL = "laurent.renedecotret@mail.mcgill.ca"
+AUTHOR_EMAIL = "laurent.decotret@outlook.com"
 BASE_PACKAGE = "skued"
 
 base_path = Path(__file__).parent
