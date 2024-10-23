@@ -2,6 +2,7 @@
 import numpy as np
 import random
 import pytest
+from scipy.integrate import trapezoid
 
 from skued import gaussian, lorentzian, pseudo_voigt
 from skued.voigt import _pseudo_voigt_mixing_factor
@@ -9,18 +10,18 @@ from skued.voigt import _pseudo_voigt_mixing_factor
 
 def integrate_1d(x, f):
     """Numerically integrate a function f(x)."""
-    return np.trapz(f, x)
+    return trapezoid(f, x)
 
 
 def integrate_2d(x, y, f):
     """Numerically-integrate a function f(x, y)."""
-    return np.trapz(np.trapz(f, y[None, :], axis=1), x, axis=0)
+    return trapezoid(trapezoid(f, y[None, :], axis=1), x, axis=0)
 
 
 def integrate_3d(x, y, z, f):
     """Numerically-integrate a function f(x, y)."""
-    return np.trapz(
-        np.trapz(np.trapz(f, z[None, None, :], axis=2), y[None, :], axis=1), x, axis=0
+    return trapezoid(
+        trapezoid(trapezoid(f, z[None, None, :], axis=2), y[None, :], axis=1), x, axis=0
     )
 
 

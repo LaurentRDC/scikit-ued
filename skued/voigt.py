@@ -194,6 +194,7 @@ def pseudo_voigt(coordinates, center, fwhm_g, fwhm_l):
     Example
     --------
     >>> import numpy as np
+    >>> from scipy.integrate import trapezoid
     >>> from skued import pseudo_voigt
     >>>
     >>> span = np.arange(-5, 5, 0.01)
@@ -201,7 +202,7 @@ def pseudo_voigt(coordinates, center, fwhm_g, fwhm_l):
     >>> pV = pseudo_voigt( coordinates = [xx,yy], center = [0,0], fwhm_g = 0.1, fwhm_l = 0.1)
     >>> pV.shape == xx.shape
     True
-    >>> float(np.trapz(np.trapz(pV, span[None, :], axis=1), span, axis=0)) # Integral should be unity
+    >>> float(trapezoid(trapezoid(pV, span[None, :], axis=1), span, axis=0)) # Integral should be unity
     0.9938490810821982
 
     References

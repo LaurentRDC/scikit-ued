@@ -115,7 +115,7 @@ def imibread(filepath):
 
             binary.seek(coffset + header["offset"])
             arr = np.fromfile(binary, dtype=im_dtype, count=size_x * size_y)
-            yield np.reshape(arr, newshape=(size_x, size_y))
+            yield arr.reshape((size_x, size_y))
 
             coffset += header["offset"] + arr.nbytes
 
