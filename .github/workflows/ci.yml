@@ -76,6 +76,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+      contents: write  # To create a release 
     steps:
     - uses: actions/checkout@v4
 
@@ -100,8 +101,6 @@ jobs:
 
     - name: Create release
       uses: softprops/action-gh-release@v2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         body_path: description.md
         files: |
