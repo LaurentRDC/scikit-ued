@@ -36,7 +36,7 @@ def patterson(q, I, crystal, radii):
     Fultz, B, and James M Howe. Transmission Electron Microscopy and Diffractometry of Materials.
     4th ed., Springer, 2013, Equation 10.153
     """
-    q, I, radii = tuple(map(np.asfarray, [q, I, radii]))
+    q, I, radii = tuple(map(lambda arr: np.asarray(arr, dtype=float), [q, I, radii]))
 
     normalization = sum(np.square(affe(atm, q)) for atm in crystal)
     reduced_intensity = I / normalization

@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.2.0
+-------------
+
+* Added support for NumPy 2, in addition to NumPy 1.
+
 Release 2.1.17
 --------------
 

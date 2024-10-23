@@ -66,7 +66,7 @@ def complex_array(real, imag):
     complex : `~numpy.ndarray`
         Complex array.
     """
-    real, imag = np.asfarray(real), np.asfarray(imag)
+    real, imag = np.asarray(real, dtype=float), np.asarray(imag, dtype=float)
     comp = real.astype(complex)
     comp += 1j * imag
     return comp

@@ -47,7 +47,7 @@ def gaussian(coordinates, center, fwhm=None, std=None):
     >>> g = gaussian( coordinates = [xx,yy], center = [0,0], std = 1)
     >>> g.shape == xx.shape
     True
-    >>> np.sum(g)*0.1**2   # Integral should be close to unity (spacing = 0.1)
+    >>> float(np.sum(g)*0.1**2)   # Integral should be close to unity (spacing = 0.1)
     1.0000000000000075
     """
     if all([fwhm is None, std is None]):
@@ -119,7 +119,7 @@ def lorentzian(coordinates, center, fwhm):
     >>> l = lorentzian( coordinates = [xx,yy], center = [0,0], fwhm = 1)
     >>> l.shape == xx.shape
     True
-    >>> np.sum(l)*0.1**2          # Integral should be unity (spacing = 0.1)
+    >>> float(np.sum(l)*0.1**2)          # Integral should be unity (spacing = 0.1)
     0.9700030627398781
     """
     width = 0.5 * fwhm
@@ -201,7 +201,7 @@ def pseudo_voigt(coordinates, center, fwhm_g, fwhm_l):
     >>> pV = pseudo_voigt( coordinates = [xx,yy], center = [0,0], fwhm_g = 0.1, fwhm_l = 0.1)
     >>> pV.shape == xx.shape
     True
-    >>> np.trapz(np.trapz(pV, span[None, :], axis=1), span, axis=0) # Integral should be unity
+    >>> float(np.trapz(np.trapz(pV, span[None, :], axis=1), span, axis=0)) # Integral should be unity
     0.9938490810821982
 
     References

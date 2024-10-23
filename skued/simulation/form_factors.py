@@ -114,7 +114,7 @@ def _affe_parametrization(s, d):
     d : dict[str, array_like]
         Dictionary containing the "a" and "b" parameters.
     """
-    s2 = np.square(np.asfarray(s))
+    s2 = np.square(np.asarray(s, dtype=float))
     result = np.zeros_like(s2)
     for a, b in zip(d["a"], d["b"]):
         result += a * np.exp(-b * s2)
