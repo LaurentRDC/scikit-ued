@@ -69,38 +69,37 @@ jobs:
       run: |
         python -m sphinx -b doctest docs build
 
-    - name: Build artifacts
-      run: |
-        python setup.py sdist bdist_wheel
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: artifact-${{ runner.os }}-py${{ matrix.python-version }}
-        path: dist/*
-        retention-days: 7
-
 
   release:
+    if: startsWith(github.ref, 'refs/tags/v')
     needs: [build]
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
     steps:
     - uses: actions/checkout@v4
 
-    - uses: actions/download-artifact@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
       with:
-        path: dist/
-        pattern: artifact-*
-        merge-multiple: true
+        python-version: "3.10"
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install -r dev-requirements.txt
 
     - name: Create release description
       run: |
         python release-description.py CHANGELOG.rst > description.md
         cat description.md
 
+    - name: Create source distribution
+      run: |
+        python setup.py sdist
+
     - name: Create release
-      if: startsWith(github.ref, 'refs/tags/v')
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -108,9 +107,8 @@ jobs:
         files: |
           dist/*
     
+    # Github Actions have been set as a trusted publisher on PyPI's npstreams project,
+    # hence why no username, password, or token is required.
     - name: Upload to PyPI
-      if: startsWith(github.ref, 'refs/tags/v')
+      if: always()
       uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
