@@ -115,10 +115,9 @@ Once you've fixed all merge conflicts, do:
 
 ### Build environment setup
 
-To create an appropriate development environment, you need to install the base requirements (`requirements.txt`) as well as extra, development requirements (`dev-requirements.txt`)
+To create an appropriate development environment, you need to install the base requirements as well as extra, development requirements:
 
-    pip install -r requirements
-    pip install -r dev-requirements
+    pip install .[development]
 
 ## Guidelines
 

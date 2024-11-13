@@ -76,9 +76,7 @@ def test_azimuthal_average_angular_bounds():
     radius, intensity = azimuthal_average(image, center, angular_bounds=(60, 360))
     assert np.allclose(intensity, np.zeros_like(intensity))
 
-    radius, intensity = azimuthal_average(
-        image, center, angular_bounds=(60 + 360, 360 + 360)
-    )
+    radius, intensity = azimuthal_average(image, center, angular_bounds=(60 + 360, 360 + 360))
     assert np.allclose(intensity, np.zeros_like(intensity))
 
 
@@ -126,9 +124,7 @@ def test_azimuthal_average_trim_and_mask():
     radius, intensity = azimuthal_average(image, center, mask=mask, trim=False)
     assert radius.min() == 0
 
-    radius_trimmed, intensity_trimmed = azimuthal_average(
-        image, center, mask=mask, trim=True
-    )
+    radius_trimmed, intensity_trimmed = azimuthal_average(image, center, mask=mask, trim=True)
     assert radius_trimmed.min() == 20
 
 

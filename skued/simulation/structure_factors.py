@@ -39,9 +39,7 @@ def structure_factor(crystal, h, k, l, normalized=False):
     # This works whether G is a list of 3 numbers, a ndarray shape(3,) or
     # a list of meshgrid arrays.
     h, k, l = np.atleast_1d(h, k, l)
-    Gx, Gy, Gz = change_basis_mesh(
-        h, k, l, basis1=crystal.reciprocal_vectors, basis2=np.eye(3)
-    )
+    Gx, Gy, Gz = change_basis_mesh(h, k, l, basis1=crystal.reciprocal_vectors, basis2=np.eye(3))
     nG = np.sqrt(Gx**2 + Gy**2 + Gz**2)
 
     # Separating the structure factor into sine and cosine parts avoids adding

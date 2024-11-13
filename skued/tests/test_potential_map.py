@@ -71,10 +71,7 @@ def test_potential_synthesis_trivial():
     """Test that potential_synthesis calculated from zero intensity is zero everywhere"""
     crystal = Crystal.from_database("C")
     reflections = list(combinations_with_replacement(range(-3, 4), 3))
-    intensities = [
-        np.abs(structure_factor(crystal, *reflection)) ** 2
-        for reflection in reflections
-    ]
+    intensities = [np.abs(structure_factor(crystal, *reflection)) ** 2 for reflection in reflections]
 
     aR1, aR2, aR3 = crystal.lattice_vectors
     extent = np.arange(0, 10, 0.1)
@@ -82,9 +79,7 @@ def test_potential_synthesis_trivial():
     with suppress_warnings():
         plane = plane_mesh(aR3, aR1 + aR2, x1=extent)
 
-    potmap = potential_synthesis(
-        reflections, np.zeros_like(intensities), crystal, plane
-    )
+    potmap = potential_synthesis(reflections, np.zeros_like(intensities), crystal, plane)
 
     assert np.allclose(potmap, 0)
 
@@ -93,10 +88,7 @@ def test_potential_synthesis_positive_intensity():
     """Test that potential_synthesis raises an error if diffraction intensity is not positive"""
     crystal = Crystal.from_database("C")
     reflections = list(combinations_with_replacement(range(-3, 4), 3))
-    intensities = [
-        np.abs(structure_factor(crystal, *reflection)) ** 2
-        for reflection in reflections
-    ]
+    intensities = [np.abs(structure_factor(crystal, *reflection)) ** 2 for reflection in reflections]
 
     aR1, aR2, aR3 = crystal.lattice_vectors
     extent = np.arange(0, 5, 0.1)
@@ -112,10 +104,7 @@ def test_potential_synthesis_shape():
     """Test that potential_synthesis returns a map with the same shape as the mesh"""
     crystal = Crystal.from_database("C")
     reflections = list(combinations_with_replacement(range(-3, 4), 3))
-    intensities = [
-        np.abs(structure_factor(crystal, *reflection)) ** 2
-        for reflection in reflections
-    ]
+    intensities = [np.abs(structure_factor(crystal, *reflection)) ** 2 for reflection in reflections]
 
     aR1, aR2, aR3 = crystal.lattice_vectors
     extent = np.arange(0, 5, 0.1)

@@ -151,9 +151,7 @@ def test_change_basis_mesh_trivial_basis_change():
     extent = np.linspace(0, 10, 10, dtype=int)
     xx, yy, zz = np.meshgrid(extent, extent, extent)
 
-    XX, YY, ZZ = tr.change_basis_mesh(
-        xx=xx, yy=yy, zz=zz, basis1=np.eye(3), basis2=np.eye(3)
-    )
+    XX, YY, ZZ = tr.change_basis_mesh(xx=xx, yy=yy, zz=zz, basis1=np.eye(3), basis2=np.eye(3))
     assert np.allclose(xx, XX)
     assert np.allclose(yy, YY)
     assert np.allclose(zz, ZZ)
@@ -169,9 +167,7 @@ def test_change_basis_mesh_coordinate_swap():
     e1, e2, e3 = np.eye(3)
     swapped_basis = [e1, e3, e2]
 
-    XX, YY, ZZ = tr.change_basis_mesh(
-        xx=xx, yy=yy, zz=zz, basis1=np.eye(3), basis2=swapped_basis
-    )
+    XX, YY, ZZ = tr.change_basis_mesh(xx=xx, yy=yy, zz=zz, basis1=np.eye(3), basis2=swapped_basis)
     assert np.allclose(xx, XX)
     assert np.allclose(yy, ZZ)
     assert np.allclose(zz, YY)
@@ -185,9 +181,7 @@ def test_change_basis_mesh_scaling():
 
     scaled_basis = [0.5 * e1, 0.5 * e2, 0.5 * e3]
 
-    XX, YY, ZZ = tr.change_basis_mesh(
-        xx=xx, yy=yy, zz=zz, basis1=np.eye(3), basis2=scaled_basis
-    )
+    XX, YY, ZZ = tr.change_basis_mesh(xx=xx, yy=yy, zz=zz, basis1=np.eye(3), basis2=scaled_basis)
     assert np.allclose(2 * xx, XX)
     assert np.allclose(2 * yy, YY)
     assert np.allclose(2 * zz, ZZ)

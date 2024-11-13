@@ -10,9 +10,7 @@ from crystals import Crystal
 from . import __version__
 from .io import WITH_PYQTGRAPH, diffshow
 
-parser = argparse.ArgumentParser(
-    prog="skued", description=f"scikit-ued {__version__} command-line utilities."
-)
+parser = argparse.ArgumentParser(prog="skued", description=f"scikit-ued {__version__} command-line utilities.")
 
 subparsers = parser.add_subparsers(title="command", dest="command")
 

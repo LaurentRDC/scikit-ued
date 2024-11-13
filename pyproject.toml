@@ -1,0 +1,75 @@
+[build-system]
+requires = ["build", "setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = {attr = "skued.__version__"}
+
+[project]
+name = "scikit-ued"
+dynamic = ["version"]
+authors = [
+  { name="Laurent P. René de Cotret", email="laurent.decotret@outlook.com" },
+]
+maintainers = [
+  { name="Laurent P. René de Cotret", email="laurent.decotret@outlook.com" },
+]
+description = "Collection of algorithms and functions for ultrafast electron scattering"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.7, <4"
+dependencies = [
+    "crystals     >= 1.3.1, < 2",
+    "npstreams    >= 1.6.5, < 2",
+    "numpy        >= 1.17, < 3",
+    "pywavelets   >= 1.0.0, < 2",
+    "scikit-image >= 0.19, < 1",
+    # See https://github.com/scipy/scipy/issues/17740
+    "scipy        >= 1.5.0, < 2, != 1.10.0",
+    "pyyaml       >= 3.1",
+    "matplotlib   >= 3.5, <4",
+]
+keywords=["ultrafast electron scattering"]
+classifiers = [
+    "Environment :: Console",
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+
+[project.optional-dependencies]
+development = [
+    "Sphinx >= 3",
+    "sphinx_rtd_theme >= 0.4",
+    "pytest >= 6",
+    "black",
+]
+diffshow = ["pyqtgraph>=0.12,<1", "PyQt5"]
+
+[project.urls]
+Documentation = "https://scikit-ued.readthedocs.io/"
+Repository = "https://github.com/LaurentRDC/scikit-ued"
+"Bug Tracker" = "https://github.com/LaurentRDC/scikit-ued/issues"
+
+[project.scripts]
+skued-cli = "skued.__main__:main"
+
+[tool.black]
+line-length = 120
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+log_cli_level = "INFO"
+# Very cool ability for pytest to also run doctests on package contents with `-doctest-modules`
+addopts = [
+    "--doctest-modules", 
+]

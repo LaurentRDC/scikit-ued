@@ -51,13 +51,9 @@ def affe(atom, nG):
     atomic_number = atom.atomic_number
 
     try:
-        _, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[
-            atomic_number
-        ]
+        _, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[atomic_number]
     except KeyError:
-        raise ValueError(
-            f"Scattering information for element Z={atomic_number} is unavailable."
-        )
+        raise ValueError(f"Scattering information for element Z={atomic_number} is unavailable.")
 
     # Parametrization of form factors is done in terms of q = 2 s = 2 pi |G|
     q = nG / (2 * np.pi)
@@ -128,16 +124,10 @@ def _affe_p(element, s):
     .. [#] Jin-Cheng Zheng, Lijun Wu and Yimei Zhu. "Aspherical electron scattering factors and their
            parameterizations for elements from H to Xe" (2009). J. Appl. Cryst. vol 42, pp. 1043 - 1053.
     """
-    affe_p_sph = _affe_parametrization(
-        s, aspherical_ff[element]["p0"]
-    )  # Numerical parametrization of Eq 12
-    affe_p_p1 = _affe_parametrization(
-        s, aspherical_ff[element]["p1"]
-    )  # Numerical parametrization of Eq 13
+    affe_p_sph = _affe_parametrization(s, aspherical_ff[element]["p0"])  # Numerical parametrization of Eq 12
+    affe_p_p1 = _affe_parametrization(s, aspherical_ff[element]["p1"])  # Numerical parametrization of Eq 13
 
     # Angle between the electron beam and the z-axis of the orbital
     # TODO: How do we find this?
     beta = 0  # radians
-    return (3 / 2) * (sin(beta) ** 2) * affe_p_sph + (
-        cos(beta) ** 2 - (1 / 2) * sin(beta) ** 2
-    ) * affe_p_p1
+    return (3 / 2) * (sin(beta) ** 2) * affe_p_sph + (cos(beta) ** 2 - (1 / 2) * sin(beta) ** 2) * affe_p_p1

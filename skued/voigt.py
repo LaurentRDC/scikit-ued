@@ -58,17 +58,11 @@ def gaussian(coordinates, center, fwhm=None, std=None):
 
         # 1D is a special case, as coordinates are not given as a list of arrays
     if not isinstance(coordinates, (list, tuple)):  # iterable but not ndarray
-        return (
-            1
-            / (std * np.sqrt(2 * pi))
-            * np.exp(-((coordinates - center) ** 2) / (2 * std * std))
-        )
+        return 1 / (std * np.sqrt(2 * pi)) * np.exp(-((coordinates - center) ** 2) / (2 * std * std))
 
         # Computation
     dim = len(coordinates)
-    exponent = sum([(x - c) ** 2 for x, c in zip(coordinates, center)]) / (
-        2 * std * std
-    )
+    exponent = sum([(x - c) ** 2 for x, c in zip(coordinates, center)]) / (2 * std * std)
     factor = 1 / (std * np.sqrt(2 * pi)) ** dim
     return factor * np.exp(-exponent)
 
@@ -129,9 +123,7 @@ def lorentzian(coordinates, center, fwhm):
         return (width / pi) / ((coordinates - center) ** 2 + width**2)
 
     dim = len(coordinates)
-    core = width / (
-        (sum([(x - c) ** 2 for x, c in zip(coordinates, center)]) + width**2)
-    ) ** ((dim + 1) / 2)
+    core = width / ((sum([(x - c) ** 2 for x, c in zip(coordinates, center)]) + width**2)) ** ((dim + 1) / 2)
     factor = 1 / (dim * pi)
     return factor * core
 
@@ -164,11 +156,7 @@ def _pseudo_voigt_mixing_factor(width_l, width_g):
     ) ** (1 / 5)
 
     # Proportion of the Voigt that should be Lorentzian
-    return (
-        1.36603 * (width_l / gamma)
-        - 0.47719 * (width_l / gamma) ** 2
-        + 0.11116 * (width_l / gamma) ** 3
-    )
+    return 1.36603 * (width_l / gamma) - 0.47719 * (width_l / gamma) ** 2 + 0.11116 * (width_l / gamma) ** 3
 
 
 def pseudo_voigt(coordinates, center, fwhm_g, fwhm_l):
@@ -211,6 +199,4 @@ def pseudo_voigt(coordinates, center, fwhm_g, fwhm_l):
             J. of Appl. Cryst. (2000) vol. 33, pp. 1311-1316
     """
     eta = _pseudo_voigt_mixing_factor(fwhm_g, fwhm_l)
-    return (1 - eta) * gaussian(coordinates, center, fwhm_g) + eta * lorentzian(
-        coordinates, center, fwhm_l
-    )
+    return (1 - eta) * gaussian(coordinates, center, fwhm_g) + eta * lorentzian(coordinates, center, fwhm_l)

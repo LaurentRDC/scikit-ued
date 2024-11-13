@@ -63,9 +63,7 @@ if WITH_PYQTGRAPH:
                 val = self.viewer.getImageItem().image[i, j]
             except IndexError:
                 val = 0
-            self.cursor_info.setText(
-                f"Position: ({i},{j}) | Pixel value: {val:.2f} cnts"
-            )
+            self.cursor_info.setText(f"Position: ({i},{j}) | Pixel value: {val:.2f} cnts")
 
 
 @contextmanager

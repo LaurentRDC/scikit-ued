@@ -66,9 +66,7 @@ def azimuthal_average(image, center, mask=None, angular_bounds=None, trim=True):
 
     if angular_bounds:
         mi, ma = _angle_bounds(angular_bounds)
-        angles = (
-            np.rad2deg(np.arctan2(Y - yc, X - xc)) + 180
-        )  # arctan2 is defined on [-pi, pi] but we want [0, pi]
+        angles = np.rad2deg(np.arctan2(Y - yc, X - xc)) + 180  # arctan2 is defined on [-pi, pi] but we want [0, pi]
         in_bounds = np.logical_and(mi <= angles, angles <= ma)
     else:
         in_bounds = np.ones_like(image, dtype=bool)

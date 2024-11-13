@@ -19,13 +19,9 @@ e = 14.4  # Volt*Angstrom
 
 def _electrostatic_atom(atom, r):
     try:
-        _, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[
-            atom.atomic_number
-        ]
+        _, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[atom.atomic_number]
     except KeyError:
-        raise ValueError(
-            f"Scattering information for element {atom.element} is unavailable."
-        )
+        raise ValueError(f"Scattering information for element {atom.element} is unavailable.")
 
     sum1 = np.zeros_like(r, dtype=float)
     for a, b in zip((a1, a2, a3), (b1, b2, b3)):
@@ -68,9 +64,7 @@ def electrostatic(crystal, x, y, z):
     r = np.zeros_like(x, dtype=float)
     for atom in crystal:
         ax, ay, az = atom.coords_cartesian
-        r[:] = minimum_image_distance(
-            x - ax, y - ay, z - az, lattice=crystal.lattice_vectors
-        )
+        r[:] = minimum_image_distance(x - ax, y - ay, z - az, lattice=crystal.lattice_vectors)
         potential += _electrostatic_atom(atom, r)
 
     # Due to sampling, x,y, and z might pass through the center of atoms
@@ -82,19 +76,13 @@ def electrostatic(crystal, x, y, z):
 
 def _pelectrostatic_atom(atom, r):
     try:
-        _, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[
-            atom.atomic_number
-        ]
+        _, a1, b1, a2, b2, a3, b3, c1, d1, c2, d2, c3, d3 = scattering_params[atom.atomic_number]
     except KeyError:
-        raise ValueError(
-            f"Scattering information for element {atom.element} is unavailable."
-        )
+        raise ValueError(f"Scattering information for element {atom.element} is unavailable.")
 
     potential = np.zeros_like(r, dtype=float)
     for a, b, c, d in zip((a1, a2, a3), (b1, b2, b3), (c1, c2, c3), (d1, d2, d3)):
-        potential += 2 * a * bessel(2 * pi * r * sqrt(b)) + (c / d) * np.exp(
-            -((r * pi) ** 2) / d
-        )
+        potential += 2 * a * bessel(2 * pi * r * sqrt(b)) + (c / d) * np.exp(-((r * pi) ** 2) / d)
 
     return 2 * a0 * e * (pi**2) * potential
 
@@ -130,9 +118,7 @@ def pelectrostatic(crystal, x, y, bounds=None):
 
     if bounds:
         min_z, max_z = min(bounds), max(bounds)
-        atoms = (
-            atom for atom in iter(crystal) if min_z <= atom.coords_cartesian[2] < max_z
-        )
+        atoms = (atom for atom in iter(crystal) if min_z <= atom.coords_cartesian[2] < max_z)
     else:
         atoms = iter(crystal)
 

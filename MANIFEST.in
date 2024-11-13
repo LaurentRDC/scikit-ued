@@ -1,8 +1,6 @@
 include README.md
 include CHANGELOG.rst
 include LICENSE.txt 
-include requirements.txt 
-include dev-requirements.txt
 
 recursive-include skued/baseline/data *
 recursive-include skued/simulation/data *

@@ -41,9 +41,7 @@ def nfold(im, mod, center=None, mask=None, fill_value=0.0):
     ValueError : If `mod` is not a divisor of 360 deg.
     """
     if 360 % mod:
-        raise ValueError(
-            f"{mod}-fold rotational symmetry is not valid (not a divisor of 360)."
-        )
+        raise ValueError(f"{mod}-fold rotational symmetry is not valid (not a divisor of 360).")
     angles = range(0, 360, int(360 / mod))
 
     im = np.array(im, copy=True)

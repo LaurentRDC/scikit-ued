@@ -52,9 +52,7 @@ def test_ialign_misaligned_canned_images():
 
     misaligned = (ndi.shift(camera(), shift=s) for s in shifts)
 
-    for aligned, (sx, sy) in zip(
-        ialign(misaligned, reference=reference, mask=mask), shifts
-    ):
+    for aligned, (sx, sy) in zip(ialign(misaligned, reference=reference, mask=mask), shifts):
         assert np.allclose(reference[sx::, 0:-sy], aligned[sx::, 0:-sy])
 
 

@@ -371,9 +371,7 @@ class DM3(object):
             arrayTypes = self._readArrayTypes()
             self._readArrayData(arrayTypes)
         else:
-            raise Exception(
-                "rAnD, " + hex(self._f.tell()) + ": Can't understand encoded type"
-            )
+            raise Exception("rAnD, " + hex(self._f.tell()) + ": Can't understand encoded type")
         return 1
 
     def _readNativeData(self, encodedType, etSize):
@@ -381,12 +379,7 @@ class DM3(object):
         if encodedType in readFunc:
             val = readFunc[encodedType](self._f)
         else:
-            raise Exception(
-                "rND, "
-                + hex(self._f.tell())
-                + ": Unknown data type "
-                + str(encodedType)
-            )
+            raise Exception("rND, " + hex(self._f.tell()) + ": Unknown data type " + str(encodedType))
         return val
 
     def _readStringData(self, stringSize):
@@ -531,10 +524,7 @@ class DM3(object):
 
         # raise Exception if not DM3 or DM4
         if not (isDM3 or isDM4):
-            raise Exception(
-                "'%s' does not appear to be a DM3/DM4 file."
-                % os.path.split(self._filename)[1]
-            )
+            raise Exception("'%s' does not appear to be a DM3/DM4 file." % os.path.split(self._filename)[1])
 
         self._fileVersion = fileVersion
 
@@ -720,9 +710,7 @@ class DM3(object):
     def pxsize(self):
         """Returns pixel size and unit."""
         tag_root = "root.ImageList.1"
-        pixel_size = float(
-            self.tags["%s.ImageData.Calibrations.Dimension.0.Scale" % tag_root]
-        )
+        pixel_size = float(self.tags["%s.ImageData.Calibrations.Dimension.0.Scale" % tag_root])
         unit = self.tags["%s.ImageData.Calibrations.Dimension.0.Units" % tag_root]
         if unit == "\xb5m":
             unit = "micron"

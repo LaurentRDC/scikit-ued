@@ -84,9 +84,7 @@ def test_autocenter_shifted_with_mask(rc, cc):
     assert np.allclose(autocenter(im, mask=mask), center, atol=1)
 
 
-CENTERS = list(
-    range(DIFF_PATTERN_SIZE // 3, 2 * DIFF_PATTERN_SIZE // 3, DIFF_PATTERN_SIZE // 10)
-)
+CENTERS = list(range(DIFF_PATTERN_SIZE // 3, 2 * DIFF_PATTERN_SIZE // 3, DIFF_PATTERN_SIZE // 10))
 
 
 @pytest.mark.parametrize("rc", CENTERS)

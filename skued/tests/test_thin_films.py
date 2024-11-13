@@ -23,7 +23,5 @@ def test_film_interaction_conservation_power():
 
 def test_film_interaction_correctness():
     """Test for absorption values of VO2 on SiN substrate. Values provided from Martin R. Otto"""
-    _, _, A = film_optical_coefficients(
-        800, thickness=90, n_film=2.9 + 1j * 0.43, n_substrate=1.9962
-    )
+    _, _, A = film_optical_coefficients(800, thickness=90, n_film=2.9 + 1j * 0.43, n_substrate=1.9962)
     assert round(abs(A - 0.312495), 5) == 0

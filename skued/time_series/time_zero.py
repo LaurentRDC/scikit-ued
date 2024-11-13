@@ -55,9 +55,7 @@ def register_time_shift(trace, reference, method="auto"):
         )
 
     if trace.ndim > 1:
-        raise ValueError(
-            f"Expected 1D time traces, but received traces of shape {trace.shape}"
-        )
+        raise ValueError(f"Expected 1D time traces, but received traces of shape {trace.shape}")
 
     trace = trace - trace.mean()
     reference = reference - reference.mean()
@@ -65,9 +63,7 @@ def register_time_shift(trace, reference, method="auto"):
     # Normalized cross-correlation
     # Note : we use an external function to calculate normalization
     #        so that it can be efficiently cached
-    xcorr = correlate(
-        trace, reference, mode="full", method="auto"
-    ) / __xcorr_normalization(trace.size, trace.dtype)
+    xcorr = correlate(trace, reference, mode="full", method="auto") / __xcorr_normalization(trace.size, trace.dtype)
 
     # Generalize to the average of multiple maxima
     maxima = np.transpose(np.nonzero(xcorr == xcorr.max()))

@@ -53,9 +53,7 @@ class Selection(metaclass=ABCMeta):
         """
         top, bottom, left, right = self.bounding_box
 
-        return mpatches.Rectangle(
-            xy=(left, top), width=right - left, height=bottom - top, angle=0, **kwargs
-        )
+        return mpatches.Rectangle(xy=(left, top), width=right - left, height=bottom - top, angle=0, **kwargs)
 
     # The method below should be specialized for subclasses.
     @property
@@ -277,11 +275,7 @@ class RingSelection(Selection):
             np.arange(0, self.shape[1], dtype=int) - center_row,
         )
         distance = np.sqrt(rr**2 + cc**2)
-        selection[
-            np.logical_and(
-                distance >= self._inner_radius, distance <= self._outer_radius
-            )
-        ] = True
+        selection[np.logical_and(distance >= self._inner_radius, distance <= self._outer_radius)] = True
         return selection
 
     # TODO: make new patch class
@@ -327,9 +321,7 @@ class RingArcSelection(Selection):
         Starting and ending angles of the 2-torus in degrees, relative to ``angle``.
     """
 
-    def __init__(
-        self, shape, center, inner_radius, outer_radius, angle=0, theta1=0, theta2=360
-    ):
+    def __init__(self, shape, center, inner_radius, outer_radius, angle=0, theta1=0, theta2=360):
         if inner_radius > outer_radius:
             raise ValueError("Inner radius cannot be larger than outer radius.")
 
@@ -372,9 +364,7 @@ class RingArcSelection(Selection):
         angle = np.rad2deg(np.arctan2(rr, cc)) + self._angle
         angle[:] = np.mod(angle, 360)
 
-        distance_criteria = np.logical_and(
-            distance >= self._inner_radius, distance <= self._outer_radius
-        )
+        distance_criteria = np.logical_and(distance >= self._inner_radius, distance <= self._outer_radius)
         angle_criteria = np.logical_and(angle >= self._theta1, angle <= self._theta2)
         selection[np.logical_and(angle_criteria, distance_criteria)] = True
         return selection
@@ -398,7 +388,7 @@ class RingArcSelection(Selection):
             angle=self._angle,
             theta1=self._theta1,
             theta2=self._theta2,
-            **kwargs
+            **kwargs,
         )
 
         inner_arc = arc(self._inner_radius)

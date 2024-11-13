@@ -48,7 +48,4 @@ def patterson(q, I, crystal, radii):
     extended_reduced_intensity = np.outer(reduced_intensity, np.ones_like(radii))
 
     dq = np.mean(np.diff(q))
-    return (
-        np.sum((GG / rr) * np.sin(rr * GG) * (extended_reduced_intensity - 1), axis=0)
-        * dq
-    )
+    return np.sum((GG / rr) * np.sin(rr * GG) * (extended_reduced_intensity - 1), axis=0) * dq

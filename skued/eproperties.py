@@ -50,11 +50,7 @@ def electron_wavelength(keV):
     .. Kirkland 2010 Eq. 2.5
     """
     eV = elementary_charge * keV * 1e3
-    wavelength_meters = (
-        Planck
-        * speed_of_light
-        / np.sqrt(eV * (2 * electron_mass * speed_of_light**2 + eV))
-    )
+    wavelength_meters = Planck * speed_of_light / np.sqrt(eV * (2 * electron_mass * speed_of_light**2 + eV))
     return wavelength_meters * 1e10  # wavelength in angstroms
 
 

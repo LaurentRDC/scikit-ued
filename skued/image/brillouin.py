@@ -100,9 +100,7 @@ class brillouin_zones:
             skipped_peaks = list()
             # assert type(optimization_radius) == float
             for idx, peak in enumerate(peaks):
-                if (
-                    idx > 0
-                ):  # do not optimize center, which is masked anyway most likely
+                if idx > 0:  # do not optimize center, which is masked anyway most likely
                     r, c = peaks[idx]
                     peak = np.asarray(peak).astype(int)
                     disk = DiskSelection(
@@ -114,9 +112,7 @@ class brillouin_zones:
                     region = image[r1:r2, c1:c2]
                     try:
                         true_peak_idx_local = np.where(region == region.max())
-                        true_peak_idx_global = np.where(
-                            self._image == region[true_peak_idx_local]
-                        )
+                        true_peak_idx_global = np.where(self._image == region[true_peak_idx_local])
                         new_r, new_c = (
                             true_peak_idx_global[0][0],
                             true_peak_idx_global[1][0],
@@ -169,14 +165,8 @@ class brillouin_zones:
         for r in self.__voronoi_regions:
             if not r.is_inf:
                 verts = np.array(r.vertices).reshape(-1, 2)
-                COND1 = np.all(
-                    np.sqrt(np.sum((verts - self.center) ** 2, axis=1)) < bbox
-                )
-                COND2 = (
-                    (verts.shape[0] == self._symmetry)
-                    if self._symmetry is not None
-                    else True
-                )
+                COND1 = np.all(np.sqrt(np.sum((verts - self.center) ** 2, axis=1)) < bbox)
+                COND2 = (verts.shape[0] == self._symmetry) if self._symmetry is not None else True
                 if COND1 and COND2:
                     r.add_visible_vertex(verts)
             r.visible_vertices = np.array(r.visible_vertices).reshape(-1, 2)
@@ -204,9 +194,7 @@ class brillouin_zones:
         from matplotlib.patches import Polygon
 
         for r in self.visible_BZs if BZs is None else BZs:
-            axis.add_patch(
-                Polygon(np.array(r.vertices).reshape(-1, 2), fill=False, **kwargs)
-            )
+            axis.add_patch(Polygon(np.array(r.vertices).reshape(-1, 2), fill=False, **kwargs))
 
     def determineConsistency(self, BZs=None):
         """
@@ -267,12 +255,8 @@ class brillouin_zones:
             The determined equivalent scattering vectors. The number of vectors
             is dependent on the set of peaks used determined by the `use_visible` parameter.
         """
-        self.__Qvector = (
-            Qvector - self.center
-        )  # place scat vec in pixel space with shifted origin to (0,0)
-        self.__bragg_peaks = (
-            self.bragg_peaks - self.center
-        )  # place undiffracted beam at origin in pixel space
+        self.__Qvector = Qvector - self.center  # place scat vec in pixel space with shifted origin to (0,0)
+        self.__bragg_peaks = self.bragg_peaks - self.center  # place undiffracted beam at origin in pixel space
 
         deltas = self.__bragg_peaks - self.__Qvector
         CLOSEST_PEAK_INDEX = np.argmin(np.einsum("ij,ij->i", deltas, deltas))
@@ -282,37 +266,23 @@ class brillouin_zones:
 
         # Now determine relative angle of reduced wavevector to the closest bragg peak
         inner = np.inner(REDUCED_WAVEVECTOR, self.__bragg_peaks[CLOSEST_PEAK_INDEX])
-        norms = np.linalg.norm(REDUCED_WAVEVECTOR) * np.linalg.norm(
-            self.__bragg_peaks[CLOSEST_PEAK_INDEX]
-        )
+        norms = np.linalg.norm(REDUCED_WAVEVECTOR) * np.linalg.norm(self.__bragg_peaks[CLOSEST_PEAK_INDEX])
         ORIGINAL_ANG = np.arccos(np.clip(inner / norms, -1.0, 1.0))
         REDUCED_WAVEVECTOR_RADIUS = np.linalg.norm(REDUCED_WAVEVECTOR)
         ANGULAR_SEP = np.arctan2(REDUCED_WAVEVECTOR[1], REDUCED_WAVEVECTOR[0])
         QVectors = list()
         if use_visible:
             for r in self.visible_BZs:
-                CURRENT_ANGLE = np.arctan2(
-                    r.center[1] - self.center[1], r.center[0] - self.center[0]
-                )
+                CURRENT_ANGLE = np.arctan2(r.center[1] - self.center[1], r.center[0] - self.center[0])
                 COSANG = np.cos(ANGULAR_SEP + CURRENT_ANGLE - ORIGINAL_ANG)
                 SINANG = np.sin(ANGULAR_SEP + CURRENT_ANGLE - ORIGINAL_ANG)
-                QVectors.append(
-                    r.center + REDUCED_WAVEVECTOR_RADIUS * np.array([COSANG, SINANG])
-                )
+                QVectors.append(r.center + REDUCED_WAVEVECTOR_RADIUS * np.array([COSANG, SINANG]))
 
         else:
             for peak in self.bragg_peaks:
-                CURRENT_ANGLE = np.arctan2(
-                    peak[1] - self.center[1], peak[0] - self.center[0]
-                )
+                CURRENT_ANGLE = np.arctan2(peak[1] - self.center[1], peak[0] - self.center[0])
                 COSANG = np.cos(ANGULAR_SEP + CURRENT_ANGLE - ORIGINAL_ANG)
                 SINANG = np.sin(ANGULAR_SEP + CURRENT_ANGLE - ORIGINAL_ANG)
-                QVectors.append(
-                    peak + REDUCED_WAVEVECTOR_RADIUS * np.array([COSANG, SINANG])
-                )
-        QVectors = (
-            np.array(sorted(QVectors, key=lambda p: np.linalg.norm(p - self.center)))
-            .reshape(-1, 2)
-            .astype(int)
-        )
+                QVectors.append(peak + REDUCED_WAVEVECTOR_RADIUS * np.array([COSANG, SINANG]))
+        QVectors = np.array(sorted(QVectors, key=lambda p: np.linalg.norm(p - self.center))).reshape(-1, 2).astype(int)
         return QVectors[1:, :]  # ignore vector around center

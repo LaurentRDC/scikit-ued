@@ -32,15 +32,11 @@ def test_approx_rec():
     assert rec_arr2.shape == arr2.shape
 
     arr2 = np.random.random(size=(102, 104))
-    rec_arr2 = _dwt_approx_rec2(
-        arr2, level=2, wavelet="sym6", mode="constant", axis=(-2, -1)
-    )
+    rec_arr2 = _dwt_approx_rec2(arr2, level=2, wavelet="sym6", mode="constant", axis=(-2, -1))
     assert rec_arr2.shape == arr2.shape
 
     arr2 = np.random.random(size=(102, 94, 25))
-    rec_arr2 = _dwt_approx_rec2(
-        arr2, level=2, wavelet="sym6", mode="constant", axis=(0, 1)
-    )
+    rec_arr2 = _dwt_approx_rec2(arr2, level=2, wavelet="sym6", mode="constant", axis=(0, 1))
     assert rec_arr2.shape == arr2.shape
 
 

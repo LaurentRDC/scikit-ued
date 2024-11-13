@@ -11,9 +11,7 @@ from skued import electrostatic, pelectrostatic
 def test_return_shape():
     """Test that the return shape of pelectrostatic is the same as input arrays"""
     crystal = Crystal.from_database("C")
-    xx, yy, zz = np.meshgrid(
-        np.linspace(-10, 10, 16), np.linspace(-10, 10, 16), np.linspace(-10, 10, 16)
-    )
+    xx, yy, zz = np.meshgrid(np.linspace(-10, 10, 16), np.linspace(-10, 10, 16), np.linspace(-10, 10, 16))
     potential = electrostatic(crystal, xx, yy, zz)
 
     assert xx.shape == potential.shape
@@ -21,9 +19,7 @@ def test_return_shape():
 
 def test_side_effects():
     """Test that mesh arrays are not written to in pelectrostatic"""
-    xx, yy, zz = np.meshgrid(
-        np.linspace(-10, 10, 16), np.linspace(-10, 10, 16), np.linspace(-10, 10, 16)
-    )
+    xx, yy, zz = np.meshgrid(np.linspace(-10, 10, 16), np.linspace(-10, 10, 16), np.linspace(-10, 10, 16))
 
     xx.setflags(write=False)
     yy.setflags(write=False)

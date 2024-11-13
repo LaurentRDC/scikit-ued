@@ -44,9 +44,7 @@ def calq(I, crystal, peak_indices, miller_indices):
     I = np.asarray(I)
 
     if I.ndim != 2:
-        raise ValueError(
-            f"Expected 2D diffraction pattern, but received shape {I.shape}"
-        )
+        raise ValueError(f"Expected 2D diffraction pattern, but received shape {I.shape}")
 
     hkl1, hkl2 = miller_indices
     qx1, qy1, _ = crystal.scattering_vector(hkl1)
@@ -58,12 +56,8 @@ def calq(I, crystal, peak_indices, miller_indices):
     peak_indices_x = [peak_index[0] for peak_index in peak_indices]
     peak_indices_y = [peak_index[1] for peak_index in peak_indices]
 
-    slope_x, intercept_x = np.polyfit(
-        np.asarray(peak_indices_x), np.asarray([qx1, qx2]), deg=1
-    )
-    slope_y, intercept_y = np.polyfit(
-        np.asarray(peak_indices_y), np.asarray([qy1, qy2]), deg=1
-    )
+    slope_x, intercept_x = np.polyfit(np.asarray(peak_indices_x), np.asarray([qx1, qx2]), deg=1)
+    slope_y, intercept_y = np.polyfit(np.asarray(peak_indices_y), np.asarray([qy1, qy2]), deg=1)
 
     x_range = slope_x * np.arange(0, I.shape[0]) + intercept_x
     y_range = slope_y * np.arange(0, I.shape[1]) + intercept_y
@@ -108,9 +102,7 @@ def powder_calq(I, crystal, peak_indices, miller_indices):
     I = np.asarray(I)
 
     if I.ndim > 1:
-        raise ValueError(
-            f"Expected 1D diffraction intensity, but received shape {I.shape}"
-        )
+        raise ValueError(f"Expected 1D diffraction intensity, but received shape {I.shape}")
 
     if len(peak_indices) != len(miller_indices):
         raise ValueError(
@@ -119,9 +111,7 @@ def powder_calq(I, crystal, peak_indices, miller_indices):
         )
 
     if len(peak_indices) < 2:
-        raise ValueError(
-            f"Two peaks are required to calibrate, but received {len(peak_indices)}"
-        )
+        raise ValueError(f"Two peaks are required to calibrate, but received {len(peak_indices)}")
 
     # scattering vector length based on known structure
     qs = [hypot(*crystal.scattering_vector(hkl)) for hkl in miller_indices]

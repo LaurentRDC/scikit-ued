@@ -62,9 +62,7 @@ def bragg_peaks(im, mask=None, center=None, min_dist=None):
         im /= gaussian_filter(input=im, sigma=min(im.shape) / 20, truncate=2)
     im = np.nan_to_num(im, copy=False)
 
-    autocorr = np.abs(
-        cross_correlate_masked(arr1=im, arr2=im, m1=mask, m2=mask, mode="same")
-    )
+    autocorr = np.abs(cross_correlate_masked(arr1=im, arr2=im, m1=mask, m2=mask, mode="same"))
 
     # The regions of interest are defined on the labels made
     # from the autocorrelation of the image. The center of the autocorr
@@ -88,9 +86,7 @@ def bragg_peaks(im, mask=None, center=None, min_dist=None):
 
     labels = label(regions, return_num=False)
     props = regionprops(label_image=labels, intensity_image=im)
-    candidates = [
-        prop for prop in props if not np.any(np.isnan(prop.weighted_centroid))
-    ]
+    candidates = [prop for prop in props if not np.any(np.isnan(prop.weighted_centroid))]
 
     # Some regions are very close to each other; we prune them!
     if min_dist is None:
@@ -107,9 +103,7 @@ def bragg_peaks(im, mask=None, center=None, min_dist=None):
     return sorted(peaks, key=lambda p: np.linalg.norm(p - center))
 
 
-def bragg_peaks_persistence(
-    im, mask=None, center=None, min_dist=None, bd_threshold=0.0, prominence=0.0
-):
+def bragg_peaks_persistence(im, mask=None, center=None, min_dist=None, bd_threshold=0.0, prominence=0.0):
     """
     Extract the position of Bragg peaks in a single-crystal diffraction pattern
     using 2D persistence of the image landscape. If detected peaks fall above
@@ -218,38 +212,27 @@ def bragg_peaks_persistence(
         combos = combinations(candidates, 2)
         if type(min_dist) == int or type(min_dist) == float:
             points_to_remove = [
-                point2
-                for point1, point2 in combos
-                if np.linalg.norm(np.array(point1) - np.array(point2)) < min_dist
+                point2 for point1, point2 in combos if np.linalg.norm(np.array(point1) - np.array(point2)) < min_dist
             ]
 
         else:
             points_to_remove = [
                 point2
                 for point1, point2 in combos
-                if abs(point1[0] - point2[0]) <= min_dist[0]
-                and abs(point1[1] - point2[1]) <= min_dist[1]
+                if abs(point1[0] - point2[0]) <= min_dist[0] and abs(point1[1] - point2[1]) <= min_dist[1]
             ]
         candidates = [point for point in candidates if point not in points_to_remove]
 
     candidates = np.array(candidates).reshape(-1, 2)
-    peaks = np.array(
-        sorted(candidates, key=lambda p: np.linalg.norm(p - center))
-    ).reshape(-1, 2)
+    peaks = np.array(sorted(candidates, key=lambda p: np.linalg.norm(p - center))).reshape(-1, 2)
     birth_death = np.array(birth_death).reshape(-1, 2)
 
     # remove peaks that are within the masked area
     if mask.sum() != mask.shape[0] * mask.shape[1]:
         peaks = np.array([p for p in peaks if mask[p[1], p[0]]])
-        birth_death = np.array(
-            [bd for p, bd in zip(peaks, birth_death) if mask[p[1], p[0]]]
-        )
-        birth_death_indices = np.array(
-            [bdi for p, bdi in zip(peaks, birth_death_indices) if mask[p[1], p[0]]]
-        )
-        persistencies = np.array(
-            [pers for p, pers in zip(peaks, persistencies) if mask[p[1], p[0]]]
-        )
+        birth_death = np.array([bd for p, bd in zip(peaks, birth_death) if mask[p[1], p[0]]])
+        birth_death_indices = np.array([bdi for p, bdi in zip(peaks, birth_death_indices) if mask[p[1], p[0]]])
+        persistencies = np.array([pers for p, pers in zip(peaks, persistencies) if mask[p[1], p[0]]])
     return peaks, birth_death, birth_death_indices, persistencies
 
 
@@ -357,10 +340,7 @@ class Persistence:
                         self._groups0[self.uf[q]] = (bl, bl - v, p)
                     self.uf.union(oldp, q)
 
-        self._groups0 = [
-            (k, self._groups0[k][0], self._groups0[k][1], self._groups0[k][2])
-            for k in self._groups0
-        ]
+        self._groups0 = [(k, self._groups0[k][0], self._groups0[k][1], self._groups0[k][2]) for k in self._groups0]
         self._groups0.sort(key=lambda g: g[2], reverse=True)
         self.persistence = self._groups0
 

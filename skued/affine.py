@@ -39,9 +39,7 @@ def affine_map(array):
         extended_matrix[:3, :3] = array
         return extended_matrix
     else:
-        raise ValueError(
-            "Array shape not 3x3 or 4x4, and thus is not a transformation matrix."
-        )
+        raise ValueError("Array shape not 3x3 or 4x4, and thus is not a transformation matrix.")
 
 
 def transform(matrix, array):

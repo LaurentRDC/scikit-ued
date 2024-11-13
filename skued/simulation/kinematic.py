@@ -54,9 +54,7 @@ def kinematicsim(crystal, kx, ky, energy=90):
     potential = pelectrostatic(crystal, xx, yy)
     transmission_function = np.exp(1j * interaction_parameter(energy) * potential)
 
-    exit_wave = fft.ifft2(
-        fft.fft2(np.ones_like(xx, dtype=complex) * transmission_function)
-    )
+    exit_wave = fft.ifft2(fft.fft2(np.ones_like(xx, dtype=complex) * transmission_function))
     intensity = fft.fftshift(np.abs(fft.fft2(exit_wave)) ** 2)
 
     kx_ = fft.fftshift(kx_)
@@ -97,9 +95,7 @@ def fft2freq(x, y, indexing="xy"):
     elif indexing == "ij":
         extent_x, extent_y = x[:, 0], y[0, :]
     else:
-        raise ValueError(
-            "Indexing should be either 'xy' or 'ij', not {}".format(indexing)
-        )
+        raise ValueError("Indexing should be either 'xy' or 'ij', not {}".format(indexing))
 
     # Spacing assuming constant x and y spacing
     spacing_x = abs(extent_x[1] - extent_x[0])

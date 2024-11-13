@@ -32,42 +32,32 @@ jobs:
       if: startsWith(runner.os, 'Linux')
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/*requirements.txt') }}
+        key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
 
     - uses: actions/cache@v4
       if: startsWith(runner.os, 'macOS')
       with:
         path: ~/Library/Caches/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/*requirements.txt') }}
+        key: ${{ runner.os }}-pip-${{ hashFiles('pyproject.toml') }}
 
     - uses: actions/cache@v4
       if: startsWith(runner.os, 'Windows')
       with:
         path: ~\AppData\Local\pip\Cache
-        key: ${{ runner.os }}-py${{ matrix.python-version }}-pip-${{ hashFiles('**/*requirements.txt') }}
+        key: ${{ runner.os }}-py${{ matrix.python-version }}-pip-${{ hashFiles('pyproject.toml') }}
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install numpy wheel
-        pip install -r requirements.txt
-        pip install -r dev-requirements.txt
+        pip install .[development]
 
-    # We run the tests on the installed package, with all optional dependencies
-    # Note the use of the -Wa flag to show DeprecationWarnings
-    - name: Unit tests
+    - name: Unit tests and doc tests
       run: |
-        python -m pip install .[diffshow]
-        cd ~
-        python -Wa -m pytest --pyargs skued --import-mode=importlib
+        python -Wa -m pytest
     
     - name: Build documentation
       run: |
-        python setup.py build_sphinx
-    
-    - name: Doctests
-      run: |
-        python -m sphinx -b doctest docs build
+        sphinx-build -M html docs build/docs
 
 
   release:
@@ -87,8 +77,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install -r requirements.txt
-        pip install -r dev-requirements.txt
+        pip install build
+        pip install .[development]
 
     - name: Create release description
       run: |
@@ -97,7 +87,7 @@ jobs:
 
     - name: Create source distribution
       run: |
-        python setup.py sdist
+        python -m build
 
     - name: Create release
       uses: softprops/action-gh-release@v2

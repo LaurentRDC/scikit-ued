@@ -159,9 +159,7 @@ def baseline_dwt(
     )
 
 
-def _iterative_baseline(
-    array, max_iter, mask, background_regions, axes, approx_rec_func, func_kwargs
-):
+def _iterative_baseline(array, max_iter, mask, background_regions, axes, approx_rec_func, func_kwargs):
     """
     Base function for iterative baseline determination. This function is not meant to be called directly.
     See `baseline_dt` or `baseline_dwt`.
@@ -205,9 +203,7 @@ def _iterative_baseline(
     # Since most wavelet transforms only works on even-length signals, we might have to extend.
     # See numpy.pad() docs for a formatting of the padding tuple constructed below
     original_shape = array.shape
-    padding = [
-        (0, 0) for dim in range(array.ndim)
-    ]  # e.g. 2D : padding = [ (0,0), (0,0) ]
+    padding = [(0, 0) for dim in range(array.ndim)]  # e.g. 2D : padding = [ (0,0), (0,0) ]
     for axis in axes:
         if original_shape[axis] % 2 == 1:
             padding[axis] = (0, 1)
@@ -347,22 +343,16 @@ def _dwt_approx_rec(array, level, wavelet, mode, axis):
         # Check maximum decomposition level
         # For 2D array, check the condition with shortest dimension min(array.shape). This is how
         # it is done in PyWavelet.wavedec2.
-    max_level = pywt.dwt_max_level(
-        data_len=array.shape[axis], filter_len=wavelet.dec_len
-    )
+    max_level = pywt.dwt_max_level(data_len=array.shape[axis], filter_len=wavelet.dec_len)
     if level is None:
         level = max_level
     elif max_level < level:
-        warn(
-            f"Decomposition level {level} higher than maximum {max_level}. Maximum is used."
-        )
+        warn(f"Decomposition level {level} higher than maximum {max_level}. Maximum is used.")
         level = max_level
 
         # By now, we are sure that the decomposition level will be supported.
         # Decompose the signal using the multilevel discrete wavelet transform
-    coeffs = pywt.wavedec(
-        data=array, wavelet=wavelet, level=level, mode=mode, axis=axis
-    )
+    coeffs = pywt.wavedec(data=array, wavelet=wavelet, level=level, mode=mode, axis=axis)
     app_coeffs, det_coeffs = coeffs[0], coeffs[1:]
 
     # Replace detail coefficients by 0; keep the correct length so that the
@@ -378,9 +368,7 @@ def _dwt_approx_rec(array, level, wavelet, mode, axis):
 
     # Sometimes pywt.waverec returns a signal that is longer than the original signal
     while reconstructed.shape[axis] > array.shape[axis]:
-        reconstructed = np.swapaxes(
-            np.swapaxes(reconstructed, 0, axis)[: array.shape[axis]], 0, axis
-        )
+        reconstructed = np.swapaxes(np.swapaxes(reconstructed, 0, axis)[: array.shape[axis]], 0, axis)
     return reconstructed
 
 
@@ -427,22 +415,16 @@ def _dwt_approx_rec2(array, level, wavelet, mode, axis):
         # Check maximum decomposition level
         # For 2D array, check the condition with shortest dimension min(array.shape). This is how
         # it is done in PyWavelet.wavedec2.
-    max_level = pywt.dwt_max_level(
-        data_len=min(array.shape[ax] for ax in axis), filter_len=wavelet.dec_len
-    )
+    max_level = pywt.dwt_max_level(data_len=min(array.shape[ax] for ax in axis), filter_len=wavelet.dec_len)
     if level is None:
         level = max_level
     elif max_level < level:
-        warn(
-            f"Decomposition level {level} higher than maximum {max_level}. Maximum is used."
-        )
+        warn(f"Decomposition level {level} higher than maximum {max_level}. Maximum is used.")
         level = max_level
 
         # By now, we are sure that the decomposition level will be supported.
         # Decompose the signal using the multilevel discrete wavelet transform
-    coeffs = pywt.wavedec2(
-        data=array, wavelet=wavelet, level=level, mode=mode, axes=axis
-    )
+    coeffs = pywt.wavedec2(data=array, wavelet=wavelet, level=level, mode=mode, axes=axis)
     app_coeffs, det_coeffs = coeffs[0], coeffs[1:]
 
     # Replace detail coefficients by 0; keep the correct length so that the

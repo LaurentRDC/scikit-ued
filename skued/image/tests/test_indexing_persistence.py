@@ -44,9 +44,7 @@ def test_bragg_peaks_persistence():
         for refl in cryst.bounded_reflections(kk.max())
         if (refl[2] == 0 and np.abs(cryst.scattering_vector(refl)[0]) < kx.max())
     ]
-    peaks, _, _, _ = bragg_peaks_persistence(
-        I, mask=np.ones_like(I, dtype=bool), prominence=0.04
-    )
+    peaks, _, _, _ = bragg_peaks_persistence(I, mask=np.ones_like(I, dtype=bool), prominence=0.04)
     assert len(peaks) == len(in_plane_refls) - 1  # reflections include Q=0
 
 

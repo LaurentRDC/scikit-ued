@@ -99,17 +99,13 @@ def dtcwt(data, first_stage, wavelet, mode="constant", level=None, axis=-1):
     data = np.asarray(data, dtype=float) / np.sqrt(2)
 
     if level is None:
-        level = dt_max_level(
-            data=data, first_stage=first_stage, wavelet=wavelet, axis=axis
-        )
+        level = dt_max_level(data=data, first_stage=first_stage, wavelet=wavelet, axis=axis)
     elif level == 0:
         return [data]
 
     # Check axis bounds
     if axis > data.ndim - 1:
-        raise ValueError(
-            f"Input array has {data.ndim} dimensions, but input axis is {axis}"
-        )
+        raise ValueError(f"Input array has {data.ndim} dimensions, but input axis is {axis}")
     elif data.shape[axis] % 2:
         raise ValueError(
             f"Input array has shape {data.shape[axis]} along transform direction \
@@ -174,9 +170,7 @@ def idtcwt(coeffs, first_stage, wavelet, mode="constant", axis=-1):
            Magazine pp. 123 - 151, November 2005.
     """
     if len(coeffs) < 1:
-        raise ValueError(
-            f"Coefficient list too short with {len(coeffs)} elements (minimum 1 array required)."
-        )
+        raise ValueError(f"Coefficient list too short with {len(coeffs)} elements (minimum 1 array required).")
     elif len(coeffs) == 1:  # level 0 inverse transform
         return np.sqrt(2) * coeffs[0]
     else:
@@ -321,9 +315,7 @@ def _single_tree_synthesis_1d(coeffs, first_stage, wavelet, mode, axis):
         approx = idwt(cA=approx, cD=detail, wavelet=wav, mode=mode, axis=axis)
 
     approx = _normalize_size_axis(approx, first_stage_detail, axis=axis)
-    return idwt(
-        cA=approx, cD=first_stage_detail, wavelet=first_stage, mode=mode, axis=axis
-    )
+    return idwt(cA=approx, cD=first_stage_detail, wavelet=first_stage, mode=mode, axis=axis)
 
 
 @lru_cache(maxsize=len(available_dt_filters()))

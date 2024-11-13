@@ -20,14 +20,10 @@ def integrate_2d(x, y, f):
 
 def integrate_3d(x, y, z, f):
     """Numerically-integrate a function f(x, y)."""
-    return trapezoid(
-        trapezoid(trapezoid(f, z[None, None, :], axis=2), y[None, :], axis=1), x, axis=0
-    )
+    return trapezoid(trapezoid(trapezoid(f, z[None, None, :], axis=2), y[None, :], axis=1), x, axis=0)
 
 
-multifunc = pytest.mark.parametrize(
-    "func", (gaussian, lorentzian, lambda x, c, w: pseudo_voigt(x, c, w, w))
-)
+multifunc = pytest.mark.parametrize("func", (gaussian, lorentzian, lambda x, c, w: pseudo_voigt(x, c, w, w)))
 
 
 @multifunc

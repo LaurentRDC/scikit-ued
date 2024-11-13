@@ -67,9 +67,7 @@ def test_perfect_reconstruction_level_1(n_dimensions):
     array = gen_input(n_dimensions)
     for first_stage in available_first_stage_filters():
         coeffs = dtcwt(data=array, level=1, first_stage=first_stage, wavelet="qshift1")
-        reconstructed = idtcwt(
-            coeffs=coeffs, first_stage=first_stage, wavelet="qshift1"
-        )
+        reconstructed = idtcwt(coeffs=coeffs, first_stage=first_stage, wavelet="qshift1")
         assert np.allclose(array, reconstructed)
 
 
@@ -90,9 +88,7 @@ def test_perfect_reconstruction_multilevel(n_dimensions):
                     first_stage=first_stage,
                     wavelet=wavelet,
                 )
-                reconstructed = idtcwt(
-                    coeffs=coeffs, first_stage=first_stage, wavelet=wavelet
-                )
+                reconstructed = idtcwt(coeffs=coeffs, first_stage=first_stage, wavelet=wavelet)
                 assert np.allclose(array, reconstructed)
 
 
@@ -108,9 +104,7 @@ def test_axis(n_dimensions):
             first_stage="sym6",
             wavelet="qshift1",
         )
-        reconstructed = idtcwt(
-            coeffs=coeffs, axis=axis, first_stage="sym6", wavelet="qshift1"
-        )
+        reconstructed = idtcwt(coeffs=coeffs, axis=axis, first_stage="sym6", wavelet="qshift1")
         assert np.allclose(array, reconstructed)
 
 
