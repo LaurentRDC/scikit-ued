@@ -3,6 +3,7 @@
 Image manipulation involving symmetry
 =====================================
 """
+
 import numpy as np
 import npstreams as ns
 from skimage.transform import rotate

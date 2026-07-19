@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Indexing single crystals 
+Indexing single crystals
 ------------------------
 """
+
 from warnings import catch_warnings, simplefilter
 from itertools import combinations
 import numpy as np

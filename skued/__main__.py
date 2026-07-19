@@ -2,6 +2,7 @@
 """
 scikit-ued command-line utilities
 """
+
 import argparse
 import sys
 from pathlib import Path
@@ -39,10 +40,8 @@ def main(args=None):
 def main_diffshow(fname):
     """Display an interactive window"""
     if not WITH_PYQTGRAPH:
-        print(
-            "PyQtGraph is required for this functionality. You can install PyQtGraph either with \
-            conda or pip, depending on what you used to install scikit-ued."
-        )
+        print("PyQtGraph is required for this functionality. You can install PyQtGraph either with \
+            conda or pip, depending on what you used to install scikit-ued.")
         sys.exit(1)
     diffshow(fname)
     sys.exit(0)

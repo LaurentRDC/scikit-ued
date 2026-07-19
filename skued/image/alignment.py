@@ -3,6 +3,7 @@
 Module concerned with alignment of diffraction images
 =====================================================
 """
+
 from functools import partial
 
 import numpy as np

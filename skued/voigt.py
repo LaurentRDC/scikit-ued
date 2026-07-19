@@ -2,6 +2,7 @@
 """
 Voigt and pseudo-voigt curves, as well as related Gaussian and Lorentzian functions
 """
+
 from functools import lru_cache
 
 import numpy as np

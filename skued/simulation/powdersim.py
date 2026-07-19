@@ -3,6 +3,7 @@
 Polycrystalline diffraction pattern simulation
 ==============================================
 """
+
 import numpy as np
 
 from crystals.affine import change_basis_mesh

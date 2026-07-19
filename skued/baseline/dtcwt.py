@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-""" 
+"""
 Dual-tree complex wavelet transform
 ===================================
 """
+
 from collections import deque
 from functools import lru_cache
 from itertools import cycle
@@ -107,10 +108,8 @@ def dtcwt(data, first_stage, wavelet, mode="constant", level=None, axis=-1):
     if axis > data.ndim - 1:
         raise ValueError(f"Input array has {data.ndim} dimensions, but input axis is {axis}")
     elif data.shape[axis] % 2:
-        raise ValueError(
-            f"Input array has shape {data.shape[axis]} along transform direction \
-                          (axis = {axis}). Even length is required."
-        )
+        raise ValueError(f"Input array has shape {data.shape[axis]} along transform direction \
+                          (axis = {axis}). Even length is required.")
 
     real_wavelet, imag_wavelet = dualtree_wavelet(wavelet)
     real_first, imag_first = dt_first_stage(first_stage)

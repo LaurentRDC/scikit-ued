@@ -64,10 +64,8 @@ def transform(matrix, array):
     ValueError : If the transformation matrix is neither 3x3 or 4x4
     """
     if matrix.shape not in [(3, 3), (4, 4)]:
-        raise ValueError(
-            f"Input matrix is neither a 3x3 or 4x4 matrix, but \
-						  rather of shape {matrix.shape}."
-        )
+        raise ValueError(f"Input matrix is neither a 3x3 or 4x4 matrix, but \
+						  rather of shape {matrix.shape}.")
 
     matrix = affine_map(matrix)
     # Case of a vector (e.g. position vector):

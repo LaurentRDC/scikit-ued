@@ -10,6 +10,7 @@ References
 ----------
 .. [1] Kirkland 2010 Appendix C
 """
+
 import numpy as np
 
 scattering_params = {

@@ -3,6 +3,7 @@
 Image manipulation of powder diffraction
 ========================================
 """
+
 from functools import partial
 
 import numpy as np

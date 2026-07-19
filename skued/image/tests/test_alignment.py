@@ -11,7 +11,6 @@ import skimage.data as data
 
 from skued import align, ialign, itrack_peak
 
-
 np.random.seed(23)
 
 

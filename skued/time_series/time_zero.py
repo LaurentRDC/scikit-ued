@@ -49,10 +49,8 @@ def register_time_shift(trace, reference, method="auto"):
     """
     trace, reference = np.atleast_1d(trace, reference)
     if trace.shape != reference.shape:
-        raise ValueError(
-            f"Time trace and reference trace are expected to have the same shape, be received \
-                         a time-trace of shape {trace.shape} and a reference trace of shape {reference.shape}"
-        )
+        raise ValueError(f"Time trace and reference trace are expected to have the same shape, be received \
+                         a time-trace of shape {trace.shape} and a reference trace of shape {reference.shape}")
 
     if trace.ndim > 1:
         raise ValueError(f"Expected 1D time traces, but received traces of shape {trace.shape}")

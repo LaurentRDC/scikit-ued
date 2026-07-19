@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" Diffraction image analysis """
+"""Diffraction image analysis"""
 
 from .alignment import align, ialign, itrack_peak
 from .brillouin import brillouin_zones

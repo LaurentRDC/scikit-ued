@@ -105,10 +105,8 @@ def powder_calq(I, crystal, peak_indices, miller_indices):
         raise ValueError(f"Expected 1D diffraction intensity, but received shape {I.shape}")
 
     if len(peak_indices) != len(miller_indices):
-        raise ValueError(
-            f"Number of array indices {len(peak_indices)} does not match the \
-                          number of Miller indices {len(miller_indices)}"
-        )
+        raise ValueError(f"Number of array indices {len(peak_indices)} does not match the \
+                          number of Miller indices {len(miller_indices)}")
 
     if len(peak_indices) < 2:
         raise ValueError(f"Two peaks are required to calibrate, but received {len(peak_indices)}")

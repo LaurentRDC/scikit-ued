@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Python module for parsing GATAN DM3 and DM4 files. See http://www.er-c.org/cbb/info/dmformat/ 
+Python module for parsing GATAN DM3 and DM4 files. See http://www.er-c.org/cbb/info/dmformat/
 for information on the DM3 and DM4 formats.
 
 This module is a modification of the work by:

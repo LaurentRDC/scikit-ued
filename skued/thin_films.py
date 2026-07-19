@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Calculations on thin films 
+Calculations on thin films
 ==========================
 """
+
 from cmath import cos, exp, pi, sin
 
 

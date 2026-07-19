@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Plotting utilities 
+Plotting utilities
 ==================
 """
+
 from colorsys import hsv_to_rgb
 from matplotlib.colors import ListedColormap
 from matplotlib import colormaps

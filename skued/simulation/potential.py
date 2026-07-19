@@ -3,6 +3,7 @@
 Electrostatic potential simulation
 ==================================
 """
+
 from math import sqrt
 
 import numpy as np

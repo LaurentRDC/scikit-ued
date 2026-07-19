@@ -66,10 +66,8 @@ def nfft(x, y, M, df=1.0, eps=1e-15):
     """
     x, y = np.atleast_1d(x, y)
     if x.shape != y.shape:
-        raise ValueError(
-            f"Signal location is of unexpected shape {x.shape} \
-                          compared to signal shape {y.shape} "
-        )
+        raise ValueError(f"Signal location is of unexpected shape {x.shape} \
+                          compared to signal shape {y.shape} ")
 
     M = int(M)
     k = nfftfreq(M, df)

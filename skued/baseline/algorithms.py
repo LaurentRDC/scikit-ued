@@ -3,6 +3,7 @@
 Algorithms based on the dual-tree complex wavelet transform
 ===========================================================
 """
+
 from collections.abc import Iterable
 from functools import partial
 from warnings import warn

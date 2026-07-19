@@ -3,6 +3,7 @@
 Baseline-determination algorithms
 =================================
 """
+
 from .algorithms import baseline_dt, baseline_dwt
 from .dtcwt import (
     ALL_COMPLEX_WAV,
