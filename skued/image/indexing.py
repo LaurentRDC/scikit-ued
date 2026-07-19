@@ -12,11 +12,11 @@ import skimage.filters as filters
 from skimage.measure import label, regionprops
 from skimage.morphology import binary_erosion, disk
 
-from ..fft import with_skued_fft
+from ..fft import with_scipy_fft
 from .center import autocenter
 
 
-@with_skued_fft
+@with_scipy_fft
 def bragg_peaks(im, mask=None, center=None, min_dist=None):
     """
     Extract the position of Bragg peaks in a single-crystal diffraction pattern.

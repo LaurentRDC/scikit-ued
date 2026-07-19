@@ -6,13 +6,13 @@ Kinematic simulation of diffraction patterns
 
 import numpy as np
 import scipy.fft as fft
-from ..fft import with_skued_fft
+from ..fft import with_scipy_fft
 from .potential import pelectrostatic
 from ..eproperties import interaction_parameter
 from scipy.interpolate import RegularGridInterpolator
 
 
-@with_skued_fft
+@with_scipy_fft
 def kinematicsim(crystal, kx, ky, energy=90):
     """
     Propagate a plane wave through a crystal and compute the resulting

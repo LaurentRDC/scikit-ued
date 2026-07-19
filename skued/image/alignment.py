@@ -5,17 +5,15 @@ Module concerned with alignment of diffraction images
 """
 from functools import partial
 
-from os import cpu_count
 import numpy as np
-from warnings import warn
 from npstreams import array_stream
 from scipy import ndimage as ndi
-from ..fft import with_skued_fft
+from ..fft import with_scipy_fft
 from skimage.registration import phase_cross_correlation
 
 
 @array_stream
-@with_skued_fft
+@with_scipy_fft
 def itrack_peak(images, row_slice=None, col_slice=None, precision=1 / 10):
     """
     Generator function that tracks a diffraction peak in a stream of images.
@@ -59,7 +57,7 @@ def itrack_peak(images, row_slice=None, col_slice=None, precision=1 / 10):
     for image in images:
         sub[:] = image[row_slice, col_slice]
 
-        shift, *_ = with_skued_fft(phase_cross_correlation)(
+        shift, *_ = with_scipy_fft(phase_cross_correlation)(
             reference_image=ref,
             moving_image=sub,
             upsample_factor=int(1 / precision),
@@ -91,7 +89,7 @@ def align(image, reference, mask=None, fill_value=0.0):
     --------
     ialign : generator of aligned images
     """
-    shift, *_ = with_skued_fft(phase_cross_correlation)(
+    shift, *_ = with_scipy_fft(phase_cross_correlation)(
         reference_image=reference,
         moving_image=image,
         reference_mask=mask,

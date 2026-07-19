@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 2.2.1
+-------------
+
+* Fixed an issue where we used SciPy's PocketFFT backend directly, leading to breakage once SciPy switched.
+
 Release 2.2.0
 -------------
 

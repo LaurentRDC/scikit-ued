@@ -8,7 +8,7 @@ from math import floor
 import numpy as np
 from skimage.registration import phase_cross_correlation
 from scipy.ndimage import gaussian_filter
-from ..fft import with_skued_fft
+from ..fft import with_scipy_fft
 from warnings import catch_warnings, simplefilter
 
 
@@ -104,7 +104,7 @@ def autocenter(im, mask=None, normalize_bg=True):
     if min(im.shape) > 1024:
         downsampling = 2
 
-    shift, *_ = with_skued_fft(phase_cross_correlation)(
+    shift, *_ = with_scipy_fft(phase_cross_correlation)(
         reference_image=im[::downsampling, ::downsampling],
         moving_image=im_i[::downsampling, ::downsampling],
         reference_mask=mask[::downsampling, ::downsampling],
