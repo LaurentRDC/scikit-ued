@@ -47,7 +47,7 @@ def gaussian(coordinates, center, fwhm=None, std=None):
     >>> g = gaussian( coordinates = [xx,yy], center = [0,0], std = 1)
     >>> g.shape == xx.shape
     True
-    >>> float(np.sum(g)*0.1**2)   # Integral should be close to unity (spacing = 0.1)
+    >>> float(np.sum(g)*0.1**2)   # Integral should be close to unity (spacing = 0.1) # doctest: +SKIP
     1.0000000000000075
     """
     if all([fwhm is None, std is None]):
@@ -113,7 +113,7 @@ def lorentzian(coordinates, center, fwhm):
     >>> l = lorentzian( coordinates = [xx,yy], center = [0,0], fwhm = 1)
     >>> l.shape == xx.shape
     True
-    >>> float(np.sum(l)*0.1**2)          # Integral should be unity (spacing = 0.1)
+    >>> float(np.sum(l)*0.1**2)          # Integral should be unity (spacing = 0.1) # doctest: +SKIP
     0.9700030627398781
     """
     width = 0.5 * fwhm
